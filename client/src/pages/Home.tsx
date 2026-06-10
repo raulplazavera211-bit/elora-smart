@@ -385,6 +385,273 @@ const PRODUCTS: Product[] = [
   },
 ];
 
+// ─── Galerías productos nuevos ───────────────────────────────────────────────
+const ESENZA_COMPACT_GALLERY = [
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_5.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_1.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_2.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_10.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_9.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_8.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_6.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_7.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_11.webp",
+];
+
+const ESENZA_SUSP_GALLERY = [
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_4-1.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_2-1.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_6-1.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_7-1.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_5-1.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/batch_8-1.webp",
+];
+
+const AURA_GALLERY = [
+  "https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart7-scaled.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart6.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart5.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart3.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart2.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart-scaled.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-BLANCO-2-scaled.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-BLANCO-3-scaled.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-BLANCO-6-scaled.jpg",
+];
+
+// ─── Productos nuevos ─────────────────────────────────────────────────────────
+const EXTRA_PRODUCTS: Product[] = [
+  {
+    id: "ESENZA-COMPACT",
+    name: "Inodoro inteligente ESENZA compact",
+    tagline: "Todas las funciones en fondo reducido.",
+    description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
+    longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
+    img: "https://elorasmart.com/wp-content/uploads/2025/12/batch_5.webp",
+    gallery: ESENZA_COMPACT_GALLERY,
+    badges: ["Compact", "Back-to-wall"],
+    highlights: [
+      { label: "Formato", value: "Fondo reducido" },
+      { label: "Instalación", value: "Back-to-wall" },
+      { label: "Garantía", value: "10 años" },
+    ],
+    pitch: [
+      { title: "Diseñado para baños pequeños", body: "Formato compacto de fondo reducido. Cabe donde otros no llegan sin sacrificar ninguna función esencial." },
+      { title: "Automatización total", body: "Apertura, cierre y descarga automáticos. Sensor de pie y detección de postura para un uso completamente sin contacto." },
+      { title: "Secado en 30 segundos", body: "Chorro de aire concentrado de alto rendimiento. Higiene completa sin papel, ajustable en 5 velocidades." },
+    ],
+    features: [
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Asiento calefactado CLIMADAPT",
+      "Secado en menos de 30 segundos (5 velocidades)",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral multifunción",
+      "Luz nocturna LED",
+      "Cerámica rimless",
+      "Tanque integrado de 5 litros",
+      "Funcionamiento silencioso ≤59 dB",
+    ],
+    technical: [
+      {
+        group: "Dimensiones",
+        specs: [
+          { label: "Formato", value: "Compacto back-to-wall" },
+          { label: "Tanque", value: "5 litros integrado" },
+          { label: "Ruido", value: "≤59 dB" },
+        ],
+      },
+      {
+        group: "Funciones",
+        specs: [
+          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
+          { label: "Temperatura agua", value: "4 niveles" },
+          { label: "Secado", value: "5 velocidades" },
+        ],
+      },
+    ],
+    dimensions: [
+      { label: "Formato", value: "Compacto (fondo reducido)" },
+      { label: "Instalación", value: "Back-to-wall" },
+      { label: "Tanque", value: "5 litros integrado" },
+    ],
+    inTheBox: ["Inodoro ESENZA Compact", "Mando a distancia", "Manual en español", "Kit de instalación"],
+    installation: [
+      "Instalación back-to-wall (pegado a pared)",
+      "Solo necesitas un enchufe cerca",
+      "Tu fontanero de confianza en 60-90 min",
+    ],
+    warranty: {
+      years: 3,
+      details: "10 años cerámica · 3 años tecnología (ampliable a 5 con Premium Care +249€)",
+    },
+    faqs: [
+      { q: "¿En qué se diferencia del ESENZA estándar?", a: "Tiene fondo reducido y diseño back-to-wall (pegado a pared), ideal para baños pequeños. Las funciones son idénticas." },
+      { q: "¿Necesita obras?", a: "No. Solo un enchufe cerca y tu fontanero habitual." },
+    ],
+    price: 1590,
+  },
+  {
+    id: "ESENZA-SUSPENDIDO",
+    name: "Inodoro inteligente ESENZA suspendido",
+    tagline: "Diseño flotante con funciones esenciales.",
+    description: "El inodoro inteligente japonés flotante de ELORA SMART. Libera el suelo y aporta una estética minimalista y contemporánea.",
+    longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA con un diseño más ligero y contemporáneo.",
+    img: "https://elorasmart.com/wp-content/uploads/2025/12/batch_4-1.webp",
+    gallery: ESENZA_SUSP_GALLERY,
+    badges: ["Suspendido", "Rimless"],
+    highlights: [
+      { label: "Instalación", value: "Suspendida" },
+      { label: "Suelo", value: "Completamente libre" },
+      { label: "Garantía", value: "10 años" },
+    ],
+    pitch: [
+      { title: "Diseño flotante", body: "El suelo queda completamente libre. Limpieza total sin recovecos, amplitud visual y estética minimalista." },
+      { title: "Automatización completa", body: "Apertura, cierre y descarga automáticos. Sensor de pie y detección de postura para un uso sin contacto." },
+      { title: "Secado ultra-rápido", body: "Sistema de secado de alto rendimiento en menos de 30 segundos. Higiene completa sin papel." },
+    ],
+    features: [
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Asiento calefactado CLIMADAPT",
+      "Secado en menos de 30 segundos (5 velocidades)",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral multifunción",
+      "Luz nocturna LED",
+      "Cerámica rimless",
+      "Tanque integrado en módulo suspendido",
+      "Funcionamiento silencioso ≤59 dB",
+      "Diseño flotante — suelo completamente libre",
+    ],
+    technical: [
+      {
+        group: "Instalación",
+        specs: [
+          { label: "Tipo", value: "Suspendida (mural)" },
+          { label: "Tanque", value: "Integrado en módulo" },
+          { label: "Ruido", value: "≤59 dB" },
+        ],
+      },
+      {
+        group: "Funciones",
+        specs: [
+          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
+          { label: "Temperatura agua", value: "4 niveles" },
+          { label: "Secado", value: "5 velocidades" },
+        ],
+      },
+    ],
+    dimensions: [
+      { label: "Instalación", value: "Suspendida (mural)" },
+      { label: "Suelo", value: "Completamente libre" },
+      { label: "Tanque", value: "Integrado en módulo" },
+    ],
+    inTheBox: ["Inodoro ESENZA Suspendido", "Módulo de instalación", "Mando a distancia", "Manual en español", "Kit de instalación suspendida"],
+    installation: [
+      "Instalación suspendida en pared",
+      "Requiere módulo de instalación incluido",
+      "Enchufe Schuko a menos de 1,2 m",
+      "Instalador en 90-120 minutos",
+    ],
+    warranty: {
+      years: 3,
+      details: "10 años cerámica · 3 años tecnología (ampliable a 5 con Premium Care +249€)",
+    },
+    faqs: [
+      { q: "¿Necesita obra?", a: "Sí, requiere instalación suspendida en pared. Es habitual en reformas de baño modernas." },
+      { q: "¿Qué diferencia hay con ESENZA estándar?", a: "La instalación es suspendida (flotante), lo que libera el suelo y aporta una estética más limpia y moderna. Las funciones son idénticas." },
+    ],
+    price: 1690,
+  },
+  {
+    id: "AURA",
+    name: "Water japonés AURA",
+    tagline: "La experiencia AURA completa.",
+    description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
+    longDescription: "El water japonés AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
+    img: "https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg",
+    gallery: AURA_GALLERY,
+    badges: ["3 colores", "UV + Aromaterapia"],
+    highlights: [
+      { label: "Display", value: "3 colores" },
+      { label: "UV", value: "Esterilización" },
+      { label: "Aromaterapia", value: "Integrada" },
+    ],
+    pitch: [
+      { title: "Sensor ClimAdapt", body: "Ajusta automáticamente la temperatura del asiento, agua y secador según la estación del año y tus preferencias." },
+      { title: "Esterilización UV", body: "Lámpara UV que desinfecta por completo. Desodorización automática del ambiente. Siempre limpio." },
+      { title: "Aromaterapia integrada", body: "Cada hora libera una fragancia delicada. Mini SPA personal con terapia de calor por infrarrojos." },
+    ],
+    features: [
+      "Sensor inteligente ClimAdapt",
+      "Apertura automática de tapa",
+      "Lavado personal con agua tibia",
+      "Secado con aire caliente",
+      "Desodorización automática",
+      "Asiento calefactable",
+      "Aromaterapia integrada",
+      "Escudo de espuma anti-salpicaduras",
+      "Esterilización UV ultravioleta",
+      "Terapia de calor por infrarrojos",
+      "Descarga dual eficiente",
+      "Autolimpieza de boquillas",
+      "Modo nocturno con luz LED",
+      "Control remoto en español",
+      "Control por voz (inglés)",
+      "Disponible en 3 colores de display",
+    ],
+    technical: [
+      {
+        group: "Funciones premium",
+        specs: [
+          { label: "UV", value: "Esterilización ultravioleta" },
+          { label: "Aromaterapia", value: "Sí (cada hora)" },
+          { label: "Infrarrojos", value: "Terapia de calor" },
+          { label: "Espuma", value: "Escudo anti-salpicaduras" },
+        ],
+      },
+      {
+        group: "Control",
+        specs: [
+          { label: "Mando", value: "En español" },
+          { label: "Voz", value: "Sí (inglés)" },
+          { label: "Display", value: "Gris/Negro · Blanco · Gris" },
+        ],
+      },
+    ],
+    dimensions: [
+      { label: "Colores display", value: "Gris y Negro / Blanco / Gris" },
+      { label: "Instalación", value: "A suelo estándar" },
+    ],
+    inTheBox: ["Inodoro AURA", "Mando a distancia", "Manual en español", "Kit de instalación"],
+    installation: [
+      "Instalación a suelo estándar",
+      "Solo necesitas un enchufe cerca",
+      "Tu fontanero de confianza",
+    ],
+    warranty: {
+      years: 5,
+      details: "5 años tecnología · 10 años cerámica",
+    },
+    faqs: [
+      { q: "¿En qué se diferencia del AURA Compact?", a: "El AURA estándar tiene mayor tamaño y añade aromaterapia, terapia de calor por infrarrojos y está disponible en 3 colores de display." },
+      { q: "¿Puedo elegir el color del display?", a: "Sí. Disponible en Gris y Negro, Blanco y Gris. Se elige en el momento del pedido." },
+    ],
+    price: 2500,
+  },
+];
+
+const ALL_PRODUCTS = [...PRODUCTS, ...EXTRA_PRODUCTS];
+
 // ─── Tipos ─────────────────────────────────────────────────────────────────────
 type CartItem = { id: string; name: string };
 
@@ -846,7 +1113,7 @@ export default function Home() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-                    {PRODUCTS.map((prod) => (
+                    {ALL_PRODUCTS.map((prod) => (
                       <button
                         key={prod.id}
                         onClick={() => openProduct(prod)}
