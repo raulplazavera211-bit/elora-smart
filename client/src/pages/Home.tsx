@@ -1194,28 +1194,29 @@ export default function Home() {
                     </div>
                   </motion.div>
 
-                  {/* BLOQUE SUPERIOR DERECHA — stat garantía + imagen ESENZA (5 cols) */}
+                  {/* BLOQUE SUPERIOR DERECHA — equipo Elora (5 cols) */}
                   <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-5 relative overflow-hidden border border-border min-h-[220px] group"
+                    className="md:col-span-5 relative overflow-hidden border border-border p-5 md:p-6 flex flex-col justify-between gap-4 text-white min-h-[220px]"
                   >
                     <img
                       src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-2.webp"
-                      alt="ESENZA en baño"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-105"
+                      alt="Equipo Elora"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 pointer-events-none" />
-                    <div className="absolute top-5 right-5 text-right pointer-events-none">
-                      <p className="font-display text-3xl md:text-4xl text-accent leading-none">10</p>
-                      <p className="font-display text-xs uppercase tracking-widest text-white">años</p>
-                      <p className="font-body text-[9px] text-white/60 uppercase tracking-widest">garantía cerámica</p>
+                    <div className="absolute inset-0 bg-black/60 pointer-events-none" />
+                    <div className="relative z-10 flex items-center justify-between">
+                      <Cpu className="w-5 h-5 text-accent" />
+                      <span className="font-body text-[10px] uppercase tracking-widest text-white/60">Galicia · 2024</span>
                     </div>
-                    <div className="absolute bottom-5 left-5 pointer-events-none">
-                      <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/70 mb-1">Marca gallega, mirada global.</p>
-                      <p className="font-display text-base uppercase tracking-wide text-white">Atención cercana,<br />en gallego o castellano.</p>
+                    <div className="relative z-10">
+                      <h3 className="font-display text-xl uppercase tracking-wide mb-2">Marca gallega, mirada global.</h3>
+                      <p className="font-body text-xs md:text-sm text-white/80 leading-relaxed">
+                        Somos un equipo gallego que combina la mejor electrónica internacional con el cuidado artesanal del noroeste. Atención cercana, en gallego o castellano.
+                      </p>
                     </div>
                   </motion.div>
 
