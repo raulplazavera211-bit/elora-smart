@@ -1221,9 +1221,6 @@ export default function Home() {
                 <div className="absolute bottom-8 right-8 md:right-16 font-display text-lg text-foreground/20">03</div>
               </section>
 
-              {/* ── CAPÍTULO EXPERIENCIA: PASOS DE USO ──────────────────── */}
-              <ExperienceSection scrollContainer={scrollContainerRef} />
-
               {/* ── CAPÍTULO 4: COLECCIÓN ───────────────────────────────────── */}
               <section
                 ref={setSectionRef(3)}
@@ -1329,6 +1326,9 @@ export default function Home() {
                 </div>
                 <div className="absolute bottom-8 right-8 md:right-16 font-display text-lg text-foreground/20">04</div>
               </section>
+
+              {/* ── CAPÍTULO EXPERIENCIA: PASOS DE USO ──────────────────── */}
+              <ExperienceSection scrollContainer={scrollContainerRef} />
 
               {/* ── CAPÍTULO 5: CONTACTO ────────────────────────────────────── */}
               <section
