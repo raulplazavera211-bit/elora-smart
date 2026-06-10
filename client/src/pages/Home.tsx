@@ -676,109 +676,155 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
     <section
       ref={sectionRef}
       className="w-full bg-foreground text-background relative"
-      style={{ height: `${EXPERIENCE_STEPS.length * 100}vh` }}
     >
-      {/* Sticky container — ocupa 100vh y se queda fijo dentro del contenedor scrollable */}
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col">
-
-        {/* ── CABECERA FIJA ── */}
-        <div className="shrink-0 px-6 md:px-16 pt-10 pb-6 border-b border-background/10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <p className="font-body text-[10px] uppercase tracking-[0.35em] text-accent-deep mb-3 flex items-center gap-3">
-              <span className="w-6 h-[1px] bg-accent-deep" /> La Experiencia
-            </p>
-            <h2 className="font-display text-3xl md:text-6xl uppercase tracking-wide leading-[0.9]">
-              Así funciona<br className="hidden md:block" /><span className="text-accent-deep"> cada vez.</span>
-            </h2>
-          </div>
-          {/* Progress dots */}
-          <div className="flex items-center gap-2">
-            {EXPERIENCE_STEPS.map((_, i) => (
-              <div
-                key={i}
-                className={`transition-all duration-400 rounded-full ${
-                  i === activeStep
-                    ? 'w-6 h-2 bg-accent-deep'
-                    : i < activeStep
-                    ? 'w-2 h-2 bg-accent-deep/40'
-                    : 'w-2 h-2 bg-background/20'
-                }`}
-              />
-            ))}
-            <span className="ml-3 font-body text-[10px] uppercase tracking-[0.3em] text-background/40">
-              {String(activeStep + 1).padStart(2, '0')} / {String(EXPERIENCE_STEPS.length).padStart(2, '0')}
-            </span>
-          </div>
+      {/* ── MOBILE: tarjetas verticales con scroll normal ── */}
+      <div className="md:hidden">
+        {/* Cabecera móvil */}
+        <div className="px-6 pt-12 pb-8 border-b border-background/10">
+          <p className="font-body text-[10px] uppercase tracking-[0.35em] text-accent-deep mb-3 flex items-center gap-3">
+            <span className="w-6 h-[1px] bg-accent-deep" /> La Experiencia
+          </p>
+          <h2 className="font-display text-4xl uppercase tracking-wide leading-[0.9]">
+            Así funciona<br /><span className="text-accent-deep">cada vez.</span>
+          </h2>
+          <p className="font-body text-sm text-background/50 leading-relaxed mt-4">
+            Ocho pasos. Cero esfuerzo. Una experiencia que cambia tu rutina.
+          </p>
         </div>
 
-        {/* ── CONTENIDO PRINCIPAL ── */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-
-          {/* Columna izquierda: texto del paso activo */}
-          <div className="md:w-1/2 flex flex-col justify-center px-6 md:px-16 py-8 md:py-0">
-            <motion.div
-              key={activeStep}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -40 }}
-              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <p className="font-body text-[10px] uppercase tracking-[0.4em] text-background/40 mb-4">
-                {step.eyebrow}
-              </p>
-              <h3 className="font-display text-3xl md:text-5xl xl:text-6xl uppercase tracking-wide leading-[0.9] text-background mb-3">
-                {step.title}
-              </h3>
-              <p className="font-body text-base md:text-lg text-accent-deep mb-6 tracking-wide">
-                {step.subtitle}
-              </p>
-              <p className="font-body text-sm md:text-base text-background/60 leading-relaxed max-w-md mb-6">
-                {step.body}
-              </p>
-              <span className="inline-flex items-center gap-2 px-4 py-2 border border-accent-deep/40 font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent-deep" />
-                {step.tag}
+        {/* Tarjetas de pasos */}
+        {EXPERIENCE_STEPS.map((s, idx) => (
+          <motion.div
+            key={s.number}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+            className="border-b border-background/10"
+          >
+            {/* Imagen */}
+            <div className="relative bg-background/5 overflow-hidden" style={{ aspectRatio: '4/3' }}>
+              <img
+                src={s.image}
+                alt={s.title}
+                className="w-full h-full object-contain p-6"
+                loading="lazy"
+              />
+              {/* Número superpuesto */}
+              <span className="absolute top-4 left-4 font-display text-5xl leading-none text-background/10 select-none">
+                {s.number}
               </span>
-            </motion.div>
+              <span className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 px-3 py-1 bg-foreground/80 backdrop-blur-sm border border-background/10 font-body text-[9px] uppercase tracking-[0.25em] text-accent-deep">
+                <span className="w-1 h-1 rounded-full bg-accent-deep" />
+                {s.tag}
+              </span>
+            </div>
+
+            {/* Texto */}
+            <div className="px-6 py-7">
+              <p className="font-body text-[9px] uppercase tracking-[0.4em] text-background/40 mb-2">{s.eyebrow}</p>
+              <h3 className="font-display text-2xl uppercase tracking-wide leading-[0.95] text-background mb-1">
+                {s.title}
+              </h3>
+              <p className="font-body text-sm text-accent-deep mb-4">{s.subtitle}</p>
+              <p className="font-body text-sm text-background/60 leading-relaxed">{s.body}</p>
+            </div>
+          </motion.div>
+        ))}
+
+        {/* CTA móvil */}
+        <div className="px-6 py-10 flex items-center justify-between">
+          <p className="font-display text-xl uppercase tracking-wide leading-tight">
+            Ocho pasos.<br /><span className="text-accent-deep">Una nueva rutina.</span>
+          </p>
+          <span className="font-body text-[10px] text-background/40 uppercase tracking-widest">Desde 1.490€</span>
+        </div>
+      </div>
+
+      {/* ── DESKTOP: scroll-pin con sticky ── */}
+      <div
+        className="hidden md:block"
+        style={{ height: `${EXPERIENCE_STEPS.length * 100}vh` }}
+      >
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col">
+
+          {/* Cabecera fija */}
+          <div className="shrink-0 px-16 pt-10 pb-6 border-b border-background/10 flex items-end justify-between gap-4">
+            <div>
+              <p className="font-body text-[10px] uppercase tracking-[0.35em] text-accent-deep mb-3 flex items-center gap-3">
+                <span className="w-6 h-[1px] bg-accent-deep" /> La Experiencia
+              </p>
+              <h2 className="font-display text-6xl uppercase tracking-wide leading-[0.9]">
+                Así funciona<span className="text-accent-deep"> cada vez.</span>
+              </h2>
+            </div>
+            {/* Dots + contador */}
+            <div className="flex items-center gap-2">
+              {EXPERIENCE_STEPS.map((_, i) => (
+                <div
+                  key={i}
+                  className={`transition-all duration-300 rounded-full ${
+                    i === activeStep ? 'w-6 h-2 bg-accent-deep'
+                    : i < activeStep ? 'w-2 h-2 bg-accent-deep/40'
+                    : 'w-2 h-2 bg-background/20'
+                  }`}
+                />
+              ))}
+              <span className="ml-3 font-body text-[10px] uppercase tracking-[0.3em] text-background/40">
+                {String(activeStep + 1).padStart(2, '0')} / {String(EXPERIENCE_STEPS.length).padStart(2, '0')}
+              </span>
+            </div>
           </div>
 
-          {/* Columna derecha: imagen */}
-          <div className="md:w-1/2 relative flex items-center justify-center p-6 md:p-12 border-t md:border-t-0 md:border-l border-background/10">
-            {EXPERIENCE_STEPS.map((s, idx) => (
+          {/* Contenido: texto izq + imagen der */}
+          <div className="flex-1 flex overflow-hidden">
+            {/* Texto */}
+            <div className="w-1/2 flex flex-col justify-center px-16 py-0">
               <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.92, y: 30 }}
-                animate={activeStep === idx
-                  ? { opacity: 1, scale: 1, y: 0 }
-                  : { opacity: 0, scale: 0.92, y: -30 }
-                }
-                transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                className="absolute inset-6 md:inset-12"
+                key={activeStep}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -40 }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
               >
-                <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden flex items-center justify-center">
-                  <img
-                    src={s.image}
-                    alt={s.title}
-                    className="w-full h-full object-contain p-6 md:p-10"
-                    loading="lazy"
-                  />
-                </div>
-                {/* Número grande de fondo */}
-                <span className="absolute bottom-4 right-6 font-display text-[8rem] leading-none text-background/5 select-none pointer-events-none">
-                  {s.number}
+                <p className="font-body text-[10px] uppercase tracking-[0.4em] text-background/40 mb-4">{step.eyebrow}</p>
+                <h3 className="font-display text-5xl xl:text-6xl uppercase tracking-wide leading-[0.9] text-background mb-3">{step.title}</h3>
+                <p className="font-body text-lg text-accent-deep mb-6 tracking-wide">{step.subtitle}</p>
+                <p className="font-body text-base text-background/60 leading-relaxed max-w-md mb-6">{step.body}</p>
+                <span className="inline-flex items-center gap-2 px-4 py-2 border border-accent-deep/40 font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-deep" />
+                  {step.tag}
                 </span>
               </motion.div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* ── BARRA DE PROGRESO INFERIOR ── */}
-        <div className="shrink-0 h-[3px] bg-background/10">
-          <motion.div
-            className="h-full bg-accent-deep"
-            animate={{ width: `${((activeStep + 1) / EXPERIENCE_STEPS.length) * 100}%` }}
-            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-          />
+            {/* Imagen */}
+            <div className="w-1/2 relative border-l border-background/10">
+              {EXPERIENCE_STEPS.map((s, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.92, y: 30 }}
+                  animate={activeStep === idx ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.92, y: -30 }}
+                  transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+                  className="absolute inset-12"
+                >
+                  <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden flex items-center justify-center">
+                    <img src={s.image} alt={s.title} className="w-full h-full object-contain p-10" loading="lazy" />
+                  </div>
+                  <span className="absolute bottom-4 right-6 font-display text-[8rem] leading-none text-background/5 select-none pointer-events-none">{s.number}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Barra de progreso inferior */}
+          <div className="shrink-0 h-[3px] bg-background/10">
+            <motion.div
+              className="h-full bg-accent-deep"
+              animate={{ width: `${((activeStep + 1) / EXPERIENCE_STEPS.length) * 100}%` }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+            />
+          </div>
         </div>
       </div>
     </section>
