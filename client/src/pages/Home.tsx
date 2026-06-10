@@ -1178,17 +1178,17 @@ export default function Home() {
                       <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep border border-accent-deep px-2 py-1">A Coruña · Galicia</span>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white pointer-events-none">
-                      <p className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight max-w-md mb-4">
-                        Tecnología que<br />desaparece en el diseño.
+                      <p className="font-display text-xl md:text-2xl uppercase tracking-wide leading-tight max-w-md mb-3">
+                        De la cantera gallega<br />al baño contemporáneo.
                       </p>
                       <div className="flex items-center gap-6">
                         <div>
-                          <p className="font-display text-xl uppercase tracking-widest">Pureza</p>
+                          <p className="font-display text-base uppercase tracking-widest">Pureza</p>
                           <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Cerámica blanca</p>
                         </div>
                         <div>
-                          <p className="font-display text-xl uppercase tracking-widest">Precisión</p>
-                          <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Electrónica premium</p>
+                          <p className="font-display text-base uppercase tracking-widest">Solidez</p>
+                          <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Granito local</p>
                         </div>
                       </div>
                     </div>
@@ -1209,23 +1209,21 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 pointer-events-none" />
                     <div className="absolute top-5 right-5 text-right pointer-events-none">
-                      <p className="font-display text-4xl md:text-5xl text-accent leading-none">10</p>
-                      <p className="font-display text-sm uppercase tracking-widest text-white">años</p>
+                      <p className="font-display text-3xl md:text-4xl text-accent leading-none">10</p>
+                      <p className="font-display text-xs uppercase tracking-widest text-white">años</p>
                       <p className="font-body text-[9px] text-white/60 uppercase tracking-widest">garantía cerámica</p>
                     </div>
                     <div className="absolute bottom-5 left-5 pointer-events-none">
-                      <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/70 mb-1">Serie ESENZA</p>
-                      <p className="font-display text-lg uppercase tracking-wide text-white">Diseño minimalista,<br />funciones máximas.</p>
+                      <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/70 mb-1">Marca gallega, mirada global.</p>
+                      <p className="font-display text-base uppercase tracking-wide text-white">Atención cercana,<br />en gallego o castellano.</p>
                     </div>
                   </motion.div>
 
                   {/* BLOQUE INFERIOR DERECHA — dos cards pequeñas (5 cols) */}
                   <div className="md:col-span-5 grid grid-cols-2 gap-3 md:gap-4">
                     {[
-                      { icon: Droplets, title: "−40% agua", body: "Higiene superior con mucho menos consumo que el papel.", accent: false },
-                      { icon: Leaf, title: "Cero papel", body: "Elimina el papel higiénico de tu vida para siempre.", accent: true },
-                      { icon: Cpu, title: "UV + Ozono", body: "Esterilización automática después de cada uso.", accent: false },
-                      { icon: Sparkles, title: "Galicia · 2024", body: "Marca gallega con atención cercana y servicio local.", accent: false },
+                      { icon: Droplets, title: "Higiene total", body: "Limpieza por sensores y agua templada.", accent: false },
+                      { icon: Leaf, title: "Ecológico", body: "Hasta un -40% en consumo de agua.", accent: false },
                     ].map((card, i) => {
                       const Icon = card.icon;
                       return (
