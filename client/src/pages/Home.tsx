@@ -10,20 +10,44 @@ import { Loader } from "@/components/Loader";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
-const HERO_IMAGE = "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-bathroom-hero-GsnaWX4miFhoWvrEinigc7.webp";
+const HERO_IMAGE = "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg";
 
 const PRODUCT_IMAGES: Record<string, string> = {
-  "ESENZA": "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-esenza-product-DBg48yZkDeSPX2uzj7sCVY.webp",
-  "AURA-COMPACT": "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-compact-product-Y8RSgUQPXQz7x6b8tWus2B.webp",
-  "AURA-SUSPENDIDO": "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-suspendido-product-XBaRADesRkQFEaXKjPdD8R.webp",
+  "ESENZA": "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
+  "AURA-COMPACT": "https://elorasmart.com/wp-content/uploads/2025/05/AURA-compact-p-800x800.jpg",
+  "AURA-SUSPENDIDO": "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
 };
 const SECTIONS = ["Visión", "Esencia", "Por Qué", "Colección", "Contacto"];
 
-const COMMON_GALLERY = [
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-esenza-product-DBg48yZkDeSPX2uzj7sCVY.webp",
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-compact-product-Y8RSgUQPXQz7x6b8tWus2B.webp",
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-suspendido-product-XBaRADesRkQFEaXKjPdD8R.webp",
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-bathroom-hero-GsnaWX4miFhoWvrEinigc7.webp",
+const ESENZA_GALLERY = [
+  "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZa-12.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-9.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-10.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-7.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-8.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-2.webp",
+  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-11.webp",
+];
+
+const AURA_COMPACT_GALLERY = [
+  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-compact-p-800x800.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-1.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-11.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-6.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-10.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-8.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-3.jpg",
+];
+
+const AURA_SUSP_GALLERY = [
+  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido1.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-2.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-3.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-111.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-9.jpg",
+  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-6.jpg",
 ];
 
 // ─── Datos de productos ────────────────────────────────────────────────────────
@@ -35,8 +59,8 @@ const PRODUCTS: Product[] = [
     description: "El primer paso al confort japonés sin renunciar a la pureza visual.",
     longDescription:
       "ESENZA es el modelo de entrada a la familia Elora. Cerámica vitrificada blanca, bidé integrado con agua templada, asiento calefactado y secador por aire en un cuerpo monobloque silencioso. Pensado para quien quiere descubrir lo que es un baño de verdad sin obras complicadas: un enchufe cerca, tu fontanero y empiezas a vivirlo.",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-esenza-product-DBg48yZkDeSPX2uzj7sCVY.webp",
-    gallery: COMMON_GALLERY,
+    img: "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
+    gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
       { label: "Asiento", value: "Calefactado" },
@@ -144,8 +168,8 @@ const PRODUCTS: Product[] = [
     description: "Toda la electrónica AURA en una pieza pensada para baños donde cada centímetro cuenta.",
     longDescription:
       "AURA Compact reduce la huella sin reducir la experiencia. Sensor de proximidad, apertura y descarga automáticas, filtro de carbón activo y luz nocturna LED en un cuerpo cerámico esculpido de 65 cm. Ideal para baños de invitados, áticos o reformas donde no sobra espacio pero no se renuncia al confort.",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-compact-product-Y8RSgUQPXQz7x6b8tWus2B.webp",
-    gallery: COMMON_GALLERY,
+    img: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-compact-p-800x800.jpg",
+    gallery: AURA_COMPACT_GALLERY,
     badges: ["Compact", "Sensor IR"],
     highlights: [
       { label: "Largo", value: "650 mm" },
@@ -256,8 +280,8 @@ const PRODUCTS: Product[] = [
     description: "Un inodoro inteligente flotante que libera el suelo y redefine el baño.",
     longDescription:
       "AURA Suspendido es nuestra interpretación arquitectónica del confort: una pieza flotante con cisterna empotrada Geberit Sigma, líneas continuas, pulsador en cristal templado y la electrónica completa de la familia AURA. Diseñado para reformas integrales que buscan ligereza visual, limpieza absoluta del suelo y una declaración de diseño en el baño.",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-suspendido-product-XBaRADesRkQFEaXKjPdD8R.webp",
-    gallery: COMMON_GALLERY,
+    img: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
+    gallery: AURA_SUSP_GALLERY,
     badges: ["Suspendido", "Cisterna empotrada"],
     highlights: [
       { label: "Instalación", value: "Suspendida" },
