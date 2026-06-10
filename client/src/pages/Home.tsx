@@ -1074,7 +1074,7 @@ export default function Home() {
         {/* ── MAIN SCROLLING CONTENT ────────────────────────────────────────── */}
         <main
           ref={scrollContainerRef}
-          className="flex-1 h-full overflow-y-auto hide-scrollbar relative bg-background scroll-smooth md:pt-0 pt-20"
+          className="flex-1 h-full overflow-y-auto hide-scrollbar relative bg-background scroll-smooth"
         >
           {selectedProduct ? (
             <ProductDetail
@@ -1088,7 +1088,7 @@ export default function Home() {
               <section
                 ref={setSectionRef(0)}
                 data-index="0"
-                className="h-[100dvh] md:h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col"
+                className="h-[calc(100dvh-5rem)] md:h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col"
               >
                 <img src={HERO_IMAGE} alt="Elora Smart" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
