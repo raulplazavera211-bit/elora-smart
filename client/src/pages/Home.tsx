@@ -926,7 +926,7 @@ export default function Home() {
         {/* ── MOBILE TOP NAVBAR ─────────────────────────────────────────────── */}
         <div className="md:hidden fixed top-0 left-0 w-full h-20 bg-background/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-6">
           <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }}>
-            <img src={LOGO_URL} alt="Elora Smart" className="h-7 w-auto select-none" />
+            <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
           </button>
           <div className="flex items-center gap-3">
             <button
@@ -954,7 +954,7 @@ export default function Home() {
         {/* ── DESKTOP LEFT SIDEBAR ──────────────────────────────────────────── */}
         <aside className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start z-50 shrink-0 relative py-12">
           <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }} className="px-10 text-left outline-none">
-            <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
+            <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
             <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
           </button>
 
@@ -1093,7 +1093,7 @@ export default function Home() {
                 <img src={HERO_IMAGE} alt="Elora Smart" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
 
-                <div className="relative z-10 flex flex-col justify-center h-full px-8 md:px-20 max-w-3xl pt-16 pb-16">
+                <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pt-16 pb-20">
                   <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] text-white/80 mb-6 md:mb-8 flex items-center gap-4">
                     <span className="w-8 h-[1px] bg-accent-deep"></span>
                     Elegancia Neo-Corporativa
