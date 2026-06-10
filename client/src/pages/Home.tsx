@@ -7,6 +7,8 @@ import {
 import { ProductDetail, type Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
+import { useLocation } from "wouter";
+import { FEATURED_PRODUCTS, ALL_PRODUCTS as ALL_PRODS } from "@/lib/products";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
@@ -628,7 +630,8 @@ const EXTRA_PRODUCTS: Product[] = [
   },
 ];
 
-const ALL_PRODUCTS = [...PRODUCTS, ...EXTRA_PRODUCTS];
+const ALL_PRODUCTS = ALL_PRODS;
+const HOME_PRODUCTS = FEATURED_PRODUCTS;
 
 // ─── Tipos ─────────────────────────────────────────────────────────────────────
 type CartItem = { id: string; name: string };
@@ -867,6 +870,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
 
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
+  const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -1327,12 +1331,12 @@ export default function Home() {
                       </h2>
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
-                      Tres modelos. Una misma filosofía: higiene avanzada, diseño premium y la tranquilidad del servicio Elora detrás de cada pieza.
+                      Seis modelos. Una misma filosofía: higiene avanzada, diseño premium y la tranquilidad del servicio Elora detrás de cada pieza.
                     </p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-                    {ALL_PRODUCTS.map((prod) => (
+                    {HOME_PRODUCTS.map((prod) => (
                       <div
                         key={prod.id}
                         className="group flex flex-col h-full bg-background border border-border hover:border-accent-deep transition-colors"
@@ -1389,6 +1393,20 @@ export default function Home() {
                         </div>
                       </div>
                     ))}
+                  </div>
+
+                  {/* ── Botón Ver todos ── */}
+                  <div className="mt-10 flex flex-col items-center gap-4">
+                    <button
+                      onClick={() => navigate("/coleccion")}
+                      className="group inline-flex items-center gap-4 border border-foreground px-8 py-4 font-body text-xs uppercase tracking-[0.3em] text-foreground hover:bg-foreground hover:text-background transition-all duration-300 active:scale-[0.97]"
+                    >
+                      Ver los 6 modelos
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40">
+                      ESENZA · ESENZA Compact · ESENZA Suspendido · AURA Compact · AURA Suspendido · AURA
+                    </p>
                   </div>
 
                   <div className="mt-12 md:mt-16">
