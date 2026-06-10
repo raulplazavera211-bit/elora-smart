@@ -645,141 +645,140 @@ const EXPERIENCE_STEPS = [
   { number: "08", eyebrow: "Lámpara esterilizadora UV", title: "Desinfecta por completo", subtitle: "con UV ultravioleta", body: "La lámpara UV elimina bacterias y gérmenes de forma automática. Desodorización del ambiente incluida. El baño más limpio, siempre.", image: "/manus-storage/lampara-esterilizadora_83bd7c31.jpg", tag: "Gama AURA" },
 ];
 
-function ExperienceSection() {
+function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObject<HTMLDivElement | null> }) {
   const [activeStep, setActiveStep] = useState(0);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    stepRefs.current.forEach((el, idx) => {
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveStep(idx); },
-        { root: null, threshold: 0.5 }
+    const container = scrollContainer.current;
+    const el = sectionRef.current;
+    if (!container || !el) return;
+    const handleScroll = () => {
+      const containerRect = container.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const relativeTop = elRect.top - containerRect.top;
+      const totalScrollable = el.scrollHeight - container.clientHeight;
+      const scrolled = -relativeTop;
+      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      const idx = Math.min(
+        EXPERIENCE_STEPS.length - 1,
+        Math.floor(progress * EXPERIENCE_STEPS.length)
       );
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
+      setActiveStep(idx);
+    };
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [scrollContainer]);
+
+  const step = EXPERIENCE_STEPS[activeStep];
 
   return (
-    <section className="w-full bg-foreground text-background relative overflow-hidden">
-      {/* Header */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-16 pt-20 md:pt-24 pb-12 border-b border-background/10">
-        <p className="font-body text-xs uppercase tracking-[0.35em] text-accent-deep mb-5 flex items-center gap-3">
-          <span className="w-6 h-[1px] bg-accent-deep" /> La Experiencia
-        </p>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <h2 className="font-display text-4xl md:text-7xl uppercase tracking-wide leading-[0.9]">
-            Así funciona<br /><span className="text-accent-deep">cada vez.</span>
-          </h2>
-          <p className="font-body text-sm text-background/60 leading-relaxed max-w-sm md:border-l md:border-background/20 md:pl-6">
-            Desde el momento en que te acercas hasta que sales. Ocho pasos. Cero esfuerzo. Una experiencia que cambia tu rutina para siempre.
-          </p>
-        </div>
-      </div>
+    <section
+      ref={sectionRef}
+      className="w-full bg-foreground text-background relative"
+      style={{ height: `${EXPERIENCE_STEPS.length * 100}vh` }}
+    >
+      {/* Sticky container — ocupa 100vh y se queda fijo dentro del contenedor scrollable */}
+      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col">
 
-      {/* Desktop: sticky image + scrollable steps */}
-      <div className="hidden md:flex max-w-[1400px] mx-auto px-16">
-        {/* Steps list */}
-        <div className="w-1/2 py-16 pr-16">
-          {EXPERIENCE_STEPS.map((step, idx) => (
-            <div
-              key={step.number}
-              ref={(el) => { stepRefs.current[idx] = el; }}
-              className={`py-10 border-b border-background/10 cursor-default transition-all duration-500 ${
-                activeStep === idx ? "opacity-100" : "opacity-30 hover:opacity-60"
-              }`}
-              onClick={() => { setActiveStep(idx); stepRefs.current[idx]?.scrollIntoView({ behavior: "smooth", block: "center" }); }}
+        {/* ── CABECERA FIJA ── */}
+        <div className="shrink-0 px-6 md:px-16 pt-10 pb-6 border-b border-background/10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.35em] text-accent-deep mb-3 flex items-center gap-3">
+              <span className="w-6 h-[1px] bg-accent-deep" /> La Experiencia
+            </p>
+            <h2 className="font-display text-3xl md:text-6xl uppercase tracking-wide leading-[0.9]">
+              Así funciona<br className="hidden md:block" /><span className="text-accent-deep"> cada vez.</span>
+            </h2>
+          </div>
+          {/* Progress dots */}
+          <div className="flex items-center gap-2">
+            {EXPERIENCE_STEPS.map((_, i) => (
+              <div
+                key={i}
+                className={`transition-all duration-400 rounded-full ${
+                  i === activeStep
+                    ? 'w-6 h-2 bg-accent-deep'
+                    : i < activeStep
+                    ? 'w-2 h-2 bg-accent-deep/40'
+                    : 'w-2 h-2 bg-background/20'
+                }`}
+              />
+            ))}
+            <span className="ml-3 font-body text-[10px] uppercase tracking-[0.3em] text-background/40">
+              {String(activeStep + 1).padStart(2, '0')} / {String(EXPERIENCE_STEPS.length).padStart(2, '0')}
+            </span>
+          </div>
+        </div>
+
+        {/* ── CONTENIDO PRINCIPAL ── */}
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+
+          {/* Columna izquierda: texto del paso activo */}
+          <div className="md:w-1/2 flex flex-col justify-center px-6 md:px-16 py-8 md:py-0">
+            <motion.div
+              key={activeStep}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -40 }}
+              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
             >
-              <div className="flex items-start gap-6">
-                <span className={`font-display text-5xl leading-none shrink-0 transition-colors duration-500 ${
-                  activeStep === idx ? "text-accent-deep" : "text-background/20"
-                }`}>{step.number}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-body text-[10px] uppercase tracking-[0.35em] text-background/40 mb-2">{step.eyebrow}</p>
-                  <h3 className={`font-display text-2xl xl:text-3xl uppercase tracking-wide leading-tight mb-1 transition-colors duration-500 ${
-                    activeStep === idx ? "text-background" : "text-background/60"
-                  }`}>{step.title}</h3>
-                  <p className="font-body text-sm text-accent-deep mb-3">{step.subtitle}</p>
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={activeStep === idx ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                    className="overflow-hidden"
-                  >
-                    <p className="font-body text-sm text-background/60 leading-relaxed pb-2">{step.body}</p>
-                    <span className="inline-block mt-2 px-3 py-1 border border-accent-deep/40 font-body text-[10px] uppercase tracking-[0.25em] text-accent-deep">{step.tag}</span>
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              <p className="font-body text-[10px] uppercase tracking-[0.4em] text-background/40 mb-4">
+                {step.eyebrow}
+              </p>
+              <h3 className="font-display text-3xl md:text-5xl xl:text-6xl uppercase tracking-wide leading-[0.9] text-background mb-3">
+                {step.title}
+              </h3>
+              <p className="font-body text-base md:text-lg text-accent-deep mb-6 tracking-wide">
+                {step.subtitle}
+              </p>
+              <p className="font-body text-sm md:text-base text-background/60 leading-relaxed max-w-md mb-6">
+                {step.body}
+              </p>
+              <span className="inline-flex items-center gap-2 px-4 py-2 border border-accent-deep/40 font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-deep" />
+                {step.tag}
+              </span>
+            </motion.div>
+          </div>
 
-        {/* Sticky image */}
-        <div className="w-1/2 sticky top-0 h-screen flex items-center justify-center pl-8">
-          <div className="relative w-full max-w-[480px] aspect-square">
-            {EXPERIENCE_STEPS.map((step, idx) => (
+          {/* Columna derecha: imagen */}
+          <div className="md:w-1/2 relative flex items-center justify-center p-6 md:p-12 border-t md:border-t-0 md:border-l border-background/10">
+            {EXPERIENCE_STEPS.map((s, idx) => (
               <motion.div
-                key={step.number}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={activeStep === idx ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                className="absolute inset-0"
+                key={idx}
+                initial={{ opacity: 0, scale: 0.92, y: 30 }}
+                animate={activeStep === idx
+                  ? { opacity: 1, scale: 1, y: 0 }
+                  : { opacity: 0, scale: 0.92, y: -30 }
+                }
+                transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+                className="absolute inset-6 md:inset-12"
               >
-                <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden">
-                  <img src={step.image} alt={step.title} className="w-full h-full object-contain p-8" />
+                <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden flex items-center justify-center">
+                  <img
+                    src={s.image}
+                    alt={s.title}
+                    className="w-full h-full object-contain p-6 md:p-10"
+                    loading="lazy"
+                  />
                 </div>
-                <div className="absolute top-4 left-4 flex items-center gap-2">
-                  <span className="font-display text-xs text-accent-deep">{step.number}</span>
-                  <span className="w-8 h-[1px] bg-accent-deep/40" />
-                  <span className="font-body text-[10px] uppercase tracking-[0.25em] text-background/40">{step.tag}</span>
-                </div>
+                {/* Número grande de fondo */}
+                <span className="absolute bottom-4 right-6 font-display text-[8rem] leading-none text-background/5 select-none pointer-events-none">
+                  {s.number}
+                </span>
               </motion.div>
             ))}
-            {/* Progress bar */}
-            <div className="absolute -right-8 top-0 h-full w-[2px] bg-background/10">
-              <motion.div
-                className="w-full bg-accent-deep origin-top"
-                animate={{ scaleY: (activeStep + 1) / EXPERIENCE_STEPS.length }}
-                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                style={{ height: "100%" }}
-              />
-            </div>
           </div>
         </div>
-      </div>
 
-      {/* Mobile: vertical cards */}
-      <div className="md:hidden max-w-[1400px] mx-auto px-6 py-12">
-        {EXPERIENCE_STEPS.map((step) => (
-          <div key={step.number} className="border-b border-background/10 py-8">
-            <div className="flex items-start gap-4 mb-5">
-              <span className="font-display text-4xl text-accent-deep leading-none shrink-0">{step.number}</span>
-              <div>
-                <p className="font-body text-[10px] uppercase tracking-[0.3em] text-background/40 mb-1">{step.eyebrow}</p>
-                <h3 className="font-display text-xl uppercase tracking-wide leading-tight text-background">{step.title}</h3>
-                <p className="font-body text-xs text-accent-deep mt-1">{step.subtitle}</p>
-              </div>
-            </div>
-            <div className="aspect-video bg-background/5 border border-background/10 overflow-hidden mb-5">
-              <img src={step.image} alt={step.title} className="w-full h-full object-contain p-6" />
-            </div>
-            <p className="font-body text-sm text-background/60 leading-relaxed">{step.body}</p>
-            <span className="inline-block mt-3 px-3 py-1 border border-accent-deep/40 font-body text-[10px] uppercase tracking-[0.25em] text-accent-deep">{step.tag}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Bottom CTA */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-16 py-16 border-t border-background/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <p className="font-display text-2xl md:text-4xl uppercase tracking-wide leading-tight">
-          Ocho pasos. <span className="text-accent-deep">Una nueva rutina.</span>
-        </p>
-        <div className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-background/60">
-          <span className="w-6 h-[1px] bg-background/20" /> Disponible desde 1.490€
+        {/* ── BARRA DE PROGRESO INFERIOR ── */}
+        <div className="shrink-0 h-[3px] bg-background/10">
+          <motion.div
+            className="h-full bg-accent-deep"
+            animate={{ width: `${((activeStep + 1) / EXPERIENCE_STEPS.length) * 100}%` }}
+            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+          />
         </div>
       </div>
     </section>
@@ -1223,7 +1222,7 @@ export default function Home() {
               </section>
 
               {/* ── CAPÍTULO EXPERIENCIA: PASOS DE USO ──────────────────── */}
-              <ExperienceSection />
+              <ExperienceSection scrollContainer={scrollContainerRef} />
 
               {/* ── CAPÍTULO 4: COLECCIÓN ───────────────────────────────────── */}
               <section
@@ -1248,34 +1247,61 @@ export default function Home() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
                     {ALL_PRODUCTS.map((prod) => (
-                      <button
+                      <div
                         key={prod.id}
-                        onClick={() => openProduct(prod)}
-                        className="group flex flex-col h-full bg-background border border-border p-4 text-left hover:border-accent-deep transition-colors outline-none"
+                        className="group flex flex-col h-full bg-background border border-border hover:border-accent-deep transition-colors"
                       >
-                        <div className="bg-muted mb-5 overflow-hidden relative border border-border h-[260px]">
+                        {/* Imagen */}
+                        <button
+                          onClick={() => openProduct(prod)}
+                          className="relative overflow-hidden bg-muted border-b border-border h-[260px] outline-none w-full"
+                        >
                           <img
                             src={prod.img}
                             alt={prod.name}
                             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                           />
-                        </div>
-                        <div className="flex flex-col gap-3 flex-1">
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                          <span className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-foreground text-background font-body text-[9px] uppercase tracking-[0.25em] px-2 py-1">
+                            Ver detalle
+                          </span>
+                        </button>
+
+                        {/* Info */}
+                        <div className="flex flex-col gap-2 flex-1 p-4">
                           <p className="font-body text-[10px] text-foreground/50 uppercase tracking-widest">{prod.id}</p>
                           <h3 className="font-display text-lg uppercase tracking-wide leading-tight">{prod.name}</h3>
-                          <p className="font-display text-sm uppercase tracking-wide text-accent-deep leading-tight">{prod.tagline}</p>
-                          <p className="font-body text-sm text-foreground/70 leading-relaxed">{prod.description}</p>
-                          <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
-                            <span className="font-display text-lg tracking-wide text-foreground">
-                              {prod.price.toLocaleString('es-ES')} €
-                            </span>
-                            <span className="inline-flex items-center gap-2 font-body text-[11px] uppercase tracking-[0.2em] text-foreground group-hover:text-accent-deep transition-colors">
-                              Ver detalle
-                              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                            </span>
+                          <p className="font-display text-xs uppercase tracking-wide text-accent-deep leading-tight">{prod.tagline}</p>
+
+                          {/* Precio + botones */}
+                          <div className="mt-auto pt-4 border-t border-border">
+                            <div className="flex items-baseline justify-between mb-3">
+                              <span className="font-display text-2xl tracking-wide text-foreground">
+                                {prod.price.toLocaleString('es-ES')} €
+                              </span>
+                              <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">IVA incl.</span>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  addToCart({ id: prod.id, name: prod.name });
+                                  setIsCartOpen(true);
+                                }}
+                                className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
+                              >
+                                <ShoppingBag className="w-3.5 h-3.5" />
+                                Añadir
+                              </button>
+                              <button
+                                onClick={() => openProduct(prod)}
+                                className="px-4 border border-border font-body text-[10px] uppercase tracking-[0.2em] text-foreground hover:border-accent-deep hover:text-accent-deep transition-colors active:scale-[0.97]"
+                              >
+                                Info
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
 
