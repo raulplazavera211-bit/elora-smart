@@ -1169,7 +1169,7 @@ export default function Home() {
                     className="md:col-span-7 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[280px] md:min-h-0 group"
                   >
                     <img
-                      src="https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart6.jpg"
+                      src="https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart3.jpg"
                       alt="AURA en baño de diseño"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-105"
                     />
@@ -1203,7 +1203,7 @@ export default function Home() {
                     className="md:col-span-5 relative overflow-hidden border border-border min-h-[220px] group"
                   >
                     <img
-                      src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-4.webp"
+                      src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-2.webp"
                       alt="ESENZA en baño"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-105"
                     />
