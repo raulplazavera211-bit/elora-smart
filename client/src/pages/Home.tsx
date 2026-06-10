@@ -55,331 +55,309 @@ const PRODUCTS: Product[] = [
   {
     id: "ESENZA",
     name: "Inodoro inteligente ESENZA",
-    tagline: "El esencial inteligente.",
-    description: "El primer paso al confort japonés sin renunciar a la pureza visual.",
+    tagline: "El inodoro inteligente japonés a suelo de ELORA SMART.",
+    description: "Ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación.",
     longDescription:
-      "ESENZA es el modelo de entrada a la familia Elora. Cerámica vitrificada blanca, bidé integrado con agua templada, asiento calefactado y secador por aire en un cuerpo monobloque silencioso. Pensado para quien quiere descubrir lo que es un baño de verdad sin obras complicadas: un enchufe cerca, tu fontanero y empiezas a vivirlo.",
+      "ESENZA a suelo es el inodoro inteligente japonés de ELORA SMART, ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación. Mantiene todas las funciones esenciales de la gama ESENZA con instalación sencilla, máxima estabilidad y un diseño de líneas limpias para baños modernos. Incluye 10 años de garantía en la cerámica y 3 años en la tecnología, ampliables a 5 años con ELORA Premium Care.",
     img: "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
-      { label: "Asiento", value: "Calefactado" },
-      { label: "Limpieza", value: "3 modos" },
-      { label: "Garantía", value: "5 años" },
+      { label: "Asiento", value: "CLIMADAPT" },
+      { label: "Secado", value: "< 30 segundos" },
+      { label: "Garantía", value: "10 años cerámica" },
     ],
     pitch: [
-      { title: "Higiene japonesa accesible", body: "Bidé integrado con agua templada filtrada y boquilla autolimpiante antes y después de cada uso. Adiós al papel, hola al cuidado real." },
-      { title: "Confort cotidiano", body: "Asiento calefactado con 5 niveles de temperatura. Nunca más el contacto frío de la cerámica al amanecer." },
-      { title: "Diseño sin obra", body: "Monobloque a suelo de instalación tradicional. Solo necesitas toma de agua, desagüe y un enchufe cerca." },
-      { title: "Ahorro real de agua", body: "Doble descarga 3/4,5 L y modo eco. Hasta un 40% menos que un inodoro convencional español." },
-      { title: "Limpieza sin esfuerzo", body: "Esmalte CleanFlow antical y sin reborde interior: el agua barre toda la superficie en cada descarga." },
-      { title: "Operación silenciosa", body: "Cierre amortiguado de tapa y asiento, descarga rediseñada por debajo de 45 dB. Pensado también para la noche." },
+      { title: "Automatización inteligente", body: "Apertura, cierre y descarga automáticos. Sensor de pie integrado y detección de postura (pie/sentado). Todo sin tocar nada." },
+      { title: "Higiene completa con agua", body: "Sistema de lavado triple: posterior, femenino y móvil. Agua caliente instantánea (Natural, 33°C, 37°C, 39°C). Boquilla autolimpiable en acero inoxidable." },
+      { title: "Secado Súper-Tifón", body: "Secado completo en menos de 30 segundos. Ajustable en 5 velocidades y 4 temperaturas. La realidad de un inodoro sin papel." },
+      { title: "Asiento CLIMADAPT", body: "Regula la temperatura del asiento según el ambiente para un confort perfecto todo el año. Niveles: Natural, 33°C, 37°C, 39°C." },
+      { title: "Control total, muy fácil", body: "Mando a distancia en español con memoria para 2 usuarios. Rueda lateral intuitiva: giro adelante/atrás para lavados, botón central para descarga/secado." },
+      { title: "Sistema de agua avanzado", body: "Bomba doble de alta potencia. Tanque integrado de 5 litros. Funciona en edificios con baja presión. Funcionamiento silencioso ≤59 dB." },
     ],
     features: [
-      "Bidé integrado con boquilla de acero inoxidable",
-      "Agua templada con calentador instantáneo",
-      "5 niveles de temperatura del asiento",
-      "Secador de aire caliente regulable",
-      "Cierre amortiguado de tapa y asiento",
-      "Descarga dual 3/4,5 L Watersense",
-      "Esmalte antical CleanFlow sin reborde",
-      "Boquilla autolimpiante antes y después de cada uso",
-      "Mando inalámbrico de pared incluido",
-      "Modo eco con apagado automático",
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea (4 temperaturas)",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Asiento antibacteriano CLIMADAPT",
+      "Secado Súper-Tifón en menos de 30 segundos (5 velocidades)",
+      "Panel digital en cristal templado",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral multifunción",
+      "Luz ambiente LED y luz nocturna",
+      "Diseño rimless (sin reborde interior)",
+      "Tapa de caída amortiguada",
+      "Tanque integrado de 5 litros",
+      "Bomba doble de alta potencia",
+      "Funcionamiento silencioso ≤59 dB",
     ],
     technical: [
       {
-        group: "Limpieza & bidé",
+        group: "Lavado & bidé",
         specs: [
-          { label: "Modos de limpieza", value: "Posterior · Femenino · Suave" },
-          { label: "Presión del agua", value: "5 niveles ajustables" },
-          { label: "Temperatura del agua", value: "32 – 40 ºC" },
+          { label: "Modos de lavado", value: "Posterior · Femenino · Móvil" },
+          { label: "Temperatura del agua", value: "Natural · 33°C · 37°C · 39°C" },
           { label: "Boquilla", value: "Acero inoxidable autolimpiante" },
-          { label: "Filtro de agua", value: "Cerámico sustituible" },
+          { label: "Asiento", value: "Antibacteriano CLIMADAPT" },
         ],
       },
       {
-        group: "Confort",
+        group: "Confort & secado",
         specs: [
-          { label: "Asiento calefactado", value: "5 niveles · 28 – 40 ºC" },
-          { label: "Secador de aire", value: "3 niveles · 35 – 55 ºC" },
-          { label: "Cierre", value: "Soft close tapa y asiento" },
-          { label: "Sensor de presencia", value: "Activación de pre-rociado" },
+          { label: "Asiento calefactado", value: "Natural · 33°C · 37°C · 39°C" },
+          { label: "Secado Súper-Tifón", value: "5 velocidades · 4 temperaturas" },
+          { label: "Tiempo de secado", value: "< 30 segundos" },
+          { label: "Cierre", value: "Amortiguado (soft close)" },
         ],
       },
       {
-        group: "Descarga & agua",
+        group: "Automatización",
         specs: [
-          { label: "Tipo de descarga", value: "Dual 3 / 4,5 L" },
-          { label: "Sistema", value: "Sin reborde, vórtice silencioso" },
-          { label: "Presión recomendada", value: "0,7 – 7,5 bar" },
-          { label: "Consumo medio", value: "≈ 3,2 L/uso" },
+          { label: "Apertura/cierre", value: "Automático por sensor" },
+          { label: "Sensor de pie", value: "Sí" },
+          { label: "Detección de postura", value: "Pie / Sentado" },
+          { label: "Descarga automática", value: "Al levantarse" },
         ],
       },
       {
-        group: "Eléctrico",
+        group: "Agua & sistema",
         specs: [
-          { label: "Alimentación", value: "220 – 240 V · 50 Hz" },
-          { label: "Potencia máxima", value: "1.200 W" },
-          { label: "Consumo en standby", value: "0,8 W" },
-          { label: "Protección", value: "IPX4" },
-          { label: "Conexión", value: "Toma Schuko a 1 m" },
+          { label: "Tanque integrado", value: "5 litros" },
+          { label: "Bomba", value: "Doble de alta potencia" },
+          { label: "Descarga", value: "Dual direccional" },
+          { label: "Nivel sonoro", value: "≤59 dB" },
+          { label: "Diseño", value: "Rimless (sin reborde)" },
         ],
       },
     ],
     dimensions: [
-      { label: "Largo", value: "680 mm" },
-      { label: "Ancho", value: "390 mm" },
-      { label: "Alto total", value: "775 mm" },
-      { label: "Altura asiento", value: "415 mm" },
-      { label: "Distancia a pared", value: "Min. 30 mm" },
-      { label: "Peso", value: "42 kg" },
+      { label: "Instalación", value: "A suelo (estándar)" },
+      { label: "Tanque", value: "5 litros integrado" },
+      { label: "Nivel sonoro", value: "≤59 dB" },
+      { label: "Diseño", value: "Rimless" },
     ],
     inTheBox: [
-      "Cuerpo monobloque cerámico ESENZA",
-      "Asiento inteligente preinstalado",
-      "Mando inalámbrico de pared con soporte",
-      "Latiguillo flexible de agua 3/8\"",
-      "Junta de salida y kit de fijación al suelo",
-      "Manual en español, gallego e inglés",
+      "Inodoro inteligente ESENZA",
+      "Mando a distancia en español",
+      "Rueda lateral multifunción",
+      "Manual de instalación y uso",
+      "Kit de instalación",
     ],
     installation: [
-      "Toma de agua fría a 3/8\" y desagüe estándar a suelo de Ø100 mm.",
-      "Enchufe Schuko con toma de tierra a menos de 1 metro.",
-      "Tu fontanero de confianza realiza la conexión en 60–90 minutos.",
-      "Vinculas el mando, eliges tus preferencias y empiezas a usarlo.",
+      "Instalación a suelo estándar — sustituye a tu inodoro actual.",
+      "Solo necesitas un enchufe cerca.",
+      "Tu fontanero de confianza lo instala en 60–90 minutos.",
+      "Configura tus preferencias con el mando en español.",
     ],
     warranty: {
-      years: 5,
-      details: "5 años de garantía en cerámica y electrónica con SAT propio en Galicia. Reposición de boquilla y filtro a coste cero durante el primer año.",
+      years: 3,
+      details: "10 años de garantía en la cerámica · 3 años en la tecnología (ampliable a 5 años con ELORA Premium Care por 249€, contratable solo en el momento de la compra). Servicio técnico en español. Repuestos oficiales garantizados 10 años.",
     },
     faqs: [
-      { q: "¿Necesito obra para instalar el ESENZA?", a: "No. Sustituye a tu inodoro actual con las mismas conexiones. Solo necesitas un enchufe cerca; si no lo tienes, un electricista lo coloca en menos de una hora." },
-      { q: "¿Cuánta agua consume?", a: "Descarga dual de 3 y 4,5 litros, con un consumo medio de 3,2 L por uso. Hasta un 40% menos que un inodoro convencional." },
-      { q: "¿Qué pasa si se va la luz?", a: "Mantienes la descarga manual de emergencia. Cuando vuelve la corriente, el inodoro recupera tus ajustes guardados." },
-      { q: "¿Hace ruido por la noche?", a: "El cierre y la descarga están por debajo de 45 dB. Es más silencioso que una conversación en voz baja." },
+      { q: "¿Necesito obra para instalar el ESENZA?", a: "No. Sustituye a tu inodoro actual con las mismas conexiones. Solo necesitas un enchufe cerca." },
+      { q: "¿En qué se diferencia ESENZA de AURA?", a: "ESENZA tiene todas las funciones esenciales (lavado, secado, asiento calefactado, automatización) a un precio más contenido. AURA añade espuma anti-salpicaduras, luz UV, aromaterapia y control por voz." },
+      { q: "¿Funciona con baja presión de agua?", a: "Sí. El tanque integrado de 5 litros garantiza un funcionamiento fiable incluso en edificios antiguos o con baja presión." },
+      { q: "¿Hace ruido por la noche?", a: "No. El funcionamiento es silencioso, por debajo de 59 dB — hasta 21 dB más silencioso que muchos inodoros convencionales." },
     ],
     price: 1490,
   },
   {
     id: "AURA-COMPACT",
-    name: "Inodoro inteligente AURA Compact",
-    tagline: "Confort completo en formato reducido.",
-    description: "Toda la electrónica AURA en una pieza pensada para baños donde cada centímetro cuenta.",
+    name: "Inodoro inteligente AURA compact",
+    tagline: "Tecnología AURA completa en formato compacto.",
+    description: "Combina tecnología y diseño compacto: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización y control por voz.",
     longDescription:
-      "AURA Compact reduce la huella sin reducir la experiencia. Sensor de proximidad, apertura y descarga automáticas, filtro de carbón activo y luz nocturna LED en un cuerpo cerámico esculpido de 65 cm. Ideal para baños de invitados, áticos o reformas donde no sobra espacio pero no se renuncia al confort.",
+      "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas como: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio. Ideal para baños con poco espacio o lugares donde quieres ganar amplitud.",
     img: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-compact-p-800x800.jpg",
     gallery: AURA_COMPACT_GALLERY,
-    badges: ["Compact", "Sensor IR"],
+    badges: ["ClimAdapt", "UV · Voz"],
     highlights: [
-      { label: "Largo", value: "650 mm" },
-      { label: "Sensor", value: "Apertura auto" },
-      { label: "Garantía", value: "5 años" },
+      { label: "ClimAdapt", value: "Sensor inteligente" },
+      { label: "UV", value: "Esterilización" },
+      { label: "Control", value: "Por voz" },
     ],
     pitch: [
-      { title: "Hecho para baños pequeños", body: "Solo 650 mm de fondo. Cabe donde otros inodoros inteligentes no llegan, sin sacrificar funciones." },
-      { title: "Sin contacto, más higiene", body: "Apertura, cierre y descarga automáticos por sensor infrarrojo. Llegas, lo usas, te vas: el inodoro hace el resto." },
-      { title: "Aire siempre limpio", body: "Filtro de carbón activo desodorizante con ventilador silencioso integrado en el aro." },
-      { title: "Luz para la noche", body: "LED ambiental RGB con sensor crepuscular. Te orienta sin encender la luz principal del baño." },
-      { title: "Personalización por usuario", body: "App Elora Smart con perfiles individuales: temperatura del agua, presión, secador y modo guardados por persona." },
-      { title: "Tranquilidad de uso", body: "Modo niños y limitador de temperatura. Asiento antibacteriano con plata iónica." },
+      { title: "Sensor inteligente ClimAdapt", body: "Ajusta automáticamente la temperatura del asiento, agua y secador según la estación del año y tus preferencias." },
+      { title: "Escudo de espuma higiénica", body: "Crea una barrera de espuma en el agua para evitar salpicaduras y malos olores. Más limpieza, menos esfuerzo." },
+      { title: "Desodorización automática", body: "Sistema que elimina olores mediante un proceso de purificación del aire. El baño siempre huele bien." },
+      { title: "Secado con aire caliente", body: "Elimina la necesidad de papel higiénico gracias a su potente secador integrado." },
+      { title: "Control por voz", body: "Controla las funciones usando solo la voz (en inglés). También disponible con mando a distancia en español." },
+      { title: "Ideal para toda la familia", body: "Compatible con adultos mayores, embarazadas, personas con movilidad reducida y niños." },
     ],
     features: [
-      "Apertura y cierre automáticos por sensor IR",
-      "Descarga inteligente sin contacto",
-      "Filtro de carbón activo desodorizante",
-      "Luz nocturna LED RGB regulable",
-      "App Elora Smart con perfiles de usuario",
-      "Asiento con tratamiento antibacteriano",
-      "Modo eco -40% consumo de agua",
-      "Boquilla doble con limpieza automática",
-      "Modo masaje pulsante en bidé",
-      "Mando inalámbrico magnético incluido",
+      "Sensor inteligente ClimAdapt",
+      "Apertura automática de tapa",
+      "Lavado personal con agua tibia",
+      "Secado con aire caliente",
+      "Desodorización automática",
+      "Asiento calefactable",
+      "Escudo de espuma anti-salpicaduras",
+      "Uso eficiente del agua (descarga dual)",
+      "Autolimpieza de boquillas",
+      "Modo nocturno con luz LED",
+      "Funcionamiento silencioso",
+      "Control remoto en español",
+      "Control por voz (inglés)",
+      "Ideal para toda la familia",
     ],
     technical: [
       {
-        group: "Limpieza & bidé",
+        group: "Confort & climatización",
         specs: [
-          { label: "Modos", value: "Posterior · Femenino · Suave · Masaje" },
-          { label: "Presión", value: "6 niveles" },
-          { label: "Temperatura agua", value: "32 – 40 ºC" },
-          { label: "Boquilla", value: "Doble salida acero inox" },
-          { label: "Filtro agua", value: "Sustituible cada 12 meses" },
+          { label: "Sensor ClimAdapt", value: "Temperatura automática" },
+          { label: "Asiento calefactable", value: "Sí" },
+          { label: "Lavado", value: "Agua tibia, varias posiciones" },
+          { label: "Secado", value: "Aire caliente potente" },
         ],
       },
       {
-        group: "Sensores & control",
+        group: "Higiene & aire",
         specs: [
-          { label: "Sensor presencia", value: "Infrarrojo, alcance 60 cm" },
-          { label: "Apertura/cierre", value: "Automático con tapa motorizada" },
-          { label: "Descarga", value: "Automática al levantarse" },
-          { label: "Conectividad", value: "Wi-Fi 2.4 GHz · App iOS/Android" },
-          { label: "Mando", value: "Inalámbrico magnético de pared" },
+          { label: "Desodorización", value: "Automática" },
+          { label: "Espuma anti-salpicaduras", value: "Escudo higiénico" },
+          { label: "Autolimpieza boquillas", value: "Antes y después de cada uso" },
+          { label: "Luz nocturna LED", value: "Sí" },
         ],
       },
       {
-        group: "Aire & luz",
+        group: "Control",
         specs: [
-          { label: "Filtro desodorizante", value: "Carbón activo + ventilador" },
-          { label: "Luz nocturna", value: "LED RGB · 8 colores" },
-          { label: "Sensor crepuscular", value: "Sí" },
-        ],
-      },
-      {
-        group: "Eléctrico & agua",
-        specs: [
-          { label: "Alimentación", value: "220 – 240 V · 50 Hz" },
-          { label: "Potencia máxima", value: "1.400 W" },
-          { label: "Consumo standby", value: "0,6 W" },
-          { label: "Descarga", value: "Dual 3 / 4,5 L" },
-          { label: "Presión recomendada", value: "0,7 – 7,5 bar" },
-          { label: "Protección", value: "IPX4" },
+          { label: "Mando", value: "En español" },
+          { label: "Control por voz", value: "Sí (inglés)" },
+          { label: "Descarga", value: "Dual (completa / ecológica)" },
+          { label: "Nivel sonoro", value: "Silencioso" },
         ],
       },
     ],
     dimensions: [
-      { label: "Largo", value: "650 mm" },
-      { label: "Ancho", value: "385 mm" },
-      { label: "Alto total", value: "750 mm" },
-      { label: "Altura asiento", value: "410 mm" },
-      { label: "Distancia a pared", value: "Min. 25 mm" },
-      { label: "Peso", value: "44 kg" },
+      { label: "Formato", value: "Compacto" },
+      { label: "Instalación", value: "A suelo estándar" },
+      { label: "Descarga", value: "Dual (completa / ecológica)" },
     ],
     inTheBox: [
-      "Cuerpo monobloque cerámico AURA Compact",
-      "Asiento inteligente con sensor IR preinstalado",
-      "Mando magnético de pared con soporte",
-      "Latiguillo flexible reforzado 3/8\"",
-      "Filtro de carbón activo de repuesto",
-      "Kit de fijación oculta y junta de salida",
-      "Guía rápida y manual completo",
+      "Inodoro inteligente AURA Compact",
+      "Mando a distancia en español",
+      "Manual de instalación y uso",
+      "Kit de instalación",
     ],
     installation: [
-      "Conexión a toma de agua y desagüe estándar a suelo.",
-      "Enchufe Schuko a menos de 1,2 m con toma de tierra.",
-      "Instalación por fontanero en 60–90 minutos.",
-      "Vinculación con la app Elora Smart por Wi-Fi 2.4 GHz.",
-      "Configuración de perfiles personalizados desde la app.",
+      "Instalación a suelo estándar.",
+      "Solo necesitas un enchufe cerca.",
+      "Tu fontanero de confianza.",
     ],
     warranty: {
       years: 5,
-      details: "5 años en cerámica y electrónica. Sustitución de filtros y boquillas durante el primer año sin coste, con SAT propio en Galicia y atención en gallego o castellano.",
+      details: "5 años de garantía en tecnología incluidos. 10 años en cerámica. Servicio técnico en español.",
     },
     faqs: [
-      { q: "¿Cabe en un baño pequeño?", a: "Sí. Con 650 mm de fondo es uno de los inodoros inteligentes más compactos del mercado. Caben en huecos donde otros modelos no entran." },
-      { q: "¿Funciona la app fuera de casa?", a: "Sí. Puedes precalentar el asiento o activar el modo eco desde cualquier sitio mientras tu inodoro tenga conexión Wi-Fi." },
-      { q: "¿La descarga automática gasta más agua?", a: "No. Usa la descarga corta de 3 L por defecto y cambia a 4,5 L solo si detecta uso prolongado." },
-      { q: "¿Y si me quiero olvidar del sensor?", a: "Puedes desactivar el modo automático desde la app o el mando y operar todo manualmente." },
+      { q: "¿En qué se diferencia del AURA estándar?", a: "El AURA Compact tiene un formato más reducido, ideal para baños con poco espacio. Las funciones son las mismas que el AURA estándar." },
+      { q: "¿Funciona el control por voz en español?", a: "Actualmente el control por voz está disponible solo en inglés. El mando a distancia físico está completamente en español." },
+      { q: "¿La descarga automática gasta más agua?", a: "No. La descarga inteligente optimiza el consumo con dos opciones: completa y ecológica." },
+      { q: "¿Es apto para personas mayores?", a: "Sí. Es compatible con adultos mayores, embarazadas, personas con movilidad reducida y niños." },
     ],
     price: 2500,
   },
   {
     id: "AURA-SUSPENDIDO",
-    name: "Váter japonés AURA Suspendido",
-    tagline: "La pieza arquitectónica.",
-    description: "Un inodoro inteligente flotante que libera el suelo y redefine el baño.",
+    name: "Váter japonés AURA suspendido",
+    tagline: "Todo el confort AURA en diseño flotante.",
+    description: "Todo el confort del Water japonés AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
     longDescription:
-      "AURA Suspendido es nuestra interpretación arquitectónica del confort: una pieza flotante con cisterna empotrada Geberit Sigma, líneas continuas, pulsador en cristal templado y la electrónica completa de la familia AURA. Diseñado para reformas integrales que buscan ligereza visual, limpieza absoluta del suelo y una declaración de diseño en el baño.",
+      "El váter japonés AURA suspendido ofrece todo el confort del Water japonés AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el váter suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
     img: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
     gallery: AURA_SUSP_GALLERY,
-    badges: ["Suspendido", "Cisterna empotrada"],
+    badges: ["Suspendido", "Altura ajustable"],
     highlights: [
       { label: "Instalación", value: "Suspendida" },
-      { label: "Cisterna", value: "Geberit Sigma" },
-      { label: "Garantía", value: "7 años" },
+      { label: "Suelo", value: "Totalmente libre" },
+      { label: "Altura", value: "Ajustable" },
     ],
     pitch: [
-      { title: "El suelo libre", body: "Al volar sobre el suelo, el inodoro deja la limpieza al alcance de una mopa. Sin recovecos, sin cal, sin esfuerzo." },
-      { title: "Cisterna empotrada premium", body: "Bastidor metálico Geberit Duofix con cisterna Sigma de 3/6 L. Acceso de mantenimiento por el pulsador, sin romper pared." },
-      { title: "Pulsador en cristal templado", body: "Doble pulsador en vidrio negro o blanco, encastrado al ras. Diseño plano que dialoga con el alicatado." },
-      { title: "Electrónica AURA completa", body: "Sensor IR, app, perfiles, filtro de carbón activo y luz nocturna. Todo lo de AURA Compact, en formato suspendido." },
-      { title: "Iluminación indirecta LED", body: "Tira LED bajo el aro que dibuja la pieza por la noche y guía sin deslumbrar." },
-      { title: "Hecho para durar", body: "Estructura para 400 kg de carga estática y cerámica de doble cocción de 12 mm de espesor." },
+      { title: "Sensor inteligente ClimAdapt", body: "Ajusta automáticamente la temperatura del asiento, agua y secador según la estación del año y tus preferencias." },
+      { title: "Escudo de espuma higiénica", body: "Crea una barrera de espuma en el agua para evitar salpicaduras y malos olores." },
+      { title: "Desodorización automática", body: "Sistema que elimina olores mediante un proceso de purificación del aire." },
+      { title: "Diseño flotante", body: "El suelo queda totalmente libre, dando una imagen de orden y un efecto más despejado. Más fácil de limpiar." },
+      { title: "Altura ajustable", body: "Puedes ajustar la altura del váter a tu gusto en el momento de la instalación." },
+      { title: "Control por voz", body: "Controla las funciones usando solo la voz (en inglés). También disponible con mando a distancia en español." },
     ],
     features: [
-      "Bastidor Geberit Duofix incluido",
-      "Cisterna Sigma 3/6 L con doble pulsador",
-      "Pulsador en cristal templado (negro o blanco)",
-      "Sensor IR de apertura y descarga",
-      "Bidé con presión y temperatura ajustables",
-      "Filtro de carbón activo desodorizante",
-      "Iluminación LED indirecta bajo aro",
-      "App Elora Smart con perfiles",
-      "Asiento con cierre amortiguado",
-      "Tratamiento antibacteriano de plata iónica",
+      "Sensor inteligente ClimAdapt",
+      "Lavado personal con agua tibia",
+      "Secado con aire caliente",
+      "Desodorización automática",
+      "Asiento calefactable",
+      "Escudo de espuma anti-salpicaduras",
+      "Uso eficiente del agua (descarga dual)",
+      "Autolimpieza de boquillas",
+      "Modo nocturno con luz LED",
+      "Funcionamiento silencioso",
+      "Control remoto en español",
+      "Control por voz (inglés)",
+      "Diseño suspendido — suelo totalmente libre",
+      "Altura ajustable en instalación",
+      "Ideal para toda la familia",
     ],
     technical: [
       {
-        group: "Estructura & instalación",
+        group: "Confort & climatización",
         specs: [
-          { label: "Bastidor", value: "Geberit Duofix 1.120 mm" },
-          { label: "Cisterna", value: "Geberit Sigma 3/6 L" },
-          { label: "Pulsador", value: "Cristal templado, encastrado" },
-          { label: "Carga máxima", value: "400 kg estáticos" },
-          { label: "Distancia bastidor-pared", value: "Mínimo 80 mm" },
+          { label: "Sensor ClimAdapt", value: "Temperatura automática" },
+          { label: "Asiento calefactable", value: "Sí" },
+          { label: "Lavado", value: "Agua tibia, varias posiciones" },
+          { label: "Secado", value: "Aire caliente potente" },
         ],
       },
       {
-        group: "Limpieza & bidé",
+        group: "Higiene & aire",
         specs: [
-          { label: "Modos", value: "Posterior · Femenino · Suave · Masaje" },
-          { label: "Presión", value: "6 niveles" },
-          { label: "Temperatura agua", value: "32 – 40 ºC" },
-          { label: "Boquilla", value: "Doble salida acero inox autolimpiante" },
+          { label: "Desodorización", value: "Automática" },
+          { label: "Espuma anti-salpicaduras", value: "Escudo higiénico" },
+          { label: "Autolimpieza boquillas", value: "Antes y después de cada uso" },
+          { label: "Luz nocturna LED", value: "Sí" },
         ],
       },
       {
-        group: "Sensores & control",
+        group: "Instalación & control",
         specs: [
-          { label: "Sensor presencia", value: "Infrarrojo, alcance 60 cm" },
-          { label: "Apertura/cierre", value: "Automático con tapa motorizada" },
-          { label: "Descarga", value: "Automática al levantarse" },
-          { label: "Conectividad", value: "Wi-Fi 2.4 GHz · App iOS/Android" },
-        ],
-      },
-      {
-        group: "Eléctrico",
-        specs: [
-          { label: "Alimentación", value: "220 – 240 V · 50 Hz" },
-          { label: "Potencia máxima", value: "1.400 W" },
-          { label: "Consumo standby", value: "0,6 W" },
-          { label: "Protección", value: "IPX4" },
+          { label: "Tipo", value: "Suspendida (flotante)" },
+          { label: "Altura", value: "Ajustable en instalación" },
+          { label: "Mando", value: "En español" },
+          { label: "Control por voz", value: "Sí (inglés)" },
+          { label: "Descarga", value: "Dual (completa / ecológica)" },
         ],
       },
     ],
     dimensions: [
-      { label: "Largo", value: "540 mm" },
-      { label: "Ancho", value: "370 mm" },
-      { label: "Altura asiento", value: "400 – 430 mm (ajustable)" },
-      { label: "Altura bastidor", value: "1.120 mm" },
-      { label: "Distancia a pared", value: "Min. 80 mm" },
-      { label: "Peso (taza)", value: "38 kg" },
+      { label: "Instalación", value: "Suspendida (flotante)" },
+      { label: "Altura", value: "Ajustable" },
+      { label: "Suelo", value: "Totalmente libre" },
+      { label: "Descarga", value: "Dual (completa / ecológica)" },
     ],
     inTheBox: [
-      "Taza cerámica AURA Suspendido",
-      "Bastidor Geberit Duofix con cisterna Sigma",
-      "Pulsador de cristal templado (negro o blanco)",
-      "Asiento inteligente con sensor IR preinstalado",
-      "Mando magnético de pared con soporte",
-      "Kit de fijación y tornillería de acero inox",
-      "Manual completo de instalación y uso",
+      "Váter japonés AURA Suspendido",
+      "Módulo de instalación suspendida",
+      "Mando a distancia en español",
+      "Manual de instalación y uso",
+      "Kit de instalación suspendida",
     ],
     installation: [
-      "Instalación del bastidor Geberit Duofix en tabique o pared.",
-      "Alicatado y acabado de la pared (por tu instalador).",
-      "Colocación de la taza y conexión de la electrónica.",
-      "Enchufe Schuko oculto en el tabique a menos de 1,2 m.",
-      "Vinculación con la app Elora Smart y configuración de perfiles.",
+      "Instalación suspendida en pared.",
+      "Altura ajustable en el momento de la instalación.",
+      "Requiere instalador especializado.",
+      "Solo necesitas un enchufe cerca.",
     ],
     warranty: {
-      years: 7,
-      details: "7 años de garantía en cerámica, electrónica y bastidor Geberit. SAT propio en Galicia con atención en gallego o castellano. Recogida y reposición incluidas.",
+      years: 5,
+      details: "5 años de garantía en tecnología. 10 años en cerámica. Servicio técnico en español.",
     },
     faqs: [
-      { q: "¿Necesito obra para instalar el AURA Suspendido?", a: "Sí. Al ser un inodoro suspendido, requiere la instalación del bastidor Geberit en un tabique y acceso al espacio interior para la cisterna. Es habitual en reformas integrales de baño." },
-      { q: "¿Puedo elegir la altura del asiento?", a: "Sí. El bastidor Geberit Duofix permite ajustar la altura de la taza entre 400 y 430 mm antes del alicatado final." },
-      { q: "¿El pulsador de cristal viene en dos colores?", a: "Sí. Puedes elegir entre pulsador en cristal negro o blanco al realizar el pedido. Ambos son encastrados y al ras con el alicatado." },
-      { q: "¿Qué garantía tiene el bastidor Geberit?", a: "El bastidor Geberit Duofix tiene garantía de fabricante de 10 años. Nosotros cubrimos la electrónica y la cerámica durante 7 años adicionales." },
+      { q: "¿En qué se diferencia del AURA Compact?", a: "El AURA Suspendido tiene el mismo equipamiento que el AURA estándar pero en formato flotante. El suelo queda completamente libre y la altura es ajustable." },
+      { q: "¿Puedo ajustar la altura?", a: "Sí. Puedes ajustar la altura del váter a tu gusto en el momento de la instalación." },
+      { q: "¿Necesita obra?", a: "Sí, requiere instalación suspendida en pared. Es habitual en reformas de baño modernas." },
+      { q: "¿Funciona el control por voz en español?", a: "Actualmente el control por voz está disponible solo en inglés. El mando a distancia físico está completamente en español." },
     ],
     price: 2600,
   },
@@ -655,7 +633,160 @@ const ALL_PRODUCTS = [...PRODUCTS, ...EXTRA_PRODUCTS];
 // ─── Tipos ─────────────────────────────────────────────────────────────────────
 type CartItem = { id: string; name: string };
 
-// ─── Componente principal ──────────────────────────────────────────────────────
+// ─── ExperienceSection ─────────────────────────────────────────────────────────────────
+const EXPERIENCE_STEPS = [
+  { number: "01", eyebrow: "En el instante en que te acercas", title: "La tapa se levanta automáticamente", subtitle: "para ti", body: "Un sensor detecta tu presencia y levanta la tapa antes de que llegues. Sin tocar nada. Sin esfuerzo. El inodoro ya sabe que estás ahí.", image: "/manus-storage/uso-de-pie_0a8e4555.png", tag: "Sensor de presencia" },
+  { number: "02", eyebrow: "De pie o sentado", title: "Detecta tu postura", subtitle: "y lo resuelve al instante", body: "Reconoce si estás de pie o sentado y ajusta el comportamiento: apertura de asiento, tipo de descarga y cierre de tapa. Más comodidad, menos gestos.", image: "/manus-storage/uso-sentada_76dbdd33.png", tag: "Detección de postura" },
+  { number: "03", eyebrow: "Asiento CLIMADAPT", title: "Calefacción integrada", subtitle: "ajustable en 4 temperaturas", body: "El asiento se adapta automáticamente a la temperatura ambiente. Natural, 33°C, 37°C o 39°C. Nunca más el contacto frío de la cerámica al amanecer.", image: "/manus-storage/temperatura_edd4ded8.png", tag: "CLIMADAPT" },
+  { number: "04", eyebrow: "Higiene completa con agua", title: "Lavado posterior, femenino y móvil", subtitle: "temperatura y presión ajustables", body: "Agua caliente instantánea. Boquilla autolimpiable en acero inoxidable. Tres modos de lavado personalizables. La higiene que el papel nunca puede dar.", image: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-4.webp", tag: "Sistema de lavado triple" },
+  { number: "05", eyebrow: "Secado Súper-Tifón", title: "En menos de 30 segundos", subtitle: "temperatura y velocidad ajustables", body: "Un chorro de aire de alto rendimiento seca completamente en menos de 30 segundos. 5 velocidades, 4 temperaturas. La realidad de un inodoro sin papel.", image: "/manus-storage/secado-30seg_d8115913.webp", tag: "Sin papel" },
+  { number: "06", eyebrow: "Escudo de espuma higiénica", title: "Previene las salpicaduras", subtitle: "y bloquea olores", body: "Antes de cada uso, el inodoro crea una barrera de espuma en el agua. Evita salpicaduras, neutraliza olores y mantiene la cerámica más limpia.", image: "/manus-storage/escudo-espuma_326d5560.jpg", tag: "Escudo de espuma" },
+  { number: "07", eyebrow: "Control total", title: "Mando a distancia", subtitle: "para guardar tus preferencias", body: "Mando en español con memoria para 2 usuarios. Guarda tus ajustes de temperatura, modos de lavado y secado. Todo personalizado, siempre listo.", image: "/manus-storage/mando-distancia_f33b1a24.jpg", tag: "2 perfiles de usuario" },
+  { number: "08", eyebrow: "Lámpara esterilizadora UV", title: "Desinfecta por completo", subtitle: "con UV ultravioleta", body: "La lámpara UV elimina bacterias y gérmenes de forma automática. Desodorización del ambiente incluida. El baño más limpio, siempre.", image: "/manus-storage/lampara-esterilizadora_83bd7c31.jpg", tag: "Gama AURA" },
+];
+
+function ExperienceSection() {
+  const [activeStep, setActiveStep] = useState(0);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    stepRefs.current.forEach((el, idx) => {
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveStep(idx); },
+        { root: null, threshold: 0.5 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  return (
+    <section className="w-full bg-foreground text-background relative overflow-hidden">
+      {/* Header */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-16 pt-20 md:pt-24 pb-12 border-b border-background/10">
+        <p className="font-body text-xs uppercase tracking-[0.35em] text-accent-deep mb-5 flex items-center gap-3">
+          <span className="w-6 h-[1px] bg-accent-deep" /> La Experiencia
+        </p>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <h2 className="font-display text-4xl md:text-7xl uppercase tracking-wide leading-[0.9]">
+            Así funciona<br /><span className="text-accent-deep">cada vez.</span>
+          </h2>
+          <p className="font-body text-sm text-background/60 leading-relaxed max-w-sm md:border-l md:border-background/20 md:pl-6">
+            Desde el momento en que te acercas hasta que sales. Ocho pasos. Cero esfuerzo. Una experiencia que cambia tu rutina para siempre.
+          </p>
+        </div>
+      </div>
+
+      {/* Desktop: sticky image + scrollable steps */}
+      <div className="hidden md:flex max-w-[1400px] mx-auto px-16">
+        {/* Steps list */}
+        <div className="w-1/2 py-16 pr-16">
+          {EXPERIENCE_STEPS.map((step, idx) => (
+            <div
+              key={step.number}
+              ref={(el) => { stepRefs.current[idx] = el; }}
+              className={`py-10 border-b border-background/10 cursor-default transition-all duration-500 ${
+                activeStep === idx ? "opacity-100" : "opacity-30 hover:opacity-60"
+              }`}
+              onClick={() => { setActiveStep(idx); stepRefs.current[idx]?.scrollIntoView({ behavior: "smooth", block: "center" }); }}
+            >
+              <div className="flex items-start gap-6">
+                <span className={`font-display text-5xl leading-none shrink-0 transition-colors duration-500 ${
+                  activeStep === idx ? "text-accent-deep" : "text-background/20"
+                }`}>{step.number}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-body text-[10px] uppercase tracking-[0.35em] text-background/40 mb-2">{step.eyebrow}</p>
+                  <h3 className={`font-display text-2xl xl:text-3xl uppercase tracking-wide leading-tight mb-1 transition-colors duration-500 ${
+                    activeStep === idx ? "text-background" : "text-background/60"
+                  }`}>{step.title}</h3>
+                  <p className="font-body text-sm text-accent-deep mb-3">{step.subtitle}</p>
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={activeStep === idx ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <p className="font-body text-sm text-background/60 leading-relaxed pb-2">{step.body}</p>
+                    <span className="inline-block mt-2 px-3 py-1 border border-accent-deep/40 font-body text-[10px] uppercase tracking-[0.25em] text-accent-deep">{step.tag}</span>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Sticky image */}
+        <div className="w-1/2 sticky top-0 h-screen flex items-center justify-center pl-8">
+          <div className="relative w-full max-w-[480px] aspect-square">
+            {EXPERIENCE_STEPS.map((step, idx) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={activeStep === idx ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                className="absolute inset-0"
+              >
+                <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden">
+                  <img src={step.image} alt={step.title} className="w-full h-full object-contain p-8" />
+                </div>
+                <div className="absolute top-4 left-4 flex items-center gap-2">
+                  <span className="font-display text-xs text-accent-deep">{step.number}</span>
+                  <span className="w-8 h-[1px] bg-accent-deep/40" />
+                  <span className="font-body text-[10px] uppercase tracking-[0.25em] text-background/40">{step.tag}</span>
+                </div>
+              </motion.div>
+            ))}
+            {/* Progress bar */}
+            <div className="absolute -right-8 top-0 h-full w-[2px] bg-background/10">
+              <motion.div
+                className="w-full bg-accent-deep origin-top"
+                animate={{ scaleY: (activeStep + 1) / EXPERIENCE_STEPS.length }}
+                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                style={{ height: "100%" }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile: vertical cards */}
+      <div className="md:hidden max-w-[1400px] mx-auto px-6 py-12">
+        {EXPERIENCE_STEPS.map((step) => (
+          <div key={step.number} className="border-b border-background/10 py-8">
+            <div className="flex items-start gap-4 mb-5">
+              <span className="font-display text-4xl text-accent-deep leading-none shrink-0">{step.number}</span>
+              <div>
+                <p className="font-body text-[10px] uppercase tracking-[0.3em] text-background/40 mb-1">{step.eyebrow}</p>
+                <h3 className="font-display text-xl uppercase tracking-wide leading-tight text-background">{step.title}</h3>
+                <p className="font-body text-xs text-accent-deep mt-1">{step.subtitle}</p>
+              </div>
+            </div>
+            <div className="aspect-video bg-background/5 border border-background/10 overflow-hidden mb-5">
+              <img src={step.image} alt={step.title} className="w-full h-full object-contain p-6" />
+            </div>
+            <p className="font-body text-sm text-background/60 leading-relaxed">{step.body}</p>
+            <span className="inline-block mt-3 px-3 py-1 border border-accent-deep/40 font-body text-[10px] uppercase tracking-[0.25em] text-accent-deep">{step.tag}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-16 py-16 border-t border-background/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <p className="font-display text-2xl md:text-4xl uppercase tracking-wide leading-tight">
+          Ocho pasos. <span className="text-accent-deep">Una nueva rutina.</span>
+        </p>
+        <div className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-background/60">
+          <span className="w-6 h-[1px] bg-background/20" /> Disponible desde 1.490€
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -1090,6 +1221,9 @@ export default function Home() {
                 </div>
                 <div className="absolute bottom-8 right-8 md:right-16 font-display text-lg text-foreground/20">03</div>
               </section>
+
+              {/* ── CAPÍTULO EXPERIENCIA: PASOS DE USO ──────────────────── */}
+              <ExperienceSection />
 
               {/* ── CAPÍTULO 4: COLECCIÓN ───────────────────────────────────── */}
               <section
