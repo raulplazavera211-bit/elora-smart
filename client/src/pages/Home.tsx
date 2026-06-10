@@ -1093,7 +1093,7 @@ export default function Home() {
                 <img src={HERO_IMAGE} alt="Elora Smart" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
 
-                <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pt-16 pb-20">
+                <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pb-20">
                   <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] text-white/80 mb-6 md:mb-8 flex items-center gap-4">
                     <span className="w-8 h-[1px] bg-accent-deep"></span>
                     Elegancia Neo-Corporativa
