@@ -1171,7 +1171,7 @@ export default function Home() {
                     <img
                       src="https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg"
                       alt="Inodoro AURA"
-                      className="absolute inset-0 w-full h-full object-cover object-[center_20%] transition-transform duration-[2.5s] ease-out group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10 pointer-events-none" />
                     <div className="absolute top-6 left-6 right-6 flex items-start gap-3 pointer-events-none">
