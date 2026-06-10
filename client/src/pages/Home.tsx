@@ -1203,9 +1203,9 @@ export default function Home() {
                     className="md:col-span-5 relative overflow-hidden border border-border min-h-[220px] group"
                   >
                     <img
-                      src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-2.webp"
-                      alt="ESENZA en baño"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-105"
+                      src="/manus-storage/eloraerquipo_cbe7849e.webp"
+                      alt="Equipo Elora Smart"
+                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 pointer-events-none" />
                     <div className="absolute top-5 right-5 text-right pointer-events-none">
