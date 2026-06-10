@@ -1205,9 +1205,9 @@ export default function Home() {
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
                       alt="Equipo Elora Smart"
-                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-cover object-[center_30%] transition-transform duration-[2.5s] ease-out group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
                     <div className="absolute top-5 right-5 text-right pointer-events-none">
                       <p className="font-display text-3xl md:text-4xl text-accent leading-none">10</p>
                       <p className="font-display text-xs uppercase tracking-widest text-white">años</p>
