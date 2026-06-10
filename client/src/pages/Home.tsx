@@ -1,1017 +1,1087 @@
-import { useState, useRef, useEffect } from "react";
-import { motion } from "motion/react";
-import {
-  Menu, X, ArrowRight, Droplets, Leaf, Cpu, Sparkles,
-  ShieldCheck, Thermometer, ShoppingBag, MapPin, Wrench, Phone, Mail, Send
-} from "lucide-react";
-import { ProductDetail, type Product } from "@/components/ProductDetail";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { ShoppingCart, X, Plus, Minus, ChevronDown, ArrowRight, Menu, MessageCircle, Star, Check, Zap, Droplets, Wind, Thermometer, Volume2, Shield, Smartphone, Mic } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
+import { ProductDetail, type Product } from "@/components/ProductDetail";
+import { useInView } from "@/hooks/useInView";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
-const HERO_IMAGE = "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-bathroom-hero-GsnaWX4miFhoWvrEinigc7.webp";
+const HERO_BG = "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg";
 
-const PRODUCT_IMAGES: Record<string, string> = {
-  "ESENZA": "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-esenza-product-DBg48yZkDeSPX2uzj7sCVY.webp",
-  "AURA-COMPACT": "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-compact-product-Y8RSgUQPXQz7x6b8tWus2B.webp",
-  "AURA-SUSPENDIDO": "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-suspendido-product-XBaRADesRkQFEaXKjPdD8R.webp",
+// ─── Imágenes reales de elorasmart.com ────────────────────────────────────────
+const IMGS = {
+  esenzaHero: "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
+  esenza1: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZa-12.webp",
+  esenza2: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-9.webp",
+  esenza3: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-10.webp",
+  esenza4: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-7.webp",
+  esenza5: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-8.webp",
+  esenza6: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-2.webp",
+  esenza7: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-11.webp",
+  esenza8: "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-13.webp",
+  auraCompactHero: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-compact-p-800x800.jpg",
+  auraCompact1: "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-1.jpg",
+  auraCompact2: "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-11.jpg",
+  auraCompact3: "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-6.jpg",
+  auraCompact4: "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-10.jpg",
+  auraCompact5: "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-8.jpg",
+  auraCompact6: "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-3.jpg",
+  auraSuspHero: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
+  auraSusp1: "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido1.jpg",
+  auraSusp2: "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-2.jpg",
+  auraSusp3: "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-3.jpg",
+  auraSusp4: "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-111.jpg",
+  auraSusp5: "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-9.jpg",
+  auraSusp6: "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-6.jpg",
+  mando: "https://elorasmart.com/wp-content/uploads/2025/05/mando-a-distancia-1024x825.jpg",
+  voz: "https://elorasmart.com/wp-content/uploads/2025/05/control-por-voz-768x635.jpg",
+  secado: "https://elorasmart.com/wp-content/uploads/2025/12/secado-30seg.webp",
+  usoPie: "https://elorasmart.com/wp-content/uploads/2025/05/uso-de-pie.png",
+  usoSentada: "https://elorasmart.com/wp-content/uploads/2025/05/uso-sentada.png",
 };
-const SECTIONS = ["Visión", "Esencia", "Por Qué", "Colección", "Contacto"];
 
-const COMMON_GALLERY = [
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-esenza-product-DBg48yZkDeSPX2uzj7sCVY.webp",
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-compact-product-Y8RSgUQPXQz7x6b8tWus2B.webp",
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-suspendido-product-XBaRADesRkQFEaXKjPdD8R.webp",
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-bathroom-hero-GsnaWX4miFhoWvrEinigc7.webp",
-];
+interface CartItem { product: Product; qty: number; }
 
-// ─── Datos de productos ────────────────────────────────────────────────────────
+// ─── Datos de productos (reales de elorasmart.com) ────────────────────────────
 const PRODUCTS: Product[] = [
   {
-    id: "ESENZA",
-    name: "Inodoro inteligente ESENZA",
+    id: "esenza",
+    name: "ESENZA",
     tagline: "El esencial inteligente.",
-    description: "El primer paso al confort japonés sin renunciar a la pureza visual.",
-    longDescription:
-      "ESENZA es el modelo de entrada a la familia Elora. Cerámica vitrificada blanca, bidé integrado con agua templada, asiento calefactado y secador por aire en un cuerpo monobloque silencioso. Pensado para quien quiere descubrir lo que es un baño de verdad sin obras complicadas: un enchufe cerca, tu fontanero y empiezas a vivirlo.",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-esenza-product-DBg48yZkDeSPX2uzj7sCVY.webp",
-    gallery: COMMON_GALLERY,
+    description: "El primer paso al confort japonés. Todas las funciones esenciales con un precio más contenido.",
+    longDescription: "ESENZA a suelo es el inodoro inteligente japonés de ELORA SMART, ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación. Mantiene todas las funciones esenciales de la gama ESENZA con instalación sencilla, máxima estabilidad y un diseño de líneas limpias para baños modernos.",
+    img: IMGS.esenzaHero,
+    gallery: [IMGS.esenza1, IMGS.esenza2, IMGS.esenza3, IMGS.esenza4, IMGS.esenza5, IMGS.esenza6, IMGS.esenza7, IMGS.esenza8],
+    price: 1490,
     badges: ["Best seller", "Sin obra"],
     highlights: [
-      { label: "Asiento", value: "Calefactado" },
-      { label: "Limpieza", value: "3 modos" },
-      { label: "Garantía", value: "5 años" },
-    ],
-    pitch: [
-      { title: "Higiene japonesa accesible", body: "Bidé integrado con agua templada filtrada y boquilla autolimpiante antes y después de cada uso. Adiós al papel, hola al cuidado real." },
-      { title: "Confort cotidiano", body: "Asiento calefactado con 5 niveles de temperatura. Nunca más el contacto frío de la cerámica al amanecer." },
-      { title: "Diseño sin obra", body: "Monobloque a suelo de instalación tradicional. Solo necesitas toma de agua, desagüe y un enchufe cerca." },
-      { title: "Ahorro real de agua", body: "Doble descarga 3/4,5 L y modo eco. Hasta un 40% menos que un inodoro convencional español." },
-      { title: "Limpieza sin esfuerzo", body: "Esmalte CleanFlow antical y sin reborde interior: el agua barre toda la superficie en cada descarga." },
-      { title: "Operación silenciosa", body: "Cierre amortiguado de tapa y asiento, descarga rediseñada por debajo de 45 dB. Pensado también para la noche." },
+      { label: "Instalación", value: "A suelo" },
+      { label: "Garantía cerámica", value: "10 años" },
+      { label: "Garantía tech", value: "3 años" },
+      { label: "Ruido", value: "≤59 dB" },
     ],
     features: [
-      "Bidé integrado con boquilla de acero inoxidable",
-      "Agua templada con calentador instantáneo",
-      "5 niveles de temperatura del asiento",
-      "Secador de aire caliente regulable",
-      "Cierre amortiguado de tapa y asiento",
-      "Descarga dual 3/4,5 L Watersense",
-      "Esmalte antical CleanFlow sin reborde",
-      "Boquilla autolimpiante antes y después de cada uso",
-      "Mando inalámbrico de pared incluido",
-      "Modo eco con apagado automático",
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado — sin tocar nada",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea (33°C, 37°C, 39°C)",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Asiento CLIMADAPT calefactado",
+      "Secado Súper-Tifón en menos de 30 segundos",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral táctil de diseño futurista",
+      "Luz nocturna LED",
+      "Diseño rimless — limpieza en segundos",
+      "Tanque integrado de 5 litros",
+      "Funcionamiento silencioso ≤59 dB",
+    ],
+    pitch: [
+      { title: "Automatización total", body: "Sensor detecta tu presencia y levanta la tapa automáticamente. Al terminar, baja y descarga solo." },
+      { title: "Higiene con agua", body: "Lavado posterior, femenino y móvil. Temperatura ajustable en 4 niveles. Boquilla autolimpiable." },
+      { title: "Confort CLIMADAPT", body: "Asiento calefactado que se adapta a la temperatura ambiente. Secado en menos de 30 segundos." },
     ],
     technical: [
-      {
-        group: "Limpieza & bidé",
-        specs: [
-          { label: "Modos de limpieza", value: "Posterior · Femenino · Suave" },
-          { label: "Presión del agua", value: "5 niveles ajustables" },
-          { label: "Temperatura del agua", value: "32 – 40 ºC" },
-          { label: "Boquilla", value: "Acero inoxidable autolimpiante" },
-          { label: "Filtro de agua", value: "Cerámico sustituible" },
-        ],
-      },
-      {
-        group: "Confort",
-        specs: [
-          { label: "Asiento calefactado", value: "5 niveles · 28 – 40 ºC" },
-          { label: "Secador de aire", value: "3 niveles · 35 – 55 ºC" },
-          { label: "Cierre", value: "Soft close tapa y asiento" },
-          { label: "Sensor de presencia", value: "Activación de pre-rociado" },
-        ],
-      },
-      {
-        group: "Descarga & agua",
-        specs: [
-          { label: "Tipo de descarga", value: "Dual 3 / 4,5 L" },
-          { label: "Sistema", value: "Sin reborde, vórtice silencioso" },
-          { label: "Presión recomendada", value: "0,7 – 7,5 bar" },
-          { label: "Consumo medio", value: "≈ 3,2 L/uso" },
-        ],
-      },
-      {
-        group: "Eléctrico",
-        specs: [
-          { label: "Alimentación", value: "220 – 240 V · 50 Hz" },
-          { label: "Potencia máxima", value: "1.200 W" },
-          { label: "Consumo en standby", value: "0,8 W" },
-          { label: "Protección", value: "IPX4" },
-          { label: "Conexión", value: "Toma Schuko a 1 m" },
-        ],
-      },
+      { group: "Dimensiones", specs: [{ label: "Largo", value: "700 mm" }, { label: "Ancho", value: "380 mm" }, { label: "Alto", value: "490 mm" }] },
+      { group: "Agua", specs: [{ label: "Tanque", value: "5 litros" }, { label: "Presión mínima", value: "Sin requisito" }, { label: "Temperatura", value: "33–39°C" }] },
     ],
-    dimensions: [
-      { label: "Largo", value: "680 mm" },
-      { label: "Ancho", value: "390 mm" },
-      { label: "Alto total", value: "775 mm" },
-      { label: "Altura asiento", value: "415 mm" },
-      { label: "Distancia a pared", value: "Min. 30 mm" },
-      { label: "Peso", value: "42 kg" },
-    ],
-    inTheBox: [
-      "Cuerpo monobloque cerámico ESENZA",
-      "Asiento inteligente preinstalado",
-      "Mando inalámbrico de pared con soporte",
-      "Latiguillo flexible de agua 3/8\"",
-      "Junta de salida y kit de fijación al suelo",
-      "Manual en español, gallego e inglés",
-    ],
-    installation: [
-      "Toma de agua fría a 3/8\" y desagüe estándar a suelo de Ø100 mm.",
-      "Enchufe Schuko con toma de tierra a menos de 1 metro.",
-      "Tu fontanero de confianza realiza la conexión en 60–90 minutos.",
-      "Vinculas el mando, eliges tus preferencias y empiezas a usarlo.",
-    ],
-    warranty: {
-      years: 5,
-      details: "5 años de garantía en cerámica y electrónica con SAT propio en Galicia. Reposición de boquilla y filtro a coste cero durante el primer año.",
-    },
+    dimensions: [{ label: "Largo", value: "700 mm" }, { label: "Ancho", value: "380 mm" }, { label: "Alto", value: "490 mm" }],
+    inTheBox: ["Inodoro ESENZA", "Mando a distancia", "Manual en español", "Kit de instalación"],
+    installation: ["Instalación a suelo estándar", "Solo necesitas un enchufe", "Tu fontanero de confianza"],
+    warranty: { years: 3, details: "10 años cerámica · 3 años tecnología (ampliable a 5 con Premium Care +249€)" },
     faqs: [
-      { q: "¿Necesito obra para instalar el ESENZA?", a: "No. Sustituye a tu inodoro actual con las mismas conexiones. Solo necesitas un enchufe cerca; si no lo tienes, un electricista lo coloca en menos de una hora." },
-      { q: "¿Cuánta agua consume?", a: "Descarga dual de 3 y 4,5 litros, con un consumo medio de 3,2 L por uso. Hasta un 40% menos que un inodoro convencional." },
-      { q: "¿Qué pasa si se va la luz?", a: "Mantienes la descarga manual de emergencia. Cuando vuelve la corriente, el inodoro recupera tus ajustes guardados." },
-      { q: "¿Hace ruido por la noche?", a: "El cierre y la descarga están por debajo de 45 dB. Es más silencioso que una conversación en voz baja." },
+      { q: "¿Necesita obras?", a: "No. Solo un enchufe cerca y tu fontanero habitual." },
+      { q: "¿Funciona con baja presión?", a: "Sí. Tiene tanque integrado de 5 litros." },
     ],
-    price: 1490,
   },
   {
-    id: "AURA-COMPACT",
-    name: "Inodoro inteligente AURA Compact",
+    id: "aura-compact",
+    name: "AURA Compact",
     tagline: "Confort completo en formato reducido.",
-    description: "Toda la electrónica AURA en una pieza pensada para baños donde cada centímetro cuenta.",
-    longDescription:
-      "AURA Compact reduce la huella sin reducir la experiencia. Sensor de proximidad, apertura y descarga automáticas, filtro de carbón activo y luz nocturna LED en un cuerpo cerámico esculpido de 65 cm. Ideal para baños de invitados, áticos o reformas donde no sobra espacio pero no se renuncia al confort.",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-compact-product-Y8RSgUQPXQz7x6b8tWus2B.webp",
-    gallery: COMMON_GALLERY,
+    description: "Toda la tecnología AURA en una pieza pensada para baños donde cada centímetro cuenta.",
+    longDescription: "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio.",
+    img: IMGS.auraCompactHero,
+    gallery: [IMGS.auraCompact1, IMGS.auraCompact2, IMGS.auraCompact3, IMGS.auraCompact4, IMGS.auraCompact5, IMGS.auraCompact6],
+    price: 2500,
     badges: ["Compact", "Sensor IR"],
     highlights: [
       { label: "Largo", value: "650 mm" },
-      { label: "Sensor", value: "Apertura auto" },
-      { label: "Garantía", value: "5 años" },
-    ],
-    pitch: [
-      { title: "Hecho para baños pequeños", body: "Solo 650 mm de fondo. Cabe donde otros inodoros inteligentes no llegan, sin sacrificar funciones." },
-      { title: "Sin contacto, más higiene", body: "Apertura, cierre y descarga automáticos por sensor infrarrojo. Llegas, lo usas, te vas: el inodoro hace el resto." },
-      { title: "Aire siempre limpio", body: "Filtro de carbón activo desodorizante con ventilador silencioso integrado en el aro." },
-      { title: "Luz para la noche", body: "LED ambiental RGB con sensor crepuscular. Te orienta sin encender la luz principal del baño." },
-      { title: "Personalización por usuario", body: "App Elora Smart con perfiles individuales: temperatura del agua, presión, secador y modo guardados por persona." },
-      { title: "Tranquilidad de uso", body: "Modo niños y limitador de temperatura. Asiento antibacteriano con plata iónica." },
+      { label: "Garantía", value: "5 años tech" },
+      { label: "UV", value: "Esterilización" },
+      { label: "Voz", value: "Control" },
     ],
     features: [
-      "Apertura y cierre automáticos por sensor IR",
-      "Descarga inteligente sin contacto",
-      "Filtro de carbón activo desodorizante",
-      "Luz nocturna LED RGB regulable",
-      "App Elora Smart con perfiles de usuario",
-      "Asiento con tratamiento antibacteriano",
-      "Modo eco -40% consumo de agua",
-      "Boquilla doble con limpieza automática",
-      "Modo masaje pulsante en bidé",
-      "Mando inalámbrico magnético incluido",
+      "Sensor inteligente ClimAdapt",
+      "Lavado personal con agua tibia",
+      "Secado con aire caliente",
+      "Desodorización automática",
+      "Asiento calefactable",
+      "Escudo de espuma higiénica anti-salpicaduras",
+      "Uso eficiente del agua — descarga dual",
+      "Autolimpieza de boquillas",
+      "Modo nocturno con luz LED",
+      "Funcionamiento silencioso",
+      "Control remoto en español",
+      "Control por voz (inglés)",
+      "Ideal para toda la familia",
+    ],
+    pitch: [
+      { title: "Sensor ClimAdapt", body: "Ajusta automáticamente temperatura del asiento, agua y secador según la estación." },
+      { title: "Escudo de espuma", body: "Barrera de espuma higiénica que evita salpicaduras y bloquea olores." },
+      { title: "Esterilización UV", body: "Lámpara UV desinfecta por completo. Desodorización automática del ambiente." },
     ],
     technical: [
-      {
-        group: "Limpieza & bidé",
-        specs: [
-          { label: "Modos", value: "Posterior · Femenino · Suave · Masaje" },
-          { label: "Presión", value: "6 niveles" },
-          { label: "Temperatura agua", value: "32 – 40 ºC" },
-          { label: "Boquilla", value: "Doble salida acero inox" },
-          { label: "Filtro agua", value: "Sustituible cada 12 meses" },
-        ],
-      },
-      {
-        group: "Sensores & control",
-        specs: [
-          { label: "Sensor presencia", value: "Infrarrojo, alcance 60 cm" },
-          { label: "Apertura/cierre", value: "Automático con tapa motorizada" },
-          { label: "Descarga", value: "Automática al levantarse" },
-          { label: "Conectividad", value: "Wi-Fi 2.4 GHz · App iOS/Android" },
-          { label: "Mando", value: "Inalámbrico magnético de pared" },
-        ],
-      },
-      {
-        group: "Aire & luz",
-        specs: [
-          { label: "Filtro desodorizante", value: "Carbón activo + ventilador" },
-          { label: "Luz nocturna", value: "LED RGB · 8 colores" },
-          { label: "Sensor crepuscular", value: "Sí" },
-        ],
-      },
-      {
-        group: "Eléctrico & agua",
-        specs: [
-          { label: "Alimentación", value: "220 – 240 V · 50 Hz" },
-          { label: "Potencia máxima", value: "1.400 W" },
-          { label: "Consumo standby", value: "0,6 W" },
-          { label: "Descarga", value: "Dual 3 / 4,5 L" },
-          { label: "Presión recomendada", value: "0,7 – 7,5 bar" },
-          { label: "Protección", value: "IPX4" },
-        ],
-      },
+      { group: "Dimensiones", specs: [{ label: "Largo", value: "650 mm" }, { label: "Ancho", value: "370 mm" }, { label: "Alto", value: "480 mm" }] },
+      { group: "Funciones", specs: [{ label: "UV", value: "Sí" }, { label: "Desodorización", value: "Sí" }, { label: "Control voz", value: "Sí (inglés)" }] },
     ],
-    dimensions: [
-      { label: "Largo", value: "650 mm" },
-      { label: "Ancho", value: "385 mm" },
-      { label: "Alto total", value: "750 mm" },
-      { label: "Altura asiento", value: "410 mm" },
-      { label: "Distancia a pared", value: "Min. 25 mm" },
-      { label: "Peso", value: "44 kg" },
-    ],
-    inTheBox: [
-      "Cuerpo monobloque cerámico AURA Compact",
-      "Asiento inteligente con sensor IR preinstalado",
-      "Mando magnético de pared con soporte",
-      "Latiguillo flexible reforzado 3/8\"",
-      "Filtro de carbón activo de repuesto",
-      "Kit de fijación oculta y junta de salida",
-      "Guía rápida y manual completo",
-    ],
-    installation: [
-      "Conexión a toma de agua y desagüe estándar a suelo.",
-      "Enchufe Schuko a menos de 1,2 m con toma de tierra.",
-      "Instalación por fontanero en 60–90 minutos.",
-      "Vinculación con la app Elora Smart por Wi-Fi 2.4 GHz.",
-      "Configuración de perfiles personalizados desde la app.",
-    ],
-    warranty: {
-      years: 5,
-      details: "5 años en cerámica y electrónica. Sustitución de filtros y boquillas durante el primer año sin coste, con SAT propio en Galicia y atención en gallego o castellano.",
-    },
+    dimensions: [{ label: "Largo", value: "650 mm" }, { label: "Ancho", value: "370 mm" }, { label: "Alto", value: "480 mm" }],
+    inTheBox: ["Inodoro AURA Compact", "Mando a distancia", "Manual en español", "Kit de instalación"],
+    installation: ["Instalación a suelo estándar", "Solo necesitas un enchufe", "Tu fontanero de confianza"],
+    warranty: { years: 5, details: "5 años tecnología incluidos · 10 años cerámica" },
     faqs: [
-      { q: "¿Cabe en un baño pequeño?", a: "Sí. Con 650 mm de fondo es uno de los inodoros inteligentes más compactos del mercado. Caben en huecos donde otros modelos no entran." },
-      { q: "¿Funciona la app fuera de casa?", a: "Sí. Puedes precalentar el asiento o activar el modo eco desde cualquier sitio mientras tu inodoro tenga conexión Wi-Fi." },
-      { q: "¿La descarga automática gasta más agua?", a: "No. Usa la descarga corta de 3 L por defecto y cambia a 4,5 L solo si detecta uso prolongado." },
-      { q: "¿Y si me quiero olvidar del sensor?", a: "Puedes desactivar el modo automático desde la app o el mando y operar todo manualmente." },
+      { q: "¿Qué diferencia hay con ESENZA?", a: "AURA incluye espuma anti-salpicaduras, UV, desodorización, aromaterapia y control por voz." },
+      { q: "¿Cabe en baños pequeños?", a: "Sí, con solo 650 mm de largo es ideal para baños compactos." },
     ],
-    price: 2500,
   },
   {
-    id: "AURA-SUSPENDIDO",
-    name: "Váter japonés AURA Suspendido",
+    id: "aura-suspendido",
+    name: "AURA Suspendido",
     tagline: "La pieza arquitectónica.",
     description: "Un inodoro inteligente flotante que libera el suelo y redefine el baño.",
-    longDescription:
-      "AURA Suspendido es nuestra interpretación arquitectónica del confort: una pieza flotante con cisterna empotrada Geberit Sigma, líneas continuas, pulsador en cristal templado y la electrónica completa de la familia AURA. Diseñado para reformas integrales que buscan ligereza visual, limpieza absoluta del suelo y una declaración de diseño en el baño.",
-    img: "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/elora-aura-suspendido-product-XBaRADesRkQFEaXKjPdD8R.webp",
-    gallery: COMMON_GALLERY,
+    longDescription: "El váter japonés AURA suspendido ofrece todo el confort del AURA en un diseño flotante, ofreciendo una estética moderna y minimalista. El suelo queda totalmente libre dando una imagen de orden y un efecto más despejado. Puedes ajustar la altura a tu gusto en el momento de la instalación.",
+    img: IMGS.auraSuspHero,
+    gallery: [IMGS.auraSusp1, IMGS.auraSusp2, IMGS.auraSusp3, IMGS.auraSusp4, IMGS.auraSusp5, IMGS.auraSusp6],
+    price: 2600,
     badges: ["Suspendido", "Cisterna empotrada"],
     highlights: [
       { label: "Instalación", value: "Suspendida" },
-      { label: "Cisterna", value: "Geberit Sigma" },
-      { label: "Garantía", value: "7 años" },
-    ],
-    pitch: [
-      { title: "El suelo libre", body: "Al volar sobre el suelo, el inodoro deja la limpieza al alcance de una mopa. Sin recovecos, sin cal, sin esfuerzo." },
-      { title: "Cisterna empotrada premium", body: "Bastidor metálico Geberit Duofix con cisterna Sigma de 3/6 L. Acceso de mantenimiento por el pulsador, sin romper pared." },
-      { title: "Pulsador en cristal templado", body: "Doble pulsador en vidrio negro o blanco, encastrado al ras. Diseño plano que dialoga con el alicatado." },
-      { title: "Electrónica AURA completa", body: "Sensor IR, app, perfiles, filtro de carbón activo y luz nocturna. Todo lo de AURA Compact, en formato suspendido." },
-      { title: "Iluminación indirecta LED", body: "Tira LED bajo el aro que dibuja la pieza por la noche y guía sin deslumbrar." },
-      { title: "Hecho para durar", body: "Estructura para 400 kg de carga estática y cerámica de doble cocción de 12 mm de espesor." },
+      { label: "Altura", value: "Regulable" },
+      { label: "Garantía", value: "5 años tech" },
+      { label: "Diseño", value: "Flotante" },
     ],
     features: [
-      "Bastidor Geberit Duofix incluido",
-      "Cisterna Sigma 3/6 L con doble pulsador",
-      "Pulsador en cristal templado (negro o blanco)",
-      "Sensor IR de apertura y descarga",
-      "Bidé con presión y temperatura ajustables",
-      "Filtro de carbón activo desodorizante",
-      "Iluminación LED indirecta bajo aro",
-      "App Elora Smart con perfiles",
-      "Asiento con cierre amortiguado",
-      "Tratamiento antibacteriano de plata iónica",
+      "Sensor inteligente ClimAdapt",
+      "Lavado personal con agua tibia",
+      "Secado con aire caliente",
+      "Desodorización automática",
+      "Asiento calefactable",
+      "Escudo de espuma higiénica anti-salpicaduras",
+      "Uso eficiente del agua — descarga dual",
+      "Autolimpieza de boquillas",
+      "Modo nocturno con luz LED",
+      "Funcionamiento silencioso",
+      "Control remoto en español",
+      "Control por voz (inglés)",
+      "Altura regulable en instalación",
+      "Diseño flotante — suelo completamente libre",
+    ],
+    pitch: [
+      { title: "Diseño flotante", body: "El suelo queda completamente libre. Imagen de orden, limpieza y amplitud visual." },
+      { title: "Altura regulable", body: "Ajusta la altura a tu gusto en el momento de la instalación." },
+      { title: "Tecnología AURA completa", body: "Toda la electrónica AURA: espuma, UV, desodorización, control por voz y mando." },
     ],
     technical: [
-      {
-        group: "Estructura & instalación",
-        specs: [
-          { label: "Bastidor", value: "Geberit Duofix 1.120 mm" },
-          { label: "Cisterna", value: "Geberit Sigma 3/6 L" },
-          { label: "Pulsador", value: "Cristal templado, encastrado" },
-          { label: "Carga máxima", value: "400 kg estáticos" },
-          { label: "Distancia bastidor-pared", value: "Mínimo 80 mm" },
-        ],
-      },
-      {
-        group: "Limpieza & bidé",
-        specs: [
-          { label: "Modos", value: "Posterior · Femenino · Suave · Masaje" },
-          { label: "Presión", value: "6 niveles" },
-          { label: "Temperatura agua", value: "32 – 40 ºC" },
-          { label: "Boquilla", value: "Doble salida acero inox autolimpiante" },
-        ],
-      },
-      {
-        group: "Sensores & control",
-        specs: [
-          { label: "Sensor presencia", value: "Infrarrojo, alcance 60 cm" },
-          { label: "Apertura/cierre", value: "Automático con tapa motorizada" },
-          { label: "Descarga", value: "Automática al levantarse" },
-          { label: "Conectividad", value: "Wi-Fi 2.4 GHz · App iOS/Android" },
-        ],
-      },
-      {
-        group: "Eléctrico",
-        specs: [
-          { label: "Alimentación", value: "220 – 240 V · 50 Hz" },
-          { label: "Potencia máxima", value: "1.400 W" },
-          { label: "Consumo standby", value: "0,6 W" },
-          { label: "Protección", value: "IPX4" },
-        ],
-      },
+      { group: "Instalación", specs: [{ label: "Tipo", value: "Suspendido" }, { label: "Altura", value: "Regulable" }, { label: "Cisterna", value: "Empotrada" }] },
+      { group: "Funciones", specs: [{ label: "UV", value: "Sí" }, { label: "Desodorización", value: "Sí" }, { label: "Control voz", value: "Sí (inglés)" }] },
     ],
-    dimensions: [
-      { label: "Largo", value: "540 mm" },
-      { label: "Ancho", value: "370 mm" },
-      { label: "Altura asiento", value: "400 – 430 mm (ajustable)" },
-      { label: "Altura bastidor", value: "1.120 mm" },
-      { label: "Distancia a pared", value: "Min. 80 mm" },
-      { label: "Peso (taza)", value: "38 kg" },
-    ],
-    inTheBox: [
-      "Taza cerámica AURA Suspendido",
-      "Bastidor Geberit Duofix con cisterna Sigma",
-      "Pulsador de cristal templado (negro o blanco)",
-      "Asiento inteligente con sensor IR preinstalado",
-      "Mando magnético de pared con soporte",
-      "Kit de fijación y tornillería de acero inox",
-      "Manual completo de instalación y uso",
-    ],
-    installation: [
-      "Instalación del bastidor Geberit Duofix en tabique o pared.",
-      "Alicatado y acabado de la pared (por tu instalador).",
-      "Colocación de la taza y conexión de la electrónica.",
-      "Enchufe Schuko oculto en el tabique a menos de 1,2 m.",
-      "Vinculación con la app Elora Smart y configuración de perfiles.",
-    ],
-    warranty: {
-      years: 7,
-      details: "7 años de garantía en cerámica, electrónica y bastidor Geberit. SAT propio en Galicia con atención en gallego o castellano. Recogida y reposición incluidas.",
-    },
+    dimensions: [{ label: "Largo", value: "580 mm" }, { label: "Ancho", value: "370 mm" }, { label: "Proyección", value: "Regulable" }],
+    inTheBox: ["Inodoro AURA Suspendido", "Mando a distancia", "Manual en español", "Kit de instalación suspendida"],
+    installation: ["Instalación suspendida", "Requiere cisterna empotrada", "Altura regulable en instalación"],
+    warranty: { years: 5, details: "5 años tecnología incluidos · 10 años cerámica" },
     faqs: [
-      { q: "¿Necesito obra para instalar el AURA Suspendido?", a: "Sí. Al ser un inodoro suspendido, requiere la instalación del bastidor Geberit en un tabique y acceso al espacio interior para la cisterna. Es habitual en reformas integrales de baño." },
-      { q: "¿Puedo elegir la altura del asiento?", a: "Sí. El bastidor Geberit Duofix permite ajustar la altura de la taza entre 400 y 430 mm antes del alicatado final." },
-      { q: "¿El pulsador de cristal viene en dos colores?", a: "Sí. Puedes elegir entre pulsador en cristal negro o blanco al realizar el pedido. Ambos son encastrados y al ras con el alicatado." },
-      { q: "¿Qué garantía tiene el bastidor Geberit?", a: "El bastidor Geberit Duofix tiene garantía de fabricante de 10 años. Nosotros cubrimos la electrónica y la cerámica durante 7 años adicionales." },
+      { q: "¿Necesita cisterna empotrada?", a: "Sí, se instala con cisterna empotrada en pared." },
+      { q: "¿Puedo ajustar la altura?", a: "Sí, la altura se regula en el momento de la instalación." },
     ],
-    price: 2600,
   },
 ];
 
-// ─── Tipos ─────────────────────────────────────────────────────────────────────
-type CartItem = { id: string; name: string };
+const SECTIONS = ["Visión", "Esencia", "Por Qué", "Colección", "Contacto"];
 
-// ─── Componente principal ──────────────────────────────────────────────────────
-export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
-  const [contactSent, setContactSent] = useState(false);
+// ─── Componente AnimatedSection ───────────────────────────────────────────────
+function AnimatedSection({
+  children,
+  className = "",
+  animation = "fade-up",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  animation?: "fade-up" | "slide-left" | "slide-right" | "scale-in" | "fade-in";
+  delay?: number;
+}) {
+  const [ref, inView] = useInView<HTMLDivElement>();
+  const animClass = {
+    "fade-up": "animate-fade-up",
+    "slide-left": "animate-slide-left",
+    "slide-right": "animate-slide-right",
+    "scale-in": "animate-scale-in",
+    "fade-in": "animate-fade-in",
+  }[animation];
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  return (
+    <div
+      ref={ref}
+      className={`${className} ${inView ? `${animClass}` : "opacity-0"}`}
+      style={inView ? { animationDelay: `${delay}ms` } : {}}
+    >
+      {children}
+    </div>
+  );
+}
 
-  const addToCart = (item: CartItem) => setCart((prev) => [...prev, item]);
-  const removeFromCart = (idx: number) => setCart((prev) => prev.filter((_, i) => i !== idx));
+// ─── Componente FeatureCard ───────────────────────────────────────────────────
+function FeatureCard({ icon: Icon, title, desc, delay }: { icon: React.ElementType; title: string; desc: string; delay: number }) {
+  const [ref, inView] = useInView<HTMLDivElement>();
+  return (
+    <div
+      ref={ref}
+      className={`group p-6 border border-border bg-background hover:border-accent transition-all duration-500 ${inView ? "animate-fade-up" : "opacity-0"}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="w-10 h-10 flex items-center justify-center border border-border mb-5 group-hover:border-accent group-hover:bg-accent/5 transition-all duration-300">
+        <Icon className="w-5 h-5 text-accent" strokeWidth={1.5} />
+      </div>
+      <h3 className="font-display text-base uppercase tracking-wide mb-2">{title}</h3>
+      <p className="font-body text-sm text-foreground/60 leading-relaxed">{desc}</p>
+    </div>
+  );
+}
 
-  const scrollToSection = (idx: number) => {
-    sectionRefs.current[idx]?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setIsMenuOpen(false);
-  };
+// ─── Componente ProductCard ───────────────────────────────────────────────────
+function ProductCard({ product, onView, onAddToCart, delay }: {
+  product: Product;
+  onView: () => void;
+  onAddToCart: (p: Product) => void;
+  delay: number;
+}) {
+  const [ref, inView] = useInView<HTMLDivElement>();
+  const [hovered, setHovered] = useState(false);
 
-  const openProduct = (product: Product) => {
-    setSelectedProduct(product);
-    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  return (
+    <div
+      ref={ref}
+      className={`group flex flex-col bg-background border border-border transition-all duration-700 ${inView ? "animate-fade-up" : "opacity-0"} ${hovered ? "shadow-xl -translate-y-1" : ""}`}
+      style={{ animationDelay: `${delay}ms`, transition: "box-shadow 0.4s ease, transform 0.4s ease" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Image */}
+      <div className="relative overflow-hidden bg-muted h-[300px] md:h-[380px]">
+        <img
+          src={product.img}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+        />
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-1.5">
+          {product.badges.map((b) => (
+            <span key={b} className="font-body text-[9px] uppercase tracking-[0.2em] px-2.5 py-1 bg-foreground text-background">
+              {b}
+            </span>
+          ))}
+        </div>
+        {/* Hover overlay */}
+        <div className={`absolute inset-0 bg-foreground/5 flex items-center justify-center transition-opacity duration-300 ${hovered ? "opacity-100" : "opacity-0"}`}>
+          <button
+            onClick={onView}
+            className="font-body text-[11px] uppercase tracking-[0.25em] px-6 py-3 bg-background text-foreground border border-border hover:bg-foreground hover:text-background transition-all duration-300"
+          >
+            Ver detalles
+          </button>
+        </div>
+      </div>
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+      {/* Info */}
+      <div className="flex flex-col flex-1 p-6">
+        <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40 mb-1">{product.tagline}</p>
+        <h3 className="font-display text-2xl uppercase tracking-wide mb-3">{product.name}</h3>
+        <p className="font-body text-sm text-foreground/60 leading-relaxed mb-5 flex-1">{product.description}</p>
+
+        {/* Highlights */}
+        <div className="grid grid-cols-2 gap-2 mb-6">
+          {product.highlights.slice(0, 4).map((h) => (
+            <div key={h.label} className="border border-border p-2.5">
+              <p className="font-body text-[9px] uppercase tracking-[0.15em] text-foreground/40">{h.label}</p>
+              <p className="font-display text-sm uppercase tracking-wide mt-0.5">{h.value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Price + CTA */}
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="font-body text-[10px] uppercase tracking-[0.2em] text-foreground/40">Desde</p>
+            <p className="font-display text-3xl tracking-tight">
+              {product.price.toLocaleString("es-ES")} <span className="text-lg">€</span>
+            </p>
+          </div>
+          <button
+            onClick={() => onAddToCart(product)}
+            className="group/btn flex items-center gap-2 font-body text-[11px] uppercase tracking-[0.25em] px-5 py-3 bg-foreground text-background hover:bg-accent hover:text-foreground transition-all duration-300"
+          >
+            <ShoppingCart className="w-3.5 h-3.5" />
+            Añadir
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Componente CartPanel ─────────────────────────────────────────────────────
+function CartPanel({ items, onClose, onUpdate }: {
+  items: CartItem[];
+  onClose: () => void;
+  onUpdate: (id: string, delta: number) => void;
+}) {
+  const total = items.reduce((s, i) => s + i.product.price * i.qty, 0);
+  const whatsappMsg = encodeURIComponent(
+    `Hola, me gustaría solicitar presupuesto para:\n${items.map((i) => `• ${i.product.name} x${i.qty} — ${(i.product.price * i.qty).toLocaleString("es-ES")}€`).join("\n")}\nTotal: ${total.toLocaleString("es-ES")}€`
+  );
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-foreground/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md bg-background border-l border-border flex flex-col h-full animate-slide-right">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border">
+          <div>
+            <h2 className="font-display text-xl uppercase tracking-wide">Carrito</h2>
+            <p className="font-body text-xs text-foreground/40 mt-0.5">{items.length} producto{items.length !== 1 ? "s" : ""}</p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-muted transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+          {items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
+              <ShoppingCart className="w-12 h-12 text-foreground/20" strokeWidth={1} />
+              <p className="font-body text-sm text-foreground/40">Tu carrito está vacío</p>
+            </div>
+          ) : (
+            items.map((item) => (
+              <div key={item.product.id} className="flex gap-4 py-4 border-b border-border last:border-0">
+                <img src={item.product.img} alt={item.product.name} className="w-20 h-20 object-cover bg-muted border border-border flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-display text-base uppercase tracking-wide truncate">{item.product.name}</p>
+                  <p className="font-body text-xs text-foreground/50 mt-0.5">{item.product.tagline}</p>
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="flex items-center border border-border">
+                      <button onClick={() => onUpdate(item.product.id, -1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors">
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="w-8 text-center font-body text-sm">{item.qty}</span>
+                      <button onClick={() => onUpdate(item.product.id, 1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors">
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <p className="font-display text-lg">{(item.product.price * item.qty).toLocaleString("es-ES")} €</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {items.length > 0 && (
+          <div className="px-6 py-5 border-t border-border space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="font-body text-sm text-foreground/60">Total estimado</span>
+              <span className="font-display text-2xl">{total.toLocaleString("es-ES")} €</span>
+            </div>
+            <a
+              href={`https://api.whatsapp.com/send?phone=34614451901&text=${whatsappMsg}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-4 bg-foreground text-background font-body text-xs uppercase tracking-[0.25em] hover:bg-accent hover:text-foreground transition-all duration-300"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Solicitar presupuesto
+            </a>
+            <p className="font-body text-[10px] text-foreground/30 text-center">
+              Envío gratuito a España Peninsular · Sin compromiso
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Componente ContactForm ───────────────────────────────────────────────────
+function ContactForm() {
+  const [ref, inView] = useInView<HTMLDivElement>();
+  const [form, setForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setContactSent(true);
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = Number((entry.target as HTMLElement).dataset.index);
-            if (!isNaN(idx)) setActiveIndex(idx);
-          }
-        });
-      },
-      { root: scrollContainerRef.current, threshold: [0.25, 0.5, 0.75] }
+    const msg = encodeURIComponent(
+      `Hola, me llamo ${form.nombre}.\nTeléfono: ${form.telefono}\nEmail: ${form.email}\n\n${form.mensaje}`
     );
-    sectionRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
-  }, [selectedProduct]);
-
-  const setSectionRef = (index: number) => (el: HTMLElement | null) => {
-    sectionRefs.current[index] = el;
+    window.open(`https://api.whatsapp.com/send?phone=34614451901&text=${msg}`, "_blank");
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
   };
 
   return (
-    <>
-      {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
-      <div
-        className={`flex flex-col md:flex-row h-[100dvh] w-full bg-background text-foreground font-body overflow-hidden selection:bg-foreground selection:text-background transition-opacity duration-700 ease-in-out ${isLoading ? "opacity-0" : "opacity-100"}`}
-      >
-        {/* ── MOBILE TOP NAVBAR ─────────────────────────────────────────────── */}
-        <div className="md:hidden fixed top-0 left-0 w-full h-20 bg-background/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-6">
-          <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }}>
-            <img src={LOGO_URL} alt="Elora Smart" className="h-7 w-auto select-none" />
-          </button>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center outline-none"
-              aria-label="Carrito"
-            >
-              <ShoppingBag className="w-4 h-4 text-foreground" />
-              {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-accent-deep text-background font-body text-[10px] flex items-center justify-center">
-                  {cart.length}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center transition-transform duration-300 outline-none"
-              aria-label="Menú"
-            >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+    <div ref={ref} className={`${inView ? "animate-fade-up" : "opacity-0"}`}>
+      {sent ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
+          <div className="w-12 h-12 border border-accent flex items-center justify-center">
+            <Check className="w-6 h-6 text-accent" />
           </div>
+          <p className="font-display text-xl uppercase tracking-wide">¡Mensaje enviado!</p>
+          <p className="font-body text-sm text-foreground/60">Nos pondremos en contacto contigo muy pronto.</p>
         </div>
-
-        {/* ── DESKTOP LEFT SIDEBAR ──────────────────────────────────────────── */}
-        <aside className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start z-50 shrink-0 relative py-12">
-          <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }} className="px-10 text-left outline-none">
-            <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
-            <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
-          </button>
-
-          <nav className="flex flex-col gap-5 w-full px-10">
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
-            {SECTIONS.map((item, idx) => {
-              const isActive = !selectedProduct && activeIndex === idx;
-              return (
-                <button
-                  key={`desktop-${item}`}
-                  onClick={() => scrollToSection(idx)}
-                  className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
-                >
-                  <span className={`h-[1px] transition-all duration-500 ${isActive ? "w-8 bg-accent-deep" : "w-3 bg-foreground/20"}`} />
-                  <span className={`font-display text-xl lg:text-2xl uppercase tracking-wide transition-colors duration-500 ${isActive ? "text-foreground" : "text-foreground/30 group-hover:text-foreground/60"}`}>
-                    {item}
-                  </span>
-                  <span className={`ml-auto font-body text-[10px] transition-colors duration-500 ${isActive ? "text-accent-deep" : "text-foreground/20"}`}>
-                    0{idx + 1}
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
-
-          <div className="px-10 w-full flex flex-col gap-5">
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="group flex items-center justify-between w-full border border-border px-4 py-3 hover:border-accent-deep transition-colors outline-none"
-            >
-              <span className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.25em] text-foreground">
-                <ShoppingBag className="w-4 h-4" /> Comprar
-              </span>
-              <span className="font-display text-sm text-accent-deep">{cart.length}</span>
-            </button>
-            <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-accent-deep" />
-              Est. Galicia · 2024
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-body text-[10px] uppercase tracking-[0.2em] text-foreground/50">Nombre *</label>
+              <input
+                type="text"
+                required
+                value={form.nombre}
+                onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+                className="bg-transparent border-b border-border pb-2 font-body text-sm text-foreground placeholder:text-foreground/30 outline-none focus:border-foreground transition-colors"
+                placeholder="Tu nombre"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-body text-[10px] uppercase tracking-[0.2em] text-foreground/50">Teléfono</label>
+              <input
+                type="tel"
+                value={form.telefono}
+                onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+                className="bg-transparent border-b border-border pb-2 font-body text-sm text-foreground placeholder:text-foreground/30 outline-none focus:border-foreground transition-colors"
+                placeholder="+34 600 000 000"
+              />
             </div>
           </div>
-        </aside>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-body text-[10px] uppercase tracking-[0.2em] text-foreground/50">Email *</label>
+            <input
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className="bg-transparent border-b border-border pb-2 font-body text-sm text-foreground placeholder:text-foreground/30 outline-none focus:border-foreground transition-colors"
+              placeholder="tu@email.com"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-body text-[10px] uppercase tracking-[0.2em] text-foreground/50">Mensaje</label>
+            <textarea
+              rows={4}
+              value={form.mensaje}
+              onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
+              className="bg-transparent border-b border-border pb-2 font-body text-sm text-foreground placeholder:text-foreground/30 outline-none focus:border-foreground transition-colors resize-none"
+              placeholder="¿En qué podemos ayudarte?"
+            />
+          </div>
+          <button
+            type="submit"
+            className="group flex items-center gap-3 font-body text-[11px] uppercase tracking-[0.3em] px-8 py-4 bg-foreground text-background hover:bg-accent hover:text-foreground transition-all duration-300 mt-2"
+          >
+            Enviar mensaje
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
 
-        {/* ── MOBILE FULLSCREEN MENU ────────────────────────────────────────── */}
-        <div className={`fixed inset-0 bg-background z-40 transform transition-transform duration-500 ease-out flex flex-col justify-center px-8 md:hidden ${isMenuOpen ? "translate-y-0" : "translate-y-full"}`}>
-          <nav className="flex flex-col gap-7 pb-16">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">Índice</p>
-            {SECTIONS.map((item, idx) => {
-              const isActive = !selectedProduct && activeIndex === idx;
-              return (
-                <button
-                  key={`mobile-${item}`}
-                  onClick={() => scrollToSection(idx)}
-                  className={`text-left font-display text-4xl uppercase tracking-wide transition-all duration-500 outline-none flex items-center gap-4 ${isActive ? "text-foreground" : "text-foreground/30"}`}
-                >
-                  <span className={`text-sm font-body ${isActive ? "text-accent-deep" : "text-foreground/30"}`}>0{idx + 1}</span>
-                  {item}
-                </button>
-              );
-            })}
-          </nav>
+// ─── Main Home Component ──────────────────────────────────────────────────────
+export default function Home() {
+  const [loaded, setLoaded] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [heroParallax, setHeroParallax] = useState(0);
+  const mainRef = useRef<HTMLElement>(null);
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+
+  // Parallax on hero
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      setHeroParallax(el.scrollTop * 0.35);
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [loaded]);
+
+  // Active section detection
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      const scrollY = el.scrollTop;
+      let current = 0;
+      sectionRefs.current.forEach((sec, i) => {
+        if (sec && sec.offsetTop - 120 <= scrollY) current = i;
+      });
+      setActiveSection(current);
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [loaded]);
+
+  const scrollToSection = useCallback((i: number) => {
+    const el = sectionRefs.current[i];
+    if (el && mainRef.current) {
+      mainRef.current.scrollTo({ top: el.offsetTop, behavior: "smooth" });
+    }
+    setMenuOpen(false);
+  }, []);
+
+  const addToCart = (product: Product) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.product.id === product.id);
+      if (existing) return prev.map((i) => i.product.id === product.id ? { ...i, qty: i.qty + 1 } : i);
+      return [...prev, { product, qty: 1 }];
+    });
+    setCartOpen(true);
+  };
+
+  const updateCart = (id: string, delta: number) => {
+    setCart((prev) =>
+      prev.flatMap((i) => {
+        if (i.product.id !== id) return [i];
+        const newQty = i.qty + delta;
+        return newQty <= 0 ? [] : [{ ...i, qty: newQty }];
+      })
+    );
+  };
+
+  const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+
+  if (!loaded) return <Loader onComplete={() => setLoaded(true)} />;
+
+  // ─── Product Detail View ──────────────────────────────────────────────────
+  if (selectedProduct) {
+    return (
+      <ProductDetail
+        product={selectedProduct}
+        onBack={() => setSelectedProduct(null)}
+        onAdd={(p) => addToCart(p)}
+      />
+    );
+  }
+
+  return (
+    <>
+      {/* ─── Sidebar Navigation (desktop) ─────────────────────────────────── */}
+      <nav className="fixed left-0 top-0 bottom-0 z-40 hidden lg:flex flex-col items-center justify-between py-8 px-4 w-16 border-r border-border bg-background/95 backdrop-blur-sm">
+        <img src={LOGO_URL} alt="Elora" className="w-8 h-8 object-contain" />
+        <div className="flex flex-col items-center gap-6">
+          {SECTIONS.map((s, i) => (
+            <button
+              key={s}
+              onClick={() => scrollToSection(i)}
+              title={s}
+              className={`writing-vertical-rl font-body text-[9px] uppercase tracking-[0.25em] transition-all duration-300 ${
+                activeSection === i ? "text-accent" : "text-foreground/30 hover:text-foreground/70"
+              }`}
+            >
+              {s}
+            </button>
+          ))}
         </div>
+        <div className="flex flex-col items-center gap-3">
+          <button
+            onClick={() => setCartOpen(true)}
+            className="relative p-2 hover:text-accent transition-colors"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-accent text-foreground text-[9px] font-body flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </nav>
 
-        {/* ── CART PANEL ────────────────────────────────────────────────────── */}
-        {isCartOpen && (
-          <div className="fixed inset-0 z-[60] flex" onClick={() => setIsCartOpen(false)}>
-            <div className="flex-1 bg-foreground/40 backdrop-blur-sm" />
-            <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md h-full bg-background border-l border-border flex flex-col">
-              <div className="flex items-center justify-between px-8 py-6 border-b border-border">
-                <div className="flex items-center gap-3">
-                  <ShoppingBag className="w-5 h-5 text-foreground" />
-                  <p className="font-display text-lg uppercase tracking-widest">Carrito · {cart.length}</p>
-                </div>
-                <button onClick={() => setIsCartOpen(false)} aria-label="Cerrar carrito" className="outline-none">
-                  <X className="w-5 h-5 text-foreground" />
+      {/* ─── Top Nav (mobile) ──────────────────────────────────────────────── */}
+      <header className="fixed top-0 left-0 right-0 z-40 lg:hidden flex items-center justify-between px-5 py-4 bg-background/95 backdrop-blur-sm border-b border-border">
+        <img src={LOGO_URL} alt="Elora Smart" className="h-7 w-auto" />
+        <div className="flex items-center gap-4">
+          <button onClick={() => setCartOpen(true)} className="relative p-1.5">
+            <ShoppingCart className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-accent text-foreground text-[9px] font-body flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </button>
+          <button onClick={() => setMenuOpen(true)} className="p-1.5">
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
+      </header>
+
+      {/* ─── Mobile Menu ───────────────────────────────────────────────────── */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-background flex flex-col items-center justify-center gap-8">
+            <button onClick={() => setMenuOpen(false)} className="absolute top-5 right-5 p-2">
+              <X className="w-6 h-6" />
+            </button>
+            <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto mb-4 opacity-60" />
+            {SECTIONS.map((s, i) => (
+              <button
+                key={s}
+                onClick={() => scrollToSection(i)}
+                className={`font-display text-4xl uppercase tracking-wide transition-colors duration-300 ${
+                  activeSection === i ? "text-accent" : "text-foreground/60 hover:text-foreground"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ─── Main Scroll Container ─────────────────────────────────────────── */}
+      <main ref={mainRef} className="fixed inset-0 lg:left-16 overflow-y-auto overflow-x-hidden hide-scrollbar">
+
+        {/* ══════════════════════════════════════════════════════════════════
+            SECCIÓN 1 — VISIÓN / HERO
+        ══════════════════════════════════════════════════════════════════ */}
+        <section
+          ref={(el) => { sectionRefs.current[0] = el; }}
+          className="relative min-h-screen flex flex-col"
+        >
+          {/* Hero image with parallax */}
+          <div className="absolute inset-0 overflow-hidden">
+            <img
+              src={HERO_BG}
+              alt="Elora Smart"
+              className="w-full h-full object-cover object-center"
+              style={{ transform: `translateY(${heroParallax}px) scale(1.1)` }}
+            />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-background/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          </div>
+
+          {/* Hero content */}
+          <div className="relative z-10 flex flex-col justify-center min-h-screen px-8 md:px-16 lg:px-20 pt-20 lg:pt-0">
+            <div className="max-w-3xl">
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3 mb-8 animate-fade-in">
+                <div className="w-8 h-px bg-accent" />
+                <span className="font-body text-[10px] uppercase tracking-[0.4em] text-accent">Exclusivo Elora®</span>
+              </div>
+
+              {/* Main headline */}
+              <h1
+                className="font-display text-[clamp(3rem,8vw,7rem)] uppercase leading-[0.9] tracking-tight mb-8"
+                style={{ clipPath: "inset(0 0 0 0)" }}
+              >
+                <span className="block animate-slide-left delay-100">Mejora</span>
+                <span className="block animate-slide-left delay-200">tu calidad</span>
+                <span className="block animate-slide-left delay-300 text-accent">de vida.</span>
+              </h1>
+
+              {/* Subheadline */}
+              <p className="font-body text-base md:text-lg text-foreground/70 leading-relaxed max-w-xl mb-10 animate-fade-up delay-500">
+                Hay un momento del día que es solo tuyo. Ya es hora de disfrutarlo. Inodoros inteligentes japoneses desde <strong className="text-foreground">1.490 €</strong>.
+              </p>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4 animate-fade-up delay-600">
+                <button
+                  onClick={() => scrollToSection(3)}
+                  className="group flex items-center gap-3 font-body text-[11px] uppercase tracking-[0.3em] px-8 py-4 bg-foreground text-background hover:bg-accent hover:text-foreground transition-all duration-300"
+                >
+                  Ver colección
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+                <button
+                  onClick={() => scrollToSection(4)}
+                  className="font-body text-[11px] uppercase tracking-[0.3em] px-8 py-4 border border-foreground/40 hover:border-foreground text-foreground/70 hover:text-foreground transition-all duration-300"
+                >
+                  Contactar
                 </button>
               </div>
+            </div>
+          </div>
 
-              <div className="flex-1 overflow-y-auto px-8 py-6">
-                {cart.length === 0 ? (
-                  <p className="font-body text-sm text-foreground/60 leading-relaxed">No hay productos en el carrito.</p>
-                ) : (
-                  <ul className="flex flex-col gap-5">
-                    {cart.map((item, idx) => (
-                      <li key={`${item.id}-${idx}`} className="flex items-start justify-between gap-4 border-b border-border pb-5">
-                        <div>
-                          <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mb-1">{item.id}</p>
-                          <p className="font-display text-base uppercase tracking-wide leading-tight">{item.name}</p>
-                          <p className="font-body text-xs text-foreground/60 mt-2">Solicitud de presupuesto</p>
-                        </div>
-                        <button onClick={() => removeFromCart(idx)} className="font-body text-[10px] uppercase tracking-widest text-foreground/50 hover:text-accent-deep transition-colors">
-                          Quitar
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+          {/* Scroll indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-in delay-1000 z-10">
+            <span className="font-body text-[9px] uppercase tracking-[0.3em] text-foreground/30">Scroll</span>
+            <ChevronDown className="w-4 h-4 text-foreground/30 animate-bounce" />
+          </div>
+
+          {/* Ticker / marquee */}
+          <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-background/80 backdrop-blur-sm overflow-hidden py-3 z-10">
+            <div className="flex animate-marquee whitespace-nowrap">
+              {Array(8).fill(null).map((_, i) => (
+                <span key={i} className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/30 mx-8">
+                  Apertura automática · Bidé integrado · Asiento calefactado · Secado en 30s · Control por voz · Garantía 10 años ·
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            SECCIÓN 2 — ESENCIA
+        ══════════════════════════════════════════════════════════════════ */}
+        <section
+          ref={(el) => { sectionRefs.current[1] = el; }}
+          className="relative py-24 md:py-32 px-8 md:px-16 lg:px-20"
+        >
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+            {/* Image side */}
+            <AnimatedSection animation="slide-left" className="relative">
+              <div className="relative overflow-hidden aspect-[3/4] max-h-[700px]">
+                <img
+                  src={IMGS.esenza1}
+                  alt="ESENZA"
+                  className="w-full h-full object-cover"
+                />
+                {/* Floating badge */}
+                <div className="absolute bottom-8 right-8 bg-background border border-border p-5 animate-float">
+                  <p className="font-body text-[9px] uppercase tracking-[0.25em] text-foreground/40">Showroom en</p>
+                  <p className="font-display text-xl uppercase tracking-wide mt-1">Galicia</p>
+                  <div className="w-8 h-px bg-accent mt-2" />
+                </div>
               </div>
+              {/* Decorative line */}
+              <div className="absolute -top-4 -left-4 w-16 h-16 border-l-2 border-t-2 border-accent/40" />
+            </AnimatedSection>
 
-              <div className="px-8 py-6 border-t border-border flex flex-col gap-4">
-                <p className="font-body text-xs text-foreground/60 leading-relaxed">
-                  Te contactaremos para confirmar disponibilidad, instalación y precio personalizado según tu baño.
+            {/* Text side */}
+            <div className="flex flex-col gap-8">
+              <AnimatedSection animation="fade-up">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-px bg-accent" />
+                  <span className="font-body text-[10px] uppercase tracking-[0.4em] text-accent">Nuestra esencia</span>
+                </div>
+                <h2 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] uppercase leading-[0.95] tracking-tight">
+                  El baño que<br />siempre<br /><em className="not-italic text-accent">mereciste.</em>
+                </h2>
+              </AnimatedSection>
+
+              <AnimatedSection animation="fade-up" delay={150}>
+                <p className="font-body text-base text-foreground/65 leading-relaxed">
+                  En Elora Smart creemos que el baño es el único momento del día que es completamente tuyo. Por eso diseñamos inodoros inteligentes que transforman ese momento en una experiencia de bienestar real.
                 </p>
+              </AnimatedSection>
+
+              <AnimatedSection animation="fade-up" delay={250}>
+                <p className="font-body text-base text-foreground/65 leading-relaxed">
+                  Tecnología japonesa, diseño europeo y atención personalizada en español. Feito en Galicia, pensado para toda España.
+                </p>
+              </AnimatedSection>
+
+              {/* Stats */}
+              <AnimatedSection animation="fade-up" delay={350}>
+                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
+                  {[
+                    { n: "10", label: "Años garantía cerámica" },
+                    { n: "5", label: "Años garantía tech" },
+                    { n: "59", label: "dB máx. silencioso" },
+                  ].map((s, i) => (
+                    <div key={i} className="flex flex-col gap-1">
+                      <span className="font-display text-4xl text-accent">{s.n}</span>
+                      <span className="font-body text-[10px] uppercase tracking-[0.15em] text-foreground/50 leading-tight">{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </AnimatedSection>
+
+              <AnimatedSection animation="fade-up" delay={450}>
+                <button
+                  onClick={() => scrollToSection(2)}
+                  className="group inline-flex items-center gap-3 font-body text-[11px] uppercase tracking-[0.3em] text-foreground border-b border-foreground pb-1 hover:text-accent hover:border-accent transition-colors duration-300 w-fit"
+                >
+                  Por qué elegirnos
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            SECCIÓN 3 — POR QUÉ
+        ══════════════════════════════════════════════════════════════════ */}
+        <section
+          ref={(el) => { sectionRefs.current[2] = el; }}
+          className="relative py-24 md:py-32 bg-foreground text-background overflow-hidden"
+        >
+          {/* Background texture */}
+          <div className="absolute inset-0 opacity-5"
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}
+          />
+
+          <div className="relative px-8 md:px-16 lg:px-20 max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="mb-16 md:mb-20">
+              <AnimatedSection animation="fade-up">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-px bg-accent" />
+                  <span className="font-body text-[10px] uppercase tracking-[0.4em] text-accent">Por qué Elora</span>
+                </div>
+                <h2 className="font-display text-[clamp(2.5rem,6vw,5rem)] uppercase leading-[0.9] tracking-tight text-background">
+                  Tecnología que<br />cambia tu día a día.
+                </h2>
+              </AnimatedSection>
+            </div>
+
+            {/* Feature grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-background/10">
+              {[
+                { icon: Zap, title: "Apertura automática", desc: "Sensor de proximidad que levanta la tapa al acercarte. Sin tocar nada." },
+                { icon: Droplets, title: "Bidé integrado", desc: "Lavado posterior, femenino y móvil con temperatura ajustable en 4 niveles." },
+                { icon: Wind, title: "Secado en 30 seg.", desc: "Súper-Tifón de alta potencia. Adiós al papel higiénico para siempre." },
+                { icon: Thermometer, title: "Asiento CLIMADAPT", desc: "Se adapta automáticamente a la temperatura ambiente. Confort todo el año." },
+                { icon: Volume2, title: "≤59 dB silencioso", desc: "Hasta 21 dB más silencioso que un inodoro convencional. Un susurro." },
+                { icon: Shield, title: "Garantía 10 años", desc: "10 años en cerámica y hasta 5 en tecnología. La mayor del mercado." },
+                { icon: Smartphone, title: "Mando en español", desc: "Control completo con memoria para 2 usuarios. Personaliza todo." },
+                { icon: Mic, title: "Control por voz", desc: "Dilo y Elora lo hace. Temperatura, presión, secado. Solo con tu voz." },
+              ].map((f, i) => (
+                <div
+                  key={f.title}
+                  className={`group p-8 bg-foreground hover:bg-background/5 transition-all duration-500 border border-background/10 ${""}`}
+                >
+                  <AnimatedSection animation="fade-up" delay={i * 80}>
+                    <div className="w-10 h-10 border border-background/20 flex items-center justify-center mb-6 group-hover:border-accent transition-colors duration-300">
+                      <f.icon className="w-5 h-5 text-accent" strokeWidth={1.5} />
+                    </div>
+                    <h3 className="font-display text-lg uppercase tracking-wide text-background mb-3">{f.title}</h3>
+                    <p className="font-body text-sm text-background/55 leading-relaxed">{f.desc}</p>
+                  </AnimatedSection>
+                </div>
+              ))}
+            </div>
+
+            {/* Feature images */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+              {[
+                { img: IMGS.mando, label: "Mando a distancia", sub: "Control total" },
+                { img: IMGS.secado, label: "Secado Súper-Tifón", sub: "Menos de 30 segundos" },
+                { img: IMGS.voz, label: "Control por voz", sub: "Solo en inglés" },
+              ].map((item, i) => (
+                <AnimatedSection key={item.label} animation="scale-in" delay={i * 150}>
+                  <div className="relative overflow-hidden group aspect-[4/3]">
+                    <img
+                      src={item.img}
+                      alt={item.label}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 to-transparent" />
+                    <div className="absolute bottom-0 left-0 p-6">
+                      <p className="font-body text-[9px] uppercase tracking-[0.3em] text-background/50 mb-1">{item.sub}</p>
+                      <p className="font-display text-xl uppercase tracking-wide text-background">{item.label}</p>
+                    </div>
+                  </div>
+                </AnimatedSection>
+              ))}
+            </div>
+
+            {/* Posture detection */}
+            <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <AnimatedSection animation="slide-left">
+                <div className="relative overflow-hidden bg-background/5 border border-background/10 p-8 flex flex-col md:flex-row items-center gap-8">
+                  <img src={IMGS.usoPie} alt="Uso de pie" className="w-32 h-auto object-contain flex-shrink-0" />
+                  <div>
+                    <p className="font-body text-[9px] uppercase tracking-[0.3em] text-accent mb-2">Uso de pie</p>
+                    <h4 className="font-display text-2xl uppercase tracking-wide text-background mb-2">Detección de postura</h4>
+                    <p className="font-body text-sm text-background/55 leading-relaxed">
+                      Reconoce si estás de pie o sentado y ajusta automáticamente la apertura del asiento y el tipo de descarga.
+                    </p>
+                  </div>
+                </div>
+              </AnimatedSection>
+              <AnimatedSection animation="slide-right">
+                <div className="relative overflow-hidden bg-background/5 border border-background/10 p-8 flex flex-col md:flex-row items-center gap-8">
+                  <img src={IMGS.usoSentada} alt="Uso sentada" className="w-32 h-auto object-contain flex-shrink-0" />
+                  <div>
+                    <p className="font-body text-[9px] uppercase tracking-[0.3em] text-accent mb-2">Uso sentada</p>
+                    <h4 className="font-display text-2xl uppercase tracking-wide text-background mb-2">Todo automatizado</h4>
+                    <p className="font-body text-sm text-background/55 leading-relaxed">
+                      Apertura de asiento, tipo de descarga y cierre de tapa. Más comodidad, menos gestos, todo automatizado.
+                    </p>
+                  </div>
+                </div>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            SECCIÓN 4 — COLECCIÓN
+        ══════════════════════════════════════════════════════════════════ */}
+        <section
+          ref={(el) => { sectionRefs.current[3] = el; }}
+          className="relative py-24 md:py-32 px-8 md:px-16 lg:px-20"
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+              <AnimatedSection animation="fade-up">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-px bg-accent" />
+                  <span className="font-body text-[10px] uppercase tracking-[0.4em] text-accent">Colección 2025</span>
+                </div>
+                <h2 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] uppercase leading-[0.9] tracking-tight">
+                  Elige tu<br />Elora.
+                </h2>
+              </AnimatedSection>
+              <AnimatedSection animation="fade-up" delay={200}>
                 <a
-                  href={`https://wa.me/34614451901?text=Hola,%20me%20interesa%20${cart.map(i => i.name).join('%20y%20')}`}
+                  href="https://elorasmart.com/landing-page-modelos/"
                   target="_blank"
                   rel="noreferrer"
-                  className={`w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-colors ${cart.length === 0 ? "opacity-40 pointer-events-none" : ""}`}
+                  className="group inline-flex items-center gap-3 font-body text-[11px] uppercase tracking-[0.3em] text-foreground/50 hover:text-accent transition-colors duration-300 border-b border-foreground/20 hover:border-accent pb-1"
                 >
-                  <Send className="w-4 h-4" />
-                  Solicitar presupuesto
+                  ¿No sabes cuál es el tuyo?
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </a>
+              </AnimatedSection>
+            </div>
+
+            {/* Product grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+              {PRODUCTS.map((product, i) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onView={() => setSelectedProduct(product)}
+                  onAddToCart={(p) => addToCart(p)}
+                  delay={i * 150}
+                />
+              ))}
+            </div>
+
+            {/* Comparison note */}
+            <AnimatedSection animation="fade-up" delay={300} className="mt-12 p-6 border border-border flex flex-col md:flex-row items-start md:items-center gap-4">
+              <div className="w-8 h-8 border border-accent flex items-center justify-center flex-shrink-0">
+                <Star className="w-4 h-4 text-accent" strokeWidth={1.5} />
+              </div>
+              <div className="flex-1">
+                <p className="font-display text-base uppercase tracking-wide mb-1">¿ESENZA o AURA?</p>
+                <p className="font-body text-sm text-foreground/60">
+                  Elige ESENZA si quieres todas las funciones esenciales con un precio más contenido. Elige AURA si quieres el modelo más completo: espuma anti-salpicaduras, UV, desodorización, aromaterapia y control por voz.
+                </p>
+              </div>
+              <a
+                href="https://elorasmart.com/landing-page-modelos/"
+                target="_blank"
+                rel="noreferrer"
+                className="font-body text-[10px] uppercase tracking-[0.25em] px-5 py-3 border border-foreground/30 hover:border-accent hover:text-accent transition-all duration-300 flex-shrink-0"
+              >
+                Comparar
+              </a>
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            SECCIÓN 5 — CONTACTO
+        ══════════════════════════════════════════════════════════════════ */}
+        <section
+          ref={(el) => { sectionRefs.current[4] = el; }}
+          className="relative py-24 md:py-32 bg-secondary"
+        >
+          <div className="px-8 md:px-16 lg:px-20 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+
+              {/* Left: info */}
+              <div className="flex flex-col gap-10">
+                <AnimatedSection animation="fade-up">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-px bg-accent" />
+                    <span className="font-body text-[10px] uppercase tracking-[0.4em] text-accent">Contacto</span>
+                  </div>
+                  <h2 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] uppercase leading-[0.9] tracking-tight">
+                    ¿Tienes<br />dudas?
+                  </h2>
+                  <p className="font-body text-base text-foreground/65 leading-relaxed mt-6">
+                    Te las resolvemos sin compromiso. Nuestro equipo te acompaña en todo el proceso: dudas de instalación, configuración y uso diario, con atención personalizada en español.
+                  </p>
+                </AnimatedSection>
+
+                <AnimatedSection animation="fade-up" delay={150}>
+                  <div className="space-y-6">
+                    {[
+                      { label: "Showroom en Galicia", value: "Avenida da Mahía, 17, Bajo 2 · 15220 Bertamiráns (Ames)", sub: "Ven y pruébalo. Te enamorarás." },
+                      { label: "Teléfono", value: "+34 614 45 19 01", sub: "Lunes a Viernes 10:00–18:00" },
+                      { label: "Instalación sencilla", value: "Solo necesitas un enchufe y tu fontanero", sub: "Sin obras complicadas" },
+                    ].map((item, i) => (
+                      <div key={i} className="flex gap-4 py-4 border-b border-border last:border-0">
+                        <div className="w-1 flex-shrink-0 bg-accent self-stretch" />
+                        <div>
+                          <p className="font-body text-[10px] uppercase tracking-[0.2em] text-foreground/40 mb-1">{item.label}</p>
+                          <p className="font-display text-lg uppercase tracking-wide">{item.value}</p>
+                          <p className="font-body text-xs text-foreground/50 mt-1">{item.sub}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </AnimatedSection>
+
+                <AnimatedSection animation="fade-up" delay={250}>
+                  <a
+                    href="https://api.whatsapp.com/send?phone=34614451901"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-center gap-3 font-body text-[11px] uppercase tracking-[0.3em] px-8 py-4 bg-foreground text-background hover:bg-accent hover:text-foreground transition-all duration-300 w-fit"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp directo
+                  </a>
+                </AnimatedSection>
+              </div>
+
+              {/* Right: form */}
+              <div>
+                <AnimatedSection animation="fade-up" delay={100}>
+                  <h3 className="font-display text-2xl uppercase tracking-wide mb-8">Escríbenos</h3>
+                </AnimatedSection>
+                <ContactForm />
               </div>
             </div>
           </div>
-        )}
+        </section>
 
-        {/* ── MAIN SCROLLING CONTENT ────────────────────────────────────────── */}
-        <main
-          ref={scrollContainerRef}
-          className="flex-1 h-full overflow-y-auto hide-scrollbar relative bg-background scroll-smooth"
-        >
-          {selectedProduct ? (
-            <ProductDetail
-              product={selectedProduct}
-              onBack={() => setSelectedProduct(null)}
-              onAdd={(p) => addToCart({ id: p.id, name: p.name })}
-            />
-          ) : (
-            <>
-              {/* ── CAPÍTULO 1: VISIÓN ──────────────────────────────────────── */}
-              <section
-                ref={setSectionRef(0)}
-                data-index="0"
-                className="min-h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col justify-center"
-              >
-                <img src={HERO_IMAGE} alt="Elora Smart" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
+        {/* ─── Footer ──────────────────────────────────────────────────────── */}
+        <Footer />
+      </main>
 
-                <div className="relative z-10 flex flex-col justify-center h-full px-8 md:px-20 max-w-3xl pt-20 pb-32">
-                  <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] text-white/80 mb-6 md:mb-8 flex items-center gap-4">
-                    <span className="w-8 h-[1px] bg-accent-deep"></span>
-                    Elegancia Neo-Corporativa
-                  </p>
-                  <h1 className="font-display text-[14vw] md:text-[8vw] leading-[0.85] uppercase tracking-tight text-white drop-shadow-lg">
-                    Mejora tu<br />
-                    <span className="text-accent">calidad de vida.</span>
-                  </h1>
-                  <p className="mt-8 md:mt-12 max-w-md font-body text-sm md:text-base text-white/90 leading-relaxed border-l border-accent-deep pl-6 backdrop-blur-md bg-black/20 p-5">
-                    Hay un momento del día que es solo tuyo. Ya es hora de disfrutarlo. Inodoros inteligentes que fusionan alta tecnología con la noble solidez de la piedra gallega.
-                  </p>
-                  <button
-                    onClick={() => scrollToSection(3)}
-                    className="mt-8 group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-white/80 border-b border-white/30 pb-2 w-fit hover:text-accent hover:border-accent transition-colors"
-                  >
-                    Ver la colección
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-                <div className="absolute bottom-8 left-8 md:left-20 font-display text-lg text-white/40 z-10">01</div>
-              </section>
+      {/* ─── Cart Panel ──────────────────────────────────────────────────── */}
+      {cartOpen && (
+        <CartPanel
+          items={cart}
+          onClose={() => setCartOpen(false)}
+          onUpdate={updateCart}
+        />
+      )}
 
-              {/* ── CAPÍTULO 2: ESENCIA ─────────────────────────────────────── */}
-              <section
-                ref={setSectionRef(1)}
-                data-index="1"
-                className="min-h-[100dvh] w-full relative overflow-hidden bg-background px-6 py-10 md:p-12 flex flex-col"
-              >
-                <div className="max-w-[1400px] mx-auto w-full flex-1 flex flex-col gap-6 md:gap-8">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-10%" }}
-                    >
-                      <p className="font-body text-[10px] md:text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
-                        <span className="w-6 h-[1px] bg-accent-deep" /> La Esencia · Feito en Galicia
-                      </p>
-                      <h2 className="font-display text-3xl md:text-5xl uppercase tracking-wide leading-[0.95]">
-                        Alma gallega,<br />precisión absoluta.
-                      </h2>
-                    </motion.div>
-                    <motion.p
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-10%" }}
-                      className="font-body text-sm text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6"
-                    >
-                      Diseñamos desde Galicia, donde la piedra y el atlántico marcan el ritmo. Cada Elora se piensa en gallego antes de viajar a tu baño.
-                    </motion.p>
-                  </div>
-
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-12 grid-rows-[auto] md:grid-rows-2 gap-3 md:gap-4">
-                    {/* Video hero */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 40 }}
-                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                      transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-5%" }}
-                      className="md:col-span-7 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[200px]"
-                    >
-                      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-                        <iframe
-                          src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15"
-                          title="Background Video"
-                          className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[200px] min-w-[200px] pointer-events-none"
-                          style={{ transform: "translate(-50%, -50%) scale(1.5)" }}
-                          allow="autoplay; encrypted-media"
-                        />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 pointer-events-none" />
-                      <div className="absolute top-6 left-6 right-6 flex items-start gap-3 pointer-events-none">
-                        <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep border border-accent-deep px-2 py-1">A Coruña · Galicia</span>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white pointer-events-none">
-                        <p className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight max-w-md mb-4">
-                          De la cantera gallega<br />al baño contemporáneo.
-                        </p>
-                        <div className="flex items-center gap-6">
-                          <div>
-                            <p className="font-display text-xl uppercase tracking-widest">Pureza</p>
-                            <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Cerámica blanca</p>
-                          </div>
-                          <div>
-                            <p className="font-display text-xl uppercase tracking-widest">Solidez</p>
-                            <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Granito local</p>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-
-                    {/* Equipo */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 40 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-5%" }}
-                      className="md:col-span-5 relative overflow-hidden border border-border p-5 md:p-6 flex flex-col justify-between gap-4 text-white min-h-[220px]"
-                    >
-                      <img
-                        src="https://violet-antelope-234366.hostingersite.com/wp-content/uploads/2026/06/elora-erquipo.jpg"
-                        alt="Equipo Elora"
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
-                      <div className="relative z-10 flex items-center justify-between">
-                        <Cpu className="w-5 h-5 text-accent" />
-                        <span className="font-body text-[10px] uppercase tracking-widest text-white/60">Galicia · 2024</span>
-                      </div>
-                      <div className="relative z-10">
-                        <h3 className="font-display text-xl uppercase tracking-wide mb-2">Marca gallega, mirada global.</h3>
-                        <p className="font-body text-xs md:text-sm text-white/80 leading-relaxed">
-                          Somos un equipo gallego que combina la mejor electrónica internacional con el cuidado artesanal del noroeste. Atención cercana, en gallego o castellano.
-                        </p>
-                      </div>
-                    </motion.div>
-
-                    {/* Cards pequeñas */}
-                    <div className="md:col-span-5 grid grid-cols-2 gap-3 md:gap-4">
-                      {[
-                        { icon: Droplets, title: "Higiene total", body: "Limpieza por sensores y agua templada." },
-                        { icon: Leaf, title: "Ecológico", body: "Hasta un -40% en consumo de agua." },
-                      ].map((card, i) => {
-                        const Icon = card.icon;
-                        return (
-                          <motion.div
-                            key={card.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -5 }}
-                            className="bg-background border border-border p-4 md:p-5 flex flex-col justify-between gap-3 text-foreground transition-colors hover:border-accent-deep/50"
-                          >
-                            <Icon className="w-5 h-5 text-accent-deep" />
-                            <div>
-                              <h3 className="font-display text-base md:text-lg uppercase tracking-wide mb-1">{card.title}</h3>
-                              <p className="font-body text-[11px] md:text-xs text-foreground/70 leading-relaxed">{card.body}</p>
-                            </div>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute top-6 right-6 md:right-12 font-display text-lg text-foreground/20">02</div>
-              </section>
-
-              {/* ── CAPÍTULO 3: POR QUÉ ─────────────────────────────────────── */}
-              <section
-                ref={setSectionRef(2)}
-                data-index="2"
-                className="w-full relative overflow-hidden bg-muted px-6 py-20 md:p-16"
-              >
-                <div className="max-w-[1400px] mx-auto w-full">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
-                    <div>
-                      <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
-                        <span className="w-6 h-[1px] bg-accent-deep" /> El Manifiesto
-                      </p>
-                      <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]">
-                        Por qué un inodoro<br />deja de ser un mueble.
-                      </h2>
-                    </div>
-                    <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
-                      Pasamos casi un año y medio de nuestra vida en el baño. Sin embargo, lo seguimos tratando como una pieza secundaria. En Elora rediseñamos ese momento íntimo desde la higiene, la salud y el silencio.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
-                    {[
-                      { icon: Sparkles, title: "Higiene Real", body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos." },
-                      { icon: ShieldCheck, title: "Salud Diaria", body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar." },
-                      { icon: Thermometer, title: "Lujo Silencioso", body: "Tapa de cierre asistido, luz nocturna ambiental y modos personalizados. El confort de un hotel cinco estrellas, cada mañana, en casa." },
-                    ].map((feat) => {
-                      const Icon = feat.icon;
-                      return (
-                        <div key={feat.title} className="bg-background p-8 md:p-10 flex flex-col gap-6">
-                          <div className="flex items-center justify-between">
-                            <Icon className="w-6 h-6 text-accent-deep" />
-                            <span className="font-display text-sm text-foreground/30 uppercase tracking-widest">{feat.title.split(" ")[0]}</span>
-                          </div>
-                          <h3 className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight">{feat.title}</h3>
-                          <p className="font-body text-sm text-foreground/70 leading-relaxed">{feat.body}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="mt-10 md:mt-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-border pt-8">
-                    <p className="font-display text-xl md:text-2xl uppercase tracking-wide max-w-xl leading-tight">
-                      No es un electrodoméstico. <span className="text-accent-deep">Es la pieza más íntima de tu arquitectura.</span>
-                    </p>
-                    <button
-                      onClick={() => scrollToSection(3)}
-                      className="group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-foreground border-b border-foreground pb-2 hover:text-accent-deep hover:border-accent-deep transition-colors"
-                    >
-                      Descubre la colección
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  </div>
-                </div>
-                <div className="absolute bottom-8 right-8 md:right-16 font-display text-lg text-foreground/20">03</div>
-              </section>
-
-              {/* ── CAPÍTULO 4: COLECCIÓN ───────────────────────────────────── */}
-              <section
-                ref={setSectionRef(3)}
-                data-index="3"
-                className="w-full relative overflow-hidden bg-background px-6 py-20 md:p-16"
-              >
-                <div className="max-w-[1400px] w-full mx-auto">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-14">
-                    <div>
-                      <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
-                        <span className="w-6 h-[1px] bg-accent-deep" /> Exclusivo Elora®
-                      </p>
-                      <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]">
-                        La Colección
-                      </h2>
-                    </div>
-                    <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
-                      Tres modelos. Una misma filosofía: higiene avanzada, diseño premium y la tranquilidad del servicio Elora detrás de cada pieza.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-                    {PRODUCTS.map((prod) => (
-                      <button
-                        key={prod.id}
-                        onClick={() => openProduct(prod)}
-                        className="group flex flex-col h-full bg-background border border-border p-4 text-left hover:border-accent-deep transition-colors outline-none"
-                      >
-                        <div className="bg-muted mb-5 overflow-hidden relative border border-border h-[260px]">
-                          <img
-                            src={prod.img}
-                            alt={prod.name}
-                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-3 flex-1">
-                          <p className="font-body text-[10px] text-foreground/50 uppercase tracking-widest">{prod.id}</p>
-                          <h3 className="font-display text-lg uppercase tracking-wide leading-tight">{prod.name}</h3>
-                          <p className="font-display text-sm uppercase tracking-wide text-accent-deep leading-tight">{prod.tagline}</p>
-                          <p className="font-body text-sm text-foreground/70 leading-relaxed">{prod.description}</p>
-                          <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
-                            <span className="font-display text-lg tracking-wide text-foreground">
-                              {prod.price.toLocaleString('es-ES')} €
-                            </span>
-                            <span className="inline-flex items-center gap-2 font-body text-[11px] uppercase tracking-[0.2em] text-foreground group-hover:text-accent-deep transition-colors">
-                              Ver detalle
-                              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                            </span>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="mt-12 md:mt-16">
-                    <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-8 flex items-center gap-3">
-                      <span className="w-6 h-[1px] bg-accent-deep" /> La experiencia Elora
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
-                      {[
-                        { icon: MapPin, title: "Showroom en Galicia", body: "Ven y pruébalo. Te enamorarás y entenderás por qué cambia tu día a día." },
-                        { icon: ShieldCheck, title: "Garantías y SAT", body: "Te asesoramos antes, durante y después. Para que aciertes y estés tranquilo." },
-                        { icon: Wrench, title: "Instalación sencilla", body: "Solo necesitas un enchufe cerca y a tu fontanero de confianza. Nada más." },
-                      ].map((item) => {
-                        const Icon = item.icon;
-                        return (
-                          <div key={item.title} className="bg-background p-8 md:p-10 flex flex-col gap-5">
-                            <Icon className="w-6 h-6 text-accent-deep" />
-                            <h3 className="font-display text-2xl uppercase tracking-wide leading-tight">{item.title}</h3>
-                            <p className="font-body text-sm text-foreground/70 leading-relaxed">{item.body}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute bottom-8 right-8 md:right-16 font-display text-lg text-foreground/20">04</div>
-              </section>
-
-              {/* ── CAPÍTULO 5: CONTACTO ────────────────────────────────────── */}
-              <section
-                ref={setSectionRef(4)}
-                data-index="4"
-                className="w-full relative overflow-hidden bg-background flex flex-col justify-between min-h-[100dvh]"
-              >
-                <div className="flex-1 flex flex-col md:flex-row max-w-[1400px] mx-auto w-full px-6 md:px-16 py-20 md:py-24 gap-12 md:gap-16">
-                  {/* Texto izquierda */}
-                  <div className="flex flex-col justify-center md:w-1/2">
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
-                      <span className="font-display text-[30vw] leading-none whitespace-nowrap text-foreground font-bold">ELORA</span>
-                    </div>
-                    <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 mb-6 relative z-10">Listo para elevar tu espacio</p>
-                    <h2 className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-[0.9]">
-                      Hablemos<br />de tu baño.
-                    </h2>
-                    <p className="font-body text-sm text-foreground/70 leading-relaxed mb-10 max-w-sm relative z-10">
-                      Cuéntanos qué tienes en mente. Te asesoramos sin compromiso sobre qué modelo se adapta mejor a tu espacio, instalación y presupuesto.
-                    </p>
-                    <div className="flex flex-col gap-4 relative z-10">
-                      <a href="tel:+34614451901" className="flex items-center gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
-                        <Phone className="w-4 h-4 text-accent-deep" />
-                        +34 614 45 19 01
-                      </a>
-                      <a href="mailto:info@elorasmart.com" className="flex items-center gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
-                        <Mail className="w-4 h-4 text-accent-deep" />
-                        info@elorasmart.com
-                      </a>
-                      <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="flex items-center gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
-                        <MapPin className="w-4 h-4 text-accent-deep" />
-                        Showroom · A Coruña, Galicia
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Formulario derecha */}
-                  <div className="md:w-1/2 relative z-10">
-                    {contactSent ? (
-                      <div className="border border-accent-deep p-10 flex flex-col items-center justify-center text-center gap-4 h-full min-h-[400px]">
-                        <Sparkles className="w-8 h-8 text-accent-deep" />
-                        <h3 className="font-display text-3xl uppercase tracking-wide">¡Mensaje enviado!</h3>
-                        <p className="font-body text-sm text-foreground/70 leading-relaxed max-w-xs">
-                          Nos pondremos en contacto contigo en menos de 24 horas. Gracias por confiar en Elora Smart.
-                        </p>
-                        <button
-                          onClick={() => setContactSent(false)}
-                          className="mt-4 font-body text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-accent-deep transition-colors border-b border-foreground/20 pb-1"
-                        >
-                          Enviar otro mensaje
-                        </button>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleContactSubmit} className="border border-border p-8 md:p-10 flex flex-col gap-6">
-                        <div>
-                          <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-1 flex items-center gap-3">
-                            <span className="w-6 h-[1px] bg-accent-deep" /> Solicita información
-                          </p>
-                          <h3 className="font-display text-2xl uppercase tracking-wide mt-2">Catálogo privado</h3>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="flex flex-col gap-2">
-                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Nombre *</label>
-                            <input
-                              type="text"
-                              required
-                              value={contactForm.nombre}
-                              onChange={(e) => setContactForm({ ...contactForm, nombre: e.target.value })}
-                              className="border-b border-border bg-transparent font-body text-sm text-foreground py-2 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30"
-                              placeholder="Tu nombre"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Teléfono</label>
-                            <input
-                              type="tel"
-                              value={contactForm.telefono}
-                              onChange={(e) => setContactForm({ ...contactForm, telefono: e.target.value })}
-                              className="border-b border-border bg-transparent font-body text-sm text-foreground py-2 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30"
-                              placeholder="+34 600 000 000"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                          <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Email *</label>
-                          <input
-                            type="email"
-                            required
-                            value={contactForm.email}
-                            onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                            className="border-b border-border bg-transparent font-body text-sm text-foreground py-2 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30"
-                            placeholder="tu@email.com"
-                          />
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                          <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Mensaje</label>
-                          <textarea
-                            rows={4}
-                            value={contactForm.mensaje}
-                            onChange={(e) => setContactForm({ ...contactForm, mensaje: e.target.value })}
-                            className="border border-border bg-transparent font-body text-sm text-foreground p-3 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30 resize-none"
-                            placeholder="Cuéntanos sobre tu baño, qué modelo te interesa o cualquier duda..."
-                          />
-                        </div>
-
-                        <button
-                          type="submit"
-                          className="group w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-colors relative overflow-hidden"
-                        >
-                          <Send className="w-4 h-4" />
-                          Solicitar catálogo privado
-                        </button>
-
-                        <p className="font-body text-[10px] text-foreground/40 leading-relaxed">
-                          Al enviar este formulario aceptas nuestra{" "}
-                          <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noreferrer" className="underline hover:text-accent-deep transition-colors">
-                            política de privacidad
-                          </a>
-                          . No compartimos tus datos con terceros.
-                        </p>
-                      </form>
-                    )}
-                  </div>
-                </div>
-
-                <Footer />
-              </section>
-            </>
-          )}
-        </main>
-      </div>
+      {/* ─── WhatsApp FAB ─────────────────────────────────────────────────── */}
+      <a
+        href="https://api.whatsapp.com/send?phone=34614451901"
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 z-30 w-14 h-14 bg-[#25D366] text-white flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300"
+        title="WhatsApp"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </a>
     </>
   );
 }
