@@ -1129,127 +1129,162 @@ export default function Home() {
               <section
                 ref={setSectionRef(1)}
                 data-index="1"
-                className="min-h-[100dvh] w-full relative overflow-hidden bg-background px-6 py-10 md:p-12 flex flex-col"
+                className="min-h-[100dvh] w-full relative overflow-hidden bg-background flex flex-col"
               >
-                <div className="max-w-[1400px] mx-auto w-full flex-1 flex flex-col gap-6 md:gap-8">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-10%" }}
-                    >
-                      <p className="font-body text-[10px] md:text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
-                        <span className="w-6 h-[1px] bg-accent-deep" /> La Esencia · Feito en Galicia
-                      </p>
-                      <h2 className="font-display text-3xl md:text-5xl uppercase tracking-wide leading-[0.95]">
-                        Alma gallega,<br />precisión absoluta.
-                      </h2>
-                    </motion.div>
-                    <motion.p
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-10%" }}
-                      className="font-body text-sm text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6"
-                    >
-                      Diseñamos desde Galicia, donde la piedra y el atlántico marcan el ritmo. Cada Elora se piensa en gallego antes de viajar a tu baño.
-                    </motion.p>
-                  </div>
-
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-12 grid-rows-[auto] md:grid-rows-2 gap-3 md:gap-4">
-                    {/* Video hero */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 40 }}
-                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                      transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-5%" }}
-                      className="md:col-span-7 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[200px]"
-                    >
-                      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-                        <iframe
-                          src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15"
-                          title="Background Video"
-                          className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[200px] min-w-[200px] pointer-events-none"
-                          style={{ transform: "translate(-50%, -50%) scale(1.5)" }}
-                          allow="autoplay; encrypted-media"
-                        />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 pointer-events-none" />
-                      <div className="absolute top-6 left-6 right-6 flex items-start gap-3 pointer-events-none">
-                        <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep border border-accent-deep px-2 py-1">A Coruña · Galicia</span>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white pointer-events-none">
-                        <p className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight max-w-md mb-4">
-                          De la cantera gallega<br />al baño contemporáneo.
-                        </p>
-                        <div className="flex items-center gap-6">
-                          <div>
-                            <p className="font-display text-xl uppercase tracking-widest">Pureza</p>
-                            <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Cerámica blanca</p>
-                          </div>
-                          <div>
-                            <p className="font-display text-xl uppercase tracking-widest">Solidez</p>
-                            <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Granito local</p>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-
-                    {/* Equipo */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 40 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true, margin: "-5%" }}
-                      className="md:col-span-5 relative overflow-hidden border border-border p-5 md:p-6 flex flex-col justify-between gap-4 text-white min-h-[220px]"
-                    >
-                      <img
-                        src="https://violet-antelope-234366.hostingersite.com/wp-content/uploads/2026/06/elora-erquipo.jpg"
-                        alt="Equipo Elora"
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
-                      <div className="relative z-10 flex items-center justify-between">
-                        <Cpu className="w-5 h-5 text-accent" />
-                        <span className="font-body text-[10px] uppercase tracking-widest text-white/60">Galicia · 2024</span>
-                      </div>
-                      <div className="relative z-10">
-                        <h3 className="font-display text-xl uppercase tracking-wide mb-2">Marca gallega, mirada global.</h3>
-                        <p className="font-body text-xs md:text-sm text-white/80 leading-relaxed">
-                          Somos un equipo gallego que combina la mejor electrónica internacional con el cuidado artesanal del noroeste. Atención cercana, en gallego o castellano.
-                        </p>
-                      </div>
-                    </motion.div>
-
-                    {/* Cards pequeñas */}
-                    <div className="md:col-span-5 grid grid-cols-2 gap-3 md:gap-4">
-                      {[
-                        { icon: Droplets, title: "Higiene total", body: "Limpieza por sensores y agua templada." },
-                        { icon: Leaf, title: "Ecológico", body: "Hasta un -40% en consumo de agua." },
-                      ].map((card, i) => {
-                        const Icon = card.icon;
-                        return (
-                          <motion.div
-                            key={card.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -5 }}
-                            className="bg-background border border-border p-4 md:p-5 flex flex-col justify-between gap-3 text-foreground transition-colors hover:border-accent-deep/50"
-                          >
-                            <Icon className="w-5 h-5 text-accent-deep" />
-                            <div>
-                              <h3 className="font-display text-base md:text-lg uppercase tracking-wide mb-1">{card.title}</h3>
-                              <p className="font-body text-[11px] md:text-xs text-foreground/70 leading-relaxed">{card.body}</p>
-                            </div>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                {/* Cabecera de sección */}
+                <div className="px-6 pt-10 pb-6 md:px-12 md:pt-12 md:pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true, margin: "-10%" }}
+                  >
+                    <p className="font-body text-[10px] md:text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
+                      <span className="w-6 h-[1px] bg-accent-deep" /> La Esencia · Feito en Galicia
+                    </p>
+                    <h2 className="font-display text-3xl md:text-5xl uppercase tracking-wide leading-[0.95]">
+                      Alma gallega,<br />precisión absoluta.
+                    </h2>
+                  </motion.div>
+                  <motion.p
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true, margin: "-10%" }}
+                    className="font-body text-sm text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6"
+                  >
+                    Diseñamos desde Galicia, donde la piedra y el atlántico marcan el ritmo. Cada Elora se piensa en gallego antes de viajar a tu baño.
+                  </motion.p>
                 </div>
+
+                {/* Bento grid principal */}
+                <div className="flex-1 grid grid-cols-2 md:grid-cols-12 auto-rows-[180px] md:auto-rows-[200px] gap-[2px] px-0">
+
+                  {/* 1. Imagen grande — producto en baño de lujo */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true, margin: "-5%" }}
+                    className="col-span-2 md:col-span-5 row-span-2 relative overflow-hidden group"
+                  >
+                    <img
+                      src="https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart6.jpg"
+                      alt="AURA en baño de diseño"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7">
+                      <span className="font-body text-[9px] uppercase tracking-[0.35em] text-accent px-2 py-1 border border-accent/50 mb-3 inline-block">Serie AURA</span>
+                      <p className="font-display text-xl md:text-2xl uppercase tracking-wide text-white leading-tight">
+                        Tecnología que<br />desaparece en el diseño.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* 2. Stat — Garantía */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true }}
+                    className="col-span-1 md:col-span-3 relative overflow-hidden bg-foreground flex flex-col justify-between p-5 md:p-6"
+                  >
+                    <span className="font-body text-[9px] uppercase tracking-[0.3em] text-background/50">Garantía cerámica</span>
+                    <div>
+                      <p className="font-display text-5xl md:text-6xl text-accent leading-none">10</p>
+                      <p className="font-display text-lg md:text-xl uppercase tracking-widest text-background">años</p>
+                      <p className="font-body text-[10px] text-background/60 mt-1 uppercase tracking-widest">+ 3 en tecnología</p>
+                    </div>
+                  </motion.div>
+
+                  {/* 3. Imagen — detalle cerámica / ESENZA compact */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true }}
+                    className="col-span-1 md:col-span-4 relative overflow-hidden group"
+                  >
+                    <img
+                      src="https://elorasmart.com/wp-content/uploads/2025/12/batch_5.webp"
+                      alt="ESENZA Compact detalle"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                    <div className="absolute bottom-4 left-4">
+                      <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/80">ESENZA Compact</p>
+                    </div>
+                  </motion.div>
+
+                  {/* 4. Stat — Origen */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true }}
+                    className="col-span-1 md:col-span-3 relative overflow-hidden bg-accent-deep flex flex-col justify-between p-5 md:p-6"
+                  >
+                    <span className="font-body text-[9px] uppercase tracking-[0.3em] text-white/60">Diseñado en</span>
+                    <div>
+                      <p className="font-display text-2xl md:text-3xl uppercase tracking-wide text-white leading-tight">A Coruña<br />Galicia</p>
+                      <p className="font-body text-[10px] text-white/60 mt-2 uppercase tracking-widest">Desde 2024</p>
+                    </div>
+                  </motion.div>
+
+                  {/* 5. Imagen — AURA suspendido en baño blanco */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true }}
+                    className="col-span-1 md:col-span-4 relative overflow-hidden group"
+                  >
+                    <img
+                      src="https://elorasmart.com/wp-content/uploads/2025/05/AURA-BLANCO-2-scaled.jpg"
+                      alt="AURA blanco"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-4 left-4">
+                      <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/80">Serie AURA · Blanco</p>
+                    </div>
+                  </motion.div>
+
+                  {/* 6. Texto — filosofía */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true }}
+                    className="col-span-2 md:col-span-5 relative overflow-hidden bg-muted border-t border-border flex flex-col justify-between p-5 md:p-7"
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <Leaf className="w-4 h-4 text-accent-deep" />
+                      <span className="font-body text-[9px] uppercase tracking-[0.3em] text-foreground/50">Compromiso</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="font-display text-2xl md:text-3xl uppercase text-foreground">−40%</p>
+                        <p className="font-body text-[10px] text-foreground/60 uppercase tracking-widest mt-1">Consumo de agua</p>
+                      </div>
+                      <div>
+                        <p className="font-display text-2xl md:text-3xl uppercase text-foreground">0</p>
+                        <p className="font-body text-[10px] text-foreground/60 uppercase tracking-widest mt-1">Papel higiénico</p>
+                      </div>
+                      <div>
+                        <p className="font-display text-2xl md:text-3xl uppercase text-foreground">UV</p>
+                        <p className="font-body text-[10px] text-foreground/60 uppercase tracking-widest mt-1">Esterilización</p>
+                      </div>
+                      <div>
+                        <p className="font-display text-2xl md:text-3xl uppercase text-foreground">A+</p>
+                        <p className="font-body text-[10px] text-foreground/60 uppercase tracking-widest mt-1">Eficiencia energética</p>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                </div>
+
                 <div className="absolute top-6 right-6 md:right-12 font-display text-lg text-foreground/20">02</div>
               </section>
 
