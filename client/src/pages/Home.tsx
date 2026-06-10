@@ -701,7 +701,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
           </div>
 
           {/* Imagen grande — ocupa la mayor parte de la pantalla */}
-          <div className="relative flex-1 overflow-hidden">
+          <div className="relative overflow-hidden" style={{ flex: '0 0 52%' }}>
             {EXPERIENCE_STEPS.map((s, idx) => (
               <motion.div
                 key={idx}
@@ -733,7 +733,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
           </div>
 
           {/* Texto del paso activo */}
-          <div className="shrink-0 border-t border-background/10 px-5 py-5">
+          <div className="shrink-0 border-t border-background/10 px-5 py-5 flex-1">
             <motion.div
               key={activeStep}
               initial={{ opacity: 0, y: 20 }}
@@ -741,12 +741,12 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
             >
-              <p className="font-body text-[9px] uppercase tracking-[0.4em] text-background/40 mb-1.5">{step.eyebrow}</p>
-              <h3 className="font-display text-xl uppercase tracking-wide leading-[0.95] text-background mb-1">
+              <p className="font-body text-[10px] uppercase tracking-[0.4em] text-background/40 mb-2">{step.eyebrow}</p>
+              <h3 className="font-display text-2xl uppercase tracking-wide leading-[0.95] text-background mb-1.5">
                 {step.title}
               </h3>
-              <p className="font-body text-sm text-accent-deep mb-2">{step.subtitle}</p>
-              <p className="font-body text-xs text-background/60 leading-relaxed line-clamp-3">{step.body}</p>
+              <p className="font-body text-base text-accent-deep mb-3">{step.subtitle}</p>
+              <p className="font-body text-sm text-background/60 leading-relaxed line-clamp-4">{step.body}</p>
             </motion.div>
           </div>
 
