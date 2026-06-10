@@ -1074,7 +1074,7 @@ export default function Home() {
         {/* ── MAIN SCROLLING CONTENT ────────────────────────────────────────── */}
         <main
           ref={scrollContainerRef}
-          className="flex-1 h-full overflow-y-auto hide-scrollbar relative bg-background scroll-smooth"
+          className="flex-1 h-full overflow-y-auto hide-scrollbar relative bg-background scroll-smooth md:pt-0 pt-20"
         >
           {selectedProduct ? (
             <ProductDetail
@@ -1088,12 +1088,12 @@ export default function Home() {
               <section
                 ref={setSectionRef(0)}
                 data-index="0"
-                className="h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col justify-center"
+                className="h-[100dvh] md:h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col"
               >
                 <img src={HERO_IMAGE} alt="Elora Smart" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
 
-                <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pb-20">
+                <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pb-16 md:pb-20">
                   <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] text-white/80 mb-6 md:mb-8 flex items-center gap-4">
                     <span className="w-8 h-[1px] bg-accent-deep"></span>
                     Elegancia Neo-Corporativa
