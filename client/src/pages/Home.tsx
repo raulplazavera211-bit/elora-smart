@@ -2100,7 +2100,7 @@ export default function Home() {
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                         viewport={{ once: true, margin: "-5%" }}
-                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group cursor-pointer"
+                        className="order-first md:order-none md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group cursor-pointer"
                         onClick={toggle}
                       >
                         {/* Vídeo */}
@@ -2178,7 +2178,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[140px] group bg-black"
+                    className="order-last md:order-none md:col-span-8 relative overflow-hidden border border-border min-h-[140px] group bg-black"
                   >
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
