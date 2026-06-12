@@ -2082,34 +2082,31 @@ export default function Home() {
                           <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
                         </div>
 
-                        {/* Texto parpadeante esquina superior derecha */}
-                        <motion.div
-                          className="absolute top-4 right-4 text-right pointer-events-none"
-                          animate={{ opacity: [1, 0.2, 1] }}
-                          transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-                        >
-                          <p className="font-body text-[9px] uppercase tracking-[0.25em] text-accent leading-tight">Espera, escúchame.</p>
-                          <p className="font-display text-sm uppercase tracking-wide text-white leading-tight">Es importante.</p>
-                        </motion.div>
-
-                        {/* Texto inferior — solo visible cuando pausado */}
-                        {!playing && (
-                          <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7 text-white pointer-events-none">
-                            <p className="font-display text-lg md:text-xl uppercase tracking-wide leading-tight max-w-md mb-2">
-                              De la cantera gallega<br />al baño contemporáneo.
-                            </p>
-                            <div className="flex items-center gap-5">
-                              <div>
-                                <p className="font-display text-sm uppercase tracking-widest">Pureza</p>
-                                <p className="font-body text-[9px] text-white/60 uppercase tracking-widest">Cerámica blanca</p>
+                        {/* Texto inferior con fondo degradado — siempre visible */}
+                        <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+                          {/* Degradado de fondo */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                          <div className="relative px-4 py-4 flex items-end justify-between gap-3">
+                            {/* Texto izquierda — cantera */}
+                            {!playing && (
+                              <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white max-w-[55%]">
+                                De la cantera gallega<br />al baño contemporáneo.
+                              </p>
+                            )}
+                            {/* Texto parpadeante derecha */}
+                            <motion.div
+                              className="text-right ml-auto"
+                              animate={{ opacity: [1, 0.25, 1] }}
+                              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                            >
+                              <div className="inline-block bg-amber-500/90 backdrop-blur-sm px-3 py-2 border-l-2 border-white/40">
+                                <p className="font-body text-[8px] uppercase tracking-[0.3em] text-white/80 leading-tight">Espera,</p>
+                                <p className="font-display text-sm uppercase tracking-wide text-white leading-tight">Escúchame.</p>
+                                <p className="font-body text-[8px] uppercase tracking-[0.2em] text-white/70 leading-tight mt-0.5">Es importante.</p>
                               </div>
-                              <div>
-                                <p className="font-display text-sm uppercase tracking-widest">Solidez</p>
-                                <p className="font-body text-[9px] text-white/60 uppercase tracking-widest">Granito local</p>
-                              </div>
-                            </div>
+                            </motion.div>
                           </div>
-                        )}
+                        </div>
                       </motion.div>
                     );
                   })()}
