@@ -5,6 +5,7 @@ import {
   ShieldCheck, Thermometer, ShoppingBag, MapPin, Wrench, Phone, Mail, Send, Check
 } from "lucide-react";
 import { ProductDetail, type Product } from "@/components/ProductDetail";
+import { TypewriterText } from "@/components/TypewriterText";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
 import { useLocation } from "wouter";
@@ -1112,9 +1113,7 @@ function ReviewsSection() {
           <p className="font-body text-xs uppercase tracking-[0.3em] text-gray-400">Reseñas verificadas en Google</p>
         </div>
         <div className="flex items-end justify-between">
-          <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide text-foreground leading-[0.9]">
-            Lo que dicen<br />nuestros clientes
-          </h2>
+          <TypewriterText text="Lo que dicen nuestros clientes" tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide text-foreground leading-[0.9]" speed={40} delay={100} />
           <div className="hidden md:flex items-center gap-3 bg-white rounded-xl px-5 py-3 shadow-sm border border-gray-100">
             <div className="text-center">
               <p className="font-bold text-gray-900 text-2xl leading-none">5.0</p>
@@ -2327,9 +2326,7 @@ export default function Home() {
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
                         <span className="w-6 h-[1px] bg-accent-deep" /> El Manifiesto
                       </p>
-                      <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]">
-                        Por qué un inodoro<br />deja de ser un mueble.
-                      </h2>
+                      <TypewriterText text="Por qué un inodoro deja de ser un mueble." tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95] whitespace-pre-line" speed={35} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
                       Pasamos casi un año y medio de nuestra vida en el baño. Sin embargo, lo seguimos tratando como una pieza secundaria. En Elora rediseñamos ese momento íntimo desde la higiene, la salud y el silencio.
@@ -2388,9 +2385,7 @@ export default function Home() {
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
                         <span className="w-6 h-[1px] bg-accent-deep" /> Exclusivo Elora®
                       </p>
-                      <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]">
-                        La Colección
-                      </h2>
+                      <TypewriterText text="La Colección" tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]" speed={40} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
                       Seis modelos. Una misma filosofía: higiene avanzada, diseño premium y la tranquilidad del servicio Elora detrás de cada pieza.
@@ -2398,9 +2393,13 @@ export default function Home() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-                    {HOME_PRODUCTS.map((prod) => (
-                      <div
+                    {HOME_PRODUCTS.map((prod, idx) => (
+                      <motion.div
                         key={prod.id}
+                        initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                        viewport={{ once: false, margin: "-5%" }}
+                        transition={{ duration: 0.7, delay: idx * 0.12, ease: [0.16, 1, 0.3, 1] }}
                         className="group flex flex-col h-full bg-background border border-border hover:border-accent-deep transition-colors"
                       >
                         {/* Imagen */}
@@ -2453,7 +2452,7 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
 
@@ -2518,9 +2517,7 @@ export default function Home() {
                       <span className="font-display text-[30vw] leading-none whitespace-nowrap text-foreground font-bold">ELORA</span>
                     </div>
                     <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 mb-6 relative z-10">Listo para elevar tu espacio</p>
-                    <h2 className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-[0.9]">
-                      Hablemos<br />de tu baño.
-                    </h2>
+                    <TypewriterText text="Hablemos de tu baño." tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-[0.9]" speed={45} delay={100} />
                     <p className="font-body text-sm text-foreground/70 leading-relaxed mb-10 max-w-sm relative z-10">
                       Cuéntanos qué tienes en mente. Te asesoramos sin compromiso sobre qué modelo se adapta mejor a tu espacio, instalación y presupuesto.
                     </p>
