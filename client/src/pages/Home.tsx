@@ -2256,15 +2256,13 @@ export default function Home() {
                           <canvas ref={waveCanvasRef} className="absolute inset-0 w-full h-full" />
                           {/* Contenido sobre las olas */}
                           <div className="relative z-10 p-5 md:p-6 flex flex-col justify-between h-full gap-2">
-                            <motion.p
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              whileInView={{ opacity: 1, scale: 1 }}
-                              viewport={{ once: true }}
-                              transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 18 }}
-                              className="font-display text-3xl md:text-4xl leading-none text-white"
+                            <motion.div
+                              animate={{ y: [0, -7, 0] }}
+                              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                              className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-400/90 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-amber-900/30"
                             >
-                              -40%
-                            </motion.p>
+                              <span className="font-display text-xl md:text-2xl leading-none text-black font-bold">-40%</span>
+                            </motion.div>
                             <div>
                               <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white">consumo de agua</p>
                               <p className="font-body text-[10px] leading-relaxed mt-1 text-white/60">frente al papel higiénico convencional</p>
