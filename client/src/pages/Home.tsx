@@ -2198,16 +2198,16 @@ export default function Home() {
                         const ro = new ResizeObserver(resize);
                         ro.observe(canvas);
                         const waves = [
-                          { amp: 12, freq: 0.018, speed: 0.022, phase: 0,   color: 'rgba(14,116,144,0.55)',  yBase: 0.62 },
-                          { amp: 9,  freq: 0.025, speed: 0.030, phase: 2.1, color: 'rgba(8,145,178,0.45)',   yBase: 0.68 },
-                          { amp: 7,  freq: 0.032, speed: 0.018, phase: 4.3, color: 'rgba(6,182,212,0.35)',   yBase: 0.74 },
-                          { amp: 14, freq: 0.012, speed: 0.012, phase: 1.5, color: 'rgba(2,132,199,0.25)',   yBase: 0.55 },
+                          { amp: 12, freq: 0.018, speed: 0.022, phase: 0,   color: 'rgba(180,120,20,0.55)',  yBase: 0.62 },
+                          { amp: 9,  freq: 0.025, speed: 0.030, phase: 2.1, color: 'rgba(217,119,6,0.45)',   yBase: 0.68 },
+                          { amp: 7,  freq: 0.032, speed: 0.018, phase: 4.3, color: 'rgba(245,158,11,0.35)',   yBase: 0.74 },
+                          { amp: 14, freq: 0.012, speed: 0.012, phase: 1.5, color: 'rgba(120,53,15,0.30)',   yBase: 0.55 },
                         ];
                         const draw = () => {
                           const w = canvas.width, h = canvas.height;
                           ctx.clearRect(0, 0, w, h);
                           // Overlay oscuro semitransparente para que el texto se lea
-                          ctx.fillStyle = 'rgba(0,20,40,0.45)';
+                          ctx.fillStyle = 'rgba(20,10,0,0.50)';
                           ctx.fillRect(0, 0, w, h);
                           // Olas
                           waves.forEach(wave => {
@@ -2225,12 +2225,12 @@ export default function Home() {
                             ctx.fillStyle = wave.color;
                             ctx.fill();
                           });
-                          // Destellos de luz en la superficie
+                          // Destellos de luz dorada en la superficie
                           for (let i = 0; i < 3; i++) {
                             const x = (w * 0.2 + i * w * 0.3 + Math.sin(t * 0.008 + i) * 20);
                             const y = h * (0.5 + Math.sin(t * 0.012 + i * 2) * 0.05);
                             const r = ctx.createRadialGradient(x, y, 0, x, y, 30);
-                            r.addColorStop(0, 'rgba(186,230,253,0.18)');
+                            r.addColorStop(0, 'rgba(251,191,36,0.22)');
                             r.addColorStop(1, 'rgba(0,0,0,0)');
                             ctx.fillStyle = r;
                             ctx.fillRect(x - 30, y - 30, 60, 60);
@@ -2248,7 +2248,7 @@ export default function Home() {
                           transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                           viewport={{ once: true }}
                           whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                          className="relative overflow-hidden border border-cyan-900/50 flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0"
+                          className="relative overflow-hidden border border-amber-900/50 flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0"
                         >
                           {/* Foto de fondo */}
                           <img src="https://images.unsplash.com/photo-1559825481-12a05cc00344?w=600&q=80" alt="agua" className="absolute inset-0 w-full h-full object-cover" />
@@ -2261,13 +2261,13 @@ export default function Home() {
                               whileInView={{ opacity: 1, scale: 1 }}
                               viewport={{ once: true }}
                               transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 18 }}
-                              className="font-display text-3xl md:text-4xl leading-none text-cyan-300"
+                              className="font-display text-3xl md:text-4xl leading-none text-amber-300"
                             >
                               -40%
                             </motion.p>
                             <div>
                               <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white">consumo de agua</p>
-                              <p className="font-body text-[10px] leading-relaxed mt-1 text-cyan-200/60">frente al papel higiénico convencional</p>
+                              <p className="font-body text-[10px] leading-relaxed mt-1 text-amber-200/60">frente al papel higiénico convencional</p>
                             </div>
                           </div>
                         </motion.div>
