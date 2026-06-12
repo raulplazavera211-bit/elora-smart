@@ -2206,17 +2206,8 @@ export default function Home() {
                         const draw = () => {
                           const w = canvas.width, h = canvas.height;
                           ctx.clearRect(0, 0, w, h);
-                          // Fondo degradado azul profundo
-                          const bg = ctx.createLinearGradient(0, 0, 0, h);
-                          bg.addColorStop(0, '#0c1a2e');
-                          bg.addColorStop(1, '#0a3d62');
-                          ctx.fillStyle = bg;
-                          ctx.fillRect(0, 0, w, h);
-                          // Brillo de superficie
-                          const shine = ctx.createLinearGradient(0, 0, 0, h * 0.5);
-                          shine.addColorStop(0, 'rgba(56,189,248,0.08)');
-                          shine.addColorStop(1, 'rgba(0,0,0,0)');
-                          ctx.fillStyle = shine;
+                          // Overlay oscuro semitransparente para que el texto se lea
+                          ctx.fillStyle = 'rgba(0,20,40,0.45)';
                           ctx.fillRect(0, 0, w, h);
                           // Olas
                           waves.forEach(wave => {
@@ -2259,7 +2250,9 @@ export default function Home() {
                           whileHover={{ y: -3, transition: { duration: 0.2 } }}
                           className="relative overflow-hidden border border-cyan-900/50 flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0"
                         >
-                          {/* Canvas de olas */}
+                          {/* Foto de fondo */}
+                          <img src="https://images.unsplash.com/photo-1559825481-12a05cc00344?w=600&q=80" alt="agua" className="absolute inset-0 w-full h-full object-cover" />
+                          {/* Canvas de olas semitransparente encima */}
                           <canvas ref={waveCanvasRef} className="absolute inset-0 w-full h-full" />
                           {/* Contenido sobre las olas */}
                           <div className="relative z-10 p-5 md:p-6 flex flex-col justify-between h-full gap-2">
