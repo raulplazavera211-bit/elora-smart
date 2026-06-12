@@ -2184,9 +2184,9 @@ export default function Home() {
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
                       alt="Equipo Elora Smart"
                       className="absolute inset-0 w-full h-full object-cover opacity-100"
-                      style={{objectPosition: '100% 30%', transform: 'translateX(15%) scale(1.05)', transition: 'transform 2.5s ease-out'}}
-                      onMouseEnter={e => (e.currentTarget.style.transform = 'translateX(15%) scale(1.1)')}
-                      onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(15%) scale(1.05)')}
+                      style={{objectPosition: '100% 30%', transform: 'translateX(15%) scale(1.25)', transition: 'transform 2.5s ease-out'}}
+                      onMouseEnter={e => (e.currentTarget.style.transform = 'translateX(15%) scale(1.30)')}
+                      onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(15%) scale(1.25)')}
                     />
                     {/* Degradado: negro opaco en la mitad izquierda, transparente en la derecha para ver la foto */}
                     <div className="absolute inset-0 pointer-events-none" style={{background: 'linear-gradient(to right, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.20) 45%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0) 75%)'}} />
