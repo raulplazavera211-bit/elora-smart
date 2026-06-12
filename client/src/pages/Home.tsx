@@ -2137,7 +2137,7 @@ export default function Home() {
                       {/* Eyebrow */}
                       <div className="flex items-center gap-2">
                         <span className="w-5 h-[1px] bg-accent"></span>
-                        <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent">Fabricado en Galicia</p>
+                        <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent">Est. Galicia · 2024</p>
                       </div>
 
                       {/* Claim central */}

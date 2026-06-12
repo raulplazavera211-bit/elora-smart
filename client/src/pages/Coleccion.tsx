@@ -252,7 +252,16 @@ export default function Coleccion() {
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                       <div className="absolute top-3 left-3 flex flex-col gap-1">
                         {prod.badges.map((b) => (
-                          <span key={b} className="bg-foreground text-background font-body text-[9px] uppercase tracking-[0.2em] px-2 py-1">{b}</span>
+                          <span
+                            key={b}
+                            className={`font-body text-[9px] uppercase tracking-[0.2em] px-2 py-1 ${
+                              b === "Más vendido"
+                                ? "bg-amber-500 text-white font-semibold"
+                                : "bg-foreground text-background"
+                            }`}
+                          >
+                            {b === "Más vendido" ? "★ " + b : b}
+                          </span>
                         ))}
                       </div>
                       <span className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-foreground text-background font-body text-[9px] uppercase tracking-[0.25em] px-2 py-1">

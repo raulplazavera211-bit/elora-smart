@@ -435,7 +435,7 @@ export const ALL_PRODUCTS: Product[] = [
       "El váter japonés AURA suspendido ofrece todo el confort del Water japonés AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el váter suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
     img: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
     gallery: AURA_SUSP_GALLERY,
-    badges: ["Suspendido", "Altura ajustable"],
+    badges: ["Más vendido", "Suspendido", "Altura ajustable"],
     highlights: [
       { label: "Instalación", value: "Suspendida" },
       { label: "Suelo", value: "Totalmente libre" },
