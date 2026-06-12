@@ -2441,7 +2441,7 @@ export default function Home() {
                                 className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                               >
                                 <ShoppingBag className="w-3.5 h-3.5" />
-                                Añadir
+                                Comprar
                               </button>
                               <button
                                 onClick={() => openProduct(prod)}

@@ -67,14 +67,13 @@ export default function Coleccion() {
         </div>
         {cart.length > 0 && (
           <div className="px-8 py-6 border-t border-border">
-            <a
-              href={`https://wa.me/34600000000?text=${encodeURIComponent("Hola, me interesa solicitar información sobre: " + cart.map(i => i.name).join(", "))}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => setIsCartOpen(true)}
               className="w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.25em] py-4 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors"
             >
-              Solicitar presupuesto por WhatsApp
-            </a>
+              <ShoppingBag className="w-4 h-4" />
+              Comprar
+            </button>
           </div>
         )}
       </div>
@@ -286,7 +285,7 @@ export default function Coleccion() {
                             className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                           >
                             <ShoppingBag className="w-3.5 h-3.5" />
-                            Añadir
+                            Comprar
                           </button>
                           <button
                             onClick={() => openProduct(prod)}
