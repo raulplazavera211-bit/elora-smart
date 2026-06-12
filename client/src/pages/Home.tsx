@@ -2178,7 +2178,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[140px] group bg-black"
+                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[260px] md:min-h-[140px] group bg-black"
                   >
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
