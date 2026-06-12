@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
-import { motion } from "motion/react";
-import { ArrowLeft, ShoppingBag, X, Menu, MapPin, ShieldCheck, Wrench } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { ArrowLeft, ShoppingBag, X, Menu, MapPin, ShieldCheck, Wrench, ArrowRight, Check, Trash2 } from "lucide-react";
 import { ProductDetail } from "@/components/ProductDetail";
 import type { Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
 import { ALL_PRODUCTS } from "@/lib/products";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
-const NAV_ITEMS = ["Colección", "Inicio"];
 
-type CartItem = { id: string; name: string };
+type CartItem = { id: string; name: string; price: number; img: string };
+type CheckoutStep = "cart" | "checkout" | "success";
 
 export default function Coleccion() {
   const [, navigate] = useLocation();
@@ -18,10 +18,19 @@ export default function Coleccion() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>("cart");
+  const [checkoutForm, setCheckoutForm] = useState({ nombre: "", apellidos: "", email: "", telefono: "", direccion: "", ciudad: "", cp: "", notas: "" });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const addToCart = (item: CartItem) => setCart((prev) => [...prev, item]);
+  const addToCart = (item: CartItem) => {
+    setCart((prev) => {
+      const existing = prev.findIndex(i => i.id === item.id);
+      if (existing >= 0) return prev;
+      return [...prev, item];
+    });
+  };
   const removeFromCart = (idx: number) => setCart((prev) => prev.filter((_, i) => i !== idx));
+  const cartTotal = cart.reduce((sum, i) => sum + i.price, 0);
 
   const openProduct = (product: Product) => {
     setSelectedProduct(product);
@@ -34,65 +43,22 @@ export default function Coleccion() {
     return () => { document.body.style.overflow = ""; };
   }, []);
 
-  const CartPanel = () => (
-    <div className="fixed inset-0 z-[60] flex" onClick={() => setIsCartOpen(false)}>
-      <div className="flex-1 bg-foreground/40 backdrop-blur-sm" />
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md h-full bg-background border-l border-border flex flex-col">
-        <div className="flex items-center justify-between px-8 py-6 border-b border-border">
-          <div className="flex items-center gap-3">
-            <ShoppingBag className="w-5 h-5 text-foreground" />
-            <p className="font-display text-lg uppercase tracking-widest">Carrito · {cart.length}</p>
-          </div>
-          <button onClick={() => setIsCartOpen(false)} className="outline-none"><X className="w-5 h-5" /></button>
-        </div>
-        <div className="flex-1 overflow-y-auto px-8 py-6">
-          {cart.length === 0 ? (
-            <p className="font-body text-sm text-foreground/60">No hay productos en el carrito.</p>
-          ) : (
-            <ul className="flex flex-col gap-5">
-              {cart.map((item, idx) => (
-                <li key={`${item.id}-${idx}`} className="flex items-start justify-between gap-4 border-b border-border pb-5">
-                  <div>
-                    <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mb-1">{item.id}</p>
-                    <p className="font-display text-base uppercase tracking-wide leading-tight">{item.name}</p>
-                    <p className="font-body text-xs text-foreground/60 mt-2">Solicitud de presupuesto</p>
-                  </div>
-                  <button onClick={() => removeFromCart(idx)} className="font-body text-[10px] uppercase tracking-widest text-foreground/50 hover:text-accent-deep transition-colors">
-                    Quitar
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        {cart.length > 0 && (
-          <div className="px-8 py-6 border-t border-border">
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.25em] py-4 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              Comprar
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  // Reset checkout al cerrar carrito
+  const closeCart = () => {
+    setIsCartOpen(false);
+    setCheckoutStep("cart");
+  };
 
   return (
     <div className="fixed inset-0 bg-background text-foreground font-body flex overflow-hidden">
 
       {/* ── SIDEBAR DESKTOP ────────────────────────────────────────── */}
       <aside className="hidden md:flex w-[220px] lg:w-[260px] flex-shrink-0 h-full border-r border-border flex-col justify-between py-10 z-30 bg-background">
-        {/* Logo */}
         <div className="px-8 mb-10">
           <button onClick={() => navigate("/")} className="outline-none">
             <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
           </button>
         </div>
-
-        {/* Nav */}
         <nav className="flex flex-col gap-5 w-full px-10 flex-1">
           <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
           <button
@@ -100,9 +66,7 @@ export default function Coleccion() {
             className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
           >
             <span className="h-[1px] w-8 bg-accent-deep transition-all duration-500" />
-            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground transition-colors duration-500">
-              Colección
-            </span>
+            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground transition-colors duration-500">Colección</span>
             <span className="ml-auto font-body text-[10px] text-accent-deep">01</span>
           </button>
           <button
@@ -110,21 +74,17 @@ export default function Coleccion() {
             className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
           >
             <span className="h-[1px] w-3 bg-foreground/20 group-hover:w-6 group-hover:bg-foreground/40 transition-all duration-500" />
-            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">
-              Inicio
-            </span>
+            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">Inicio</span>
             <span className="ml-auto font-body text-[10px] text-foreground/20">02</span>
           </button>
         </nav>
-
-        {/* Carrito + info */}
         <div className="px-10 w-full flex flex-col gap-5">
           <button
             onClick={() => setIsCartOpen(true)}
             className="group flex items-center justify-between w-full border border-border px-4 py-3 hover:border-accent-deep transition-colors outline-none"
           >
             <span className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.25em] text-foreground">
-              <ShoppingBag className="w-4 h-4" /> Comprar
+              <ShoppingBag className="w-4 h-4" /> Carrito
             </span>
             <span className="font-display text-sm text-accent-deep">{cart.length}</span>
           </button>
@@ -197,7 +157,7 @@ export default function Coleccion() {
           <ProductDetail
             product={selectedProduct}
             onBack={() => setSelectedProduct(null)}
-            onAdd={(item) => { addToCart(item); setIsCartOpen(true); }}
+            onAdd={(item) => { addToCart({ id: item.id, name: item.name, price: item.price, img: item.img }); setIsCartOpen(true); }}
           />
         ) : (
           <>
@@ -281,7 +241,7 @@ export default function Coleccion() {
                         </div>
                         <div className="flex gap-2">
                           <button
-                            onClick={() => { addToCart({ id: prod.id, name: prod.name }); setIsCartOpen(true); }}
+                            onClick={() => { addToCart({ id: prod.id, name: prod.name, price: prod.price, img: prod.img }); setIsCartOpen(true); }}
                             className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                           >
                             <ShoppingBag className="w-3.5 h-3.5" />
@@ -343,8 +303,161 @@ export default function Coleccion() {
         )}
       </div>
 
-      {/* Cart panel */}
-      {isCartOpen && <CartPanel />}
+      {/* ── PANEL CARRITO / CHECKOUT ──────────────────────────────── */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[60] flex"
+            onClick={closeCart}
+          >
+            <div className="flex-1 bg-foreground/40 backdrop-blur-sm" />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md h-full bg-background border-l border-border flex flex-col"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-8 py-6 border-b border-border flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <ShoppingBag className="w-5 h-5 text-foreground" />
+                  <p className="font-display text-lg uppercase tracking-widest">
+                    {checkoutStep === "cart" ? `Carrito · ${cart.length}` : checkoutStep === "checkout" ? "Datos de envío" : "Pedido recibido"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  {checkoutStep === "checkout" && (
+                    <button onClick={() => setCheckoutStep("cart")} className="font-body text-[10px] uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors outline-none flex items-center gap-1.5">
+                      <ArrowRight className="w-3 h-3 rotate-180" /> Volver
+                    </button>
+                  )}
+                  <button onClick={closeCart} className="outline-none"><X className="w-5 h-5" /></button>
+                </div>
+              </div>
+
+              {/* Pasos */}
+              {checkoutStep !== "success" && (
+                <div className="flex border-b border-border flex-shrink-0">
+                  {["Carrito", "Datos"].map((label, i) => (
+                    <div key={label} className={`flex-1 flex items-center gap-2 px-6 py-3 font-body text-[10px] uppercase tracking-widest transition-colors ${(i === 0 && checkoutStep === "cart") || (i === 1 && checkoutStep === "checkout") ? "text-foreground border-b-2 border-foreground" : "text-foreground/30"}`}>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center text-[9px] flex-shrink-0 ${(i === 0 && checkoutStep === "cart") || (i === 1 && checkoutStep === "checkout") ? "border-foreground" : "border-foreground/20"}`}>
+                        {i === 0 && checkoutStep === "checkout" ? <Check className="w-2.5 h-2.5" /> : i + 1}
+                      </div>
+                      {label}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Contenido */}
+              <div className="flex-1 overflow-y-auto">
+                {checkoutStep === "cart" ? (
+                  <div className="px-8 py-6">
+                    {cart.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-16 gap-4">
+                        <ShoppingBag className="w-10 h-10 text-foreground/20" />
+                        <p className="font-body text-sm text-foreground/40">No hay productos en el carrito.</p>
+                        <button onClick={closeCart} className="font-body text-xs uppercase tracking-[0.3em] border border-border px-6 py-3 hover:border-foreground transition-colors">
+                          Ver colección
+                        </button>
+                      </div>
+                    ) : (
+                      <ul className="flex flex-col gap-5">
+                        {cart.map((item, idx) => (
+                          <li key={`${item.id}-${idx}`} className="flex items-start gap-4 border-b border-border pb-5">
+                            <div className="w-16 h-16 bg-muted border border-border flex-shrink-0 overflow-hidden">
+                              <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mb-0.5">{item.id}</p>
+                              <p className="font-display text-base uppercase tracking-wide leading-tight truncate">{item.name}</p>
+                              <p className="font-display text-sm text-accent-deep mt-1">{item.price.toLocaleString('es-ES')} €</p>
+                            </div>
+                            <button onClick={() => removeFromCart(idx)} className="text-foreground/30 hover:text-accent-deep transition-colors flex-shrink-0 mt-1">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ) : checkoutStep === "checkout" ? (
+                  <form
+                    id="checkout-form-col"
+                    onSubmit={(e) => { e.preventDefault(); }}
+                    className="px-8 py-6 flex flex-col gap-4"
+                  >
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Nombre *</label><input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Tu nombre" /></div>
+                      <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Apellidos *</label><input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Apellidos" /></div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Email *</label><input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="tu@email.com" /></div>
+                      <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Teléfono</label><input type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="+34 600 000 000" /></div>
+                    </div>
+                    <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Dirección *</label><input required value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Calle, número, piso..." /></div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Ciudad *</label><input required value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Ciudad" /></div>
+                      <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">C.P. *</label><input required value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="00000" /></div>
+                    </div>
+                    <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Notas</label><textarea value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} rows={3} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors resize-none" placeholder="Instrucciones especiales de entrega..." /></div>
+                  </form>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full py-16 px-8 text-center gap-6">
+                    <div className="w-16 h-16 rounded-full border border-accent-deep/40 flex items-center justify-center">
+                      <Check className="w-8 h-8 text-accent-deep" />
+                    </div>
+                    <h3 className="font-display text-2xl uppercase tracking-wide">Pedido recibido</h3>
+                    <p className="font-body text-sm text-foreground/60 leading-relaxed">Nos pondremos en contacto contigo en breve para coordinar el pago y la entrega.</p>
+                    <button onClick={() => { closeCart(); setCart([]); }} className="font-body text-xs uppercase tracking-[0.3em] border border-border px-8 py-3 hover:border-foreground transition-colors">
+                      Cerrar
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer del panel */}
+              {checkoutStep !== "success" && (
+                <div className="px-8 py-6 border-t border-border flex-shrink-0">
+                  {cart.length > 0 && checkoutStep === "cart" && (
+                    <div className="flex items-baseline justify-between mb-4">
+                      <span className="font-body text-xs uppercase tracking-widest text-foreground/50">Total</span>
+                      <span className="font-display text-2xl tracking-wide">{cartTotal.toLocaleString('es-ES')} €</span>
+                    </div>
+                  )}
+                  {checkoutStep === "cart" ? (
+                    <motion.button
+                      onClick={() => setCheckoutStep("checkout")}
+                      disabled={cart.length === 0}
+                      whileHover={cart.length > 0 ? { scale: 1.01 } : {}}
+                      whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
+                      className={`w-full font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 transition-all duration-300 ${cart.length > 0 ? "bg-foreground text-background hover:bg-accent-deep" : "bg-foreground/10 text-foreground/30 cursor-not-allowed"}`}
+                    >
+                      <span>{cart.length > 0 ? `Continuar · ${cartTotal.toLocaleString('es-ES')} €` : "Añade productos"}</span>
+                      {cart.length > 0 && <ArrowRight className="w-4 h-4" />}
+                    </motion.button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full bg-foreground/20 text-foreground/30 font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 cursor-not-allowed select-none"
+                    >
+                      <Check className="w-4 h-4" />Pago próximamente disponible
+                    </button>
+                  )}
+                  <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed mt-3">Pago seguro · Envío e instalación coordinados por Elora</p>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
