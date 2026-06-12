@@ -2198,16 +2198,16 @@ export default function Home() {
                         const ro = new ResizeObserver(resize);
                         ro.observe(canvas);
                         const waves = [
-                          { amp: 12, freq: 0.018, speed: 0.022, phase: 0,   color: 'rgba(10,10,10,0.60)',   yBase: 0.62 },
-                          { amp: 9,  freq: 0.025, speed: 0.030, phase: 2.1, color: 'rgba(30,30,30,0.50)',   yBase: 0.68 },
-                          { amp: 7,  freq: 0.032, speed: 0.018, phase: 4.3, color: 'rgba(50,50,50,0.40)',   yBase: 0.74 },
-                          { amp: 14, freq: 0.012, speed: 0.012, phase: 1.5, color: 'rgba(5,5,5,0.35)',      yBase: 0.55 },
+                          { amp: 12, freq: 0.018, speed: 0.022, phase: 0,   color: 'rgba(217,119,6,0.65)',  yBase: 0.62 },
+                          { amp: 9,  freq: 0.025, speed: 0.030, phase: 2.1, color: 'rgba(245,158,11,0.50)', yBase: 0.68 },
+                          { amp: 7,  freq: 0.032, speed: 0.018, phase: 4.3, color: 'rgba(180,83,9,0.55)',   yBase: 0.74 },
+                          { amp: 14, freq: 0.012, speed: 0.012, phase: 1.5, color: 'rgba(146,64,14,0.40)',  yBase: 0.55 },
                         ];
                         const draw = () => {
                           const w = canvas.width, h = canvas.height;
                           ctx.clearRect(0, 0, w, h);
-                          // Overlay oscuro para que el texto se lea
-                          ctx.fillStyle = 'rgba(0,0,0,0.35)';
+                          // Overlay oscuro para que el texto se lea bien sobre las olas naranjas
+                          ctx.fillStyle = 'rgba(0,0,0,0.42)';
                           ctx.fillRect(0, 0, w, h);
                           // Olas
                           waves.forEach(wave => {
@@ -2225,15 +2225,15 @@ export default function Home() {
                             ctx.fillStyle = wave.color;
                             ctx.fill();
                           });
-                          // Destellos de luz blanca en la superficie
+                          // Destellos dorados en la superficie
                           for (let i = 0; i < 3; i++) {
                             const x = (w * 0.2 + i * w * 0.3 + Math.sin(t * 0.008 + i) * 20);
                             const y = h * (0.5 + Math.sin(t * 0.012 + i * 2) * 0.05);
-                            const r = ctx.createRadialGradient(x, y, 0, x, y, 30);
-                            r.addColorStop(0, 'rgba(255,255,255,0.12)');
+                            const r = ctx.createRadialGradient(x, y, 0, x, y, 35);
+                            r.addColorStop(0, 'rgba(251,191,36,0.28)');
                             r.addColorStop(1, 'rgba(0,0,0,0)');
                             ctx.fillStyle = r;
-                            ctx.fillRect(x - 30, y - 30, 60, 60);
+                            ctx.fillRect(x - 35, y - 35, 70, 70);
                           }
                           t++;
                           waveAnimRef.current = requestAnimationFrame(draw);
