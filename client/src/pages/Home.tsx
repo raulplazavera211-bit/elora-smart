@@ -7,7 +7,6 @@ import {
 import { ProductDetail, type Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
-import { WaveCanvas } from "@/components/WaveCanvas";
 import { useLocation } from "wouter";
 import { FEATURED_PRODUCTS, ALL_PRODUCTS as ALL_PRODS } from "@/lib/products";
 
@@ -870,6 +869,72 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
   );
 }
 
+// ─── Acordeón compacto del Manifiesto (solo móvil) ─────────────────────────
+const MANIFESTO_FEATS = [
+  {
+    icon: Sparkles,
+    title: "Higiene Real",
+    emoji: "💧",
+    body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Salud Diaria",
+    emoji: "🛡️",
+    body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar.",
+  },
+  {
+    icon: Thermometer,
+    title: "Lujo Silencioso",
+    emoji: "✨",
+    body: "Tapa de cierre asistido, luz nocturna ambiental y modos personalizados. El confort de un hotel cinco estrellas, cada mañana, en casa.",
+  },
+];
+
+function ManifiestoAccordion() {
+  const [open, setOpen] = useState<number | null>(0);
+  return (
+    <div className="md:hidden flex flex-col border border-border overflow-hidden">
+      {MANIFESTO_FEATS.map((feat, i) => {
+        const Icon = feat.icon;
+        const isOpen = open === i;
+        return (
+          <div key={feat.title} className={`border-b border-border last:border-b-0 ${isOpen ? "bg-background" : "bg-background/60"}  transition-colors duration-300`}>
+            <button
+              onClick={() => setOpen(isOpen ? null : i)}
+              className="w-full flex items-center justify-between px-5 py-4 outline-none"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${isOpen ? "bg-accent-deep text-white" : "bg-muted text-accent-deep"}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <span className="font-display text-base uppercase tracking-wide">{feat.title}</span>
+              </div>
+              <motion.span
+                animate={{ rotate: isOpen ? 45 : 0 }}
+                transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+                className="text-foreground/40 text-xl leading-none select-none"
+              >
+                +
+              </motion.span>
+            </button>
+            <motion.div
+              initial={false}
+              animate={isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              className="overflow-hidden"
+            >
+              <p className="font-body text-sm text-foreground/70 leading-relaxed px-5 pb-5 pt-1">
+                {feat.body}
+              </p>
+            </motion.div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Sección de Reseñas ──────────────────────────────────────────────────────
 const REVIEWS = [
   { name: "Ana G.", text: "Me encanta mover el chorro de agua, para tener una limpieza perfecta.", date: "Mayo 2026", stars: 5 },
@@ -1148,28 +1213,8 @@ export default function Home() {
   const [checkoutForm, setCheckoutForm] = useState({ nombre: "", apellidos: "", email: "", telefono: "", direccion: "", ciudad: "", cp: "", notas: "" });
   const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
   const [contactSent, setContactSent] = useState(false);
-  const [waveProgress, setWaveProgress] = useState(0);
-  const manifestoRef = useRef<HTMLElement | null>(null);
-
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
-
-  // Listener de scroll para el parallax de las olas del manifiesto
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    const onScroll = () => {
-      const el = manifestoRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      const relTop = rect.top - containerRect.top;
-      const progress = Math.max(0, Math.min(1, 1 - relTop / containerRect.height));
-      setWaveProgress(progress);
-    };
-    container.addEventListener("scroll", onScroll, { passive: true });
-    return () => container.removeEventListener("scroll", onScroll);
-  }, [selectedProduct]);
 
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
@@ -2014,12 +2059,11 @@ export default function Home() {
 
               {/* ── CAPÍTULO 3: POR QUÉ ─────────────────────────────────────── */}
               <section
-                ref={(el) => { setSectionRef(2)(el); manifestoRef.current = el; }}
+                ref={setSectionRef(2)}
                 data-index="2"
                 className="w-full relative overflow-hidden bg-muted px-6 py-20 md:p-16"
               >
-                {/* Olas de agua animadas */}
-                <WaveCanvas scrollProgress={waveProgress} />
+
                 <div className="max-w-[1400px] mx-auto w-full">
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16 relative z-10">
                     <div>
@@ -2035,7 +2079,8 @@ export default function Home() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border relative z-10">
+                  {/* ─ Desktop: grid 3 columnas ─ */}
+                  <div className="hidden md:grid grid-cols-3 gap-px bg-border border border-border relative z-10">
                     {[
                       { icon: Sparkles, title: "Higiene Real", body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos." },
                       { icon: ShieldCheck, title: "Salud Diaria", body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar." },
@@ -2054,6 +2099,9 @@ export default function Home() {
                       );
                     })}
                   </div>
+
+                  {/* ─ Móvil: acordeón compacto ─ */}
+                  <ManifiestoAccordion />
 
                   <div className="mt-10 md:mt-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-border pt-8 relative z-10">
                     <p className="font-display text-xl md:text-2xl uppercase tracking-wide max-w-xl leading-tight">
