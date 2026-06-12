@@ -2080,7 +2080,7 @@ export default function Home() {
             <ProductDetail
               product={selectedProduct}
               onBack={() => setSelectedProduct(null)}
-              onAdd={(p) => addToCart({ id: p.id, name: p.name, price: p.price, img: p.img })}
+              onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); setIsCartOpen(true); }}
             />
           ) : (
             <>
