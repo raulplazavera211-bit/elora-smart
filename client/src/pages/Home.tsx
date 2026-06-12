@@ -895,195 +895,81 @@ const MANIFESTO_FEATS = [
 ];
 
 function ManifiestoAccordion() {
-  const [active, setActive] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [seen, setSeen] = useState<Set<number>>(new Set([0]));
-  const total = MANIFESTO_FEATS.length;
-  const allSeen = seen.size >= total;
-
-  const goTo = (idx: number) => {
-    const clamped = Math.max(0, Math.min(total - 1, idx));
-    setDirection(clamped > active ? 1 : -1);
-    setActive(clamped);
-    setSeen(prev => new Set(Array.from(prev).concat(clamped)));
-  };
-
-  const variants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? "100%" : "-100%",
-      scale: 0.88,
-      opacity: 0,
-    }),
-    center: { x: 0, scale: 1, opacity: 1 },
-    exit: (dir: number) => ({
-      x: dir > 0 ? "-40%" : "40%",
-      scale: 0.9,
-      opacity: 0,
-    }),
-  };
-
-  const feat = MANIFESTO_FEATS[active];
-  const Icon = feat.icon;
-
   return (
-    <div className="md:hidden -mx-6">
-      {/* Pantalla completa con foto de fondo */}
-      <div
-        className="relative overflow-hidden"
-        style={{ height: "85dvh" }}
-        onTouchStart={(e) => {
-          const startX = e.touches[0].clientX;
-          const startY = e.touches[0].clientY;
-          const onEnd = (ev: TouchEvent) => {
-            const dx = ev.changedTouches[0].clientX - startX;
-            const dy = ev.changedTouches[0].clientY - startY;
-            // Solo swipe horizontal
-            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-              if (dx < 0 && active < total - 1) goTo(active + 1);
-              if (dx > 0 && active > 0) goTo(active - 1);
-            }
-            document.removeEventListener("touchend", onEnd);
-          };
-          document.addEventListener("touchend", onEnd, { once: true });
-        }}
-      >
-        {/* Fotos de fondo con crossfade */}
-        <AnimatePresence mode="sync">
+    <div className="md:hidden flex flex-col gap-0 border border-border overflow-hidden">
+      {MANIFESTO_FEATS.map((feat, i) => {
+        const Icon = feat.icon;
+        return (
           <motion.div
-            key={`bg-${active}`}
-            className="absolute inset-0"
-            initial={{ opacity: 0, scale: 1.06 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <img
-              src={feat.img}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-            {/* Overlay degradado */}
-            <div className={`absolute inset-0 bg-gradient-to-t ${feat.color} via-black/40 to-black/20`} />
-            <div className="absolute inset-0 bg-black/30" />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Contenido de la tarjeta */}
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={`card-${active}`}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            key={feat.title}
+            initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60, scale: 0.93 }}
+            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.4 }}
             transition={{
-              x: { type: "spring", stiffness: 340, damping: 30 },
-              scale: { type: "spring", stiffness: 300, damping: 28 },
-              opacity: { duration: 0.2 },
+              duration: 0.65,
+              delay: i * 0.08,
+              ease: [0.23, 1, 0.32, 1],
             }}
-            className="absolute inset-0 flex flex-col justify-end p-8"
+            className="relative overflow-hidden bg-background border-b border-border last:border-b-0"
           >
-            {/* Número decorativo */}
-            <motion.span
-              className="absolute top-6 right-6 font-display text-[6rem] leading-none text-white/10 select-none"
-              initial={{ opacity: 0, y: -15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-            >
-              {String(active + 1).padStart(2, "0")}
-            </motion.span>
+            {/* Foto discreta de fondo */}
+            <div className="absolute inset-0 pointer-events-none">
+              <img
+                src={feat.img}
+                alt=""
+                className="w-full h-full object-cover opacity-[0.07]"
+              />
+            </div>
 
-            {/* Icono */}
-            <motion.div
-              className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center mb-5"
-              initial={{ scale: 0, rotate: -90 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: "spring", stiffness: 380, damping: 22, delay: 0.12 }}
-            >
-              <Icon className="w-6 h-6 text-white" />
-            </motion.div>
+            <div className="relative z-10 p-7 flex flex-col gap-4">
+              {/* Cabecera */}
+              <div className="flex items-start justify-between">
+                <motion.div
+                  className="w-11 h-11 rounded-full bg-accent-deep flex items-center justify-center"
+                  initial={{ scale: 0, rotate: -90 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  viewport={{ once: true, amount: 0.6 }}
+                  transition={{ type: "spring", stiffness: 380, damping: 20, delay: i * 0.08 + 0.2 }}
+                >
+                  <Icon className="w-5 h-5 text-white" />
+                </motion.div>
+                <span className="font-display text-[4.5rem] leading-none text-foreground/6 select-none">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
 
-            {/* Título */}
-            <motion.h3
-              className="font-display text-3xl uppercase tracking-wide leading-tight text-white mb-3"
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-            >
-              {feat.title}
-            </motion.h3>
+              <motion.h3
+                className="font-display text-2xl uppercase tracking-wide leading-tight"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ delay: i * 0.08 + 0.25, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+              >
+                {feat.title}
+              </motion.h3>
 
-            {/* Cuerpo */}
-            <motion.p
-              className="font-body text-sm text-white/80 leading-relaxed mb-6"
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-            >
-              {feat.body}
-            </motion.p>
+              <motion.p
+                className="font-body text-sm text-foreground/70 leading-relaxed"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ delay: i * 0.08 + 0.32, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+              >
+                {feat.body}
+              </motion.p>
 
-            {/* Barra de progreso */}
-            <div className="h-[2px] bg-white/20 rounded-full overflow-hidden">
+              {/* Línea decorativa que se expande */}
               <motion.div
-                className="h-full bg-white rounded-full"
+                className="h-[2px] bg-accent-deep rounded-full"
                 initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 3.5, ease: "linear", delay: 0.4 }}
-                key={`bar-${active}`}
+                whileInView={{ width: "40%" }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ delay: i * 0.08 + 0.4, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
               />
             </div>
           </motion.div>
-        </AnimatePresence>
-
-        {/* Indicadores de paso (arriba) */}
-        <div className="absolute top-6 left-6 flex items-center gap-2 z-20">
-          {MANIFESTO_FEATS.map((_, i) => (
-            <div
-              key={i}
-              className={`h-[3px] rounded-full transition-all duration-400 ${
-                i === active ? "w-8 bg-white" : seen.has(i) ? "w-4 bg-white/60" : "w-4 bg-white/25"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Hint de swipe (solo si no ha visto todos) */}
-        {!allSeen && active < total - 1 && (
-          <motion.div
-            className="absolute bottom-10 right-6 flex items-center gap-2 z-20"
-            animate={{ x: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
-          >
-            <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/60">Desliza</span>
-            <ArrowRight className="w-4 h-4 text-white/60" />
-          </motion.div>
-        )}
-      </div>
-
-      {/* Flechas de navegación debajo */}
-      <div className="flex items-center justify-between px-6 py-3 bg-muted border-t border-border">
-        <button
-          onClick={() => goTo(active - 1)}
-          disabled={active === 0}
-          className="w-9 h-9 flex items-center justify-center border border-border text-foreground/50 disabled:opacity-20 hover:border-accent-deep hover:text-accent-deep transition-colors"
-        >
-          <ArrowRight className="w-4 h-4 rotate-180" />
-        </button>
-
-        <span className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40">
-          {active + 1} / {total}
-        </span>
-
-        <button
-          onClick={() => goTo(active + 1)}
-          disabled={active === total - 1}
-          className="w-9 h-9 flex items-center justify-center border border-border text-foreground/50 disabled:opacity-20 hover:border-accent-deep hover:text-accent-deep transition-colors"
-        >
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
+        );
+      })}
     </div>
   );
 }
