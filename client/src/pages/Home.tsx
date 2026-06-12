@@ -2263,7 +2263,7 @@ export default function Home() {
                       <div className="p-3 md:p-3 border-t border-amber-400/30">
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <p className="font-body text-[9px] md:text-[8px] uppercase tracking-widest text-foreground/40 mb-0.5">AURA Suspendido</p>
+                            <p className="font-display text-base md:text-sm uppercase tracking-widest text-foreground/70 mb-0.5">AURA Suspendido</p>
                             <p className="font-display text-2xl md:text-base leading-none text-foreground">2.600 <span className="text-sm md:text-xs text-foreground/60">€</span></p>
                           </div>
                         </div>
