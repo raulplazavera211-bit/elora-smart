@@ -99,13 +99,13 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                   className="group flex-1 inline-flex items-center justify-center gap-3 bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 hover:bg-accent-deep transition-colors"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  Solicitar este modelo
+                  Comprar ahora
                 </button>
                 <button
                   onClick={onBack}
                   className="flex-1 inline-flex items-center justify-center gap-3 border border-border font-body text-xs uppercase tracking-[0.3em] py-4 hover:border-accent-deep hover:text-accent-deep transition-colors"
                 >
-                  Comparar colección
+                  Ver colección
                 </button>
               </div>
 
