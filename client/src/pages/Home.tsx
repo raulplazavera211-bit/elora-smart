@@ -1972,10 +1972,10 @@ export default function Home() {
               <section
                 ref={setSectionRef(1)}
                 data-index="1"
-                className="min-h-[100dvh] w-full relative overflow-hidden bg-background flex flex-col"
+                className="w-full relative overflow-hidden bg-background flex flex-col"
               >
                 {/* Cabecera de sección */}
-                <div className="px-6 pt-10 pb-6 md:px-12 md:pt-12 md:pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div className="px-6 pt-8 pb-4 md:px-12 md:pt-10 md:pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -2001,7 +2001,7 @@ export default function Home() {
                 </div>
 
                 {/* Grid estructura original: 7+5 cols, 2 filas */}
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-12 grid-rows-[auto] md:grid-rows-2 gap-3 md:gap-4 px-6 pb-10 md:px-12 md:pb-12">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-12 grid-rows-[auto] md:grid-rows-2 gap-3 md:gap-4 px-6 pb-8 md:px-12 md:pb-10">
 
                   {/* BLOQUE GRANDE IZQUIERDA — vídeo "Espera, escúchame" (7 cols, 2 rows) */}
                   {(() => {
@@ -2040,7 +2040,7 @@ export default function Home() {
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                         viewport={{ once: true, margin: "-5%" }}
-                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[160px] md:min-h-0 group cursor-pointer"
+                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[140px] md:min-h-[200px] group cursor-pointer"
                         onClick={toggle}
                       >
                         {/* Vídeo */}
@@ -2121,7 +2121,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[220px] group bg-black"
+                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[160px] group bg-black"
                   >
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
