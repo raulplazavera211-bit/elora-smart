@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import {
   ArrowLeft, ShoppingBag, Truck, Wrench, Shield,
   Sparkles, Droplets, Thermometer, Wind, Zap, Check
@@ -36,11 +37,16 @@ const PITCH_ICONS = [Sparkles, Droplets, Thermometer, Wind, Zap, Shield];
 
 export function ProductDetail({ product, onBack, onAdd }: Props) {
   return (
-    <div className="min-h-full bg-background">
+    <motion.div
+      className="min-h-full bg-background"
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+    >
 
       {/* HERO */}
       <div className="relative w-full bg-muted border-b border-border">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-16 pt-24 pb-10 md:py-14">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-16 pt-6 pb-10 md:py-10">
           <button
             onClick={onBack}
             className="group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-foreground/60 hover:text-accent-deep transition-colors mb-8"
@@ -334,6 +340,6 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }
