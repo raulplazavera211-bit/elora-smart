@@ -1478,37 +1478,35 @@ export default function Home() {
 
                 {/* ── Social proof strip (solo en paso carrito) ── */}
                 {checkoutStep === "cart" && (
-                  <div className="bg-[#F8F9FA] border-t border-gray-200 px-6 py-5">
+                  <div className="bg-[#F8F9FA] border-t border-gray-200 px-5 py-3">
                     {/* Headline */}
-                    <p className="font-display text-[11px] uppercase tracking-[0.25em] text-gray-400 mb-3 text-center">
+                    <p className="font-display text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2 text-center">
                       Estás a punto de unirte a clientes como estos
                     </p>
-                    {/* Mini carrusel de reseñas */}
-                    <div className="flex flex-col gap-3">
-                      {REVIEWS.slice(0, 3).map((r, i) => (
-                        <div key={i} className="flex items-start gap-3 bg-white rounded-lg p-3 shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
+                    {/* 2 reseñas horizontales compactas */}
+                    <div className="flex flex-col gap-1.5">
+                      {REVIEWS.slice(0, 2).map((r, i) => (
+                        <div key={i} className="flex items-center gap-2 bg-white rounded-md px-2.5 py-1.5 shadow-[0_1px_3px_rgba(0,0,0,0.07)]">
                           <div
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0"
                             style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
                           >
                             {r.name.charAt(0)}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-0.5">
-                              <p className="text-gray-800 text-xs font-semibold leading-none">{r.name}</p>
-                              <div className="flex gap-0.5">
-                                {[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}
-                              </div>
+                            <div className="flex items-center gap-1.5">
+                              <p className="text-gray-800 text-[11px] font-semibold leading-none shrink-0">{r.name}</p>
+                              <div className="flex gap-0.5 shrink-0">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
                             </div>
-                            <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{r.text}</p>
+                            <p className="text-gray-400 text-[10px] leading-tight line-clamp-1 mt-0.5">{r.text}</p>
                           </div>
                         </div>
                       ))}
                     </div>
                     {/* Rating summary */}
-                    <div className="flex items-center justify-center gap-2 mt-3">
+                    <div className="flex items-center justify-center gap-1.5 mt-2">
                       <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                      <p className="text-gray-500 text-[11px] font-medium">5.0 · 10 reseñas en Google</p>
+                      <p className="text-gray-400 text-[10px]">5.0 · 10 reseñas</p>
                       <GoogleLogoIcon />
                     </div>
                   </div>
@@ -1537,7 +1535,13 @@ export default function Home() {
                       <span className="relative z-10">
                         {cart.length > 0 ? `Comprar · ${cartTotal.toLocaleString('es-ES')} €` : "Añade productos"}
                       </span>
-                      <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform duration-200" />
+                      <motion.span
+                        className="relative z-10 flex items-center"
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                      </motion.span>
                     </motion.button>
                   ) : (
                     <button
