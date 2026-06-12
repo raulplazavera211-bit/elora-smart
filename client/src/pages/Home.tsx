@@ -904,10 +904,10 @@ function ManifiestoAccordion() {
             key={feat.title}
             initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60, scale: 0.93 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            exit={{ opacity: 0, x: i % 2 === 0 ? -60 : 60, scale: 0.93 }}
+            viewport={{ once: false, amount: 0.35 }}
             transition={{
               duration: 0.65,
-              delay: i * 0.08,
               ease: [0.23, 1, 0.32, 1],
             }}
             className="relative overflow-hidden bg-background border-b border-border last:border-b-0"
@@ -928,8 +928,8 @@ function ManifiestoAccordion() {
                   className="w-11 h-11 rounded-full bg-accent-deep flex items-center justify-center"
                   initial={{ scale: 0, rotate: -90 }}
                   whileInView={{ scale: 1, rotate: 0 }}
-                  viewport={{ once: true, amount: 0.6 }}
-                  transition={{ type: "spring", stiffness: 380, damping: 20, delay: i * 0.08 + 0.2 }}
+                  viewport={{ once: false, amount: 0.6 }}
+                  transition={{ type: "spring", stiffness: 380, damping: 20, delay: 0.2 }}
                 >
                   <Icon className="w-5 h-5 text-white" />
                 </motion.div>
@@ -942,8 +942,8 @@ function ManifiestoAccordion() {
                 className="font-display text-2xl uppercase tracking-wide leading-tight"
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ delay: i * 0.08 + 0.25, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                viewport={{ once: false, amount: 0.6 }}
+                transition={{ delay: 0.25, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
               >
                 {feat.title}
               </motion.h3>
@@ -952,8 +952,8 @@ function ManifiestoAccordion() {
                 className="font-body text-sm text-foreground/70 leading-relaxed"
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ delay: i * 0.08 + 0.32, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                viewport={{ once: false, amount: 0.6 }}
+                transition={{ delay: 0.32, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
               >
                 {feat.body}
               </motion.p>
@@ -963,8 +963,8 @@ function ManifiestoAccordion() {
                 className="h-[2px] bg-accent-deep rounded-full"
                 initial={{ width: 0 }}
                 whileInView={{ width: "40%" }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ delay: i * 0.08 + 0.4, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                viewport={{ once: false, amount: 0.6 }}
+                transition={{ delay: 0.4, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
               />
             </div>
           </motion.div>
