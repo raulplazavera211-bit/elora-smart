@@ -1209,7 +1209,12 @@ function ClubEloraSection() {
             <div
               key={i}
               className={`group relative rounded-sm border border-white/10 p-6 md:p-8 hover:border-amber-400/40 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ background: "rgba(255,255,255,0.03)", transitionDelay: `${200 + i * 100}ms` }}
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                transitionDelay: `${200 + i * 100}ms`,
+                animation: visible ? `floatCard ${3.5 + i * 0.4}s ease-in-out infinite` : "none",
+                animationDelay: `${i * 0.6}s`
+              }}
             >
               <div className="absolute inset-0 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "linear-gradient(135deg, rgba(245,164,91,0.05) 0%, transparent 100%)" }} />
               <div className="text-3xl mb-4">{perk.icon}</div>
@@ -1219,7 +1224,10 @@ function ClubEloraSection() {
           ))}
         </div>
 
-        <div className={`max-w-xl mx-auto transition-all duration-1000 delay-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+        <div
+          className={`max-w-xl mx-auto transition-all duration-1000 delay-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+          style={{ animation: visible ? "floatCard 4.5s ease-in-out infinite" : "none", animationDelay: "0.3s" }}
+        >
           {sent ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 rounded-full border border-amber-400/40 flex items-center justify-center mx-auto mb-6">

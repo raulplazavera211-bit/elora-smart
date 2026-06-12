@@ -92,3 +92,15 @@
   0% { transform: scaleX(0); }
   100% { transform: scaleX(1); }
 }
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes floatCard {
+    0%, 100% { transform: translateY(0px); }
+  }
+}
