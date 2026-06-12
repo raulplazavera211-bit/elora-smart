@@ -2193,7 +2193,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
 
                     {/* Contenido principal */}
-                    <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 pointer-events-none">
+                    <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 pointer-events-none" style={{maxWidth: '55%'}}>
                       {/* Eyebrow */}
                       <div className="flex items-center gap-2">
                         <span className="w-5 h-[1px] bg-accent"></span>
