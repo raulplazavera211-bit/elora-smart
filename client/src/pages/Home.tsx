@@ -2180,35 +2180,46 @@ export default function Home() {
                   {/* BLOQUE INFERIOR DERECHA — stat + tarjeta producto top ventas (8 cols) */}
                   <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
 
-                    {/* Tarjeta instalación rápida */}
+                    {/* Tarjeta azul marina — dato llamativo */}
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                       viewport={{ once: true }}
                       whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                      className="relative overflow-hidden bg-foreground flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0 p-5 md:p-6"
+                      className="relative overflow-hidden flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0 p-5 md:p-6"
+                      style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0d2347 50%, #0a1f3d 100%)' }}
                     >
-                      {/* Fondo foto sutil */}
-                      <img src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-10.webp" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
-                      {/* Círculo decorativo de fondo */}
+                      {/* Círculos de luz azul de fondo */}
                       <motion.div
-                        animate={{ scale: [1, 1.08, 1], opacity: [0.08, 0.14, 0.08] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                        className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-accent"
+                        animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.30, 0.15] }}
+                        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                        className="absolute -top-6 -right-6 w-28 h-28 rounded-full"
+                        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)' }}
                       />
-                      <div className="relative z-10 flex flex-col justify-between h-full gap-3">
-                        {/* Número flotante */}
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.10, 0.20, 0.10] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+                        className="absolute -bottom-4 -left-4 w-20 h-20 rounded-full"
+                        style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.3) 0%, transparent 70%)' }}
+                      />
+                      {/* Contenido */}
+                      <div className="relative z-10 flex flex-col justify-between h-full gap-2">
+                        {/* Número grande flotante */}
                         <motion.div
-                          animate={{ y: [0, -6, 0] }}
-                          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-                          className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-accent flex items-center justify-center shadow-lg"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                         >
-                          <span className="font-display text-lg md:text-xl leading-none text-black font-bold">2h</span>
+                          <span className="font-display leading-none font-bold"
+                            style={{ fontSize: 'clamp(2.5rem,6vw,3.5rem)', color: '#60a5fa' }}
+                          >10</span>
+                          <span className="font-display text-lg md:text-xl leading-none font-bold ml-1"
+                            style={{ color: '#93c5fd' }}
+                          >años</span>
                         </motion.div>
                         <div>
-                          <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-background">instalación</p>
-                          <p className="font-body text-[10px] leading-relaxed mt-1 text-background/50">instalado y funcionando en tu baño</p>
+                          <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white">de garantía</p>
+                          <p className="font-body text-[10px] leading-relaxed mt-1" style={{ color: 'rgba(147,197,253,0.6)' }}>tranquilidad total desde el primer día</p>
                         </div>
                       </div>
                     </motion.div>
