@@ -6,6 +6,7 @@ import { ProductDetail } from "@/components/ProductDetail";
 import type { Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
 import { ALL_PRODUCTS } from "@/lib/products";
+import { ReviewsSection } from "@/components/ReviewsSection";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -298,6 +299,7 @@ export default function Coleccion() {
               </div>
             </div>
 
+            <ReviewsSection />
             <Footer />
           </>
         )}

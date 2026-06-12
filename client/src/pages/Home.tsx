@@ -10,6 +10,8 @@ import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
 import { useLocation } from "wouter";
 import { FEATURED_PRODUCTS, ALL_PRODUCTS as ALL_PRODS } from "@/lib/products";
+import { ReviewsSection } from "@/components/ReviewsSection";
+import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
@@ -1036,18 +1038,7 @@ function ManifiestoAccordion() {
 }
 
 // ─── Sección de Reseñas ──────────────────────────────────────────────────────
-const REVIEWS = [
-  { name: "Ana G.", text: "Me encanta mover el chorro de agua, para tener una limpieza perfecta.", date: "Mayo 2026", stars: 5 },
-  { name: "Jaime V.", text: "El Vater en sí es la bomba, muy buena calidad, facilísimo de instalar siempre que sigas las instrucciones, facilísimo de usar y todo automático. La atención al cliente es brutal, el seguimiento que hacen y la paciencia que tienen.", date: "Mayo 2026", stars: 5 },
-  { name: "Adán M.", text: "Teníamos un WC suspendido y nos horrorizaba la idea de meternos en obra. Pero gracias al buen asesoramiento, decidimos lanzarnos de cabeza. Totalmente satisfechos con el resultado.", date: "Mayo 2026", stars: 5 },
-  { name: "Lorena A.", text: "Un lujo tener este inodoro en casa, no sé cómo hemos podido vivir sin él! El baño ha pasado a ser de lujo! Un 10.", date: "Marzo 2026", stars: 5 },
-  { name: "Carlos M.", text: "La atención un 10 sobre 10, profesionales y con el producto que compré muy satisfecho. Para mí ha sido una alegría, estoy muy conforme, lo recomiendo.", date: "Marzo 2026", stars: 5 },
-  { name: "Marta R.", text: "Muy buena atención de Marta y Eloi. Interesante producto. Espero que poco a poco nos vayamos acostumbrando a las nuevas tendencias.", date: "Marzo 2026", stars: 5 },
-  { name: "Instalaciones Pro", text: "Excelente producto, atención inmejorable. Acostumbrados a instalar todo tipo de wc inteligentes, sin duda este es el más completo que hemos instalado hasta la fecha. Altísima calidad tanto en funciones como en acabados.", date: "Febrero 2026", stars: 5 },
-  { name: "Roberto F.", text: "Después de varias semanas aún me sigue sorprendiendo 😃", date: "Febrero 2026", stars: 5 },
-  { name: "Pedro L.", text: "Hemos instalado el modelo compact y la verdad que es toda una novedad. La instalación es muy similar a un inodoro convencional. Estoy sorprendido por todas las opciones que tiene, lo recomiendo.", date: "Enero 2026", stars: 5 },
-  { name: "Sofía T.", text: "Me lo han puesto en mi casa y estoy encantada. Al principio no estaba segura que fuera realmente útil y ahora solo utilizo este inodoro.", date: "Enero 2026", stars: 5 },
-];
+// REVIEWS y AVATAR_COLORS importados desde @/lib/reviews (fuente única de verdad)
 
 function GoogleStarIcon() {
   return (
@@ -1068,12 +1059,9 @@ function GoogleLogoIcon() {
   );
 }
 
-const AVATAR_COLORS = [
-  "#4285F4", "#EA4335", "#34A853", "#FBBC04", "#9C27B0",
-  "#00BCD4", "#FF5722", "#607D8B", "#E91E63", "#3F51B5",
-];
 
-function ReviewCard({ r, idx }: { r: typeof REVIEWS[0]; idx: number }) {
+
+function ReviewCard({ r, idx }: { r: import("@/lib/reviews").Review; idx: number }) {
   const color = AVATAR_COLORS[idx % AVATAR_COLORS.length];
   return (
     <div className="w-[300px] md:w-[340px] flex-shrink-0 bg-white rounded-xl shadow-[0_1px_6px_rgba(0,0,0,0.12)] p-5 border border-gray-100 hover:shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition-shadow duration-300">
@@ -1103,54 +1091,7 @@ function ReviewCard({ r, idx }: { r: typeof REVIEWS[0]; idx: number }) {
   );
 }
 
-function ReviewsSection() {
-  const doubled = [...REVIEWS, ...REVIEWS];
-  return (
-    <section className="w-full bg-[#F8F9FA] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-16 mb-12">
-        <div className="flex items-center gap-2 mb-3">
-          <GoogleLogoIcon />
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-gray-400">Reseñas verificadas en Google</p>
-        </div>
-        <div className="flex items-end justify-between">
-          <TypewriterText text="Lo que dicen nuestros clientes" tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide text-foreground leading-[0.9]" speed={40} delay={100} />
-          <div className="hidden md:flex items-center gap-3 bg-white rounded-xl px-5 py-3 shadow-sm border border-gray-100">
-            <div className="text-center">
-              <p className="font-bold text-gray-900 text-2xl leading-none">5.0</p>
-              <div className="flex gap-0.5 mt-1">{[1,2,3,4,5].map(i => <GoogleStarIcon key={i} />)}</div>
-              <p className="text-gray-400 text-xs mt-1">10 reseñas</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Carrusel infinito fila 1 → izquierda */}
-      <div className="relative">
-        <div className="flex gap-5 w-max" style={{ animation: "marquee-left 40s linear infinite" }}>
-          {doubled.map((r, i) => <ReviewCard key={i} r={r} idx={i % REVIEWS.length} />)}
-        </div>
-      </div>
-
-      {/* Carrusel infinito fila 2 → derecha */}
-      <div className="relative mt-5">
-        <div className="flex gap-5 w-max" style={{ animation: "marquee-right 50s linear infinite" }}>
-          {[...doubled].reverse().map((r, i) => <ReviewCard key={i} r={r} idx={(REVIEWS.length - 1 - (i % REVIEWS.length))} />)}
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes marquee-left {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes marquee-right {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
-      `}</style>
-    </section>
-  );
-}
+// ReviewsSection importada desde @/components/ReviewsSection
 
 
 // ─── Club Elora Section ──────────────────────────────────────────────────────────────────────────────
