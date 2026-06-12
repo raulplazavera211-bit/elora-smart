@@ -2177,54 +2177,75 @@ export default function Home() {
                     </div>
                   </motion.div>
 
-                  {/* BLOQUE INFERIOR DERECHA — dos stats impactantes (8 cols) */}
+                  {/* BLOQUE INFERIOR DERECHA — stat + tarjeta producto top ventas (8 cols) */}
                   <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
-                    {[
-                      {
-                        stat: "-40%",
-                        label: "consumo de agua",
-                        sub: "frente al papel higiénico convencional",
-                        dark: true,
-                      },
-                      {
-                        stat: "37°C",
-                        label: "agua templada exacta",
-                        sub: "limpieza sin contacto, cada vez",
-                        dark: false,
-                      },
-                    ].map((item, i) => (
-                      <motion.div
-                        key={item.stat}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+
+                    {/* Tarjeta stat -40% */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      viewport={{ once: true }}
+                      whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                      className="border border-border p-5 md:p-6 flex flex-col justify-between gap-2 cursor-default bg-foreground text-background"
+                    >
+                      <motion.p
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                        className={`border border-border p-5 md:p-6 flex flex-col justify-between gap-2 cursor-default ${
-                          item.dark ? "bg-foreground text-background" : "bg-background text-foreground"
-                        }`}
+                        transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 18 }}
+                        className="font-display text-3xl md:text-4xl leading-none text-accent"
                       >
-                        <motion.p
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.4 + i * 0.1, type: "spring", stiffness: 200, damping: 18 }}
-                          className={`font-display text-3xl md:text-4xl leading-none ${
-                            item.dark ? "text-accent" : "text-accent-deep"
-                          }`}
-                        >
-                          {item.stat}
-                        </motion.p>
-                        <div>
-                          <p className={`font-display text-sm md:text-base uppercase tracking-wide leading-tight ${
-                            item.dark ? "text-background" : "text-foreground"
-                          }`}>{item.label}</p>
-                          <p className={`font-body text-[10px] leading-relaxed mt-1 ${
-                            item.dark ? "text-background/50" : "text-foreground/50"
-                          }`}>{item.sub}</p>
-                        </div>
-                      </motion.div>
-                    ))}
+                        -40%
+                      </motion.p>
+                      <div>
+                        <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-background">consumo de agua</p>
+                        <p className="font-body text-[10px] leading-relaxed mt-1 text-background/50">frente al papel higiénico convencional</p>
+                      </div>
+                    </motion.div>
+
+                    {/* Tarjeta producto Top Ventas — AURA-SUSPENDIDO */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      viewport={{ once: true }}
+                      whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                      className="relative overflow-hidden border border-amber-400 bg-background flex flex-col cursor-default group"
+                    >
+                      {/* Barra Top Ventas */}
+                      <div className="relative bg-amber-500 px-3 py-1.5 flex items-center gap-2 overflow-hidden">
+                        {/* Shimmer animado */}
+                        <motion.div
+                          animate={{ x: ["-100%", "200%"] }}
+                          transition={{ duration: 2.2, repeat: Infinity, ease: "linear", repeatDelay: 1.5 }}
+                          className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
+                        />
+                        <motion.span
+                          animate={{ scale: [1, 1.15, 1] }}
+                          transition={{ duration: 1.2, repeat: Infinity, repeatDelay: 2 }}
+                          className="text-white text-[11px]"
+                        >★</motion.span>
+                        <span className="font-body text-[9px] uppercase tracking-[0.3em] text-white font-semibold">Top Ventas</span>
+                        <span className="ml-auto font-body text-[9px] text-white/70 uppercase tracking-widest">#1</span>
+                      </div>
+
+                      {/* Imagen producto */}
+                      <div className="relative flex-1 min-h-[80px] overflow-hidden bg-muted">
+                        <img
+                          src="https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg"
+                          alt="AURA Suspendido"
+                          className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                        />
+                      </div>
+
+                      {/* Info producto */}
+                      <div className="p-3 border-t border-amber-400/30">
+                        <p className="font-body text-[8px] uppercase tracking-widest text-foreground/40 mb-0.5">AURA Suspendido</p>
+                        <p className="font-display text-base leading-none text-foreground">2.600 <span className="text-xs text-foreground/60">€</span></p>
+                      </div>
+                    </motion.div>
+
                   </div>
 
                 </div>
