@@ -2178,7 +2178,7 @@ export default function Home() {
                   </motion.div>
 
                   {/* BLOQUE INFERIOR DERECHA — stat + tarjeta producto top ventas (8 cols) */}
-                  <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
 
                     {/* Tarjeta azul marina — dato llamativo */}
                     <motion.div
@@ -2187,7 +2187,7 @@ export default function Home() {
                       transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                       viewport={{ once: true }}
                       whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                      className="relative overflow-hidden flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0 p-5 md:p-6"
+                      className="hidden md:flex relative overflow-hidden flex-col justify-between cursor-default min-h-[140px] md:min-h-0 p-5 md:p-6"
                       style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0d2347 50%, #0a1f3d 100%)' }}
                     >
                       {/* Círculos de luz azul de fondo */}
