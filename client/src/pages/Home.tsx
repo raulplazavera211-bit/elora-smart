@@ -2040,7 +2040,7 @@ export default function Home() {
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                         viewport={{ once: true, margin: "-5%" }}
-                        className="md:col-span-5 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[220px] md:min-h-0 group cursor-pointer"
+                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[160px] md:min-h-0 group cursor-pointer"
                         onClick={toggle}
                       >
                         {/* Vídeo */}
@@ -2120,7 +2120,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-7 relative overflow-hidden border border-border min-h-[220px] group"
+                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[220px] group"
                   >
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
@@ -2139,8 +2139,8 @@ export default function Home() {
                     </div>
                   </motion.div>
 
-                  {/* BLOQUE INFERIOR DERECHA — dos cards pequeñas (7 cols) */}
-                  <div className="md:col-span-7 grid grid-cols-2 gap-3 md:gap-4">
+                  {/* BLOQUE INFERIOR DERECHA — dos cards pequeñas (8 cols) */}
+                  <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
                     {[
                       { icon: Droplets, title: "Higiene total", body: "Limpieza por sensores y agua templada.", accent: false },
                       { icon: Leaf, title: "Ecológico", body: "Hasta un -40% en consumo de agua.", accent: false },
