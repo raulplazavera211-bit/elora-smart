@@ -2189,7 +2189,7 @@ export default function Home() {
                       onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(15%) scale(1.25)')}
                     />
                     {/* Degradado: negro opaco en la mitad izquierda, transparente en la derecha para ver la foto */}
-                    <div className="absolute inset-0 pointer-events-none" style={{background: 'linear-gradient(to right, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.30) 45%, rgba(0,0,0,0.40) 60%, rgba(0,0,0,0.50) 75%, rgba(0,0,0,0.55) 100%)'}} />
+                    <div className="absolute inset-0 pointer-events-none" style={{background: 'linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.70) 30%, rgba(0,0,0,0.30) 50%, rgba(0,0,0,0) 65%)'}} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
 
                     {/* Contenido principal */}
