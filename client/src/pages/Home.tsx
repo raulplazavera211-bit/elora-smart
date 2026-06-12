@@ -2000,8 +2000,8 @@ export default function Home() {
                   </motion.p>
                 </div>
 
-                {/* Grid estructura original: 7+5 cols, 2 filas */}
-                <div className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-3 md:gap-4 px-6 pb-8 md:px-12 md:pb-10" style={{gridTemplateRows: 'repeat(2, 190px)' as any}}>
+                {/* Grid responsive: 1 col móvil, 2 cols tablet, 12 cols desktop */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 md:grid-rows-2 gap-3 md:gap-4 px-4 pb-8 sm:px-6 md:px-12 md:pb-10" style={{gridTemplateRows: undefined as any}}>
 
                   {/* BLOQUE GRANDE IZQUIERDA — vídeo "Espera, escúchame" (7 cols, 2 rows) */}
                   {(() => {
@@ -2040,7 +2040,7 @@ export default function Home() {
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                         viewport={{ once: true, margin: "-5%" }}
-                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[150px] md:min-h-0 group cursor-pointer"
+                        className="sm:col-span-2 md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[220px] sm:min-h-[260px] md:min-h-0 group cursor-pointer" style={{height: undefined as any}}
                         onClick={toggle}
                       >
                         {/* Vídeo */}
@@ -2118,7 +2118,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[140px] group bg-black"
+                    className="sm:col-span-2 md:col-span-8 relative overflow-hidden border border-border min-h-[200px] sm:min-h-[220px] md:min-h-0 group bg-black"
                   >
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
@@ -2175,7 +2175,7 @@ export default function Home() {
                   </motion.div>
 
                   {/* BLOQUE INFERIOR DERECHA — stat + tarjeta producto top ventas (8 cols) */}
-                  <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="sm:col-span-2 md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
 
                     {/* Tarjeta stat -40% */}
                     <motion.div
@@ -2184,7 +2184,7 @@ export default function Home() {
                       transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                       viewport={{ once: true }}
                       whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                      className="border border-border p-5 md:p-6 flex flex-col justify-between gap-2 cursor-default bg-foreground text-background"
+                      className="border border-border p-4 md:p-5 flex flex-col justify-between gap-2 cursor-default bg-foreground text-background min-h-[140px] md:min-h-0"
                     >
                       <motion.p
                         initial={{ opacity: 0, scale: 0.8 }}
