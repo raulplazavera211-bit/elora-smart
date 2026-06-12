@@ -2250,8 +2250,8 @@ export default function Home() {
                           whileHover={{ y: -3, transition: { duration: 0.2 } }}
                           className="relative overflow-hidden border border-amber-900/50 flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0"
                         >
-                          {/* Foto de fondo */}
-                          <img src="https://images.unsplash.com/photo-1559825481-12a05cc00344?w=600&q=80" alt="agua" className="absolute inset-0 w-full h-full object-cover" />
+                          {/* Foto de fondo — baño con ESENZA */}
+                          <img src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-9.webp" alt="Elora ESENZA" className="absolute inset-0 w-full h-full object-cover" />
                           {/* Canvas de olas semitransparente encima */}
                           <canvas ref={waveCanvasRef} className="absolute inset-0 w-full h-full" />
                           {/* Contenido sobre las olas */}
