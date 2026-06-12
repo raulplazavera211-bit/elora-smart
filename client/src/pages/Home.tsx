@@ -2006,6 +2006,7 @@ export default function Home() {
                   {/* BLOQUE GRANDE IZQUIERDA — vídeo "Espera, escúchame" (7 cols, 2 rows) */}
                   {(() => {
                     const videoRef = useRef<HTMLVideoElement>(null);
+                    const containerRef = useRef<HTMLDivElement>(null);
                     const [playing, setPlaying] = useState(false);
                     const toggle = () => {
                       const v = videoRef.current;
@@ -2013,8 +2014,28 @@ export default function Home() {
                       if (v.paused) { v.play(); setPlaying(true); }
                       else { v.pause(); setPlaying(false); }
                     };
+                    // Autoplay al entrar en viewport, pausa al salir
+                    useEffect(() => {
+                      const v = videoRef.current;
+                      const c = containerRef.current;
+                      if (!v || !c) return;
+                      const obs = new IntersectionObserver(
+                        ([entry]) => {
+                          if (entry.isIntersecting) {
+                            v.play().then(() => setPlaying(true)).catch(() => {});
+                          } else {
+                            v.pause();
+                            setPlaying(false);
+                          }
+                        },
+                        { threshold: 0.5 }
+                      );
+                      obs.observe(c);
+                      return () => obs.disconnect();
+                    }, []);
                     return (
                       <motion.div
+                        ref={containerRef}
                         initial={{ opacity: 0, scale: 0.95, y: 40 }}
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
