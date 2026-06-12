@@ -874,56 +874,51 @@ const MANIFESTO_FEATS = [
   {
     icon: Sparkles,
     title: "Higiene Real",
-    emoji: "💧",
     body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos.",
+    img: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80",
+    color: "from-sky-900/70",
   },
   {
     icon: ShieldCheck,
     title: "Salud Diaria",
-    emoji: "🛡️",
     body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar.",
+    img: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&q=80",
+    color: "from-emerald-900/70",
   },
   {
     icon: Thermometer,
     title: "Lujo Silencioso",
-    emoji: "✨",
     body: "Tapa de cierre asistido, luz nocturna ambiental y modos personalizados. El confort de un hotel cinco estrellas, cada mañana, en casa.",
+    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+    color: "from-stone-900/80",
   },
 ];
 
 function ManifiestoAccordion() {
   const [active, setActive] = useState(0);
-  const [direction, setDirection] = useState(1); // 1 = derecha, -1 = izquierda
+  const [direction, setDirection] = useState(1);
+  const [seen, setSeen] = useState<Set<number>>(new Set([0]));
   const total = MANIFESTO_FEATS.length;
+  const allSeen = seen.size >= total;
 
   const goTo = (idx: number) => {
     const clamped = Math.max(0, Math.min(total - 1, idx));
     setDirection(clamped > active ? 1 : -1);
     setActive(clamped);
+    setSeen(prev => new Set(Array.from(prev).concat(clamped)));
   };
 
-  // Variantes con perspectiva 3D potente
   const variants = {
     enter: (dir: number) => ({
       x: dir > 0 ? "100%" : "-100%",
-      rotateY: dir > 0 ? 25 : -25,
-      scale: 0.82,
+      scale: 0.88,
       opacity: 0,
-      z: -120,
     }),
-    center: {
-      x: 0,
-      rotateY: 0,
-      scale: 1,
-      opacity: 1,
-      z: 0,
-    },
+    center: { x: 0, scale: 1, opacity: 1 },
     exit: (dir: number) => ({
-      x: dir > 0 ? "-100%" : "100%",
-      rotateY: dir > 0 ? -25 : 25,
-      scale: 0.82,
+      x: dir > 0 ? "-40%" : "40%",
+      scale: 0.9,
       opacity: 0,
-      z: -120,
     }),
   };
 
@@ -931,102 +926,144 @@ function ManifiestoAccordion() {
   const Icon = feat.icon;
 
   return (
-    <div className="md:hidden">
-      {/* Contenedor con perspectiva 3D */}
+    <div className="md:hidden -mx-6">
+      {/* Pantalla completa con foto de fondo */}
       <div
         className="relative overflow-hidden"
-        style={{ perspective: "900px", perspectiveOrigin: "50% 50%" }}
+        style={{ height: "85dvh" }}
+        onTouchStart={(e) => {
+          const startX = e.touches[0].clientX;
+          const startY = e.touches[0].clientY;
+          const onEnd = (ev: TouchEvent) => {
+            const dx = ev.changedTouches[0].clientX - startX;
+            const dy = ev.changedTouches[0].clientY - startY;
+            // Solo swipe horizontal
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+              if (dx < 0 && active < total - 1) goTo(active + 1);
+              if (dx > 0 && active > 0) goTo(active - 1);
+            }
+            document.removeEventListener("touchend", onEnd);
+          };
+          document.addEventListener("touchend", onEnd, { once: true });
+        }}
       >
-        {/* Swipe handler invisible encima */}
-        <div
-          className="absolute inset-0 z-10"
-          onTouchStart={(e) => {
-            const startX = e.touches[0].clientX;
-            const onEnd = (ev: TouchEvent) => {
-              const dx = ev.changedTouches[0].clientX - startX;
-              if (dx < -50 && active < total - 1) goTo(active + 1);
-              if (dx > 50 && active > 0) goTo(active - 1);
-              document.removeEventListener("touchend", onEnd);
-            };
-            document.addEventListener("touchend", onEnd, { once: true });
-          }}
-        />
-
-        <AnimatePresence mode="popLayout" custom={direction}>
+        {/* Fotos de fondo con crossfade */}
+        <AnimatePresence mode="sync">
           <motion.div
-            key={active}
+            key={`bg-${active}`}
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 1.06 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <img
+              src={feat.img}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+            {/* Overlay degradado */}
+            <div className={`absolute inset-0 bg-gradient-to-t ${feat.color} via-black/40 to-black/20`} />
+            <div className="absolute inset-0 bg-black/30" />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Contenido de la tarjeta */}
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={`card-${active}`}
             custom={direction}
             variants={variants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 320, damping: 28 },
-              rotateY: { type: "spring", stiffness: 280, damping: 26 },
+              x: { type: "spring", stiffness: 340, damping: 30 },
               scale: { type: "spring", stiffness: 300, damping: 28 },
-              opacity: { duration: 0.22 },
+              opacity: { duration: 0.2 },
             }}
-            style={{ transformStyle: "preserve-3d" }}
+            className="absolute inset-0 flex flex-col justify-end p-8"
           >
-            <div className="bg-background border border-border p-7 flex flex-col gap-5 select-none">
-              {/* Cabecera: icono + número */}
-              <div className="flex items-start justify-between">
-                <motion.div
-                  className="w-12 h-12 rounded-full bg-accent-deep flex items-center justify-center"
-                  initial={{ scale: 0, rotate: -90 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.15 }}
-                >
-                  <Icon className="w-5 h-5 text-white" />
-                </motion.div>
-                <motion.span
-                  className="font-display leading-none text-foreground/8 select-none"
-                  style={{ fontSize: "5rem" }}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1, duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                >
-                  {String(active + 1).padStart(2, "0")}
-                </motion.span>
-              </div>
+            {/* Número decorativo */}
+            <motion.span
+              className="absolute top-6 right-6 font-display text-[6rem] leading-none text-white/10 select-none"
+              initial={{ opacity: 0, y: -15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+            >
+              {String(active + 1).padStart(2, "0")}
+            </motion.span>
 
-              {/* Título con entrada desde abajo */}
-              <motion.h3
-                className="font-display text-2xl uppercase tracking-wide leading-tight"
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.18, duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-              >
-                {feat.title}
-              </motion.h3>
+            {/* Icono */}
+            <motion.div
+              className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center mb-5"
+              initial={{ scale: 0, rotate: -90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 380, damping: 22, delay: 0.12 }}
+            >
+              <Icon className="w-6 h-6 text-white" />
+            </motion.div>
 
-              {/* Cuerpo */}
-              <motion.p
-                className="font-body text-sm text-foreground/70 leading-relaxed"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.26, duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-              >
-                {feat.body}
-              </motion.p>
+            {/* Título */}
+            <motion.h3
+              className="font-display text-3xl uppercase tracking-wide leading-tight text-white mb-3"
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+            >
+              {feat.title}
+            </motion.h3>
 
-              {/* Barra de progreso */}
-              <div className="h-[2px] bg-border rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-accent-deep rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: 3.5, ease: "linear", delay: 0.35 }}
-                  key={`bar-${active}`}
-                />
-              </div>
+            {/* Cuerpo */}
+            <motion.p
+              className="font-body text-sm text-white/80 leading-relaxed mb-6"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.28, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+            >
+              {feat.body}
+            </motion.p>
+
+            {/* Barra de progreso */}
+            <div className="h-[2px] bg-white/20 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-white rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 3.5, ease: "linear", delay: 0.4 }}
+                key={`bar-${active}`}
+              />
             </div>
           </motion.div>
         </AnimatePresence>
+
+        {/* Indicadores de paso (arriba) */}
+        <div className="absolute top-6 left-6 flex items-center gap-2 z-20">
+          {MANIFESTO_FEATS.map((_, i) => (
+            <div
+              key={i}
+              className={`h-[3px] rounded-full transition-all duration-400 ${
+                i === active ? "w-8 bg-white" : seen.has(i) ? "w-4 bg-white/60" : "w-4 bg-white/25"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Hint de swipe (solo si no ha visto todos) */}
+        {!allSeen && active < total - 1 && (
+          <motion.div
+            className="absolute bottom-10 right-6 flex items-center gap-2 z-20"
+            animate={{ x: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+          >
+            <span className="font-body text-[10px] uppercase tracking-[0.2em] text-white/60">Desliza</span>
+            <ArrowRight className="w-4 h-4 text-white/60" />
+          </motion.div>
+        )}
       </div>
 
-      {/* Indicadores + flechas */}
-      <div className="flex items-center justify-between px-1 mt-3">
+      {/* Flechas de navegación debajo */}
+      <div className="flex items-center justify-between px-6 py-3 bg-muted border-t border-border">
         <button
           onClick={() => goTo(active - 1)}
           disabled={active === 0}
@@ -1035,18 +1072,9 @@ function ManifiestoAccordion() {
           <ArrowRight className="w-4 h-4 rotate-180" />
         </button>
 
-        <div className="flex items-center gap-2">
-          {MANIFESTO_FEATS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              className="relative h-[3px] transition-all duration-300"
-              style={{ width: active === i ? 28 : 10 }}
-            >
-              <div className={`absolute inset-0 rounded-full transition-colors duration-300 ${active === i ? "bg-accent-deep" : "bg-border"}`} />
-            </button>
-          ))}
-        </div>
+        <span className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40">
+          {active + 1} / {total}
+        </span>
 
         <button
           onClick={() => goTo(active + 1)}
