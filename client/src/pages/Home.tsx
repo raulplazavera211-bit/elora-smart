@@ -892,45 +892,94 @@ const MANIFESTO_FEATS = [
 ];
 
 function ManifiestoAccordion() {
-  const [open, setOpen] = useState<number | null>(0);
+  const [active, setActive] = useState(0);
+  const total = MANIFESTO_FEATS.length;
+
+  const goTo = (idx: number) => setActive(Math.max(0, Math.min(total - 1, idx)));
+
   return (
-    <div className="md:hidden flex flex-col border border-border overflow-hidden">
-      {MANIFESTO_FEATS.map((feat, i) => {
-        const Icon = feat.icon;
-        const isOpen = open === i;
-        return (
-          <div key={feat.title} className={`border-b border-border last:border-b-0 ${isOpen ? "bg-background" : "bg-background/60"}  transition-colors duration-300`}>
-            <button
-              onClick={() => setOpen(isOpen ? null : i)}
-              className="w-full flex items-center justify-between px-5 py-4 outline-none"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${isOpen ? "bg-accent-deep text-white" : "bg-muted text-accent-deep"}`}>
-                  <Icon className="w-4 h-4" />
-                </div>
-                <span className="font-display text-base uppercase tracking-wide">{feat.title}</span>
-              </div>
-              <motion.span
-                animate={{ rotate: isOpen ? 45 : 0 }}
-                transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-                className="text-foreground/40 text-xl leading-none select-none"
+    <div className="md:hidden">
+      {/* Tarjetas deslizables */}
+      <div className="relative overflow-hidden">
+        <motion.div
+          className="flex"
+          animate={{ x: `-${active * 100}%` }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -50 && active < total - 1) goTo(active + 1);
+            if (info.offset.x > 50 && active > 0) goTo(active - 1);
+          }}
+        >
+          {MANIFESTO_FEATS.map((feat, i) => {
+            const Icon = feat.icon;
+            return (
+              <motion.div
+                key={feat.title}
+                className="min-w-full px-1"
+                animate={{ opacity: active === i ? 1 : 0.4, scale: active === i ? 1 : 0.96 }}
+                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
               >
-                +
-              </motion.span>
-            </button>
-            <motion.div
-              initial={false}
-              animate={isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              className="overflow-hidden"
+                <div className="bg-background border border-border p-7 flex flex-col gap-5 select-none">
+                  {/* Número grande decorativo */}
+                  <div className="flex items-start justify-between">
+                    <div className="w-12 h-12 rounded-full bg-accent-deep/10 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-accent-deep" />
+                    </div>
+                    <span className="font-display text-6xl leading-none text-foreground/6 select-none">{String(i + 1).padStart(2, "0")}</span>
+                  </div>
+                  <h3 className="font-display text-2xl uppercase tracking-wide leading-tight">{feat.title}</h3>
+                  <p className="font-body text-sm text-foreground/70 leading-relaxed">{feat.body}</p>
+                  {/* Barra de progreso de la tarjeta */}
+                  <div className="h-[2px] bg-border rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-accent-deep rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: active === i ? "100%" : "0%" }}
+                      transition={{ duration: 3.5, ease: "linear", delay: active === i ? 0.1 : 0 }}
+                      key={`bar-${i}-${active}`}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </div>
+
+      {/* Indicadores de puntos + flechas */}
+      <div className="flex items-center justify-between px-1 mt-3">
+        <button
+          onClick={() => goTo(active - 1)}
+          disabled={active === 0}
+          className="w-9 h-9 flex items-center justify-center border border-border text-foreground/50 disabled:opacity-20 hover:border-accent-deep hover:text-accent-deep transition-colors"
+        >
+          <ArrowRight className="w-4 h-4 rotate-180" />
+        </button>
+
+        <div className="flex items-center gap-2">
+          {MANIFESTO_FEATS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className="relative h-[3px] transition-all duration-300"
+              style={{ width: active === i ? 28 : 10 }}
             >
-              <p className="font-body text-sm text-foreground/70 leading-relaxed px-5 pb-5 pt-1">
-                {feat.body}
-              </p>
-            </motion.div>
-          </div>
-        );
-      })}
+              <div className={`absolute inset-0 rounded-full transition-colors duration-300 ${active === i ? "bg-accent-deep" : "bg-border"}`} />
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => goTo(active + 1)}
+          disabled={active === total - 1}
+          className="w-9 h-9 flex items-center justify-center border border-border text-foreground/50 disabled:opacity-20 hover:border-accent-deep hover:text-accent-deep transition-colors"
+        >
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 }
