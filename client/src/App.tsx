@@ -7,6 +7,51 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Coleccion from "./pages/Coleccion";
 
+const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+
+function ComingSoonDesktop() {
+  return (
+    <div
+      className="hidden md:flex flex-col items-center justify-center min-h-screen w-full"
+      style={{
+        background: "#0a0a0a",
+        backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,164,91,0.08) 0%, transparent 70%)",
+      }}
+    >
+      <div className="flex flex-col items-center gap-8 px-8 text-center">
+        <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto brightness-0 invert opacity-90" />
+        <div className="w-16 h-px bg-amber-500/60" />
+        <div>
+          <p
+            className="text-[10px] uppercase tracking-[0.5em] text-amber-500/80 mb-4"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            Versión escritorio
+          </p>
+          <h1
+            className="text-5xl md:text-7xl uppercase tracking-wide text-white leading-none mb-4"
+            style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 300 }}
+          >
+            Próximamente
+          </h1>
+          <p
+            className="text-white/40 text-sm tracking-widest uppercase"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            Mientras tanto, visítanos desde tu móvil.
+          </p>
+        </div>
+        <div className="w-16 h-px bg-amber-500/60" />
+        <p
+          className="text-white/20 text-xs tracking-[0.3em] uppercase"
+          style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+          elorasmart.com
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function Router() {
   return (
@@ -34,7 +79,12 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          <Router />
+          {/* Desktop: pantalla Próximamente */}
+          <ComingSoonDesktop />
+          {/* Móvil: web completa */}
+          <div className="md:hidden">
+            <Router />
+          </div>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

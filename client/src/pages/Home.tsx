@@ -1251,11 +1251,31 @@ function EsenciaVideoCard() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
+  const [userInteracted, setUserInteracted] = useState(false);
+
+  // Escucha el primer clic en toda la página para desbloquear el audio
+  useEffect(() => {
+    const unlock = () => {
+      setUserInteracted(true);
+      const v = videoRef.current;
+      if (v && v.muted) {
+        v.muted = false;
+      }
+      document.removeEventListener("click", unlock);
+      document.removeEventListener("touchstart", unlock);
+    };
+    document.addEventListener("click", unlock, { once: true });
+    document.addEventListener("touchstart", unlock, { once: true });
+    return () => {
+      document.removeEventListener("click", unlock);
+      document.removeEventListener("touchstart", unlock);
+    };
+  }, []);
 
   const toggle = () => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) { v.play(); setPlaying(true); }
+    if (v.paused) { v.muted = false; v.play(); setPlaying(true); }
     else { v.pause(); setPlaying(false); }
   };
 
@@ -1266,6 +1286,8 @@ function EsenciaVideoCard() {
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          // Arranca siempre silenciado; el sonido se activa tras el primer clic del usuario
+          v.muted = !userInteracted;
           v.play().then(() => setPlaying(true)).catch(() => {});
         } else {
           v.pause();
@@ -1276,7 +1298,7 @@ function EsenciaVideoCard() {
     );
     obs.observe(c);
     return () => obs.disconnect();
-  }, []);
+  }, [userInteracted]);
 
   return (
     <motion.div
