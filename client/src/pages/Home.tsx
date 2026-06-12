@@ -987,6 +987,151 @@ function ReviewsSection() {
   );
 }
 
+
+// ─── Club Elora Section ──────────────────────────────────────────────────────────────────────────────
+const CLUB_PERKS = [
+  { icon: "🎁", title: "Kit de bienvenida", desc: "Productos complementarios premium. No te diremos qué es. Pero vas a querer abrir esa caja." },
+  { icon: "⚡", title: "Acceso a preventas", desc: "Sé el primero en reservar nuevos modelos con descuentos exclusivos antes que nadie." },
+  { icon: "💬", title: "Contenido privado", desc: "Guías de uso, trucos de mantenimiento y novedades de la marca solo para miembros." },
+  { icon: "💸", title: "Promociones exclusivas", desc: "Ofertas y descuentos que no publicamos en ningún otro canal. Solo para el club." },
+];
+
+function ClubEloraSection() {
+  const [form, setForm] = useState({ nombre: "", email: "", acepto: false });
+  const [sent, setSent] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.15 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.acepto) return;
+    setSent(true);
+  };
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative w-full overflow-hidden"
+      style={{ background: "linear-gradient(135deg, #001220 0%, #001F3F 40%, #0a2a4a 70%, #001220 100%)" }}
+    >
+      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "url('https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg')", backgroundSize: "cover", backgroundPosition: "center", filter: "grayscale(100%)" }} />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-10" style={{ background: "radial-gradient(ellipse, #F5A45B 0%, transparent 70%)" }} />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full opacity-5" style={{ background: "radial-gradient(ellipse, #F5A45B 0%, transparent 70%)" }} />
+
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-16 py-24 md:py-32">
+        <div className={`text-center mb-16 md:mb-20 transition-all duration-1000 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+          <p className="font-body text-xs uppercase tracking-[0.4em] text-amber-400/70 mb-4">Acceso exclusivo</p>
+          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl uppercase tracking-wide text-white leading-[0.9] mb-6">
+            Club
+            <span className="block" style={{ WebkitTextStroke: "1px rgba(245,164,91,0.6)", color: "transparent" }}>Elora</span>
+          </h2>
+          <p className="font-body text-white/50 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+            Únete y sé el primero en descubrir promociones, acceso a preventas y contenido privado.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16 md:mb-20">
+          {CLUB_PERKS.map((perk, i) => (
+            <div
+              key={i}
+              className={`group relative rounded-sm border border-white/10 p-6 md:p-8 hover:border-amber-400/40 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{ background: "rgba(255,255,255,0.03)", transitionDelay: `${200 + i * 100}ms` }}
+            >
+              <div className="absolute inset-0 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "linear-gradient(135deg, rgba(245,164,91,0.05) 0%, transparent 100%)" }} />
+              <div className="text-3xl mb-4">{perk.icon}</div>
+              <h3 className="font-display text-lg uppercase tracking-wide text-white mb-2">{perk.title}</h3>
+              <p className="font-body text-white/40 text-sm leading-relaxed">{perk.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className={`max-w-xl mx-auto transition-all duration-1000 delay-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+          {sent ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 rounded-full border border-amber-400/40 flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="font-display text-2xl uppercase tracking-wide text-white mb-2">Bienvenido al club</h3>
+              <p className="font-body text-white/50 text-sm">Pronto recibirás novedades exclusivas en tu email.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">Nombre</label>
+                  <input
+                    type="text"
+                    value={form.nombre}
+                    onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))}
+                    placeholder="Tu nombre"
+                    className="w-full bg-white/5 border border-white/15 rounded-sm px-4 py-3 font-body text-sm text-white placeholder-white/25 focus:outline-none focus:border-amber-400/60 transition-colors duration-300"
+                  />
+                </div>
+                <div>
+                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">Email *</label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                    placeholder="tu@email.com"
+                    className="w-full bg-white/5 border border-white/15 rounded-sm px-4 py-3 font-body text-sm text-white placeholder-white/25 focus:outline-none focus:border-amber-400/60 transition-colors duration-300"
+                  />
+                </div>
+              </div>
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <div
+                  onClick={() => setForm(f => ({ ...f, acepto: !f.acepto }))}
+                  className={`mt-0.5 w-5 h-5 rounded-sm border flex-shrink-0 flex items-center justify-center transition-all duration-300 ${
+                    form.acepto ? "bg-amber-400 border-amber-400" : "bg-transparent border-white/30 group-hover:border-white/60"
+                  }`}
+                >
+                  {form.acepto && (
+                    <svg className="w-3 h-3 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+                <span className="font-body text-xs text-white/40 leading-relaxed">
+                  Acepto la{" "}
+                  <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noopener noreferrer" className="text-amber-400/70 hover:text-amber-400 underline underline-offset-2 transition-colors">
+                    Política de Privacidad
+                  </a>
+                </span>
+              </label>
+              <button
+                type="submit"
+                disabled={!form.acepto}
+                className="w-full py-4 font-display text-sm uppercase tracking-[0.3em] transition-all duration-300 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ background: form.acepto ? "linear-gradient(135deg, #F5A45B, #e8923a)" : "rgba(255,255,255,0.08)", color: form.acepto ? "#001F3F" : "rgba(255,255,255,0.3)" }}
+              >
+                Unirme al Club Elora
+              </button>
+            </form>
+          )}
+        </div>
+
+        <div className="mt-16 flex items-center justify-center gap-6 opacity-30">
+          <div className="h-[1px] w-24 bg-white/30" />
+          <span className="font-display text-xs uppercase tracking-[0.4em] text-white/50">Elora Smart · A Coruña</span>
+          <div className="h-[1px] w-24 bg-white/30" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
   const [, navigate] = useLocation();
@@ -1558,6 +1703,9 @@ export default function Home() {
 
               {/* ── RESEÑAS ────────────────────────────────────────────────── */}
               <ReviewsSection />
+
+              {/* ── CLUB ELORA ────────────────────────────────────────────────── */}
+              <ClubEloraSection />
 
               {/* ── CAPÍTULO 5: CONTACTO ────────────────────────────────────── */}
               <section
