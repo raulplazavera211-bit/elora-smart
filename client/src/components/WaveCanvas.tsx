@@ -26,14 +26,14 @@ export function WaveCanvas({ scrollProgress = 0 }: { scrollProgress?: number }) 
     if (!ctx) return;
 
     const layers: WaveLayer[] = [
-      // Ola de fondo grande y lenta
-      { amplitude: 38, wavelength: 0.7, speed: 0.4, phase: 0,    color: "rgba(14,165,233,0.10)", yBase: 0.55 },
+      // Ola de fondo grande y lenta — muy sutil sobre fondo claro
+      { amplitude: 32, wavelength: 0.7, speed: 0.35, phase: 0,    color: "rgba(14,165,233,0.06)", yBase: 0.52 },
       // Ola media
-      { amplitude: 28, wavelength: 1.1, speed: 0.65, phase: 1.2, color: "rgba(56,189,248,0.13)", yBase: 0.62 },
+      { amplitude: 22, wavelength: 1.1, speed: 0.55, phase: 1.2, color: "rgba(56,189,248,0.07)", yBase: 0.60 },
       // Ola rápida más pequeña
-      { amplitude: 18, wavelength: 1.6, speed: 1.0,  phase: 2.4, color: "rgba(125,211,252,0.10)", yBase: 0.68 },
+      { amplitude: 14, wavelength: 1.6, speed: 0.85, phase: 2.4, color: "rgba(125,211,252,0.06)", yBase: 0.67 },
       // Ola de espuma superior muy rápida
-      { amplitude: 10, wavelength: 2.2, speed: 1.5,  phase: 0.8, color: "rgba(186,230,253,0.08)", yBase: 0.72 },
+      { amplitude: 8,  wavelength: 2.2, speed: 1.3,  phase: 0.8, color: "rgba(186,230,253,0.05)", yBase: 0.73 },
     ];
 
     let running = true;
@@ -80,22 +80,16 @@ export function WaveCanvas({ scrollProgress = 0 }: { scrollProgress?: number }) 
 
       ctx.clearRect(0, 0, W, H);
 
-      // Gradiente de fondo oscuro (agua profunda)
-      const grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, "rgba(2,8,23,0)");
-      grad.addColorStop(0.4, "rgba(3,15,35,0.55)");
-      grad.addColorStop(1, "rgba(2,12,28,0.85)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, H);
+      // Sin gradiente de fondo: el canvas es transparente para no tapar el bg-muted
 
       // Dibujar capas de olas de atrás hacia adelante
       layers.forEach((layer) => drawWave(layer, t, scrollProgress));
 
-      // Brillo de luz en la superficie (shimmer)
+      // Shimmer muy sutil en la superficie
       const shimmerGrad = ctx.createLinearGradient(0, H * 0.45, W, H * 0.65);
       shimmerGrad.addColorStop(0, "rgba(125,211,252,0)");
-      shimmerGrad.addColorStop(0.3 + Math.sin(t * 0.3) * 0.1, "rgba(125,211,252,0.06)");
-      shimmerGrad.addColorStop(0.6 + Math.cos(t * 0.2) * 0.1, "rgba(56,189,248,0.04)");
+      shimmerGrad.addColorStop(0.3 + Math.sin(t * 0.3) * 0.1, "rgba(125,211,252,0.03)");
+      shimmerGrad.addColorStop(0.6 + Math.cos(t * 0.2) * 0.1, "rgba(56,189,248,0.02)");
       shimmerGrad.addColorStop(1, "rgba(125,211,252,0)");
       ctx.fillStyle = shimmerGrad;
       ctx.fillRect(0, 0, W, H);
