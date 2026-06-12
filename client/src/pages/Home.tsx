@@ -2123,7 +2123,10 @@ export default function Home() {
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
                       alt="Equipo Elora Smart"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-105 opacity-90" style={{objectPosition: '120% 30%'}}
+                      className="absolute inset-0 w-full h-full object-cover opacity-90"
+                      style={{objectPosition: '100% 30%', transform: 'translateX(15%) scale(1.05)', transition: 'transform 2.5s ease-out'}}
+                      onMouseEnter={e => (e.currentTarget.style.transform = 'translateX(15%) scale(1.1)')}
+                      onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(15%) scale(1.05)')}
                     />
                     {/* Degradado: negro opaco en la mitad izquierda, transparente en la derecha para ver la foto */}
                     <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent pointer-events-none" style={{background: 'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0) 75%)'}} />
