@@ -2241,8 +2241,19 @@ export default function Home() {
 
                       {/* Info producto */}
                       <div className="p-3 border-t border-amber-400/30">
-                        <p className="font-body text-[8px] uppercase tracking-widest text-foreground/40 mb-0.5">AURA Suspendido</p>
-                        <p className="font-display text-base leading-none text-foreground">2.600 <span className="text-xs text-foreground/60">€</span></p>
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <p className="font-body text-[8px] uppercase tracking-widest text-foreground/40 mb-0.5">AURA Suspendido</p>
+                            <p className="font-display text-base leading-none text-foreground">2.600 <span className="text-xs text-foreground/60">€</span></p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => openProduct(PRODUCTS.find(p => p.id === "AURA-SUSPENDIDO")!)}
+                          className="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.97] text-white font-body text-[9px] uppercase tracking-[0.25em] py-2 flex items-center justify-center gap-1.5 transition-colors"
+                        >
+                          Ver producto
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </button>
                       </div>
                     </motion.div>
 
