@@ -2100,7 +2100,7 @@ export default function Home() {
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                         viewport={{ once: true, margin: "-5%" }}
-                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[150px] md:min-h-0 group cursor-pointer"
+                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[220px] md:min-h-0 group cursor-pointer"
                         onClick={toggle}
                       >
                         {/* Vídeo */}
@@ -2193,7 +2193,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
 
                     {/* Contenido principal */}
-                    <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 pointer-events-none">
+                    <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 pb-10 md:pb-8 pointer-events-none">
                       {/* Eyebrow */}
                       <div className="flex items-center gap-2">
                         <span className="w-5 h-[1px] bg-accent"></span>
