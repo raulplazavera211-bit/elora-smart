@@ -1480,13 +1480,23 @@ export default function Home() {
                 {checkoutStep === "cart" && (
                   <div className="bg-[#F8F9FA] border-t border-gray-200 px-5 py-3">
                     {/* Headline */}
-                    <p className="font-display text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2 text-center">
+                    <p className="font-display text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2.5 text-center">
                       Estás a punto de unirte a clientes como estos
                     </p>
-                    {/* 2 reseñas horizontales compactas */}
+                    {/* 2 reseñas flotantes */}
                     <div className="flex flex-col gap-1.5">
                       {REVIEWS.slice(0, 2).map((r, i) => (
-                        <div key={i} className="flex items-center gap-2 bg-white rounded-md px-2.5 py-1.5 shadow-[0_1px_3px_rgba(0,0,0,0.07)]">
+                        <motion.div
+                          key={i}
+                          animate={{ y: [0, -4, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 2.8 + i * 0.7,
+                            ease: "easeInOut",
+                            delay: i * 0.4,
+                          }}
+                          className="flex items-center gap-2 bg-white rounded-md px-2.5 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.10)]"
+                        >
                           <div
                             className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0"
                             style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
@@ -1500,14 +1510,27 @@ export default function Home() {
                             </div>
                             <p className="text-gray-400 text-[10px] leading-tight line-clamp-1 mt-0.5">{r.text}</p>
                           </div>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
-                    {/* Rating summary */}
+                    {/* Rating + flecha apuntando al botón */}
                     <div className="flex items-center justify-center gap-1.5 mt-2">
                       <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
                       <p className="text-gray-400 text-[10px]">5.0 · 10 reseñas</p>
                       <GoogleLogoIcon />
+                    </div>
+                    {/* Flecha hacia el botón */}
+                    <div className="flex justify-center mt-1.5">
+                      <motion.div
+                        animate={{ y: [0, 5, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.0, ease: "easeInOut" }}
+                        className="flex flex-col items-center gap-0.5"
+                      >
+                        <div className="w-[1px] h-3 bg-gray-300" />
+                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+                          <path d="M1 1L5 5L9 1" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </motion.div>
                     </div>
                   </div>
                 )}
