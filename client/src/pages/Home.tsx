@@ -637,6 +637,66 @@ const HOME_PRODUCTS = FEATURED_PRODUCTS;
 type CartItem = { id: string; name: string; price: number; img: string };
 type CheckoutStep = "cart" | "checkout" | "success";
 
+// ─── EsenciaCarousel ─────────────────────────────────────────────────────────────────
+const ESENCIA_CARDS = [
+  { icon: MapPin, title: "Showroom en Galicia", body: "Ven y pruébalo. Te enamorarás y entenderás por qué cambia tu día a día.", bg: "#0a0a0a", accent: "#d97706" },
+  { icon: ShieldCheck, title: "10 años de garantía", body: "Te asesoramos antes, durante y después. Para que aciertes y estés tranquilo.", bg: "#0d1a0d", accent: "#22c55e" },
+  { icon: Wrench, title: "Instalación sencilla", body: "Solo necesitas un enchufe cerca y a tu fontanero de confianza. Nada más.", bg: "#0a1628", accent: "#60a5fa" },
+  { icon: Sparkles, title: "Higiene real", body: "Agua templada, boquilla autolimpiable y secado en 30 segundos. Sin papel.", bg: "#1a0a1a", accent: "#c084fc" },
+];
+
+function EsenciaCarousel() {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setActive(i => (i + 1) % ESENCIA_CARDS.length), 2800);
+    return () => clearInterval(t);
+  }, []);
+  const card = ESENCIA_CARDS[active];
+  const Icon = card.icon;
+  return (
+    <div className="relative w-full h-full flex flex-col justify-between p-5 overflow-hidden" style={{ background: card.bg, transition: 'background 0.6s ease' }}>
+      {/* Luz de fondo */}
+      <motion.div
+        key={active + '-glow'}
+        initial={{ opacity: 0, scale: 0.6 }}
+        animate={{ opacity: 0.25, scale: 1.4 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="absolute -top-8 -right-8 w-32 h-32 rounded-full pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${card.accent} 0%, transparent 70%)` }}
+      />
+      {/* Icono */}
+      <motion.div
+        key={active + '-icon'}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <Icon className="w-7 h-7" style={{ color: card.accent }} />
+      </motion.div>
+      {/* Texto */}
+      <motion.div
+        key={active + '-text'}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.1 }}
+        className="relative z-10"
+      >
+        <h3 className="font-display text-lg uppercase tracking-wide leading-tight text-white mb-1.5">{card.title}</h3>
+        <p className="font-body text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>{card.body}</p>
+      </motion.div>
+      {/* Indicadores */}
+      <div className="flex gap-1.5 mt-3">
+        {ESENCIA_CARDS.map((_, i) => (
+          <button key={i} onClick={() => setActive(i)}
+            className="h-[3px] rounded-full transition-all duration-500 cursor-pointer"
+            style={{ width: i === active ? 20 : 8, background: i === active ? card.accent : 'rgba(255,255,255,0.2)' }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── ExperienceSection ─────────────────────────────────────────────────────────────────
 const EXPERIENCE_STEPS = [
   { number: "01", eyebrow: "En el instante en que te acercas", title: "La tapa se levanta automáticamente", subtitle: "para ti", body: "Un sensor detecta tu presencia y levanta la tapa antes de que llegues. Sin tocar nada. Sin esfuerzo. El inodoro ya sabe que estás ahí.", image: "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart-scaled.jpg", tag: "Sensor de presencia" },
@@ -2187,41 +2247,11 @@ export default function Home() {
                       transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                       viewport={{ once: true }}
                       whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                      className="hidden md:flex relative overflow-hidden flex-col justify-between cursor-default min-h-[140px] md:min-h-0 p-5 md:p-6"
-                      style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0d2347 50%, #0a1f3d 100%)' }}
+                      className="hidden md:flex relative overflow-hidden flex-col justify-between cursor-default min-h-[140px] md:min-h-0"
+                      style={{ background: '#0a0a0a' }}
                     >
-                      {/* Círculos de luz azul de fondo */}
-                      <motion.div
-                        animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.30, 0.15] }}
-                        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="absolute -top-6 -right-6 w-28 h-28 rounded-full"
-                        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)' }}
-                      />
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.10, 0.20, 0.10] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-                        className="absolute -bottom-4 -left-4 w-20 h-20 rounded-full"
-                        style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.3) 0%, transparent 70%)' }}
-                      />
-                      {/* Contenido */}
-                      <div className="relative z-10 flex flex-col justify-between h-full gap-2">
-                        {/* Número grande flotante */}
-                        <motion.div
-                          animate={{ y: [0, -5, 0] }}
-                          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                        >
-                          <span className="font-display leading-none font-bold"
-                            style={{ fontSize: 'clamp(2.5rem,6vw,3.5rem)', color: '#60a5fa' }}
-                          >10</span>
-                          <span className="font-display text-lg md:text-xl leading-none font-bold ml-1"
-                            style={{ color: '#93c5fd' }}
-                          >años</span>
-                        </motion.div>
-                        <div>
-                          <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white">de garantía</p>
-                          <p className="font-body text-[10px] leading-relaxed mt-1" style={{ color: 'rgba(147,197,253,0.6)' }}>tranquilidad total desde el primer día</p>
-                        </div>
-                      </div>
+                      {/* Carrusel automático de tarjetas Experiencia Elora */}
+                      <EsenciaCarousel />
                     </motion.div>
 
                     {/* Tarjeta producto Top Ventas — AURA-SUSPENDIDO */}
