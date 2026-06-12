@@ -1272,7 +1272,7 @@ function EsenciaVideoCard() {
           setPlaying(false);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.25 }
     );
     obs.observe(c);
     return () => obs.disconnect();
@@ -1292,6 +1292,8 @@ function EsenciaVideoCard() {
         ref={videoRef}
         src="/manus-storage/elora-video-cantera_c60888ff.mp4"
         playsInline
+        muted
+        loop
         className="absolute inset-0 w-full h-full object-cover"
         onEnded={() => setPlaying(false)}
       />
