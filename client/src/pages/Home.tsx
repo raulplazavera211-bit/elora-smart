@@ -2003,23 +2003,53 @@ export default function Home() {
                 {/* Grid estructura original: 7+5 cols, 2 filas */}
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-12 grid-rows-[auto] md:grid-rows-2 gap-3 md:gap-4 px-6 pb-10 md:px-12 md:pb-12">
 
-                  {/* BLOQUE GRANDE IZQUIERDA — imagen AURA en baño de lujo (7 cols, 2 rows) */}
+                  {/* BLOQUE GRANDE IZQUIERDA — vídeo "Espera, escúchame" (7 cols, 2 rows) */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 40 }}
                     whileInView={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-7 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[280px] md:min-h-0 group"
+                    className="md:col-span-7 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[340px] md:min-h-0 group"
                   >
-                    <img
-                      src="https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg"
-                      alt="Inodoro AURA"
-                      className="absolute inset-0 w-full h-full object-cover object-[center_60%] transition-transform duration-[2.5s] ease-out group-hover:scale-105"
+                    {/* Vídeo de fondo */}
+                    <video
+                      src="/manus-storage/elora-video-cantera_c60888ff.mp4"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 pointer-events-none" />
+
+                    {/* Badge superior */}
                     <div className="absolute top-6 left-6 right-6 flex items-start gap-3 pointer-events-none">
                       <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep border border-accent-deep px-2 py-1">A Coruña · Galicia</span>
                     </div>
+
+                    {/* Texto central llamativo */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-6 text-center">
+                      <motion.p
+                        initial={{ opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.5, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                        className="font-body text-[10px] md:text-xs uppercase tracking-[0.35em] text-accent mb-3"
+                      >
+                        Espera, escúchame.
+                      </motion.p>
+                      <motion.p
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.65, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                        className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight text-white"
+                      >
+                        Es importante.
+                      </motion.p>
+                    </div>
+
+                    {/* Texto inferior */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white pointer-events-none">
                       <p className="font-display text-xl md:text-2xl uppercase tracking-wide leading-tight max-w-md mb-3">
                         De la cantera gallega<br />al baño contemporáneo.
