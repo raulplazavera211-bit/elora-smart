@@ -868,6 +868,127 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
   );
 }
 
+// ─── Sección de Reseñas ──────────────────────────────────────────────────────
+const REVIEWS = [
+  { name: "Ana G.", text: "Me encanta mover el chorro de agua, para tener una limpieza perfecta.", date: "Mayo 2026", stars: 5 },
+  { name: "Jaime V.", text: "El Vater en sí es la bomba, muy buena calidad, facilísimo de instalar siempre que sigas las instrucciones, facilísimo de usar y todo automático. La atención al cliente es brutal, el seguimiento que hacen y la paciencia que tienen.", date: "Mayo 2026", stars: 5 },
+  { name: "Adán M.", text: "Teníamos un WC suspendido y nos horrorizaba la idea de meternos en obra. Pero gracias al buen asesoramiento, decidimos lanzarnos de cabeza. Totalmente satisfechos con el resultado.", date: "Mayo 2026", stars: 5 },
+  { name: "Lorena A.", text: "Un lujo tener este inodoro en casa, no sé cómo hemos podido vivir sin él! El baño ha pasado a ser de lujo! Un 10.", date: "Marzo 2026", stars: 5 },
+  { name: "Carlos M.", text: "La atención un 10 sobre 10, profesionales y con el producto que compré muy satisfecho. Para mí ha sido una alegría, estoy muy conforme, lo recomiendo.", date: "Marzo 2026", stars: 5 },
+  { name: "Marta R.", text: "Muy buena atención de Marta y Eloi. Interesante producto. Espero que poco a poco nos vayamos acostumbrando a las nuevas tendencias.", date: "Marzo 2026", stars: 5 },
+  { name: "Instalaciones Pro", text: "Excelente producto, atención inmejorable. Acostumbrados a instalar todo tipo de wc inteligentes, sin duda este es el más completo que hemos instalado hasta la fecha. Altísima calidad tanto en funciones como en acabados.", date: "Febrero 2026", stars: 5 },
+  { name: "Roberto F.", text: "Después de varias semanas aún me sigue sorprendiendo 😃", date: "Febrero 2026", stars: 5 },
+  { name: "Pedro L.", text: "Hemos instalado el modelo compact y la verdad que es toda una novedad. La instalación es muy similar a un inodoro convencional. Estoy sorprendido por todas las opciones que tiene, lo recomiendo.", date: "Enero 2026", stars: 5 },
+  { name: "Sofía T.", text: "Me lo han puesto en mi casa y estoy encantada. Al principio no estaba segura que fuera realmente útil y ahora solo utilizo este inodoro.", date: "Enero 2026", stars: 5 },
+];
+
+function ReviewsSection() {
+  const doubled = [...REVIEWS, ...REVIEWS];
+  return (
+    <section className="w-full bg-foreground py-20 md:py-28 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-16 mb-12">
+        <p className="font-body text-xs uppercase tracking-[0.3em] text-background/40 mb-3">Verificadas en Google</p>
+        <div className="flex items-end justify-between">
+          <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide text-background leading-[0.9]">
+            Lo que dicen<br />nuestros clientes
+          </h2>
+          <div className="hidden md:flex items-center gap-2">
+            <div className="flex">
+              {[1,2,3,4,5].map(i => (
+                <svg key={i} className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              ))}
+            </div>
+            <span className="font-body text-background/60 text-sm">5.0 · 10 reseñas</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Carrusel infinito fila 1 */}
+      <div className="relative">
+        <div
+          className="flex gap-5 w-max"
+          style={{
+            animation: "marquee-left 40s linear infinite",
+          }}
+        >
+          {doubled.map((r, i) => (
+            <div
+              key={i}
+              className="w-[320px] md:w-[380px] flex-shrink-0 bg-background/5 border border-background/10 rounded-sm p-6 hover:bg-background/10 transition-colors duration-300"
+            >
+              <div className="flex mb-4">
+                {[1,2,3,4,5].map(s => (
+                  <svg key={s} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                ))}
+              </div>
+              <p className="font-body text-background/80 text-sm leading-relaxed mb-5 line-clamp-4">&ldquo;{r.text}&rdquo;</p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="font-display text-primary text-xs font-bold">{r.name.charAt(0)}</span>
+                  </div>
+                  <span className="font-body text-background/60 text-xs font-medium">{r.name}</span>
+                </div>
+                <span className="font-body text-background/30 text-xs">{r.date}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Carrusel infinito fila 2 (dirección opuesta) */}
+      <div className="relative mt-5">
+        <div
+          className="flex gap-5 w-max"
+          style={{
+            animation: "marquee-right 50s linear infinite",
+          }}
+        >
+          {[...doubled].reverse().map((r, i) => (
+            <div
+              key={i}
+              className="w-[320px] md:w-[380px] flex-shrink-0 bg-background/5 border border-background/10 rounded-sm p-6 hover:bg-background/10 transition-colors duration-300"
+            >
+              <div className="flex mb-4">
+                {[1,2,3,4,5].map(s => (
+                  <svg key={s} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                ))}
+              </div>
+              <p className="font-body text-background/80 text-sm leading-relaxed mb-5 line-clamp-4">&ldquo;{r.text}&rdquo;</p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="font-display text-primary text-xs font-bold">{r.name.charAt(0)}</span>
+                  </div>
+                  <span className="font-body text-background/60 text-xs font-medium">{r.name}</span>
+                </div>
+                <span className="font-body text-background/30 text-xs">{r.date}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes marquee-left {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-right {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+      `}</style>
+    </section>
+  );
+}
+
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
   const [, navigate] = useLocation();
@@ -1436,6 +1557,9 @@ export default function Home() {
 
               {/* ── CAPÍTULO EXPERIENCIA: PASOS DE USO ──────────────────── */}
               <ExperienceSection scrollContainer={scrollContainerRef} />
+
+              {/* ── RESEÑAS ────────────────────────────────────────────────── */}
+              <ReviewsSection />
 
               {/* ── CAPÍTULO 5: CONTACTO ────────────────────────────────────── */}
               <section
