@@ -2180,29 +2180,106 @@ export default function Home() {
                   {/* BLOQUE INFERIOR DERECHA — stat + tarjeta producto top ventas (8 cols) */}
                   <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
 
-                    {/* Tarjeta stat -40% */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                      className="border border-border p-5 md:p-6 flex flex-col justify-between gap-2 cursor-default bg-foreground text-background"
-                    >
-                      <motion.p
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 18 }}
-                        className="font-display text-3xl md:text-4xl leading-none text-accent"
-                      >
-                        -40%
-                      </motion.p>
-                      <div>
-                        <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-background">consumo de agua</p>
-                        <p className="font-body text-[10px] leading-relaxed mt-1 text-background/50">frente al papel higiénico convencional</p>
-                      </div>
-                    </motion.div>
+                    {/* Tarjeta stat -40% con olas animadas */}
+                    {(() => {
+                      const waveCanvasRef = useRef<HTMLCanvasElement>(null);
+                      const waveAnimRef = useRef<number>(0);
+                      useEffect(() => {
+                        const canvas = waveCanvasRef.current;
+                        if (!canvas) return;
+                        const ctx = canvas.getContext('2d');
+                        if (!ctx) return;
+                        let t = 0;
+                        const resize = () => {
+                          canvas.width = canvas.offsetWidth;
+                          canvas.height = canvas.offsetHeight;
+                        };
+                        resize();
+                        const ro = new ResizeObserver(resize);
+                        ro.observe(canvas);
+                        const waves = [
+                          { amp: 12, freq: 0.018, speed: 0.022, phase: 0,   color: 'rgba(14,116,144,0.55)',  yBase: 0.62 },
+                          { amp: 9,  freq: 0.025, speed: 0.030, phase: 2.1, color: 'rgba(8,145,178,0.45)',   yBase: 0.68 },
+                          { amp: 7,  freq: 0.032, speed: 0.018, phase: 4.3, color: 'rgba(6,182,212,0.35)',   yBase: 0.74 },
+                          { amp: 14, freq: 0.012, speed: 0.012, phase: 1.5, color: 'rgba(2,132,199,0.25)',   yBase: 0.55 },
+                        ];
+                        const draw = () => {
+                          const w = canvas.width, h = canvas.height;
+                          ctx.clearRect(0, 0, w, h);
+                          // Fondo degradado azul profundo
+                          const bg = ctx.createLinearGradient(0, 0, 0, h);
+                          bg.addColorStop(0, '#0c1a2e');
+                          bg.addColorStop(1, '#0a3d62');
+                          ctx.fillStyle = bg;
+                          ctx.fillRect(0, 0, w, h);
+                          // Brillo de superficie
+                          const shine = ctx.createLinearGradient(0, 0, 0, h * 0.5);
+                          shine.addColorStop(0, 'rgba(56,189,248,0.08)');
+                          shine.addColorStop(1, 'rgba(0,0,0,0)');
+                          ctx.fillStyle = shine;
+                          ctx.fillRect(0, 0, w, h);
+                          // Olas
+                          waves.forEach(wave => {
+                            ctx.beginPath();
+                            const yBase = h * wave.yBase;
+                            ctx.moveTo(0, yBase);
+                            for (let x = 0; x <= w; x += 2) {
+                              const y = yBase + Math.sin(x * wave.freq + t * wave.speed + wave.phase) * wave.amp
+                                      + Math.sin(x * wave.freq * 1.7 + t * wave.speed * 0.6 + wave.phase + 1) * (wave.amp * 0.4);
+                              ctx.lineTo(x, y);
+                            }
+                            ctx.lineTo(w, h);
+                            ctx.lineTo(0, h);
+                            ctx.closePath();
+                            ctx.fillStyle = wave.color;
+                            ctx.fill();
+                          });
+                          // Destellos de luz en la superficie
+                          for (let i = 0; i < 3; i++) {
+                            const x = (w * 0.2 + i * w * 0.3 + Math.sin(t * 0.008 + i) * 20);
+                            const y = h * (0.5 + Math.sin(t * 0.012 + i * 2) * 0.05);
+                            const r = ctx.createRadialGradient(x, y, 0, x, y, 30);
+                            r.addColorStop(0, 'rgba(186,230,253,0.18)');
+                            r.addColorStop(1, 'rgba(0,0,0,0)');
+                            ctx.fillStyle = r;
+                            ctx.fillRect(x - 30, y - 30, 60, 60);
+                          }
+                          t++;
+                          waveAnimRef.current = requestAnimationFrame(draw);
+                        };
+                        draw();
+                        return () => { cancelAnimationFrame(waveAnimRef.current); ro.disconnect(); };
+                      }, []);
+                      return (
+                        <motion.div
+                          initial={{ opacity: 0, y: 30 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                          viewport={{ once: true }}
+                          whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                          className="relative overflow-hidden border border-cyan-900/50 flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0"
+                        >
+                          {/* Canvas de olas */}
+                          <canvas ref={waveCanvasRef} className="absolute inset-0 w-full h-full" />
+                          {/* Contenido sobre las olas */}
+                          <div className="relative z-10 p-5 md:p-6 flex flex-col justify-between h-full gap-2">
+                            <motion.p
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 18 }}
+                              className="font-display text-3xl md:text-4xl leading-none text-cyan-300"
+                            >
+                              -40%
+                            </motion.p>
+                            <div>
+                              <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white">consumo de agua</p>
+                              <p className="font-body text-[10px] leading-relaxed mt-1 text-cyan-200/60">frente al papel higiénico convencional</p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })()}
 
                     {/* Tarjeta producto Top Ventas — AURA-SUSPENDIDO */}
                     <motion.div
