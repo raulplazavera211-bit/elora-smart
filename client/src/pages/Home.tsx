@@ -2048,7 +2048,7 @@ export default function Home() {
                           ref={videoRef}
                           src="/manus-storage/elora-video-cantera_c60888ff.mp4"
                           playsInline
-                          className="w-full h-full object-contain bg-black"
+                          className="absolute inset-0 w-full h-full object-cover"
                           onEnded={() => setPlaying(false)}
                         />
 
