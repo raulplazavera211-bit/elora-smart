@@ -2001,7 +2001,7 @@ export default function Home() {
                 </div>
 
                 {/* Grid estructura original: 7+5 cols, 2 filas */}
-                <div className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-3 md:gap-4 px-6 pb-8 md:px-12 md:pb-10" style={{gridTemplateRows: 'repeat(2, 190px)' as any}}>
+                <div className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-3 md:gap-4 px-6 pb-8 md:px-12 md:pb-10" style={{gridTemplateRows: 'repeat(2, 240px)' as any}}>
 
                   {/* BLOQUE GRANDE IZQUIERDA — vídeo "Espera, escúchame" (7 cols, 2 rows) */}
                   {(() => {
