@@ -1655,7 +1655,7 @@ export default function Home() {
                 ) : checkoutStep === "checkout" ? (
                   <form
                     id="checkout-form-desktop"
-                    onSubmit={(e) => { e.preventDefault(); setCheckoutStep("success"); }}
+                    onSubmit={(e) => { e.preventDefault(); }}
                     className="px-12 py-10 flex flex-col gap-5 max-w-xl"
                   >
                     <h2 className="font-display text-2xl uppercase tracking-wide mb-2">Datos de envío</h2>
@@ -1771,12 +1771,12 @@ export default function Home() {
                     </motion.button>
                   ) : (
                     <button
-                      type="submit"
-                      form="checkout-form-desktop"
-                      className="w-full bg-foreground text-background font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 hover:bg-accent-deep transition-all duration-300 active:scale-[0.98]"
+                      type="button"
+                      disabled
+                      className="w-full bg-foreground/20 text-foreground/30 font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 cursor-not-allowed select-none"
                     >
                       <Check className="w-5 h-5" />
-                      Confirmar pedido
+                      Pago próximamente disponible
                     </button>
                   )}
                   <p className="font-body text-[10px] text-foreground/30 text-center mt-3">
@@ -1861,7 +1861,7 @@ export default function Home() {
               ) : checkoutStep === "checkout" ? (
                 <form
                   id="checkout-form"
-                  onSubmit={(e) => { e.preventDefault(); setCheckoutStep("success"); }}
+                  onSubmit={(e) => { e.preventDefault(); }}
                   className="px-8 py-6 flex flex-col gap-4"
                 >
                   <div className="grid grid-cols-2 gap-3">
@@ -1962,8 +1962,8 @@ export default function Home() {
                       <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-4 h-4" /></motion.span>
                     </motion.button>
                   ) : (
-                    <button type="submit" form="checkout-form" className="w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-all duration-300 active:scale-[0.98]">
-                      <Check className="w-4 h-4" />Confirmar pedido
+                    <button type="button" disabled className="w-full bg-foreground/20 text-foreground/30 font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 cursor-not-allowed select-none">
+                      <Check className="w-4 h-4" />Pago próximamente disponible
                     </button>
                   )}
                   <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">Pago seguro · Envío e instalación coordinados por Elora</p>
