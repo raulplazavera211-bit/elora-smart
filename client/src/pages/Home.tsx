@@ -7,6 +7,7 @@ import {
 import { ProductDetail, type Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
+import { WaveCanvas } from "@/components/WaveCanvas";
 import { useLocation } from "wouter";
 import { FEATURED_PRODUCTS, ALL_PRODUCTS as ALL_PRODS } from "@/lib/products";
 
@@ -1147,9 +1148,28 @@ export default function Home() {
   const [checkoutForm, setCheckoutForm] = useState({ nombre: "", apellidos: "", email: "", telefono: "", direccion: "", ciudad: "", cp: "", notas: "" });
   const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
   const [contactSent, setContactSent] = useState(false);
+  const [waveProgress, setWaveProgress] = useState(0);
+  const manifestoRef = useRef<HTMLElement | null>(null);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+
+  // Listener de scroll para el parallax de las olas del manifiesto
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const onScroll = () => {
+      const el = manifestoRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const relTop = rect.top - containerRect.top;
+      const progress = Math.max(0, Math.min(1, 1 - relTop / containerRect.height));
+      setWaveProgress(progress);
+    };
+    container.addEventListener("scroll", onScroll, { passive: true });
+    return () => container.removeEventListener("scroll", onScroll);
+  }, [selectedProduct]);
 
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
@@ -1994,26 +2014,28 @@ export default function Home() {
 
               {/* ── CAPÍTULO 3: POR QUÉ ─────────────────────────────────────── */}
               <section
-                ref={setSectionRef(2)}
+                ref={(el) => { setSectionRef(2)(el); manifestoRef.current = el; }}
                 data-index="2"
-                className="w-full relative overflow-hidden bg-muted px-6 py-20 md:p-16"
+                className="w-full relative overflow-hidden bg-[#030F1E] px-6 py-20 md:p-16"
               >
+                {/* Olas de agua animadas */}
+                <WaveCanvas scrollProgress={waveProgress} />
                 <div className="max-w-[1400px] mx-auto w-full">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16 relative z-10">
                     <div>
-                      <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
-                        <span className="w-6 h-[1px] bg-accent-deep" /> El Manifiesto
+                      <p className="font-body text-xs uppercase tracking-[0.3em] text-sky-400 mb-4 flex items-center gap-3">
+                        <span className="w-6 h-[1px] bg-sky-400" /> El Manifiesto
                       </p>
-                      <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]">
+                      <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95] text-white">
                         Por qué un inodoro<br />deja de ser un mueble.
                       </h2>
                     </div>
-                    <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
+                    <p className="font-body text-sm md:text-base text-white/60 leading-relaxed max-w-md md:border-l md:border-white/10 md:pl-6">
                       Pasamos casi un año y medio de nuestra vida en el baño. Sin embargo, lo seguimos tratando como una pieza secundaria. En Elora rediseñamos ese momento íntimo desde la higiene, la salud y el silencio.
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5 border border-white/10 relative z-10">
                     {[
                       { icon: Sparkles, title: "Higiene Real", body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos." },
                       { icon: ShieldCheck, title: "Salud Diaria", body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar." },
@@ -2021,32 +2043,32 @@ export default function Home() {
                     ].map((feat) => {
                       const Icon = feat.icon;
                       return (
-                        <div key={feat.title} className="bg-background p-8 md:p-10 flex flex-col gap-6">
+                        <div key={feat.title} className="bg-white/3 backdrop-blur-sm p-8 md:p-10 flex flex-col gap-6 border border-white/5 hover:bg-white/6 transition-colors duration-500">
                           <div className="flex items-center justify-between">
-                            <Icon className="w-6 h-6 text-accent-deep" />
-                            <span className="font-display text-sm text-foreground/30 uppercase tracking-widest">{feat.title.split(" ")[0]}</span>
+                            <Icon className="w-6 h-6 text-sky-400" />
+                            <span className="font-display text-sm text-white/20 uppercase tracking-widest">{feat.title.split(" ")[0]}</span>
                           </div>
-                          <h3 className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight">{feat.title}</h3>
-                          <p className="font-body text-sm text-foreground/70 leading-relaxed">{feat.body}</p>
+                          <h3 className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight text-white">{feat.title}</h3>
+                          <p className="font-body text-sm text-white/60 leading-relaxed">{feat.body}</p>
                         </div>
                       );
                     })}
                   </div>
 
-                  <div className="mt-10 md:mt-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-border pt-8">
-                    <p className="font-display text-xl md:text-2xl uppercase tracking-wide max-w-xl leading-tight">
-                      No es un electrodoméstico. <span className="text-accent-deep">Es la pieza más íntima de tu arquitectura.</span>
+                  <div className="mt-10 md:mt-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-white/10 pt-8 relative z-10">
+                    <p className="font-display text-xl md:text-2xl uppercase tracking-wide max-w-xl leading-tight text-white">
+                      No es un electrodoméstico. <span className="text-sky-400">Es la pieza más íntima de tu arquitectura.</span>
                     </p>
                     <button
                       onClick={() => scrollToSection(3)}
-                      className="group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-foreground border-b border-foreground pb-2 hover:text-accent-deep hover:border-accent-deep transition-colors"
+                      className="group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-white/70 border-b border-white/30 pb-2 hover:text-sky-400 hover:border-sky-400 transition-colors"
                     >
                       Descubre la colección
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
                 </div>
-                <div className="absolute bottom-8 right-8 md:right-16 font-display text-lg text-foreground/20">03</div>
+                <div className="absolute bottom-8 right-8 md:right-16 font-display text-lg text-white/20 z-10">03</div>
               </section>
 
               {/* ── CAPÍTULO 4: COLECCIÓN ───────────────────────────────────── */}
