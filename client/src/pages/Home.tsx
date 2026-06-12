@@ -2115,57 +2115,116 @@ export default function Home() {
                   })()}
 
                   {/* BLOQUE SUPERIOR DERECHA — stat garantía + imagen ESENZA (5 cols) */}
+                  {/* BLOQUE SUPERIOR DERECHA — claim potente con foto de equipo */}
                   <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[220px] group"
+                    className="md:col-span-8 relative overflow-hidden border border-border min-h-[220px] group bg-black"
                   >
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
                       alt="Equipo Elora Smart"
-                      className="absolute inset-0 w-full h-full object-cover object-[center_30%] transition-transform duration-[2.5s] ease-out group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-cover object-[center_30%] transition-transform duration-[2.5s] ease-out group-hover:scale-105 opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-                    <div className="absolute top-5 right-5 text-right pointer-events-none">
-                      <p className="font-display text-3xl md:text-4xl text-accent leading-none">10</p>
-                      <p className="font-display text-xs uppercase tracking-widest text-white">años</p>
-                      <p className="font-body text-[9px] text-white/60 uppercase tracking-widest">garantía cerámica</p>
-                    </div>
-                    <div className="absolute bottom-5 left-5 pointer-events-none">
-                      <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/70 mb-1">Marca gallega, mirada global.</p>
-                      <p className="font-display text-base uppercase tracking-wide text-white">Atención cercana,<br />en gallego o castellano.</p>
+                    {/* Overlay degradado lateral */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+
+                    {/* Contenido principal */}
+                    <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 pointer-events-none">
+                      {/* Eyebrow */}
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-[1px] bg-accent"></span>
+                        <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent">Fabricado en Galicia</p>
+                      </div>
+
+                      {/* Claim central */}
+                      <div>
+                        <motion.p
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.4, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                          className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight text-white mb-2"
+                        >
+                          No compramos<br />lo que otros fabrican.
+                        </motion.p>
+                        <motion.p
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.55, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                          className="font-body text-xs text-white/60 uppercase tracking-widest"
+                        >
+                          Lo creamos nosotros, para ti.
+                        </motion.p>
+                      </div>
+
+                      {/* Stat garantía */}
+                      <div className="flex items-end gap-4">
+                        <div>
+                          <p className="font-display text-4xl md:text-5xl text-accent leading-none">10</p>
+                          <p className="font-body text-[9px] uppercase tracking-widest text-white/50">años de garantía</p>
+                        </div>
+                        <div className="w-[1px] h-8 bg-white/20"></div>
+                        <div>
+                          <p className="font-display text-4xl md:text-5xl text-white leading-none">100<span className="text-accent text-2xl">%</span></p>
+                          <p className="font-body text-[9px] uppercase tracking-widest text-white/50">origen gallego</p>
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
 
-                  {/* BLOQUE INFERIOR DERECHA — dos cards pequeñas (8 cols) */}
+                  {/* BLOQUE INFERIOR DERECHA — dos stats impactantes (8 cols) */}
                   <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
                     {[
-                      { icon: Droplets, title: "Higiene total", body: "Limpieza por sensores y agua templada.", accent: false },
-                      { icon: Leaf, title: "Ecológico", body: "Hasta un -40% en consumo de agua.", accent: false },
-                    ].map((card, i) => {
-                      const Icon = card.icon;
-                      return (
-                        <motion.div
-                          key={card.title}
-                          initial={{ opacity: 0, y: 30 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.8, delay: 0.3 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                      {
+                        stat: "-40%",
+                        label: "consumo de agua",
+                        sub: "frente al papel higiénico convencional",
+                        dark: true,
+                      },
+                      {
+                        stat: "37°C",
+                        label: "agua templada exacta",
+                        sub: "limpieza sin contacto, cada vez",
+                        dark: false,
+                      },
+                    ].map((item, i) => (
+                      <motion.div
+                        key={item.stat}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                        viewport={{ once: true }}
+                        whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                        className={`border border-border p-5 md:p-6 flex flex-col justify-between gap-2 cursor-default ${
+                          item.dark ? "bg-foreground text-background" : "bg-background text-foreground"
+                        }`}
+                      >
+                        <motion.p
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
                           viewport={{ once: true }}
-                          whileHover={{ y: -4 }}
-                          className={`border border-border p-4 md:p-5 flex flex-col justify-between gap-3 transition-colors hover:border-accent-deep/50 ${
-                            card.accent ? "bg-accent-deep text-white" : "bg-background text-foreground"
+                          transition={{ delay: 0.4 + i * 0.1, type: "spring", stiffness: 200, damping: 18 }}
+                          className={`font-display text-3xl md:text-4xl leading-none ${
+                            item.dark ? "text-accent" : "text-accent-deep"
                           }`}
                         >
-                          <Icon className={`w-5 h-5 ${card.accent ? "text-white" : "text-accent-deep"}`} />
-                          <div>
-                            <h3 className="font-display text-base md:text-lg uppercase tracking-wide mb-1">{card.title}</h3>
-                            <p className={`font-body text-[11px] md:text-xs leading-relaxed ${card.accent ? "text-white/80" : "text-foreground/70"}`}>{card.body}</p>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
+                          {item.stat}
+                        </motion.p>
+                        <div>
+                          <p className={`font-display text-sm md:text-base uppercase tracking-wide leading-tight ${
+                            item.dark ? "text-background" : "text-foreground"
+                          }`}>{item.label}</p>
+                          <p className={`font-body text-[10px] leading-relaxed mt-1 ${
+                            item.dark ? "text-background/50" : "text-foreground/50"
+                          }`}>{item.sub}</p>
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
 
                 </div>
