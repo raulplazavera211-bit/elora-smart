@@ -2004,68 +2004,94 @@ export default function Home() {
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-12 grid-rows-[auto] md:grid-rows-2 gap-3 md:gap-4 px-6 pb-10 md:px-12 md:pb-12">
 
                   {/* BLOQUE GRANDE IZQUIERDA — vídeo "Espera, escúchame" (7 cols, 2 rows) */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 40 }}
-                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    viewport={{ once: true, margin: "-5%" }}
-                    className="md:col-span-7 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[340px] md:min-h-0 group"
-                  >
-                    {/* Vídeo de fondo */}
-                    <video
-                      src="/manus-storage/elora-video-cantera_c60888ff.mp4"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 pointer-events-none" />
-
-                    {/* Badge superior */}
-                    <div className="absolute top-6 left-6 right-6 flex items-start gap-3 pointer-events-none">
-                      <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep border border-accent-deep px-2 py-1">A Coruña · Galicia</span>
-                    </div>
-
-                    {/* Texto central llamativo */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-6 text-center">
-                      <motion.p
-                        initial={{ opacity: 0, y: 12 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.5, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-                        className="font-body text-[10px] md:text-xs uppercase tracking-[0.35em] text-accent mb-3"
+                  {(() => {
+                    const videoRef = useRef<HTMLVideoElement>(null);
+                    const [playing, setPlaying] = useState(false);
+                    const toggle = () => {
+                      const v = videoRef.current;
+                      if (!v) return;
+                      if (v.paused) { v.play(); setPlaying(true); }
+                      else { v.pause(); setPlaying(false); }
+                    };
+                    return (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 40 }}
+                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                        viewport={{ once: true, margin: "-5%" }}
+                        className="md:col-span-7 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[340px] md:min-h-0 group cursor-pointer"
+                        onClick={toggle}
                       >
-                        Espera, escúchame.
-                      </motion.p>
-                      <motion.p
-                        initial={{ opacity: 0, y: 16 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.65, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-                        className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight text-white"
-                      >
-                        Es importante.
-                      </motion.p>
-                    </div>
+                        {/* Vídeo */}
+                        <video
+                          ref={videoRef}
+                          src="/manus-storage/elora-video-cantera_c60888ff.mp4"
+                          playsInline
+                          className="w-full h-full object-contain bg-black"
+                          onEnded={() => setPlaying(false)}
+                        />
 
-                    {/* Texto inferior */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white pointer-events-none">
-                      <p className="font-display text-xl md:text-2xl uppercase tracking-wide leading-tight max-w-md mb-3">
-                        De la cantera gallega<br />al baño contemporáneo.
-                      </p>
-                      <div className="flex items-center gap-6">
-                        <div>
-                          <p className="font-display text-base uppercase tracking-widest">Pureza</p>
-                          <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Cerámica blanca</p>
+                        {/* Overlay oscuro solo cuando está pausado */}
+                        {!playing && (
+                          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+                        )}
+
+                        {/* Botón play/pausa central */}
+                        <AnimatePresence>
+                          {!playing && (
+                            <motion.div
+                              key="play-btn"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              transition={{ duration: 0.2 }}
+                              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                            >
+                              <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center">
+                                <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M8 5v14l11-7z" />
+                                </svg>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        {/* Badge superior izquierda */}
+                        <div className="absolute top-4 left-4 pointer-events-none">
+                          <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
                         </div>
-                        <div>
-                          <p className="font-display text-base uppercase tracking-widest">Solidez</p>
-                          <p className="font-body text-[10px] text-white/70 uppercase tracking-widest">Granito local</p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
+
+                        {/* Texto parpadeante esquina superior derecha */}
+                        <motion.div
+                          className="absolute top-4 right-4 text-right pointer-events-none"
+                          animate={{ opacity: [1, 0.2, 1] }}
+                          transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+                        >
+                          <p className="font-body text-[9px] uppercase tracking-[0.25em] text-accent leading-tight">Espera, escúchame.</p>
+                          <p className="font-display text-sm uppercase tracking-wide text-white leading-tight">Es importante.</p>
+                        </motion.div>
+
+                        {/* Texto inferior — solo visible cuando pausado */}
+                        {!playing && (
+                          <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7 text-white pointer-events-none">
+                            <p className="font-display text-lg md:text-xl uppercase tracking-wide leading-tight max-w-md mb-2">
+                              De la cantera gallega<br />al baño contemporáneo.
+                            </p>
+                            <div className="flex items-center gap-5">
+                              <div>
+                                <p className="font-display text-sm uppercase tracking-widest">Pureza</p>
+                                <p className="font-body text-[9px] text-white/60 uppercase tracking-widest">Cerámica blanca</p>
+                              </div>
+                              <div>
+                                <p className="font-display text-sm uppercase tracking-widest">Solidez</p>
+                                <p className="font-body text-[9px] text-white/60 uppercase tracking-widest">Granito local</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
+                    );
+                  })()}
 
                   {/* BLOQUE SUPERIOR DERECHA — stat garantía + imagen ESENZA (5 cols) */}
                   <motion.div
