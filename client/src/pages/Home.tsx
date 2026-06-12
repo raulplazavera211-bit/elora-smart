@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Menu, X, ArrowRight, Droplets, Leaf, Cpu, Sparkles,
   ShieldCheck, Thermometer, ShoppingBag, MapPin, Wrench, Phone, Mail, Send, Check
@@ -893,63 +893,139 @@ const MANIFESTO_FEATS = [
 
 function ManifiestoAccordion() {
   const [active, setActive] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 = derecha, -1 = izquierda
   const total = MANIFESTO_FEATS.length;
 
-  const goTo = (idx: number) => setActive(Math.max(0, Math.min(total - 1, idx)));
+  const goTo = (idx: number) => {
+    const clamped = Math.max(0, Math.min(total - 1, idx));
+    setDirection(clamped > active ? 1 : -1);
+    setActive(clamped);
+  };
+
+  // Variantes con perspectiva 3D potente
+  const variants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? "100%" : "-100%",
+      rotateY: dir > 0 ? 25 : -25,
+      scale: 0.82,
+      opacity: 0,
+      z: -120,
+    }),
+    center: {
+      x: 0,
+      rotateY: 0,
+      scale: 1,
+      opacity: 1,
+      z: 0,
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? "-100%" : "100%",
+      rotateY: dir > 0 ? -25 : 25,
+      scale: 0.82,
+      opacity: 0,
+      z: -120,
+    }),
+  };
+
+  const feat = MANIFESTO_FEATS[active];
+  const Icon = feat.icon;
 
   return (
     <div className="md:hidden">
-      {/* Tarjetas deslizables */}
-      <div className="relative overflow-hidden">
-        <motion.div
-          className="flex"
-          animate={{ x: `-${active * 100}%` }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.15}
-          onDragEnd={(_, info) => {
-            if (info.offset.x < -50 && active < total - 1) goTo(active + 1);
-            if (info.offset.x > 50 && active > 0) goTo(active - 1);
+      {/* Contenedor con perspectiva 3D */}
+      <div
+        className="relative overflow-hidden"
+        style={{ perspective: "900px", perspectiveOrigin: "50% 50%" }}
+      >
+        {/* Swipe handler invisible encima */}
+        <div
+          className="absolute inset-0 z-10"
+          onTouchStart={(e) => {
+            const startX = e.touches[0].clientX;
+            const onEnd = (ev: TouchEvent) => {
+              const dx = ev.changedTouches[0].clientX - startX;
+              if (dx < -50 && active < total - 1) goTo(active + 1);
+              if (dx > 50 && active > 0) goTo(active - 1);
+              document.removeEventListener("touchend", onEnd);
+            };
+            document.addEventListener("touchend", onEnd, { once: true });
           }}
-        >
-          {MANIFESTO_FEATS.map((feat, i) => {
-            const Icon = feat.icon;
-            return (
-              <motion.div
-                key={feat.title}
-                className="min-w-full px-1"
-                animate={{ opacity: active === i ? 1 : 0.4, scale: active === i ? 1 : 0.96 }}
-                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+        />
+
+        <AnimatePresence mode="popLayout" custom={direction}>
+          <motion.div
+            key={active}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 320, damping: 28 },
+              rotateY: { type: "spring", stiffness: 280, damping: 26 },
+              scale: { type: "spring", stiffness: 300, damping: 28 },
+              opacity: { duration: 0.22 },
+            }}
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div className="bg-background border border-border p-7 flex flex-col gap-5 select-none">
+              {/* Cabecera: icono + número */}
+              <div className="flex items-start justify-between">
+                <motion.div
+                  className="w-12 h-12 rounded-full bg-accent-deep flex items-center justify-center"
+                  initial={{ scale: 0, rotate: -90 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.15 }}
+                >
+                  <Icon className="w-5 h-5 text-white" />
+                </motion.div>
+                <motion.span
+                  className="font-display leading-none text-foreground/8 select-none"
+                  style={{ fontSize: "5rem" }}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                >
+                  {String(active + 1).padStart(2, "0")}
+                </motion.span>
+              </div>
+
+              {/* Título con entrada desde abajo */}
+              <motion.h3
+                className="font-display text-2xl uppercase tracking-wide leading-tight"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.18, duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
               >
-                <div className="bg-background border border-border p-7 flex flex-col gap-5 select-none">
-                  {/* Número grande decorativo */}
-                  <div className="flex items-start justify-between">
-                    <div className="w-12 h-12 rounded-full bg-accent-deep/10 flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-accent-deep" />
-                    </div>
-                    <span className="font-display text-6xl leading-none text-foreground/6 select-none">{String(i + 1).padStart(2, "0")}</span>
-                  </div>
-                  <h3 className="font-display text-2xl uppercase tracking-wide leading-tight">{feat.title}</h3>
-                  <p className="font-body text-sm text-foreground/70 leading-relaxed">{feat.body}</p>
-                  {/* Barra de progreso de la tarjeta */}
-                  <div className="h-[2px] bg-border rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-accent-deep rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: active === i ? "100%" : "0%" }}
-                      transition={{ duration: 3.5, ease: "linear", delay: active === i ? 0.1 : 0 }}
-                      key={`bar-${i}-${active}`}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                {feat.title}
+              </motion.h3>
+
+              {/* Cuerpo */}
+              <motion.p
+                className="font-body text-sm text-foreground/70 leading-relaxed"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.26, duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+              >
+                {feat.body}
+              </motion.p>
+
+              {/* Barra de progreso */}
+              <div className="h-[2px] bg-border rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-accent-deep rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 3.5, ease: "linear", delay: 0.35 }}
+                  key={`bar-${active}`}
+                />
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Indicadores de puntos + flechas */}
+      {/* Indicadores + flechas */}
       <div className="flex items-center justify-between px-1 mt-3">
         <button
           onClick={() => goTo(active - 1)}
