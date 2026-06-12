@@ -53,7 +53,7 @@
 
 @media (min-width: 768px) {
   #esencia-grid {
-    grid-template-rows: repeat(2, 240px);
+    grid-template-rows: repeat(2, 280px);
   }
 }
 
