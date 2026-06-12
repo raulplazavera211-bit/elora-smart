@@ -1299,6 +1299,7 @@ export default function Home() {
         </div>
 
         {/* ── CART PANEL ────────────────────────────────────────────────────── */}
+        {/* Panel del carrito: lateral en móvil, fullscreen en desktop */}
         <motion.div
           initial={false}
           animate={isCartOpen ? { opacity: 1, pointerEvents: "auto" } : { opacity: 0, pointerEvents: "none" }}
@@ -1306,20 +1307,48 @@ export default function Home() {
           className="fixed inset-0 z-[60] flex"
           onClick={() => { setIsCartOpen(false); setCheckoutStep("cart"); }}
         >
+          {/* Overlay: solo en móvil (en desktop el panel ocupa todo) */}
           <motion.div
-            className="flex-1 bg-foreground/30 backdrop-blur-sm"
+            className="md:hidden flex-1 bg-foreground/30 backdrop-blur-sm"
             animate={isCartOpen ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.3 }}
           />
+          {/* Desktop: sidebar izquierdo fijo visible dentro del fullscreen */}
+          <div className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start shrink-0 py-12 z-10">
+            <button onClick={() => { setIsCartOpen(false); setCheckoutStep("cart"); }} className="px-10 text-left outline-none">
+              <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
+              <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
+            </button>
+            <nav className="flex flex-col gap-5 w-full px-10">
+              <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
+              {SECTIONS.map((item, idx) => (
+                <button
+                  key={`cart-nav-${item}`}
+                  onClick={() => { setIsCartOpen(false); setCheckoutStep("cart"); scrollToSection(idx); }}
+                  className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
+                >
+                  <span className="h-[1px] w-3 bg-foreground/20 group-hover:w-6 transition-all duration-500" />
+                  <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">{item}</span>
+                  <span className="ml-auto font-body text-[10px] text-foreground/20">0{idx + 1}</span>
+                </button>
+              ))}
+            </nav>
+            <div className="px-10 w-full">
+              <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-accent-deep" />
+                Est. Galicia · 2024
+              </div>
+            </div>
+          </div>
           <motion.div
             onClick={(e) => e.stopPropagation()}
             initial={{ x: "100%" }}
             animate={isCartOpen ? { x: 0 } : { x: "100%" }}
             transition={{ type: "spring", stiffness: 320, damping: 38 }}
-            className="w-full max-w-md h-full bg-background border-l border-border flex flex-col shadow-2xl"
+            className="w-full max-w-md md:max-w-none md:flex-1 h-full bg-background border-l border-border flex flex-col shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-8 py-6 border-b border-border shrink-0">
+            <div className="flex items-center justify-between px-8 md:px-16 py-6 border-b border-border shrink-0">
               <div className="flex items-center gap-3">
                 <ShoppingBag className="w-5 h-5 text-foreground" />
                 <p className="font-display text-lg uppercase tracking-widest">
@@ -1340,7 +1369,7 @@ export default function Home() {
 
             {/* Steps indicator */}
             {checkoutStep !== "success" && (
-              <div className="flex items-center gap-0 px-8 py-3 border-b border-border shrink-0">
+              <div className="flex items-center gap-0 px-8 md:px-16 py-3 border-b border-border shrink-0">
                 {["Carrito", "Datos"].map((label, i) => (
                   <div key={label} className="flex items-center gap-0">
                     <div className={`flex items-center gap-2 ${i === 0 ? (checkoutStep === "cart" ? "text-foreground" : "text-foreground/30") : (checkoutStep === "checkout" ? "text-foreground" : "text-foreground/30")} transition-colors duration-300`}>
@@ -1364,7 +1393,7 @@ export default function Home() {
             {/* Body */}
             <div className="flex-1 overflow-y-auto">
               {checkoutStep === "success" ? (
-                <div className="flex flex-col items-center justify-center h-full px-8 text-center gap-6">
+                <div className="flex flex-col items-center justify-center h-full px-8 md:px-16 text-center gap-6">
                   <motion.div
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -1388,7 +1417,7 @@ export default function Home() {
                 <form
                   id="checkout-form"
                   onSubmit={(e) => { e.preventDefault(); setCheckoutStep("success"); }}
-                  className="px-8 py-6 flex flex-col gap-4"
+                  className="px-8 md:px-16 py-6 md:py-10 flex flex-col gap-4 md:max-w-2xl md:w-full"
                 >
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex flex-col gap-1">
@@ -1436,7 +1465,7 @@ export default function Home() {
                   </div>
                 </form>
               ) : (
-                <div className="px-8 py-6">
+                <div className="px-8 md:px-16 py-6 md:py-10 md:max-w-2xl md:w-full">
                   {cart.length === 0 ? (
                     <div className="flex flex-col items-center gap-4 py-12 text-center">
                       <ShoppingBag className="w-10 h-10 text-foreground/20" />
@@ -1536,7 +1565,7 @@ export default function Home() {
                 )}
 
                 {/* ── CTA + total ── */}
-                <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
+                <div className="px-8 md:px-16 py-6 border-t border-border flex flex-col gap-3 md:max-w-2xl md:w-full">
                   {checkoutStep === "cart" && cart.length > 0 && (
                     <div className="flex justify-between items-baseline mb-1">
                       <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>

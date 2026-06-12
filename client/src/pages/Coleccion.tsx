@@ -137,18 +137,28 @@ export default function Coleccion() {
       </aside>
 
       {/* ── MOBILE HEADER ─────────────────────────────────────────── */}
-      <div className="md:hidden fixed top-0 left-0 w-full h-20 bg-background/95 backdrop-blur-md border-b border-border z-40 flex items-center justify-between px-6">
+      <div className="md:hidden fixed top-0 left-0 w-full h-20 bg-background/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-6">
         <button onClick={() => navigate("/")} className="outline-none">
           <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
         </button>
         <div className="flex items-center gap-3">
-          <button onClick={() => setIsCartOpen(true)} className="relative w-10 h-10 flex items-center justify-center border border-border hover:border-accent-deep transition-colors outline-none">
-            <ShoppingBag className="w-4 h-4" />
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center outline-none"
+            aria-label="Carrito"
+          >
+            <ShoppingBag className="w-4 h-4 text-foreground" />
             {cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-accent-deep text-background font-body text-[10px] flex items-center justify-center">{cart.length}</span>
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-accent-deep text-background font-body text-[10px] flex items-center justify-center">
+                {cart.length}
+              </span>
             )}
           </button>
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="w-10 h-10 flex items-center justify-center outline-none">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center transition-transform duration-300 outline-none"
+            aria-label="Menú"
+          >
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
@@ -156,12 +166,24 @@ export default function Coleccion() {
 
       {/* ── MOBILE MENU ───────────────────────────────────────────── */}
       <div className={`fixed inset-0 bg-background z-40 transform transition-transform duration-500 ease-out flex flex-col justify-center px-8 md:hidden ${isMenuOpen ? "translate-y-0" : "translate-y-full"}`}>
+        <button
+          onClick={() => setIsMenuOpen(false)}
+          className="absolute top-6 right-6 w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center outline-none"
+        >
+          <X className="w-5 h-5" />
+        </button>
         <nav className="flex flex-col gap-7 pb-16">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">Índice</p>
-          <button onClick={() => { setSelectedProduct(null); setIsMenuOpen(false); }} className="text-left font-display text-4xl uppercase tracking-wide text-foreground outline-none flex items-center gap-4">
+          <button
+            onClick={() => { setSelectedProduct(null); setIsMenuOpen(false); }}
+            className="text-left font-display text-4xl uppercase tracking-wide text-foreground outline-none flex items-center gap-4"
+          >
             <span className="text-sm font-body text-accent-deep">01</span>Colección
           </button>
-          <button onClick={() => navigate("/")} className="text-left font-display text-4xl uppercase tracking-wide text-foreground/30 outline-none flex items-center gap-4">
+          <button
+            onClick={() => { navigate("/"); setIsMenuOpen(false); }}
+            className="text-left font-display text-4xl uppercase tracking-wide text-foreground/30 outline-none flex items-center gap-4"
+          >
             <span className="text-sm font-body text-foreground/30">02</span>Inicio
           </button>
         </nav>
