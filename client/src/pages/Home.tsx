@@ -639,10 +639,10 @@ type CheckoutStep = "cart" | "checkout" | "success";
 
 // ─── EsenciaCarousel ─────────────────────────────────────────────────────────────────
 const ESENCIA_CARDS = [
-  { icon: MapPin, title: "Showroom en Galicia", body: "Ven y pruébalo. Te enamorarás y entenderás por qué cambia tu día a día.", bg: "#0a0a0a", accent: "#d97706" },
-  { icon: ShieldCheck, title: "10 años de garantía", body: "Te asesoramos antes, durante y después. Para que aciertes y estés tranquilo.", bg: "#0d1a0d", accent: "#22c55e" },
-  { icon: Wrench, title: "Instalación sencilla", body: "Solo necesitas un enchufe cerca y a tu fontanero de confianza. Nada más.", bg: "#0a1628", accent: "#60a5fa" },
-  { icon: Sparkles, title: "Higiene real", body: "Agua templada, boquilla autolimpiable y secado en 30 segundos. Sin papel.", bg: "#1a0a1a", accent: "#c084fc" },
+  { icon: MapPin, title: "Showroom en Galicia", body: "Ven y pruébalo. Te enamorarás y entenderás por qué cambia tu día a día.", accent: "#d97706" },
+  { icon: ShieldCheck, title: "10 años de garantía", body: "Te asesoramos antes, durante y después. Para que aciertes y estés tranquilo.", accent: "#d97706" },
+  { icon: Wrench, title: "Instalación sencilla", body: "Solo necesitas un enchufe cerca y a tu fontanero de confianza. Nada más.", accent: "#d97706" },
+  { icon: Sparkles, title: "Higiene real", body: "Agua templada, boquilla autolimpiable y secado en 30 segundos. Sin papel.", accent: "#d97706" },
 ];
 
 function EsenciaCarousel() {
@@ -654,7 +654,7 @@ function EsenciaCarousel() {
   const card = ESENCIA_CARDS[active];
   const Icon = card.icon;
   return (
-    <div className="relative w-full h-full flex flex-col justify-between p-5 overflow-hidden" style={{ background: card.bg, transition: 'background 0.6s ease' }}>
+    <div className="relative w-full h-full flex flex-col justify-between p-5 overflow-hidden bg-foreground text-background">
       {/* Luz de fondo */}
       <motion.div
         key={active + '-glow'}
@@ -681,15 +681,15 @@ function EsenciaCarousel() {
         transition={{ duration: 0.45, delay: 0.1 }}
         className="relative z-10"
       >
-        <h3 className="font-display text-lg uppercase tracking-wide leading-tight text-white mb-1.5">{card.title}</h3>
-        <p className="font-body text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>{card.body}</p>
+        <h3 className="font-display text-lg uppercase tracking-wide leading-tight text-background mb-1.5">{card.title}</h3>
+        <p className="font-body text-[11px] leading-relaxed text-background/55">{card.body}</p>
       </motion.div>
       {/* Indicadores */}
       <div className="flex gap-1.5 mt-3">
         {ESENCIA_CARDS.map((_, i) => (
           <button key={i} onClick={() => setActive(i)}
             className="h-[3px] rounded-full transition-all duration-500 cursor-pointer"
-            style={{ width: i === active ? 20 : 8, background: i === active ? card.accent : 'rgba(255,255,255,0.2)' }}
+            style={{ width: i === active ? 20 : 8, background: i === active ? card.accent : 'rgba(var(--background), 0.2)' }}
           />
         ))}
       </div>
