@@ -2123,7 +2123,7 @@ export default function Home() {
                     <img
                       src="/manus-storage/eloraerquipo_cbe7849e.webp"
                       alt="Equipo Elora Smart"
-                      className="absolute inset-0 w-full h-full object-cover object-[center_30%] transition-transform duration-[2.5s] ease-out group-hover:scale-105 opacity-60"
+                      className="absolute inset-0 w-full h-full object-cover object-[75%_30%] transition-transform duration-[2.5s] ease-out group-hover:scale-105 opacity-60"
                     />
                     {/* Overlay degradado lateral */}
                     <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent pointer-events-none" />
@@ -2146,7 +2146,7 @@ export default function Home() {
                           transition={{ delay: 0.4, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
                           className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight text-white mb-2"
                         >
-                          No compramos<br />lo que otros fabrican.
+                          Confía en<br />Elora.
                         </motion.p>
                         <motion.p
                           initial={{ opacity: 0, x: -20 }}
@@ -2155,7 +2155,7 @@ export default function Home() {
                           transition={{ delay: 0.55, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
                           className="font-body text-xs text-white/60 uppercase tracking-widest"
                         >
-                          Lo creamos nosotros, para ti.
+                          Calidad gallega, para tu baño.
                         </motion.p>
                       </div>
 
