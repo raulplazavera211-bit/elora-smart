@@ -2101,7 +2101,7 @@ export default function Home() {
                 {/* Video de fondo: De la cantera gallega al baño contemporáneo */}
                 <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
                   <iframe
-                    src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&modestbranding=1&showinfo=0"
+                    src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&end=225&modestbranding=1&showinfo=0"
                     title="Elora Smart — De la cantera gallega al baño contemporáneo"
                     className="absolute top-1/2 left-1/2 pointer-events-none"
                     style={{ width: "177.78vh", height: "100vh", minWidth: "100%", minHeight: "56.25vw", transform: "translate(-50%, -50%)" }}
