@@ -2180,97 +2180,38 @@ export default function Home() {
                   {/* BLOQUE INFERIOR DERECHA — stat + tarjeta producto top ventas (8 cols) */}
                   <div className="md:col-span-8 grid grid-cols-2 gap-3 md:gap-4">
 
-                    {/* Tarjeta stat -40% con olas animadas */}
-                    {(() => {
-                      const waveCanvasRef = useRef<HTMLCanvasElement>(null);
-                      const waveAnimRef = useRef<number>(0);
-                      useEffect(() => {
-                        const canvas = waveCanvasRef.current;
-                        if (!canvas) return;
-                        const ctx = canvas.getContext('2d');
-                        if (!ctx) return;
-                        let t = 0;
-                        const resize = () => {
-                          canvas.width = canvas.offsetWidth;
-                          canvas.height = canvas.offsetHeight;
-                        };
-                        resize();
-                        const ro = new ResizeObserver(resize);
-                        ro.observe(canvas);
-                        const waves = [
-                          { amp: 12, freq: 0.018, speed: 0.022, phase: 0,   color: 'rgba(217,119,6,0.65)',  yBase: 0.62 },
-                          { amp: 9,  freq: 0.025, speed: 0.030, phase: 2.1, color: 'rgba(245,158,11,0.50)', yBase: 0.68 },
-                          { amp: 7,  freq: 0.032, speed: 0.018, phase: 4.3, color: 'rgba(180,83,9,0.55)',   yBase: 0.74 },
-                          { amp: 14, freq: 0.012, speed: 0.012, phase: 1.5, color: 'rgba(146,64,14,0.40)',  yBase: 0.55 },
-                        ];
-                        const draw = () => {
-                          const w = canvas.width, h = canvas.height;
-                          ctx.clearRect(0, 0, w, h);
-                          // Overlay oscuro para que el texto se lea bien sobre las olas naranjas
-                          ctx.fillStyle = 'rgba(0,0,0,0.42)';
-                          ctx.fillRect(0, 0, w, h);
-                          // Olas
-                          waves.forEach(wave => {
-                            ctx.beginPath();
-                            const yBase = h * wave.yBase;
-                            ctx.moveTo(0, yBase);
-                            for (let x = 0; x <= w; x += 2) {
-                              const y = yBase + Math.sin(x * wave.freq + t * wave.speed + wave.phase) * wave.amp
-                                      + Math.sin(x * wave.freq * 1.7 + t * wave.speed * 0.6 + wave.phase + 1) * (wave.amp * 0.4);
-                              ctx.lineTo(x, y);
-                            }
-                            ctx.lineTo(w, h);
-                            ctx.lineTo(0, h);
-                            ctx.closePath();
-                            ctx.fillStyle = wave.color;
-                            ctx.fill();
-                          });
-                          // Destellos dorados en la superficie
-                          for (let i = 0; i < 3; i++) {
-                            const x = (w * 0.2 + i * w * 0.3 + Math.sin(t * 0.008 + i) * 20);
-                            const y = h * (0.5 + Math.sin(t * 0.012 + i * 2) * 0.05);
-                            const r = ctx.createRadialGradient(x, y, 0, x, y, 35);
-                            r.addColorStop(0, 'rgba(251,191,36,0.28)');
-                            r.addColorStop(1, 'rgba(0,0,0,0)');
-                            ctx.fillStyle = r;
-                            ctx.fillRect(x - 35, y - 35, 70, 70);
-                          }
-                          t++;
-                          waveAnimRef.current = requestAnimationFrame(draw);
-                        };
-                        draw();
-                        return () => { cancelAnimationFrame(waveAnimRef.current); ro.disconnect(); };
-                      }, []);
-                      return (
+                    {/* Tarjeta instalación rápida */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      viewport={{ once: true }}
+                      whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                      className="relative overflow-hidden bg-foreground flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0 p-5 md:p-6"
+                    >
+                      {/* Fondo foto sutil */}
+                      <img src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-10.webp" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+                      {/* Círculo decorativo de fondo */}
+                      <motion.div
+                        animate={{ scale: [1, 1.08, 1], opacity: [0.08, 0.14, 0.08] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                        className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-accent"
+                      />
+                      <div className="relative z-10 flex flex-col justify-between h-full gap-3">
+                        {/* Número flotante */}
                         <motion.div
-                          initial={{ opacity: 0, y: 30 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                          viewport={{ once: true }}
-                          whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                          className="relative overflow-hidden border border-black/30 flex flex-col justify-between cursor-default min-h-[140px] md:min-h-0"
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                          className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-accent flex items-center justify-center shadow-lg"
                         >
-                          {/* Foto de fondo — baño con ESENZA */}
-                          <img src="https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-9.webp" alt="Elora ESENZA" className="absolute inset-0 w-full h-full object-cover" />
-                          {/* Canvas de olas semitransparente encima */}
-                          <canvas ref={waveCanvasRef} className="absolute inset-0 w-full h-full" />
-                          {/* Contenido sobre las olas */}
-                          <div className="relative z-10 p-5 md:p-6 flex flex-col justify-between h-full gap-2">
-                            <motion.div
-                              animate={{ y: [0, -7, 0] }}
-                              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                              className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-400/90 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-amber-900/30"
-                            >
-                              <span className="font-display text-xl md:text-2xl leading-none text-black font-bold">-40%</span>
-                            </motion.div>
-                            <div>
-                              <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white">consumo de agua</p>
-                              <p className="font-body text-[10px] leading-relaxed mt-1 text-white/60">frente al papel higiénico convencional</p>
-                            </div>
-                          </div>
+                          <span className="font-display text-lg md:text-xl leading-none text-black font-bold">2h</span>
                         </motion.div>
-                      );
-                    })()}
+                        <div>
+                          <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-background">instalación</p>
+                          <p className="font-body text-[10px] leading-relaxed mt-1 text-background/50">instalado y funcionando en tu baño</p>
+                        </div>
+                      </div>
+                    </motion.div>
 
                     {/* Tarjeta producto Top Ventas — AURA-SUSPENDIDO */}
                     <motion.div
