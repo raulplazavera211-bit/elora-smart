@@ -1297,6 +1297,104 @@ function ClubEloraSection() {
   );
 }
 
+// ─── Componente de vídeo Esencia ─────────────────────────────────────────────
+function EsenciaVideoCard() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { v.play(); setPlaying(true); }
+    else { v.pause(); setPlaying(false); }
+  };
+
+  useEffect(() => {
+    const v = videoRef.current;
+    const c = containerRef.current;
+    if (!v || !c) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          v.play().then(() => setPlaying(true)).catch(() => {});
+        } else {
+          v.pause();
+          setPlaying(false);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    obs.observe(c);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0, scale: 0.95, y: 40 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, margin: "-5%" }}
+      className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group cursor-pointer"
+      onClick={toggle}
+    >
+      <video
+        ref={videoRef}
+        src="/manus-storage/elora-video-cantera_c60888ff.mp4"
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        onEnded={() => setPlaying(false)}
+      />
+      {!playing && (
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+      )}
+      <AnimatePresence>
+        {!playing && (
+          <motion.div
+            key="play-btn"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          >
+            <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center">
+              <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div className="absolute top-4 left-4 pointer-events-none">
+        <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        <div className="relative px-4 py-4 flex items-end justify-between gap-3">
+          {!playing && (
+            <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white max-w-[55%]">
+              De la cantera gallega<br />al baño contemporáneo.
+            </p>
+          )}
+          <motion.div
+            className="text-right ml-auto"
+            animate={{ opacity: [1, 0.25, 1] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          >
+            <div className="inline-block bg-amber-500/90 backdrop-blur-sm px-3 py-2 border-l-2 border-white/40">
+              <p className="font-body text-[8px] uppercase tracking-[0.3em] text-white/80 leading-tight">Espera,</p>
+              <p className="font-display text-sm uppercase tracking-wide text-white leading-tight">Escúchame.</p>
+              <p className="font-body text-[8px] uppercase tracking-[0.2em] text-white/70 leading-tight mt-0.5">Es importante.</p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
   const [, navigate] = useLocation();
@@ -2063,112 +2161,7 @@ export default function Home() {
                 <div id="esencia-grid" className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-3 md:gap-4 px-6 pb-8 md:px-12 md:pb-10">
 
                   {/* BLOQUE GRANDE IZQUIERDA — vídeo "Espera, escúchame" (7 cols, 2 rows) */}
-                  {(() => {
-                    const videoRef = useRef<HTMLVideoElement>(null);
-                    const containerRef = useRef<HTMLDivElement>(null);
-                    const [playing, setPlaying] = useState(false);
-                    const toggle = () => {
-                      const v = videoRef.current;
-                      if (!v) return;
-                      if (v.paused) { v.play(); setPlaying(true); }
-                      else { v.pause(); setPlaying(false); }
-                    };
-                    // Autoplay al entrar en viewport, pausa al salir
-                    useEffect(() => {
-                      const v = videoRef.current;
-                      const c = containerRef.current;
-                      if (!v || !c) return;
-                      const obs = new IntersectionObserver(
-                        ([entry]) => {
-                          if (entry.isIntersecting) {
-                            v.play().then(() => setPlaying(true)).catch(() => {});
-                          } else {
-                            v.pause();
-                            setPlaying(false);
-                          }
-                        },
-                        { threshold: 0.5 }
-                      );
-                      obs.observe(c);
-                      return () => obs.disconnect();
-                    }, []);
-                    return (
-                      <motion.div
-                        ref={containerRef}
-                        initial={{ opacity: 0, scale: 0.95, y: 40 }}
-                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                        viewport={{ once: true, margin: "-5%" }}
-                        className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group cursor-pointer"
-                        onClick={toggle}
-                      >
-                        {/* Vídeo */}
-                        <video
-                          ref={videoRef}
-                          src="/manus-storage/elora-video-cantera_c60888ff.mp4"
-                          playsInline
-                          className="absolute inset-0 w-full h-full object-cover"
-                          onEnded={() => setPlaying(false)}
-                        />
-
-                        {/* Overlay oscuro solo cuando está pausado */}
-                        {!playing && (
-                          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-                        )}
-
-                        {/* Botón play/pausa central */}
-                        <AnimatePresence>
-                          {!playing && (
-                            <motion.div
-                              key="play-btn"
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                              transition={{ duration: 0.2 }}
-                              className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                            >
-                              <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center">
-                                <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M8 5v14l11-7z" />
-                                </svg>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-
-                        {/* Badge superior izquierda */}
-                        <div className="absolute top-4 left-4 pointer-events-none">
-                          <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
-                        </div>
-
-                        {/* Texto inferior con fondo degradado — siempre visible */}
-                        <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
-                          {/* Degradado de fondo */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                          <div className="relative px-4 py-4 flex items-end justify-between gap-3">
-                            {/* Texto izquierda — cantera */}
-                            {!playing && (
-                              <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white max-w-[55%]">
-                                De la cantera gallega<br />al baño contemporáneo.
-                              </p>
-                            )}
-                            {/* Texto parpadeante derecha */}
-                            <motion.div
-                              className="text-right ml-auto"
-                              animate={{ opacity: [1, 0.25, 1] }}
-                              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                            >
-                              <div className="inline-block bg-amber-500/90 backdrop-blur-sm px-3 py-2 border-l-2 border-white/40">
-                                <p className="font-body text-[8px] uppercase tracking-[0.3em] text-white/80 leading-tight">Espera,</p>
-                                <p className="font-display text-sm uppercase tracking-wide text-white leading-tight">Escúchame.</p>
-                                <p className="font-body text-[8px] uppercase tracking-[0.2em] text-white/70 leading-tight mt-0.5">Es importante.</p>
-                              </div>
-                            </motion.div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })()}
+                  <EsenciaVideoCard />
 
                   {/* BLOQUE SUPERIOR DERECHA — stat garantía + imagen ESENZA (5 cols) */}
                   {/* BLOQUE SUPERIOR DERECHA — claim potente con foto de equipo */}
