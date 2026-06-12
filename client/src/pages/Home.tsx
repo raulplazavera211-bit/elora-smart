@@ -1458,7 +1458,7 @@ export default function Home() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-0.5">{item.id}</p>
-                            <p className="font-display text-sm uppercase tracking-wide leading-tight truncate">{item.name}</p>
+                            <p className="font-display text-sm uppercase tracking-wide leading-snug">{item.name}</p>
                             <p className="font-display text-base text-accent-deep mt-1">{item.price.toLocaleString('es-ES')} €</p>
                           </div>
                           <button onClick={() => removeFromCart(idx)} className="shrink-0 font-body text-[10px] uppercase tracking-widest text-foreground/30 hover:text-foreground transition-colors outline-none">
@@ -1474,35 +1474,85 @@ export default function Home() {
 
             {/* Footer */}
             {checkoutStep !== "success" && (
-              <div className="px-8 py-6 border-t border-border flex flex-col gap-3 shrink-0">
-                {checkoutStep === "cart" && cart.length > 0 && (
-                  <div className="flex justify-between items-baseline mb-1">
-                    <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
-                    <span className="font-display text-2xl">{cartTotal.toLocaleString('es-ES')} €</span>
+              <div className="flex flex-col shrink-0">
+
+                {/* ── Social proof strip (solo en paso carrito) ── */}
+                {checkoutStep === "cart" && (
+                  <div className="bg-[#F8F9FA] border-t border-gray-200 px-6 py-5">
+                    {/* Headline */}
+                    <p className="font-display text-[11px] uppercase tracking-[0.25em] text-gray-400 mb-3 text-center">
+                      Estás a punto de unirte a clientes como estos
+                    </p>
+                    {/* Mini carrusel de reseñas */}
+                    <div className="flex flex-col gap-3">
+                      {REVIEWS.slice(0, 3).map((r, i) => (
+                        <div key={i} className="flex items-start gap-3 bg-white rounded-lg p-3 shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+                            style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
+                          >
+                            {r.name.charAt(0)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-0.5">
+                              <p className="text-gray-800 text-xs font-semibold leading-none">{r.name}</p>
+                              <div className="flex gap-0.5">
+                                {[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}
+                              </div>
+                            </div>
+                            <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{r.text}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Rating summary */}
+                    <div className="flex items-center justify-center gap-2 mt-3">
+                      <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
+                      <p className="text-gray-500 text-[11px] font-medium">5.0 · 10 reseñas en Google</p>
+                      <GoogleLogoIcon />
+                    </div>
                   </div>
                 )}
-                {checkoutStep === "cart" ? (
-                  <button
-                    onClick={() => setCheckoutStep("checkout")}
-                    disabled={cart.length === 0}
-                    className="w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    Comprar · {cart.length > 0 ? `${cartTotal.toLocaleString('es-ES')} €` : "0 €"}
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    form="checkout-form"
-                    className="w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-all duration-300 active:scale-[0.98]"
-                  >
-                    <Check className="w-4 h-4" />
-                    Confirmar pedido
-                  </button>
-                )}
-                <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">
-                  Pago seguro · Envío e instalación coordinados por Elora
-                </p>
+
+                {/* ── CTA + total ── */}
+                <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
+                  {checkoutStep === "cart" && cart.length > 0 && (
+                    <div className="flex justify-between items-baseline mb-1">
+                      <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
+                      <span className="font-display text-2xl">{cartTotal.toLocaleString('es-ES')} €</span>
+                    </div>
+                  )}
+                  {checkoutStep === "cart" ? (
+                    <motion.button
+                      onClick={() => setCheckoutStep("checkout")}
+                      disabled={cart.length === 0}
+                      whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
+                      whileTap={cart.length > 0 ? { scale: 0.97 } : {}}
+                      className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group"
+                      style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}
+                    >
+                      {/* Shimmer */}
+                      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                      <ShoppingBag className="w-4 h-4 relative z-10" />
+                      <span className="relative z-10">
+                        {cart.length > 0 ? `Comprar · ${cartTotal.toLocaleString('es-ES')} €` : "Añade productos"}
+                      </span>
+                      <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform duration-200" />
+                    </motion.button>
+                  ) : (
+                    <button
+                      type="submit"
+                      form="checkout-form"
+                      className="w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-all duration-300 active:scale-[0.98]"
+                    >
+                      <Check className="w-4 h-4" />
+                      Confirmar pedido
+                    </button>
+                  )}
+                  <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">
+                    Pago seguro · Envío e instalación coordinados por Elora
+                  </p>
+                </div>
               </div>
             )}
           </motion.div>
