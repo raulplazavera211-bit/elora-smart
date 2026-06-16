@@ -1581,26 +1581,21 @@ export default function Home() {
                 data-index="0"
                 className="h-[calc(100dvh-5rem)] md:h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col"
               >
-                {/* Video de fondo: vistas de drón */}
-                <div className="absolute inset-0 w-full h-full overflow-hidden">
-                  <iframe
-                    src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&end=225&modestbranding=1&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0"
-                    title="Elora Smart — De la cantera gallega al baño contemporáneo"
-                    className="absolute top-1/2 left-1/2"
-                    style={{
-                      width: "200vw",
-                      height: "115vw",
-                      minWidth: "177.78vh",
-                      minHeight: "100vh",
-                      transform: "translate(-50%, -50%) scale(1.15)",
-                      pointerEvents: "none"
-                    }}
-                    allow="autoplay; encrypted-media"
-                    tabIndex={-1}
-                  />
+                {/* Video de fondo: vistas de drón (mp4 directo, sin YouTube) */}
+                <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover"
+                    style={{ transform: "translate(-50%, -50%)", pointerEvents: "none" }}
+                  >
+                    <source src="/manus-storage/elora-hero-drone_3fb8dc9d.mp4" type="video/mp4" />
+                  </video>
                 </div>
-                {/* Capa que cubre TODO el iframe de YouTube — impide que el navegador/iOS muestre controles al tocar */}
-                <div className="absolute inset-0" style={{ zIndex: 5, pointerEvents: "all", touchAction: "none", cursor: "default" }} />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/20" />
 
                 <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pb-16 md:pb-20">
