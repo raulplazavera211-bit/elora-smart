@@ -110,10 +110,12 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
       {/* Logo */}
       <div className="px-6 py-6 border-b border-white/8">
         <Link href="/" className="block">
-          <div className="flex items-center gap-2.5">
-            <span className="font-display text-[22px] tracking-[0.18em] text-white uppercase leading-none">Elora</span>
-            <span className="font-body text-[8px] uppercase tracking-[0.3em] text-[#D67A00] border border-[#D67A00]/50 px-1.5 py-0.5 leading-none">Smart</span>
-          </div>
+          <img
+            src={LOGO_URL}
+            alt="Elora Smart"
+            className="h-10 w-auto"
+            style={{ filter: "brightness(0) invert(1)" }}
+          />
           <p className="font-body text-[9px] uppercase tracking-[0.4em] text-white/30 mt-2">Panel de administración</p>
         </Link>
       </div>
