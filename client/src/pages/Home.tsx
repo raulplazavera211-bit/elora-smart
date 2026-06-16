@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Menu, X, ArrowRight, Droplets, Leaf, Cpu, Sparkles,
@@ -1108,6 +1110,15 @@ function ClubEloraSection() {
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  const signupMutation = trpc.clubElora.signup.useMutation({
+    onSuccess: () => {
+      setSent(true);
+    },
+    onError: (err) => {
+      toast.error(err.message || "Error al unirte al club. Inténtalo de nuevo.");
+    },
+  });
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisible(true); },
@@ -1120,7 +1131,10 @@ function ClubEloraSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.acepto) return;
-    setSent(true);
+    signupMutation.mutate({
+      nombre: form.nombre || undefined,
+      email: form.email,
+    });
   };
 
   return (
@@ -1226,11 +1240,11 @@ function ClubEloraSection() {
               </label>
               <button
                 type="submit"
-                disabled={!form.acepto}
+                disabled={!form.acepto || signupMutation.isPending}
                 className="w-full py-4 font-display text-sm uppercase tracking-[0.3em] transition-all duration-300 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed"
-                style={{ background: form.acepto ? "linear-gradient(135deg, #F5A45B, #e8923a)" : "rgba(255,255,255,0.08)", color: form.acepto ? "#001F3F" : "rgba(255,255,255,0.3)" }}
+                style={{ background: form.acepto && !signupMutation.isPending ? "linear-gradient(135deg, #F5A45B, #e8923a)" : "rgba(255,255,255,0.08)", color: form.acepto && !signupMutation.isPending ? "#001F3F" : "rgba(255,255,255,0.3)" }}
               >
-                Unirme al Club Elora
+                {signupMutation.isPending ? "Enviando..." : "Unirme al Club Elora"}
               </button>
             </form>
           )}
@@ -1405,9 +1419,24 @@ export default function Home() {
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const contactMutation = trpc.contact.submit.useMutation({
+    onSuccess: () => {
+      setContactSent(true);
+      setContactForm({ nombre: "", telefono: "", email: "", mensaje: "" });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Error al enviar el mensaje. Inténtalo de nuevo.");
+    },
+  });
+
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setContactSent(true);
+    contactMutation.mutate({
+      nombre: contactForm.nombre,
+      telefono: contactForm.telefono || undefined,
+      email: contactForm.email,
+      mensaje: contactForm.mensaje || undefined,
+    });
   };
 
   useEffect(() => {
@@ -2073,10 +2102,11 @@ export default function Home() {
 
                         <button
                           type="submit"
-                          className="group w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-colors relative overflow-hidden"
+                          disabled={contactMutation.isPending}
+                          className="group w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-colors relative overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                           <Send className="w-4 h-4" />
-                          Solicitar catálogo privado
+                          {contactMutation.isPending ? "Enviando..." : "Solicitar catálogo privado"}
                         </button>
 
                         <p className="font-body text-[10px] text-foreground/40 leading-relaxed">
