@@ -755,12 +755,12 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
         <div className="sticky top-20 h-[calc(100dvh-5rem)] w-full overflow-hidden flex flex-col bg-foreground">
 
           {/* Cabecera fija móvil */}
-          <div className="shrink-0 px-5 pt-8 pb-4 border-b border-background/10 flex items-end justify-between gap-3">
+          <div className="shrink-0 px-5 pt-5 pb-3 border-b border-background/10 flex items-end justify-between gap-3">
             <div>
-              <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent-deep mb-1.5 flex items-center gap-2">
+              <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent-deep mb-1 flex items-center gap-2">
                 <span className="w-4 h-[1px] bg-accent-deep" /> La Experiencia
               </p>
-              <h2 className="font-display text-2xl uppercase tracking-wide leading-[0.9]">
+              <h2 className="font-display text-xl uppercase tracking-wide leading-[0.9]">
                 Así funciona<span className="text-accent-deep"> cada vez.</span>
               </h2>
             </div>
@@ -770,8 +770,8 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
             </span>
           </div>
 
-          {/* Imagen grande — ocupa la mayor parte de la pantalla */}
-          <div className="relative overflow-hidden" style={{ flex: '0 0 52%' }}>
+          {/* Imagen — 45% de la altura disponible */}
+          <div className="relative overflow-hidden" style={{ flex: '0 0 45%' }}>
             {EXPERIENCE_STEPS.map((s, idx) => (
               <motion.div
                 key={idx}
@@ -786,15 +786,15 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
                 <img
                   src={s.image}
                   alt={s.title}
-                  className="w-full h-full object-contain p-6"
+                  className="w-full h-full object-contain p-4"
                   loading="lazy"
                 />
                 {/* Número de fondo */}
-                <span className="absolute bottom-2 right-4 font-display text-[6rem] leading-none text-background/5 select-none pointer-events-none">
+                <span className="absolute bottom-1 right-3 font-display text-[5rem] leading-none text-background/5 select-none pointer-events-none">
                   {s.number}
                 </span>
                 {/* Tag */}
-                <span className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1.5 bg-foreground/80 backdrop-blur-sm border border-background/10 font-body text-[9px] uppercase tracking-[0.25em] text-accent-deep">
+                <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 bg-foreground/80 backdrop-blur-sm border border-background/10 font-body text-[8px] uppercase tracking-[0.25em] text-accent-deep">
                   <span className="w-1 h-1 rounded-full bg-accent-deep" />
                   {s.tag}
                 </span>
@@ -802,8 +802,8 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
             ))}
           </div>
 
-          {/* Texto del paso activo */}
-          <div className="shrink-0 border-t border-background/10 px-5 py-5 flex-1">
+          {/* Texto del paso activo — flex-1 toma el espacio restante */}
+          <div className="border-t border-background/10 px-5 py-3 flex-1 overflow-hidden">
             <motion.div
               key={activeStep}
               initial={{ opacity: 0, y: 20 }}
@@ -811,17 +811,17 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
             >
-              <p className="font-body text-[10px] uppercase tracking-[0.4em] text-background/40 mb-2">{step.eyebrow}</p>
-              <h3 className="font-display text-2xl uppercase tracking-wide leading-[0.95] text-background mb-1.5">
+              <p className="font-body text-[9px] uppercase tracking-[0.4em] text-background/40 mb-1">{step.eyebrow}</p>
+              <h3 className="font-display text-lg uppercase tracking-wide leading-[0.95] text-background mb-1">
                 {step.title}
               </h3>
-              <p className="font-body text-base text-accent-deep mb-3">{step.subtitle}</p>
-              <p className="font-body text-sm text-background/60 leading-relaxed line-clamp-4">{step.body}</p>
+              <p className="font-body text-sm text-accent-deep mb-2">{step.subtitle}</p>
+              <p className="font-body text-xs text-background/60 leading-relaxed line-clamp-3">{step.body}</p>
             </motion.div>
           </div>
 
           {/* Dots de progreso */}
-          <div className="shrink-0 px-5 pb-4 flex items-center gap-1.5">
+          <div className="shrink-0 px-5 pb-3 flex items-center gap-1.5">
             {EXPERIENCE_STEPS.map((_, i) => (
               <div
                 key={i}
