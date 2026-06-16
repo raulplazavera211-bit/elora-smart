@@ -57,6 +57,7 @@ export function ChatBot() {
   const [hasUnread, setHasUnread] = useState(false);
   const [, navigate] = useLocation();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const lastAssistantRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const chatMutation = trpc.chat.message.useMutation({
@@ -73,9 +74,22 @@ export function ChatBot() {
     },
   });
 
+  // Cuando el usuario envía → bajar al final (ver su propio mensaje)
+  // Cuando el bot responde → subir al inicio de su respuesta para leerla desde arriba
+  const prevLengthRef = useRef(0);
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, chatMutation.isPending]);
+    const newLength = messages.length;
+    if (newLength === 0) return;
+    const lastMsg = messages[newLength - 1];
+    if (lastMsg.role === "user") {
+      // Mensaje del usuario: bajar al final
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // Respuesta del bot: ir al inicio de ese mensaje para leerlo desde arriba
+      lastAssistantRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    prevLengthRef.current = newLength;
+  }, [messages]);
 
   useEffect(() => {
     if (open) {
@@ -196,7 +210,11 @@ export function ChatBot() {
           )}
 
           {messages.map((m, i) => (
-            <div key={i} className="flex flex-col gap-2">
+            <div
+              key={i}
+              className="flex flex-col gap-2"
+              ref={m.role === "assistant" && i === messages.length - 1 ? lastAssistantRef : undefined}
+            >
               <div
                 className={cn(
                   "flex gap-2 items-start",
