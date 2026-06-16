@@ -7,6 +7,12 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Coleccion from "./pages/Coleccion";
 import Admin from "./pages/Admin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProductos from "./pages/admin/AdminProductos";
+import AdminPedidos from "./pages/admin/AdminPedidos";
+import AdminClientes from "./pages/admin/AdminClientes";
+import AdminContactos from "./pages/admin/AdminContactos";
+import AdminClubElora from "./pages/admin/AdminClubElora";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -82,7 +88,16 @@ function AppRouter() {
   if (isAdmin) {
     return (
       <Switch>
-        <Route path="/admin" component={Admin} />
+        <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin/productos" component={AdminProductos} />
+        <Route path="/admin/pedidos/:id" component={AdminPedidos} />
+        <Route path="/admin/pedidos" component={AdminPedidos} />
+        <Route path="/admin/clientes" component={AdminClientes} />
+        <Route path="/admin/contactos" component={AdminContactos} />
+        <Route path="/admin/club-elora" component={AdminClubElora} />
+        {/* Legacy admin (fallback) */}
+        <Route path="/admin/legacy" component={Admin} />
+        <Route component={AdminDashboard} />
       </Switch>
     );
   }

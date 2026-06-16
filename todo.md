@@ -36,3 +36,25 @@
 - [x] Página /admin con tablas de datos (contactos y Club Elora)
 - [x] Protección de la ruta /admin (solo acceso con contraseña o rol admin)
 - [x] Checkpoint guardado con el panel admin
+
+## Sistema WooCommerce completo
+- [x] Añadir tabla products al schema de Drizzle
+- [x] Añadir tabla orders al schema de Drizzle
+- [x] Añadir tabla order_items al schema de Drizzle
+- [x] Ejecutar pnpm db:push para sincronizar las nuevas tablas
+- [x] Añadir helpers de DB para productos y pedidos en server/db.ts
+- [x] Añadir procedimientos admin: getProducts, updateProduct, seedProducts
+- [x] Añadir procedimientos admin: getOrders, getOrder, updateOrderStatus
+- [x] Añadir procedimientos admin: getDashboardStats, getUsers, getContacts, getClubSignups
+- [x] Añadir procedimiento orders.create (checkout público)
+- [x] Actualizar CartPanel con checkout real (formulario + mutación tRPC)
+- [x] Crear componente AdminLayout (sidebar oscuro estilo WooCommerce)
+- [x] Crear página /admin — Dashboard con stats y pedidos recientes
+- [x] Crear página /admin/productos — Gestión de productos (editar precio, stock, visibilidad)
+- [x] Crear página /admin/pedidos — Lista de pedidos con filtros y cambio de estado
+- [x] Crear página /admin/pedidos/:id — Detalle de pedido individual
+- [x] Crear página /admin/clientes — Lista de usuarios registrados
+- [x] Crear página /admin/contactos — Solicitudes de contacto con acciones de respuesta
+- [x] Crear página /admin/club-elora — Miembros del Club Elora
+- [x] Registrar todas las rutas admin en App.tsx
+- [x] Instalar dotenv (dependencia faltante del servidor)

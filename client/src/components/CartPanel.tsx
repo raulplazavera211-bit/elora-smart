@@ -1,13 +1,13 @@
-// ─── CartPanel — Panel de carrito compartido ─────────────────────────────────
-// Diseño extraído de Home.tsx: sidebar oscuro con reseñas + columna de checkout.
-// Usar en cualquier página que necesite el carrito completo.
+// ─── CartPanel — Panel de carrito con checkout real ──────────────────────────
+// Diseño premium Elora Smart: sidebar oscuro con reseñas + columna de checkout.
+// Paso 2 ahora envía el pedido real a la base de datos via tRPC orders.create.
 
 import { motion, AnimatePresence } from "motion/react";
-import {
-  X, ShoppingBag, ArrowRight, Check
-} from "lucide-react";
+import { X, ShoppingBag, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -38,24 +38,74 @@ interface CartPanelProps {
   onClose: () => void;
   cart: CartItem[];
   onRemove: (idx: number) => void;
-  /** Secciones de navegación opcionales para el sidebar desktop */
+  onClearCart?: () => void;
   sections?: string[];
   onNavigate?: (idx: number) => void;
 }
 
-export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigate }: CartPanelProps) {
+export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sections, onNavigate }: CartPanelProps) {
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>("cart");
   const [checkoutForm, setCheckoutForm] = useState({
     nombre: "", apellidos: "", email: "", telefono: "",
     direccion: "", ciudad: "", cp: "", notas: ""
   });
+  const [orderId, setOrderId] = useState<number | null>(null);
 
   const cartTotal = cart.reduce((s, i) => s + i.price, 0);
 
+  const createOrder = trpc.orders.create.useMutation({
+    onSuccess: (data) => {
+      setOrderId(data.orderId);
+      setCheckoutStep("success");
+      onClearCart?.();
+    },
+    onError: (err) => {
+      toast.error("No se pudo procesar el pedido. Por favor, inténtalo de nuevo.");
+      console.error("[Checkout] Error:", err);
+    },
+  });
+
   function handleClose() {
     onClose();
-    setCheckoutStep("cart");
+    // Reset solo si no estamos en success (para que el usuario vea la confirmación)
+    if (checkoutStep !== "success") {
+      setCheckoutStep("cart");
+    }
   }
+
+  function handleSuccessClose() {
+    onClose();
+    setCheckoutStep("cart");
+    setCheckoutForm({ nombre: "", apellidos: "", email: "", telefono: "", direccion: "", ciudad: "", cp: "", notas: "" });
+    setOrderId(null);
+  }
+
+  async function handleSubmitOrder(e: React.FormEvent) {
+    e.preventDefault();
+    if (cart.length === 0) return;
+    const fullName = `${checkoutForm.nombre} ${checkoutForm.apellidos}`.trim();
+    const address = [checkoutForm.direccion, checkoutForm.ciudad, checkoutForm.cp].filter(Boolean).join(", ");
+    await createOrder.mutateAsync({
+      customerName: fullName,
+      customerEmail: checkoutForm.email,
+      customerPhone: checkoutForm.telefono || undefined,
+      address: address || undefined,
+      notes: checkoutForm.notas || undefined,
+      items: cart.map(item => ({
+        productName: item.name,
+        productImg: item.img || undefined,
+        unitPrice: item.price,
+        quantity: 1,
+      })),
+    });
+  }
+
+  const isSubmitting = createOrder.isPending;
+
+  // ─── FORM FIELDS ────────────────────────────────────────────────────────────
+  const inputClass = "bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors w-full";
+  const inputClassSm = "bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors w-full";
+  const labelClass = "font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50";
 
   return (
     <motion.div
@@ -115,7 +165,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
             </button>
           </div>
 
-          {/* Imagen principal */}
           {cart.length > 0 ? (
             <div className="px-10 mb-6">
               <div className="aspect-square w-full overflow-hidden bg-[#1A1A1A]">
@@ -130,7 +179,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
             </div>
           )}
 
-          {/* Items */}
           <div className="px-10 flex flex-col gap-3 mb-6">
             {cart.map((item, idx) => (
               <div key={`left-${item.id}-${idx}`} className="flex items-center gap-3 border-b border-white/10 pb-3">
@@ -149,7 +197,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
             )}
           </div>
 
-          {/* Reseñas flotantes */}
           <div className="px-10 mt-auto pb-10">
             <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-4">Lo que dicen nuestros clientes</p>
             <div className="flex flex-col gap-3">
@@ -166,11 +213,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
                     </div>
                     <p className="text-white/80 text-[11px] font-semibold">{r.name}</p>
                     <div className="flex gap-0.5 ml-auto">
-                      {[1,2,3,4,5].map(s => (
-                        <svg key={s} className="w-3 h-3" viewBox="0 0 20 20" fill="#FBBC04">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                      ))}
+                      {[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}
                     </div>
                   </div>
                   <p className="text-white/50 text-[11px] leading-relaxed line-clamp-2">{r.text}</p>
@@ -178,11 +221,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
               ))}
             </div>
             <div className="flex items-center gap-2 mt-4">
-              <div className="flex gap-0.5">{[1,2,3,4,5].map(s => (
-                <svg key={s} className="w-3 h-3" viewBox="0 0 20 20" fill="#FBBC04">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-              ))}</div>
+              <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
               <p className="text-white/30 text-[10px]">5.0 · 10 reseñas verificadas en Google</p>
             </div>
           </div>
@@ -196,7 +235,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
           transition={{ type: "spring", stiffness: 320, damping: 38 }}
           className="flex-1 h-full bg-background flex flex-col"
         >
-          {/* Steps */}
           {checkoutStep !== "success" && (
             <div className="flex items-center gap-0 px-12 py-5 border-b border-border shrink-0">
               {["Carrito", "Datos de envío"].map((label, i) => (
@@ -224,7 +262,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
             </div>
           )}
 
-          {/* Body */}
           <div className="flex-1 overflow-y-auto">
             {checkoutStep === "success" ? (
               <div className="flex flex-col items-center justify-center h-full px-16 text-center gap-8">
@@ -238,10 +275,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
                 </motion.div>
                 <div>
                   <h3 className="font-display text-3xl uppercase tracking-wide mb-3">¡Pedido recibido!</h3>
-                  <p className="font-body text-base text-foreground/60 leading-relaxed max-w-md">Gracias, {checkoutForm.nombre}. Nos pondremos en contacto contigo en menos de 24h para confirmar tu pedido y coordinar la instalación.</p>
+                  {orderId && <p className="font-body text-xs uppercase tracking-widest text-foreground/40 mb-3">Pedido #{orderId}</p>}
+                  <p className="font-body text-base text-foreground/60 leading-relaxed max-w-md">
+                    Gracias, {checkoutForm.nombre}. Nos pondremos en contacto contigo en menos de 24h para confirmar tu pedido y coordinar la instalación.
+                  </p>
                 </div>
                 <button
-                  onClick={() => { handleClose(); setCheckoutStep("cart"); }}
+                  onClick={handleSuccessClose}
                   className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors border border-border px-8 py-3 hover:border-foreground"
                 >
                   Volver al inicio
@@ -250,47 +290,47 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
             ) : checkoutStep === "checkout" ? (
               <form
                 id="checkout-form-desktop"
-                onSubmit={(e) => { e.preventDefault(); }}
+                onSubmit={handleSubmitOrder}
                 className="px-12 py-10 flex flex-col gap-5 max-w-xl"
               >
-                <h2 className="font-display text-2xl uppercase tracking-wide mb-2">Datos de envío</h2>
+                <h2 className="font-display text-2xl uppercase tracking-wide mb-2">Datos de contacto</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Nombre *</label>
-                    <input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Tu nombre" />
+                    <label className={labelClass}>Nombre *</label>
+                    <input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className={inputClass} placeholder="Tu nombre" />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Apellidos *</label>
-                    <input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Apellidos" />
+                    <label className={labelClass}>Apellidos *</label>
+                    <input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className={inputClass} placeholder="Apellidos" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Email *</label>
-                    <input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="tu@email.com" />
+                    <label className={labelClass}>Email *</label>
+                    <input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className={inputClass} placeholder="tu@email.com" />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Teléfono *</label>
-                    <input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="+34 600 000 000" />
+                    <label className={labelClass}>Teléfono *</label>
+                    <input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className={inputClass} placeholder="+34 600 000 000" />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Dirección de envío *</label>
-                  <input required value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Calle, número, piso" />
+                  <label className={labelClass}>Dirección de envío</label>
+                  <input value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className={inputClass} placeholder="Calle, número, piso" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Ciudad *</label>
-                    <input required value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Ciudad" />
+                    <label className={labelClass}>Ciudad</label>
+                    <input value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className={inputClass} placeholder="Ciudad" />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">C.P. *</label>
-                    <input required value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="00000" />
+                    <label className={labelClass}>C.P.</label>
+                    <input value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className={inputClass} placeholder="00000" />
                   </div>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Notas adicionales</label>
-                  <textarea rows={3} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className="bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors resize-none" placeholder="Instrucciones de entrega, preguntas..." />
+                  <label className={labelClass}>Notas adicionales</label>
+                  <textarea rows={3} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className={`${inputClass} resize-none`} placeholder="Instrucciones de entrega, preguntas..." />
                 </div>
               </form>
             ) : (
@@ -341,7 +381,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
             )}
           </div>
 
-          {/* Footer CTA desktop */}
           {checkoutStep !== "success" && (
             <div className="px-12 py-8 border-t border-border shrink-0">
               {checkoutStep === "cart" ? (
@@ -367,14 +406,28 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
                   </motion.span>
                 </motion.button>
               ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="w-full bg-foreground/20 text-foreground/30 font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 cursor-not-allowed select-none"
+                <motion.button
+                  type="submit"
+                  form="checkout-form-desktop"
+                  disabled={isSubmitting}
+                  whileHover={!isSubmitting ? { scale: 1.01 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                  className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
+                  style={{ boxShadow: "0 4px 32px rgba(214,122,0,0.4)" }}
                 >
-                  <Check className="w-5 h-5" />
-                  Pago próximamente disponible
-                </button>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Enviando pedido...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                      <Check className="w-5 h-5 relative z-10" />
+                      <span className="relative z-10">Confirmar pedido · {cartTotal.toLocaleString('es-ES')} €</span>
+                    </>
+                  )}
+                </motion.button>
               )}
               <p className="font-body text-[10px] text-foreground/30 text-center mt-3">
                 Pago seguro · Envío e instalación coordinados por Elora
@@ -390,14 +443,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
         initial={{ x: "100%" }}
         animate={isOpen ? { x: 0 } : { x: "100%" }}
         transition={{ type: "spring", stiffness: 320, damping: 38 }}
-        className="md:hidden w-full max-w-md h-full bg-background border-l border-border flex flex-col shadow-2xl"
+        className="md:hidden w-full max-w-md h-full bg-background border-l border-border flex flex-col shadow-2xl ml-auto"
       >
-        {/* Header móvil */}
         <div className="flex items-center justify-between px-8 py-6 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
             <ShoppingBag className="w-5 h-5 text-foreground" />
             <p className="font-display text-lg uppercase tracking-widest">
-              {checkoutStep === "cart" ? `Carrito · ${cart.length}` : checkoutStep === "checkout" ? "Datos de envío" : "Pedido confirmado"}
+              {checkoutStep === "cart" ? `Carrito · ${cart.length}` : checkoutStep === "checkout" ? "Datos de contacto" : "Pedido confirmado"}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -412,7 +464,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
           </div>
         </div>
 
-        {/* Steps móvil */}
         {checkoutStep !== "success" && (
           <div className="flex items-center gap-0 px-8 py-3 border-b border-border shrink-0">
             {["Carrito", "Datos"].map((label, i) => (
@@ -435,7 +486,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
           </div>
         )}
 
-        {/* Body móvil */}
         <div className="flex-1 overflow-y-auto">
           {checkoutStep === "success" ? (
             <div className="flex flex-col items-center justify-center h-full px-8 text-center gap-6">
@@ -449,30 +499,31 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
               </motion.div>
               <div>
                 <h3 className="font-display text-2xl uppercase tracking-wide mb-2">¡Pedido recibido!</h3>
+                {orderId && <p className="font-body text-xs uppercase tracking-widest text-foreground/40 mb-2">Pedido #{orderId}</p>}
                 <p className="font-body text-sm text-foreground/60 leading-relaxed">Gracias, {checkoutForm.nombre}. Nos pondremos en contacto contigo en menos de 24h.</p>
               </div>
-              <button onClick={() => { handleClose(); setCheckoutStep("cart"); }} className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-foreground transition-colors">
+              <button onClick={handleSuccessClose} className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-foreground transition-colors">
                 Cerrar
               </button>
             </div>
           ) : checkoutStep === "checkout" ? (
             <form
               id="checkout-form"
-              onSubmit={(e) => { e.preventDefault(); }}
+              onSubmit={handleSubmitOrder}
               className="px-8 py-6 flex flex-col gap-4"
             >
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Nombre *</label><input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Tu nombre" /></div>
-                <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Apellidos *</label><input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Apellidos" /></div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>Nombre *</label><input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className={inputClassSm} placeholder="Tu nombre" /></div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>Apellidos *</label><input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className={inputClassSm} placeholder="Apellidos" /></div>
               </div>
-              <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Email *</label><input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="tu@email.com" /></div>
-              <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Teléfono *</label><input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="+34 600 000 000" /></div>
-              <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Dirección *</label><input required value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Calle, número, piso" /></div>
+              <div className="flex flex-col gap-1"><label className={labelClass}>Email *</label><input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className={inputClassSm} placeholder="tu@email.com" /></div>
+              <div className="flex flex-col gap-1"><label className={labelClass}>Teléfono *</label><input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className={inputClassSm} placeholder="+34 600 000 000" /></div>
+              <div className="flex flex-col gap-1"><label className={labelClass}>Dirección</label><input value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className={inputClassSm} placeholder="Calle, número, piso" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Ciudad *</label><input required value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="Ciudad" /></div>
-                <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">C.P. *</label><input required value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors" placeholder="00000" /></div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>Ciudad</label><input value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className={inputClassSm} placeholder="Ciudad" /></div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>C.P.</label><input value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className={inputClassSm} placeholder="00000" /></div>
               </div>
-              <div className="flex flex-col gap-1"><label className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50">Notas</label><textarea rows={2} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className="bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors resize-none" placeholder="Instrucciones de entrega..." /></div>
+              <div className="flex flex-col gap-1"><label className={labelClass}>Notas</label><textarea rows={2} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className={`${inputClassSm} resize-none`} placeholder="Instrucciones de entrega..." /></div>
               <div className="border-t border-border pt-4 mt-2">
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
@@ -509,7 +560,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
           )}
         </div>
 
-        {/* Footer móvil */}
         {checkoutStep !== "success" && (
           <div className="flex flex-col shrink-0">
             {checkoutStep === "cart" && (
@@ -533,12 +583,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
                   <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
                   <p className="text-gray-400 text-[10px]">5.0 · 10 reseñas</p>
                   <GoogleLogoIcon />
-                </div>
-                <div className="flex justify-center mt-1.5">
-                  <motion.div animate={{ y: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.0, ease: "easeInOut" }} className="flex flex-col items-center gap-0.5">
-                    <div className="w-[1px] h-3 bg-gray-300" />
-                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </motion.div>
                 </div>
               </div>
             )}
@@ -564,9 +608,25 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, sections, onNavigat
                   <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-4 h-4" /></motion.span>
                 </motion.button>
               ) : (
-                <button type="button" disabled className="w-full bg-foreground/20 text-foreground/30 font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 cursor-not-allowed select-none">
-                  <Check className="w-4 h-4" />Pago próximamente disponible
-                </button>
+                <motion.button
+                  type="submit"
+                  form="checkout-form"
+                  disabled={isSubmitting}
+                  whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.97 } : {}}
+                  className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
+                  style={{ boxShadow: "0 4px 24px rgba(214,122,0,0.35)" }}
+                >
+                  {isSubmitting ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /><span>Enviando...</span></>
+                  ) : (
+                    <>
+                      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                      <Check className="w-4 h-4 relative z-10" />
+                      <span className="relative z-10">Confirmar pedido</span>
+                    </>
+                  )}
+                </motion.button>
               )}
               <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">Pago seguro · Envío e instalación coordinados por Elora</p>
             </div>

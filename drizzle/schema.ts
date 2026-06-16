@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, json } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -54,3 +54,95 @@ export const clubEloraSignups = mysqlTable("club_elora_signups", {
 
 export type ClubEloraSignup = typeof clubEloraSignups.$inferSelect;
 export type InsertClubEloraSignup = typeof clubEloraSignups.$inferInsert;
+
+/**
+ * Products catalog. Stores all product data including images, features, FAQs.
+ * JSON columns store arrays/objects serialized as JSON strings.
+ */
+export const products = mysqlTable("products", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 128 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  tagline: varchar("tagline", { length: 512 }),
+  description: text("description"),
+  longDescription: text("longDescription"),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  /** Main product image URL */
+  img: text("img"),
+  /** JSON array of gallery image URLs */
+  gallery: json("gallery").$type<string[]>(),
+  /** JSON array of badge strings e.g. ["Best seller", "Sin obra"] */
+  badges: json("badges").$type<string[]>(),
+  /** JSON array of feature strings */
+  features: json("features").$type<string[]>(),
+  /** JSON array of highlight objects {label, value} */
+  highlights: json("highlights").$type<{label: string; value: string}[]>(),
+  /** JSON array of pitch objects {title, body} */
+  pitch: json("pitch").$type<{title: string; body: string}[]>(),
+  /** JSON array of technical spec groups {group, specs: [{label, value}]} */
+  technical: json("technical").$type<{group: string; specs: {label: string; value: string}[]}[]>(),
+  /** JSON array of dimension entries {label, value} */
+  dimensions: json("dimensions").$type<{label: string; value: string}[]>(),
+  /** JSON array of in-the-box strings */
+  inTheBox: json("inTheBox").$type<string[]>(),
+  /** JSON array of installation steps */
+  installation: json("installation").$type<string[]>(),
+  /** Warranty info as JSON {years, details} */
+  warranty: json("warranty").$type<{years: number; details: string}>(),
+  /** JSON array of FAQ objects {q, a} */
+  faqs: json("faqs").$type<{q: string; a: string}[]>(),
+  stock: int("stock").default(999).notNull(),
+  active: boolean("active").default(true).notNull(),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
+
+/**
+ * Customer orders. Can be placed by guests (no userId) or logged-in users.
+ */
+export const orders = mysqlTable("orders", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Reference to users table — null for guest orders */
+  userId: int("userId"),
+  customerName: varchar("customerName", { length: 255 }).notNull(),
+  customerEmail: varchar("customerEmail", { length: 320 }).notNull(),
+  customerPhone: varchar("customerPhone", { length: 64 }),
+  /** Optional delivery address */
+  address: text("address"),
+  /** Optional notes from customer */
+  notes: text("notes"),
+  status: mysqlEnum("status", ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"]).default("pending").notNull(),
+  total: decimal("total", { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Order = typeof orders.$inferSelect;
+export type InsertOrder = typeof orders.$inferInsert;
+
+/**
+ * Individual line items within an order.
+ * Snapshot of product name and price at time of purchase.
+ */
+export const orderItems = mysqlTable("order_items", {
+  id: int("id").autoincrement().primaryKey(),
+  orderId: int("orderId").notNull(),
+  productId: int("productId"),
+  /** Snapshot of product name at purchase time */
+  productName: varchar("productName", { length: 255 }).notNull(),
+  /** Snapshot of product slug at purchase time */
+  productSlug: varchar("productSlug", { length: 128 }),
+  /** Snapshot of product image at purchase time */
+  productImg: text("productImg"),
+  /** Unit price at purchase time */
+  unitPrice: decimal("unitPrice", { precision: 10, scale: 2 }).notNull(),
+  quantity: int("quantity").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type OrderItem = typeof orderItems.$inferSelect;
+export type InsertOrderItem = typeof orderItems.$inferInsert;
