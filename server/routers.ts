@@ -27,6 +27,12 @@ import {
   linkRedsysOrder,
   updatePaymentStatus,
   getOrderByRedsysId,
+  getAllPaymentMethods,
+  getEnabledPaymentMethods,
+  upsertPaymentMethod,
+  togglePaymentMethod,
+  updatePaymentMethodConfig,
+  seedDefaultPaymentMethods,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 
@@ -374,6 +380,31 @@ export const appRouter = router({
       return { success: true, message: `${count} productos añadidos a la base de datos`, count };
     }),
 
+    // Payment methods management
+    getPaymentMethods: adminProcedure.query(async () => {
+      await seedDefaultPaymentMethods();
+      return getAllPaymentMethods();
+    }),
+    togglePaymentMethod: adminProcedure
+      .input(z.object({ key: z.string(), enabled: z.boolean() }))
+      .mutation(async ({ input }) => {
+        await togglePaymentMethod(input.key, input.enabled);
+        return { success: true };
+      }),
+    updatePaymentMethod: adminProcedure
+      .input(z.object({
+        key: z.string(),
+        name: z.string().optional(),
+        description: z.string().optional(),
+        config: z.record(z.string(), z.string()).optional(),
+        position: z.number().optional(),
+        enabled: z.boolean().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { key, ...updates } = input;
+        await updatePaymentMethodConfig(key, updates);
+        return { success: true };
+      }),
     // Orders management
     getOrders: adminProcedure.query(async () => getAllOrdersWithItems()),
 

@@ -13,6 +13,7 @@ import AdminPedidos from "./pages/admin/AdminPedidos";
 import AdminClientes from "./pages/admin/AdminClientes";
 import AdminContactos from "./pages/admin/AdminContactos";
 import AdminClubElora from "./pages/admin/AdminClubElora";
+import AdminPagos from "./pages/admin/AdminPagos";
 import PagoOk from "./pages/PagoOk";
 import PagoKo from "./pages/PagoKo";
 
@@ -109,6 +110,7 @@ function AppRouter() {
         <Route path="/admin/clientes" component={AdminClientes} />
         <Route path="/admin/contactos" component={AdminContactos} />
         <Route path="/admin/club-elora" component={AdminClubElora} />
+        <Route path="/admin/pagos" component={AdminPagos} />
         {/* Legacy admin (fallback) */}
         <Route path="/admin/legacy" component={Admin} />
         <Route component={AdminDashboard} />

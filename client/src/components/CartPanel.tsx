@@ -143,6 +143,91 @@ function Field({
   );
 }
 
+// ─── Club Elora formulario inline ───────────────────────────────────────────
+function ClubEloraInlineForm() {
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
+  const [alreadyMember, setAlreadyMember] = useState(false);
+  const signup = trpc.clubElora.signup.useMutation({
+    onSuccess: (data) => {
+      if (data.alreadyExists) {
+        setAlreadyMember(true);
+      } else {
+        setDone(true);
+      }
+    },
+    onError: () => toast.error("Error al unirse al Club Elora. Inténtalo de nuevo."),
+  });
+
+  const inputCls = "bg-white/70 border border-foreground/15 px-3 py-2 font-body text-xs text-foreground placeholder-foreground/30 focus:outline-none focus:border-[#D67A00] transition-colors w-full";
+
+  if (done) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center gap-2 py-3 text-center"
+      >
+        <div className="w-10 h-10 rounded-full bg-[#D67A00]/15 flex items-center justify-center">
+          <Sparkles className="w-5 h-5 text-[#D67A00]" />
+        </div>
+        <p className="font-display text-sm uppercase tracking-wide text-foreground">¡Bienvenida al Club!</p>
+        <p className="font-body text-[11px] text-foreground/50">Te hemos enviado un email de confirmación.</p>
+      </motion.div>
+    );
+  }
+
+  if (alreadyMember) {
+    return (
+      <div className="flex items-center gap-2 py-2">
+        <Check className="w-4 h-4 text-[#D67A00] shrink-0" />
+        <p className="font-body text-[11px] text-foreground/60">Ya eres miembro del Club Elora.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!email.trim()) return;
+        signup.mutate({ nombre: nombre || undefined, email: email.trim() });
+      }}
+      className="flex flex-col gap-2.5"
+    >
+      <input
+        type="text"
+        placeholder="Tu nombre (opcional)"
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+        className={inputCls}
+      />
+      <input
+        type="email"
+        placeholder="Tu email *"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className={inputCls}
+      />
+      <button
+        type="submit"
+        disabled={signup.isPending || !email.trim()}
+        className="w-full bg-[#D67A00] hover:bg-[#B86800] disabled:opacity-50 text-white font-body text-[10px] uppercase tracking-[0.3em] py-2.5 flex items-center justify-center gap-2 transition-colors"
+      >
+        {signup.isPending ? (
+          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+        ) : (
+          <Sparkles className="w-3.5 h-3.5" />
+        )}
+        Unirme al Club
+      </button>
+      <p className="font-body text-[9px] text-foreground/30 text-center">Sin spam. Puedes darte de baja cuando quieras.</p>
+    </form>
+  );
+}
+
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface CartPanelProps {
   isOpen: boolean;
@@ -313,13 +398,14 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   const [payMethod, setPayMethod] = useState<PayMethod>("card");
 
   // ─── Estado widget envío gratis ──────────────────────────────────────────
-  const [shippingCity, setShippingCity] = useState("");
+    const [shippingCity, setShippingCity] = useState("");
   const [shippingProv, setShippingProv] = useState("");
   const [shippingCp, setShippingCp] = useState("");
   const [shippingChecked, setShippingChecked] = useState(false);
   const [showFreeShipping, setShowFreeShipping] = useState(false);
   const [shippingCpError, setShippingCpError] = useState<string | null>(null);
-
+  // Popup de envío (solo móvil)
+  const [showShippingPopup, setShowShippingPopup] = useState(false);
   function checkShipping() {
     const cpErr = validateCP(shippingCp);
     if (!shippingCity.trim()) { toast.error("Introduce tu localidad"); return; }
@@ -335,7 +421,12 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
       provincia: shippingProv,
       cp: shippingCp,
     }));
-    setTimeout(() => setShowFreeShipping(false), 4000);
+    // Tras 2s de animación, cerrar popup e ir al checkout
+    setTimeout(() => {
+      setShowFreeShipping(false);
+      setShowShippingPopup(false);
+      setCheckoutStep("checkout");
+    }, 2200);
   }
 
   const redsysFormRef = useRef<HTMLFormElement>(null);
@@ -949,72 +1040,54 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
         {/* ── DESKTOP: layout 2 columnas ── */}
         <div className="hidden md:flex flex-1 h-full overflow-hidden">
-          {/* Columna izquierda oscura */}
-          <div className="w-[420px] xl:w-[480px] h-full bg-[#0F0F0F] flex flex-col shrink-0 overflow-y-auto">
+          {/* Columna izquierda */}
+          <div className="w-[420px] xl:w-[480px] h-full bg-[#F5F0E8] flex flex-col shrink-0 overflow-y-auto">
             <div className="flex items-center justify-between px-10 pt-10 pb-6 shrink-0">
-              <p className="font-display text-xs uppercase tracking-[0.35em] text-white/40">
+              <p className="font-display text-xs uppercase tracking-[0.35em] text-foreground/40">
                 {checkoutStep === "cart" ? "Tu selección" : checkoutStep === "checkout" ? "Resumen del pedido" : checkoutStep === "payment" ? "Confirmar pago" : "Procesando pago"}
               </p>
-              <button onClick={handleClose} aria-label="Cerrar" className="outline-none w-8 h-8 rounded-full border border-white/10 flex items-center justify-center hover:border-white/30 transition-colors">
-                <X className="w-4 h-4 text-white/60" />
+              <button onClick={handleClose} aria-label="Cerrar" className="outline-none w-8 h-8 rounded-full border border-foreground/10 flex items-center justify-center hover:border-foreground/30 transition-colors">
+                <X className="w-4 h-4 text-foreground/50" />
               </button>
             </div>
             {/* Club Elora */}
             <div className="px-10 mb-8">
-              <div className="border border-white/10 p-6 flex flex-col gap-4">
+              <div className="border border-foreground/10 bg-white/60 p-6 flex flex-col gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#D67A00]/20 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#D67A00]/15 flex items-center justify-center shrink-0">
                     <Gift className="w-4 h-4 text-[#D67A00]" />
                   </div>
                   <div>
-                    <p className="font-display text-sm uppercase tracking-[0.2em] text-white">Club Elora</p>
-                    <p className="font-body text-[10px] text-white/40 mt-0.5">Miembros exclusivos</p>
+                    <p className="font-display text-sm uppercase tracking-[0.2em] text-foreground">Club Elora</p>
+                    <p className="font-body text-[10px] text-foreground/40 mt-0.5">Miembros exclusivos</p>
                   </div>
                 </div>
-                <p className="font-body text-xs text-white/60 leading-relaxed">
-                  Únete a nuestra comunidad y disfruta de acceso anticipado a nuevos productos, ofertas exclusivas y contenido premium.
+                <p className="font-body text-xs text-foreground/60 leading-relaxed">
+                  Únete y disfruta de descuentos exclusivos, acceso anticipado a nuevos modelos y soporte prioritario.
                 </p>
-                <div className="flex flex-col gap-2">
-                  {[
-                    "Descuentos exclusivos para miembros",
-                    "Acceso anticipado a nuevos modelos",
-                    "Soporte prioritario 24/7",
-                  ].map((b, i) => (
-                    <div key={i} className="flex items-center gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#D67A00] shrink-0" />
-                      <p className="font-body text-[11px] text-white/50">{b}</p>
-                    </div>
-                  ))}
-                </div>
-                <a
-                  href="/#club-elora"
-                  onClick={handleClose}
-                  className="mt-1 w-full border border-[#D67A00]/40 hover:border-[#D67A00] text-[#D67A00] font-body text-[10px] uppercase tracking-[0.3em] py-2.5 flex items-center justify-center gap-2 transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Unirme al Club
-                </a>
+                {/* Formulario inline */}
+                <ClubEloraInlineForm />
               </div>
             </div>
 
             {/* Reseñas */}
             <div className="px-10 mt-auto pb-10">
-              <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-4">Lo que dicen nuestros clientes</p>
+              <p className="font-body text-[9px] uppercase tracking-[0.3em] text-foreground/30 mb-4">Lo que dicen nuestros clientes</p>
               <div className="flex flex-col gap-3">
                 {REVIEWS.slice(0, 3).map((r, i) => (
-                  <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 3 + i * 0.6, ease: "easeInOut", delay: i * 0.5 }} className="bg-white/5 border border-white/8 rounded-lg px-4 py-3 backdrop-blur-sm">
+                  <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 3 + i * 0.6, ease: "easeInOut", delay: i * 0.5 }} className="bg-white/60 border border-foreground/8 rounded-lg px-4 py-3">
                     <div className="flex items-center gap-2 mb-1.5">
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] shrink-0" style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}>{r.name.charAt(0)}</div>
-                      <p className="text-white/80 text-[11px] font-semibold">{r.name}</p>
+                      <p className="text-foreground/80 text-[11px] font-semibold">{r.name}</p>
                       <div className="flex gap-0.5 ml-auto">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
                     </div>
-                    <p className="text-white/50 text-[11px] leading-relaxed line-clamp-2">{r.text}</p>
+                    <p className="text-foreground/50 text-[11px] leading-relaxed line-clamp-2">{r.text}</p>
                   </motion.div>
                 ))}
               </div>
               <div className="flex items-center gap-2 mt-4">
                 <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                <p className="text-white/30 text-[10px]">5.0 · 10 reseñas verificadas en Google</p>
+                <p className="text-foreground/30 text-[10px]">5.0 · 10 reseñas verificadas en Google</p>
               </div>
             </div>
           </div>
@@ -1208,19 +1281,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                         ))}
                       </ul>
                     </AnimatePresence>
-                    {/* Widget envío gratis móvil */}
-                    <div className="mt-5">
-                      <ShippingWidget
-                        city={shippingCity} setCity={setShippingCity}
-                        prov={shippingProv} setProv={setShippingProv}
-                        cp={shippingCp} setCp={setShippingCp}
-                        cpError={shippingCpError}
-                        checked={shippingChecked}
-                        showFree={showFreeShipping}
-                        onCheck={checkShipping}
-                        compact
-                      />
-                    </div>
+
                   </>
                 )}
               </div>
@@ -1261,7 +1322,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   </div>
                 )}
                 {checkoutStep === "cart" ? (
-                  <motion.button onClick={() => setCheckoutStep("checkout")} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.02 } : {}} whileTap={cart.length > 0 ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}>
+                  <motion.button onClick={() => { if (cart.length > 0) setShowShippingPopup(true); }} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.02 } : {}} whileTap={cart.length > 0 ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ShoppingBag className="w-4 h-4 relative z-10" />
                     <span className="relative z-10">{cart.length > 0 ? `Comprar · ${cartTotal.toLocaleString("es-ES")} €` : "Añade productos"}</span>
@@ -1292,6 +1353,155 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           )}
         </motion.div>
       </motion.div>
+
+      {/* ─── Popup envío gratis (solo móvil) ─────────────────────────────── */}
+      <AnimatePresence>
+        {showShippingPopup && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              key="shipping-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 bg-black/60 z-[200] md:hidden"
+              onClick={() => !showFreeShipping && setShowShippingPopup(false)}
+            />
+            {/* Panel */}
+            <motion.div
+              key="shipping-panel"
+              initial={{ opacity: 0, y: 80, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 60, scale: 0.96 }}
+              transition={{ type: "spring", damping: 28, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 z-[201] bg-background md:hidden"
+              style={{ borderRadius: "16px 16px 0 0" }}
+            >
+              {/* Handle */}
+              <div className="flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 bg-foreground/15 rounded-full" />
+              </div>
+
+              {/* Contenido */}
+              <div className="px-6 pb-8 pt-2 flex flex-col gap-5">
+                {/* Animación envío gratis */}
+                <AnimatePresence>
+                  {showFreeShipping && (
+                    <motion.div
+                      key="free-shipping-banner"
+                      initial={{ opacity: 0, scale: 0.85, y: -20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                      transition={{ type: "spring", damping: 18, stiffness: 280 }}
+                      className="flex flex-col items-center gap-3 py-6 text-center"
+                    >
+                      {/* Confetti emoji animado */}
+                      <motion.div
+                        animate={{ rotate: [0, -10, 10, -8, 8, 0], scale: [1, 1.2, 1] }}
+                        transition={{ duration: 0.6 }}
+                        className="text-4xl"
+                      >
+                        🎉
+                      </motion.div>
+                      <div>
+                        <motion.p
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.15 }}
+                          className="font-display text-2xl uppercase tracking-wide text-foreground"
+                        >
+                          ¡Envío gratis!
+                        </motion.p>
+                        <motion.p
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 }}
+                          className="font-body text-sm text-foreground/50 mt-1"
+                        >
+                          Tu pedido llega sin coste a {shippingCity || "tu puerta"} ✨
+                        </motion.p>
+                      </div>
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="flex items-center gap-2 bg-accent-deep/10 px-4 py-2 rounded-full"
+                      >
+                        <Truck className="w-4 h-4 text-accent-deep" />
+                        <span className="font-body text-xs text-accent-deep font-semibold">Envío: 0,00 €</span>
+                      </motion.div>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7 }}
+                        className="font-body text-[11px] text-foreground/30"
+                      >
+                        Preparando tu checkout...
+                      </motion.p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Formulario de envío (oculto durante la animación) */}
+                {!showFreeShipping && (
+                  <>
+                    <div className="flex flex-col gap-1">
+                      <h3 className="font-display text-lg uppercase tracking-wide text-foreground">¿Dónde enviamos?</h3>
+                      <p className="font-body text-xs text-foreground/40">Comprueba que el envío es gratuito a tu zona</p>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <input
+                        type="text"
+                        placeholder="Localidad *"
+                        value={shippingCity}
+                        onChange={(e) => setShippingCity(e.target.value)}
+                        className="bg-transparent border border-border px-3 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors"
+                      />
+                      <select
+                        value={shippingProv}
+                        onChange={(e) => setShippingProv(e.target.value)}
+                        className="bg-background border border-border px-3 py-3 font-body text-sm text-foreground focus:outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
+                      >
+                        <option value="">Provincia *</option>
+                        {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
+                      </select>
+                      <div className="flex flex-col gap-1">
+                        <input
+                          type="text"
+                          placeholder="Código postal *"
+                          value={shippingCp}
+                          onChange={(e) => { setShippingCp(e.target.value); setShippingCpError(null); }}
+                          maxLength={5}
+                          className="bg-transparent border border-border px-3 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors"
+                        />
+                        {shippingCpError && (
+                          <p className="flex items-center gap-1.5 font-body text-[10px] text-red-400">
+                            <AlertCircle className="w-3 h-3 shrink-0" />{shippingCpError}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={checkShipping}
+                      className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-2 transition-colors hover:bg-[#B86800]"
+                    >
+                      <Truck className="w-4 h-4" />
+                      Calcular envío
+                    </button>
+                    <button
+                      onClick={() => setShowShippingPopup(false)}
+                      className="w-full border border-border text-foreground/50 font-body text-xs uppercase tracking-[0.2em] py-3 hover:border-foreground/30 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

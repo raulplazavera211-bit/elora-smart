@@ -255,3 +255,115 @@ export async function getOrderByRedsysId(redsysOrderId: string) {
     .limit(1);
   return result[0] ?? null;
 }
+
+// ─── PAYMENT METHODS HELPERS ──────────────────────────────────────────────────
+import { paymentMethods, PaymentMethod, InsertPaymentMethod } from "../drizzle/schema";
+
+/** Devuelve todos los métodos de pago ordenados por posición */
+export async function getAllPaymentMethods(): Promise<PaymentMethod[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(paymentMethods).orderBy(paymentMethods.position);
+}
+
+/** Devuelve solo los métodos de pago activos */
+export async function getEnabledPaymentMethods(): Promise<PaymentMethod[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(paymentMethods)
+    .where(eq(paymentMethods.enabled, true))
+    .orderBy(paymentMethods.position);
+}
+
+/** Crea o actualiza un método de pago por su key */
+export async function upsertPaymentMethod(data: InsertPaymentMethod): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(paymentMethods).values(data)
+    .onDuplicateKeyUpdate({
+      set: {
+        name: data.name,
+        description: data.description,
+        enabled: data.enabled,
+        config: data.config,
+        position: data.position,
+      },
+    });
+}
+
+/** Activa o desactiva un método de pago por su key */
+export async function togglePaymentMethod(key: string, enabled: boolean): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(paymentMethods).set({ enabled }).where(eq(paymentMethods.key, key));
+}
+
+/** Actualiza la configuración de un método de pago */
+export async function updatePaymentMethodConfig(
+  key: string,
+  updates: Partial<{ name: string; description: string; config: Record<string, string>; position: number; enabled: boolean }>
+): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(paymentMethods).set(updates).where(eq(paymentMethods.key, key));
+}
+
+/** Siembra los métodos de pago por defecto si la tabla está vacía */
+export async function seedDefaultPaymentMethods(): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const existing = await db.select({ count: sql<number>`count(*)` }).from(paymentMethods);
+  if (Number(existing[0]?.count ?? 0) > 0) return;
+
+  const defaults: InsertPaymentMethod[] = [
+    {
+      key: "redsys_card",
+      name: "Tarjeta de crédito / débito",
+      description: "Visa, Mastercard y American Express. Pago seguro con TPV virtual Redsys.",
+      type: "redsys_card",
+      enabled: true,
+      config: {},
+      position: 0,
+    },
+    {
+      key: "redsys_bizum",
+      name: "Bizum",
+      description: "Paga directamente desde tu app bancaria con Bizum.",
+      type: "redsys_bizum",
+      enabled: true,
+      config: {},
+      position: 1,
+    },
+    {
+      key: "transfer",
+      name: "Transferencia bancaria",
+      description: "Realiza una transferencia a nuestra cuenta y envíanos el justificante.",
+      type: "transfer",
+      enabled: false,
+      config: { banco: "", iban: "", titular: "", instrucciones: "" },
+      position: 2,
+    },
+    {
+      key: "paypal",
+      name: "PayPal",
+      description: "Paga con tu cuenta PayPal de forma segura.",
+      type: "paypal",
+      enabled: false,
+      config: { paypal_email: "", client_id: "", client_secret: "" },
+      position: 3,
+    },
+    {
+      key: "cash_on_delivery",
+      name: "Contrareembolso",
+      description: "Paga en efectivo al recibir tu pedido. Se aplica un suplemento de 5€.",
+      type: "cash_on_delivery",
+      enabled: false,
+      config: { surcharge: "5" },
+      position: 4,
+    },
+  ];
+
+  for (const method of defaults) {
+    await upsertPaymentMethod(method);
+  }
+}

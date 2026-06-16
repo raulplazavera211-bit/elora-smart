@@ -150,3 +150,29 @@ export const orderItems = mysqlTable("order_items", {
 
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;
+
+/**
+ * Payment methods configuration.
+ * Admins can enable/disable methods and configure credentials from the admin panel.
+ */
+export const paymentMethods = mysqlTable("payment_methods", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Unique key identifier: redsys_card, redsys_bizum, transfer, paypal, cash_on_delivery */
+  key: varchar("key", { length: 64 }).notNull().unique(),
+  /** Display name shown to customers */
+  name: varchar("name", { length: 255 }).notNull(),
+  /** Short description shown to customers */
+  description: text("description"),
+  /** Method type for routing logic */
+  type: mysqlEnum("type", ["redsys_card", "redsys_bizum", "transfer", "paypal", "cash_on_delivery", "other"]).notNull(),
+  /** Whether this method is currently active */
+  enabled: boolean("enabled").default(false).notNull(),
+  /** JSON config (bank account, PayPal email, instructions, etc.) */
+  config: json("config").$type<Record<string, string>>(),
+  /** Display order */
+  position: int("position").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type PaymentMethod = typeof paymentMethods.$inferSelect;
+export type InsertPaymentMethod = typeof paymentMethods.$inferInsert;
