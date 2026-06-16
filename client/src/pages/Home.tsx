@@ -2112,9 +2112,9 @@ export default function Home() {
                         <button
                           type="submit"
                           disabled={contactMutation.isPending}
-                          className="group w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 hover:bg-accent-deep transition-colors relative overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
+                          className="group w-full bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors relative overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
                         >
-                          <Send className="w-4 h-4" />
+                          <Send className="w-3.5 h-3.5 shrink-0" />
                           {contactMutation.isPending ? "Enviando..." : "Solicitar catálogo privado"}
                         </button>
 
