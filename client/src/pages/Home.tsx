@@ -1423,7 +1423,9 @@ export default function Home() {
 
   const openProduct = (product: Product) => {
     setSelectedProduct(product);
-    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
+    }, 0);
   };
 
   const contactMutation = trpc.contact.submit.useMutation({
@@ -1582,11 +1584,13 @@ export default function Home() {
           className="flex-1 h-full overflow-y-auto hide-scrollbar relative bg-background scroll-smooth"
         >
           {selectedProduct ? (
-            <ProductDetail
-              product={selectedProduct}
-              onBack={() => setSelectedProduct(null)}
-              onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); openCart(); }}
-            />
+            <div className="pt-20 md:pt-0">
+              <ProductDetail
+                product={selectedProduct}
+                onBack={() => setSelectedProduct(null)}
+                onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); openCart(); }}
+              />
+            </div>
           ) : (
             <>
               {/* ── CAPÍTULO 1: VISIÓN ──────────────────────────────────────── */}
