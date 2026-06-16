@@ -81,3 +81,9 @@
 - [x] Selector visual de método de pago (tarjeta / Bizum)
 - [x] Campo de dirección completo (calle, número, piso, ciudad, provincia, CP)
 - [x] Pasar método de pago elegido a Redsys (DS_MERCHANT_PAYMETHODS)
+
+## Rediseño checkout v2
+
+- [ ] Paso de cálculo de envío (localidad, provincia, CP) con animación celebratoria "¡Envío gratis!"
+- [ ] Checkout escritorio a pantalla completa: formulario izquierda + resumen derecha
+- [ ] Mantener móvil intacto

@@ -2,8 +2,8 @@
 // Flujo: Carrito → Datos de envío (validados para España) → Método de pago → TPV Redsys
 
 import { motion, AnimatePresence } from "motion/react";
-import { X, ShoppingBag, ArrowRight, Check, Loader2, CreditCard, Lock, AlertCircle, Smartphone } from "lucide-react";
-import { useRef, useState } from "react";
+import { X, ShoppingBag, ArrowRight, Check, Loader2, CreditCard, Lock, AlertCircle, Smartphone, Truck, Gift, MapPin, Sparkles } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -175,6 +175,135 @@ const EMPTY_FORM: CheckoutFormState = {
   ciudad: "", provincia: "", cp: "", notas: "",
 };
 
+// ─── Widget de cálculo de envío gratis ─────────────────────────────────────────
+function ShippingWidget({
+  city, setCity, prov, setProv, cp, setCp,
+  cpError, checked, showFree, onCheck, compact = false,
+}: {
+  city: string; setCity: (v: string) => void;
+  prov: string; setProv: (v: string) => void;
+  cp: string; setCp: (v: string) => void;
+  cpError: string | null; checked: boolean; showFree: boolean;
+  onCheck: () => void; compact?: boolean;
+}) {
+  const inputCls = `bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors w-full`;
+  const selectCls = `bg-background border border-border px-3 py-2.5 font-body text-sm text-foreground focus:outline-none focus:border-foreground transition-colors w-full appearance-none cursor-pointer`;
+
+  return (
+    <div className={`border border-border ${compact ? "p-4" : "p-5"} flex flex-col gap-3 relative overflow-hidden`}>
+      {/* Banner envío gratis */}
+      <AnimatePresence>
+        {showFree && (
+          <motion.div
+            initial={{ opacity: 0, y: -60, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -40, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 28 }}
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background gap-3 px-4"
+          >
+            {/* Confetti de puntos */}
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: 0, y: 0, scale: 0 }}
+                animate={{
+                  opacity: [0, 1, 1, 0],
+                  x: Math.cos((i / 12) * Math.PI * 2) * (40 + Math.random() * 30),
+                  y: Math.sin((i / 12) * Math.PI * 2) * (30 + Math.random() * 20),
+                  scale: [0, 1.2, 1, 0],
+                }}
+                transition={{ duration: 1.2, delay: i * 0.06, ease: "easeOut" }}
+                className="absolute w-2 h-2 rounded-full"
+                style={{ backgroundColor: i % 3 === 0 ? "#D67A00" : i % 3 === 1 ? "#22C55E" : "#3B82F6" }}
+              />
+            ))}
+            <motion.div
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.1 }}
+              className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center"
+            >
+              <Truck className="w-7 h-7 text-green-500" />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="text-center"
+            >
+              <p className="font-display text-lg uppercase tracking-wide text-green-500">¡Envío gratis!</p>
+              <p className="font-body text-xs text-foreground/60 mt-1">Tu pedido llega sin coste a <span className="font-semibold text-foreground">{city}</span></p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="flex items-center gap-2 text-green-500/60"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="font-body text-[10px] uppercase tracking-widest">Envío estándar incluido</span>
+              <Sparkles className="w-3.5 h-3.5" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Cabecera */}
+      <div className="flex items-center gap-2">
+        <MapPin className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
+        <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Calcular envío</p>
+        {checked && (
+          <motion.span
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="ml-auto flex items-center gap-1.5 font-body text-[10px] text-green-500"
+          >
+            <Check className="w-3 h-3" />
+            Envío gratis
+          </motion.span>
+        )}
+      </div>
+
+      {/* Campos */}
+      <div className={`grid ${compact ? "grid-cols-1 gap-2" : "grid-cols-[2fr_2fr_1fr] gap-3"}`}>
+        <input
+          value={city}
+          onChange={e => setCity(e.target.value)}
+          className={inputCls}
+          placeholder="Localidad"
+        />
+        <div className="relative">
+          <select value={prov} onChange={e => setProv(e.target.value)} className={selectCls}>
+            <option value="">Provincia...</option>
+            {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+          <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-foreground/40 text-xs">▾</div>
+        </div>
+        <input
+          value={cp}
+          onChange={e => { setCp(e.target.value.replace(/\D/g, "").slice(0, 5)); }}
+          className={`${inputCls} ${cpError ? "border-red-400" : ""}`}
+          placeholder="C.P."
+          inputMode="numeric"
+          maxLength={5}
+        />
+      </div>
+      {cpError && <p className="font-body text-[10px] text-red-400 flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{cpError}</p>}
+
+      <motion.button
+        type="button"
+        onClick={onCheck}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.97 }}
+        className="w-full border border-foreground/20 hover:border-foreground text-foreground font-body text-[10px] uppercase tracking-[0.25em] py-2.5 flex items-center justify-center gap-2 transition-colors"
+      >
+        <Truck className="w-3.5 h-3.5" />
+        Calcular envío
+      </motion.button>
+    </div>
+  );
+}
+
 // ─── Componente principal ─────────────────────────────────────────────────────
 export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sections, onNavigate }: CartPanelProps) {
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>("cart");
@@ -182,6 +311,32 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   const [errors, setErrors] = useState<Partial<Record<keyof CheckoutFormState, string>>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof CheckoutFormState, boolean>>>({});
   const [payMethod, setPayMethod] = useState<PayMethod>("card");
+
+  // ─── Estado widget envío gratis ──────────────────────────────────────────
+  const [shippingCity, setShippingCity] = useState("");
+  const [shippingProv, setShippingProv] = useState("");
+  const [shippingCp, setShippingCp] = useState("");
+  const [shippingChecked, setShippingChecked] = useState(false);
+  const [showFreeShipping, setShowFreeShipping] = useState(false);
+  const [shippingCpError, setShippingCpError] = useState<string | null>(null);
+
+  function checkShipping() {
+    const cpErr = validateCP(shippingCp);
+    if (!shippingCity.trim()) { toast.error("Introduce tu localidad"); return; }
+    if (!shippingProv) { toast.error("Selecciona tu provincia"); return; }
+    if (cpErr) { setShippingCpError(cpErr); return; }
+    setShippingCpError(null);
+    setShippingChecked(true);
+    setShowFreeShipping(true);
+    // Pre-rellenar el formulario con los datos ya introducidos
+    setForm(f => ({
+      ...f,
+      ciudad: shippingCity,
+      provincia: shippingProv,
+      cp: shippingCp,
+    }));
+    setTimeout(() => setShowFreeShipping(false), 4000);
+  }
 
   const redsysFormRef = useRef<HTMLFormElement>(null);
   const [redsysData, setRedsysData] = useState<{
@@ -923,6 +1078,18 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                           ))}
                         </ul>
                       </AnimatePresence>
+                      {/* Widget envío gratis desktop */}
+                      <div className="mt-8">
+                        <ShippingWidget
+                          city={shippingCity} setCity={setShippingCity}
+                          prov={shippingProv} setProv={setShippingProv}
+                          cp={shippingCp} setCp={setShippingCp}
+                          cpError={shippingCpError}
+                          checked={shippingChecked}
+                          showFree={showFreeShipping}
+                          onCheck={checkShipping}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1016,21 +1183,36 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <p className="font-body text-sm text-foreground/40">Tu carrito está vacío</p>
                   </div>
                 ) : (
-                  <AnimatePresence>
-                    <ul className="flex flex-col gap-4">
-                      {cart.map((item, idx) => (
-                        <motion.li key={`mob-${item.id}-${idx}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="flex items-center gap-4 border-b border-border pb-4">
-                          <div className="w-16 h-16 shrink-0 overflow-hidden border border-border"><img src={item.img} alt={item.name} className="w-full h-full object-cover" /></div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-0.5">{item.id}</p>
-                            <p className="font-display text-sm uppercase tracking-wide leading-snug">{item.name}</p>
-                            <p className="font-display text-base text-accent-deep mt-1">{item.price.toLocaleString("es-ES")} €</p>
-                          </div>
-                          <button onClick={() => onRemove(idx)} className="shrink-0 text-foreground/30 hover:text-foreground transition-colors outline-none"><X className="w-4 h-4" /></button>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </AnimatePresence>
+                  <>
+                    <AnimatePresence>
+                      <ul className="flex flex-col gap-4">
+                        {cart.map((item, idx) => (
+                          <motion.li key={`mob-${item.id}-${idx}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="flex items-center gap-4 border-b border-border pb-4">
+                            <div className="w-16 h-16 shrink-0 overflow-hidden border border-border"><img src={item.img} alt={item.name} className="w-full h-full object-cover" /></div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-0.5">{item.id}</p>
+                              <p className="font-display text-sm uppercase tracking-wide leading-snug">{item.name}</p>
+                              <p className="font-display text-base text-accent-deep mt-1">{item.price.toLocaleString("es-ES")} €</p>
+                            </div>
+                            <button onClick={() => onRemove(idx)} className="shrink-0 text-foreground/30 hover:text-foreground transition-colors outline-none"><X className="w-4 h-4" /></button>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </AnimatePresence>
+                    {/* Widget envío gratis móvil */}
+                    <div className="mt-5">
+                      <ShippingWidget
+                        city={shippingCity} setCity={setShippingCity}
+                        prov={shippingProv} setProv={setShippingProv}
+                        cp={shippingCp} setCp={setShippingCp}
+                        cpError={shippingCpError}
+                        checked={shippingChecked}
+                        showFree={showFreeShipping}
+                        onCheck={checkShipping}
+                        compact
+                      />
+                    </div>
+                  </>
                 )}
               </div>
             )}
