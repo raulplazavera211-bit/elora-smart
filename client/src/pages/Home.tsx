@@ -1261,7 +1261,7 @@ function ClubEloraSection() {
 
         <div className="mt-8 md:mt-16 flex items-center justify-center gap-6 opacity-30">
           <div className="h-[1px] w-24 bg-white/30" />
-          <span className="font-display text-xs uppercase tracking-[0.4em] text-white/50">Elora Smart · A Coruña</span>
+          <span className="font-display text-xs uppercase tracking-[0.4em] text-white/50">Elora Smart · Galicia</span>
           <div className="h-[1px] w-24 bg-white/30" />
         </div>
       </div>
