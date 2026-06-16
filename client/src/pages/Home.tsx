@@ -2037,7 +2037,7 @@ export default function Home() {
                     </div>
 
                     {/* Mapa móvil: después de la dirección, solo visible en móvil */}
-                    <div className="md:hidden mt-5 relative w-full h-[200px] overflow-hidden rounded-sm">
+                    <div className="md:hidden mt-5 relative w-full overflow-hidden rounded-sm" style={{ height: '200px', display: 'block' }}>
                       <MapView
                         className="w-full h-full"
                         initialCenter={{ lat: 42.862, lng: -8.6474 }}
@@ -2218,9 +2218,7 @@ export default function Home() {
                   );
                   return (
                     <>
-                      {/* Móvil: mapa ANTES del contenido principal (se inserta aquí visualmente via order) */}
-                      <div className="md:hidden w-full h-[240px]">{mapBlock("w-full h-full")}</div>
-                      {/* Escritorio: mapa al final a ancho completo */}
+                      {/* Solo escritorio: mapa al final a ancho completo */}
                       <div className="hidden md:block w-full h-[360px]">{mapBlock("w-full h-full")}</div>
                     </>
                   );
