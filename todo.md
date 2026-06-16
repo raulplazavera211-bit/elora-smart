@@ -29,4 +29,10 @@
 - [x] Propietario recibe notificaciones (notifyOwner() integrado en ambos procedimientos)
 - [x] pnpm db:push ejecutado — 3 tablas sincronizadas
 - [x] Tests pasan (1/1 vitest)
-- [ ] Checkpoint guardado
+- [x] Checkpoint guardado
+
+## Panel de administración
+- [x] Procedimientos tRPC admin.getContacts y admin.getClubSignups
+- [x] Página /admin con tablas de datos (contactos y Club Elora)
+- [x] Protección de la ruta /admin (solo acceso con contraseña o rol admin)
+- [x] Checkpoint guardado con el panel admin

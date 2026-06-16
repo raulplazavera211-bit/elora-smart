@@ -1,11 +1,12 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Coleccion from "./pages/Coleccion";
+import Admin from "./pages/Admin";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -52,8 +53,12 @@ function ComingSoonDesktop() {
     </div>
   );
 }
-function Router() {
-  // make sure to consider if you need authentication for certain routes
+
+/**
+ * Rutas visibles en móvil (la web pública).
+ * En escritorio se muestra la pantalla "Próximamente" en su lugar.
+ */
+function MobileRouter() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
@@ -62,6 +67,35 @@ function Router() {
       {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
+  );
+}
+
+/**
+ * Wrapper que decide qué mostrar según la ruta actual.
+ * - /admin → siempre se muestra el panel de admin (sin el bloqueo de escritorio)
+ * - Cualquier otra ruta → pantalla "Próximamente" en escritorio, web completa en móvil
+ */
+function AppRouter() {
+  const [location] = useLocation();
+  const isAdmin = location === "/admin" || location.startsWith("/admin/");
+
+  if (isAdmin) {
+    return (
+      <Switch>
+        <Route path="/admin" component={Admin} />
+      </Switch>
+    );
+  }
+
+  return (
+    <>
+      {/* Desktop: pantalla Próximamente */}
+      <ComingSoonDesktop />
+      {/* Móvil: web completa */}
+      <div className="md:hidden">
+        <MobileRouter />
+      </div>
+    </>
   );
 }
 
@@ -79,12 +113,7 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          {/* Desktop: pantalla Próximamente */}
-          <ComingSoonDesktop />
-          {/* Móvil: web completa */}
-          <div className="md:hidden">
-            <Router />
-          </div>
+          <AppRouter />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

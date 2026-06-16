@@ -2,11 +2,13 @@ import { z } from "zod";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
 import {
   insertContactSubmission,
   insertClubEloraSignup,
+  getContactSubmissions,
+  getClubEloraSignups,
 } from "./db";
 
 export const appRouter = router({
@@ -96,6 +98,19 @@ export const appRouter = router({
 
         return { success: true, alreadyExists };
       }),
+  }),
+
+  /**
+   * Admin panel — protected procedures (adminProcedure requires role === 'admin').
+   * The owner is automatically assigned the admin role on first login.
+   */
+  admin: router({
+    getContacts: adminProcedure.query(async () => {
+      return getContactSubmissions();
+    }),
+    getClubSignups: adminProcedure.query(async () => {
+      return getClubEloraSignups();
+    }),
   }),
 });
 
