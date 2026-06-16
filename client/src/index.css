@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* Fuentes locales — no dependen de Google Fonts */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/manus-storage/oswald_1aabbe87.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('/manus-storage/outfit_013c8b18.woff2') format('woff2');
+}
+
 /* ============================================================
    ELORA SMART — Design System
    Filosofía: Neo-Corporate Elegance
@@ -7,8 +23,6 @@
    Tipografía: Oswald (display) + Outfit (body)
    Radio: 0px (bordes rectos, estética arquitectónica)
    ============================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap');
 
 @theme inline {
   --color-background: var(--background);
