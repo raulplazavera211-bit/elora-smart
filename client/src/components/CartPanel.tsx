@@ -25,7 +25,7 @@ const PROVINCIAS_ESPANA = [
 
 export type CartItem = { id: string; name: string; price: number; img?: string; quantity?: number };
 type CheckoutStep = "cart" | "checkout" | "payment" | "redirecting";
-type PayMethod = "card" | "bizum";
+type PayMethod = "card" | "bizum" | "transfer" | "cod" | "paypal";
 
 // ─── Validaciones España ──────────────────────────────────────────────────────
 function validateCP(cp: string): string | null {
@@ -395,18 +395,48 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   const [form, setForm] = useState<CheckoutFormState>(EMPTY_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof CheckoutFormState, string>>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof CheckoutFormState, boolean>>>({});
-  const [payMethod, setPayMethod] = useState<PayMethod>("card");
-
+    const [payMethod, setPayMethod] = useState<PayMethod>("card");
+  // ─── Autocompletado CP / Municipio ──────────────────────────────────────
+  const [cpLookupQuery, setCpLookupQuery] = useState("");
+  const [municipioQuery, setMunicipioQuery] = useState("");
+  const [showMunicipioSuggestions, setShowMunicipioSuggestions] = useState(false);
+  const { data: cpLookupResult } = trpc.geo.lookupByCp.useQuery(
+    { cp: cpLookupQuery },
+    { enabled: cpLookupQuery.length === 5, staleTime: Infinity }
+  );
+  const { data: municipioSuggestions } = trpc.geo.lookupByMunicipio.useQuery(
+    { query: municipioQuery },
+    { enabled: municipioQuery.length >= 3, staleTime: Infinity }
+  );
+  // Cuando el CP tiene 5 dígitos y hay resultado, rellenar ciudad y provincia
+  useEffect(() => {
+    if (cpLookupResult && cpLookupQuery.length === 5) {
+      setForm(f => ({
+        ...f,
+        ciudad: f.ciudad || cpLookupResult.municipio,
+        provincia: f.provincia || cpLookupResult.provincia,
+      }));
+      setErrors(e => ({ ...e, ciudad: undefined, provincia: undefined, cp: undefined }));
+    }
+  }, [cpLookupResult, cpLookupQuery]);
   // ─── Métodos de pago activos (desde el admin) ────────────────────────────
   const { data: activeMethods } = trpc.payments.getActive.useQuery(undefined, {
     staleTime: 60_000,
   });
   const cardEnabled = !activeMethods || activeMethods.length === 0 || activeMethods.some(m => m.type === "redsys_card");
   const bizumEnabled = !activeMethods || activeMethods.length === 0 || activeMethods.some(m => m.type === "redsys_bizum");
+  const transferEnabled = activeMethods ? activeMethods.some(m => m.type === "transfer") : false;
+  const cashOnDeliveryEnabled = activeMethods ? activeMethods.some(m => m.type === "cash_on_delivery") : false;
+  const paypalEnabled = activeMethods ? activeMethods.some(m => m.type === "paypal") : false;
+  // Datos de configuración de los métodos no-Redsys
+  const transferConfig = activeMethods?.find(m => m.type === "transfer")?.config as Record<string, string> | undefined;
+  const cashConfig = activeMethods?.find(m => m.type === "cash_on_delivery")?.config as Record<string, string> | undefined;
   useEffect(() => {
     if (payMethod === "card" && !cardEnabled && bizumEnabled) setPayMethod("bizum");
     if (payMethod === "bizum" && !bizumEnabled && cardEnabled) setPayMethod("card");
-  }, [cardEnabled, bizumEnabled, payMethod]);
+    if (payMethod === "card" && !cardEnabled && !bizumEnabled && transferEnabled) setPayMethod("transfer");
+    if (payMethod === "transfer" && !transferEnabled && cardEnabled) setPayMethod("card");
+  }, [cardEnabled, bizumEnabled, transferEnabled, cashOnDeliveryEnabled, paypalEnabled, payMethod]);
 
   // ─── Estado widget envío gratis ──────────────────────────────────────────
     const [shippingCity, setShippingCity] = useState("");
@@ -693,14 +723,47 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
         <div className="grid grid-cols-[2fr_2fr_1fr] gap-4">
           <Field label="Ciudad / Localidad" required error={touched.ciudad ? errors.ciudad : null}>
-            <input
-              value={form.ciudad}
-              onChange={e => setField("ciudad", e.target.value)}
-              onBlur={() => markTouched("ciudad")}
-              className={inputClass("ciudad")}
-              placeholder="Madrid"
-              autoComplete="address-level2"
-            />
+            <div className="relative">
+              <input
+                value={form.ciudad}
+                onChange={e => {
+                  setField("ciudad", e.target.value);
+                  if (e.target.value.length >= 3) {
+                    setMunicipioQuery(e.target.value);
+                    setShowMunicipioSuggestions(true);
+                  } else {
+                    setShowMunicipioSuggestions(false);
+                  }
+                }}
+                onBlur={() => { markTouched("ciudad"); setTimeout(() => setShowMunicipioSuggestions(false), 200); }}
+                onFocus={() => { if (form.ciudad.length >= 3) setShowMunicipioSuggestions(true); }}
+                className={inputClass("ciudad")}
+                placeholder="Madrid"
+                autoComplete="off"
+              />
+              {showMunicipioSuggestions && municipioSuggestions && municipioSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 z-50 bg-background border border-border shadow-lg max-h-48 overflow-y-auto">
+                  {municipioSuggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onMouseDown={() => {
+                        setField("ciudad", s.municipio);
+                        setField("provincia", s.provincia);
+                        setField("cp", s.cp);
+                        setCpLookupQuery(s.cp);
+                        setShowMunicipioSuggestions(false);
+                        setErrors(e => ({ ...e, ciudad: undefined, provincia: undefined, cp: undefined }));
+                      }}
+                      className="w-full text-left px-4 py-2.5 font-body text-sm hover:bg-foreground/5 transition-colors flex items-center justify-between gap-4"
+                    >
+                      <span className="font-medium">{s.municipio}</span>
+                      <span className="text-foreground/40 text-xs shrink-0">{s.provincia} · {s.cp}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </Field>
           <Field label="Provincia" required error={touched.provincia ? errors.provincia : null}>
             <div className="relative">
@@ -719,7 +782,11 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           <Field label="C.P." required error={touched.cp ? errors.cp : null}>
             <input
               value={form.cp}
-              onChange={e => setField("cp", e.target.value.replace(/\D/g, "").slice(0, 5))}
+              onChange={e => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 5);
+                setField("cp", v);
+                if (v.length === 5) setCpLookupQuery(v);
+              }}
               onBlur={() => markTouched("cp")}
               className={inputClass("cp")}
               placeholder="28001"
@@ -752,6 +819,20 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           <p className="font-body text-xs text-foreground/50">Elige cómo quieres pagar. Serás redirigido al TPV seguro de Redsys.</p>
         </div>
 
+        {/* Badge envío gratis animado */}
+        <div className="relative overflow-hidden border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 p-4 flex items-center gap-3 rounded-sm">
+          <span className="relative flex h-3 w-3 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+          </span>
+          <div className="flex-1">
+            <p className="font-body text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">¡Envío gratis a toda España!</p>
+            <p className="font-body text-[10px] text-emerald-600/70 dark:text-emerald-500/70 mt-0.5">Tu pedido llega sin coste adicional</p>
+          </div>
+          <span className="text-xl">🚚</span>
+          {/* Efecto de brillo deslizante */}
+          <div className="absolute inset-0 -translate-x-full animate-[shimmer_2.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-emerald-200/30 to-transparent" style={{ animationDelay: "0.5s" }} />
+        </div>
         {/* Resumen del pedido */}
         <div className="border border-border p-5 flex flex-col gap-3 bg-foreground/[0.02]">
           <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">Resumen del pedido</p>
@@ -877,7 +958,47 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         </div>
 
         <Field label="Ciudad / Localidad" required error={touched.ciudad ? errors.ciudad : null}>
-          <input value={form.ciudad} onChange={e => setField("ciudad", e.target.value)} onBlur={() => markTouched("ciudad")} className={inputClassSm("ciudad")} placeholder="Madrid" autoComplete="address-level2" />
+          <div className="relative">
+            <input
+              value={form.ciudad}
+              onChange={e => {
+                setField("ciudad", e.target.value);
+                if (e.target.value.length >= 3) {
+                  setMunicipioQuery(e.target.value);
+                  setShowMunicipioSuggestions(true);
+                } else {
+                  setShowMunicipioSuggestions(false);
+                }
+              }}
+              onBlur={() => { markTouched("ciudad"); setTimeout(() => setShowMunicipioSuggestions(false), 200); }}
+              onFocus={() => { if (form.ciudad.length >= 3) setShowMunicipioSuggestions(true); }}
+              className={inputClassSm("ciudad")}
+              placeholder="Madrid"
+              autoComplete="off"
+            />
+            {showMunicipioSuggestions && municipioSuggestions && municipioSuggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 z-50 bg-background border border-border shadow-lg max-h-40 overflow-y-auto">
+                {municipioSuggestions.map((s, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onMouseDown={() => {
+                      setField("ciudad", s.municipio);
+                      setField("provincia", s.provincia);
+                      setField("cp", s.cp);
+                      setCpLookupQuery(s.cp);
+                      setShowMunicipioSuggestions(false);
+                      setErrors(e => ({ ...e, ciudad: undefined, provincia: undefined, cp: undefined }));
+                    }}
+                    className="w-full text-left px-3 py-2 font-body text-xs hover:bg-foreground/5 transition-colors flex items-center justify-between gap-3"
+                  >
+                    <span className="font-medium">{s.municipio}</span>
+                    <span className="text-foreground/40 text-[10px] shrink-0">{s.cp}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </Field>
 
         <div className="grid grid-cols-2 gap-3">
@@ -891,7 +1012,20 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
             </div>
           </Field>
           <Field label="Código Postal" required error={touched.cp ? errors.cp : null}>
-            <input value={form.cp} onChange={e => setField("cp", e.target.value.replace(/\D/g, "").slice(0, 5))} onBlur={() => markTouched("cp")} className={inputClassSm("cp")} placeholder="28001" inputMode="numeric" maxLength={5} autoComplete="postal-code" />
+            <input
+              value={form.cp}
+              onChange={e => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 5);
+                setField("cp", v);
+                if (v.length === 5) setCpLookupQuery(v);
+              }}
+              onBlur={() => markTouched("cp")}
+              className={inputClassSm("cp")}
+              placeholder="28001"
+              inputMode="numeric"
+              maxLength={5}
+              autoComplete="postal-code"
+            />
           </Field>
         </div>
 

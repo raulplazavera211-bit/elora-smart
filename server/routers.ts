@@ -1,5 +1,24 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { readFileSync } from "fs";
+import { join } from "path";
+import { fileURLToPath } from "url";
+
+// ─── Dataset de códigos postales de España ────────────────────────────────────
+type CpEntry = { cp: string; municipio: string; provincia: string };
+let _cpData: CpEntry[] | null = null;
+function getCpData(): CpEntry[] {
+  if (!_cpData) {
+    try {
+      const __dirname = fileURLToPath(new URL(".", import.meta.url));
+      const raw = readFileSync(join(__dirname, "cp_data.json"), "utf-8");
+      _cpData = JSON.parse(raw) as CpEntry[];
+    } catch {
+      _cpData = [];
+    }
+  }
+  return _cpData;
+}
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
@@ -171,7 +190,7 @@ export const appRouter = router({
         /** Origen del frontend para construir las URLs de retorno */
         origin: z.string().url(),
         /** Método de pago elegido por el cliente */
-        payMethod: z.enum(["card", "bizum"]).default("card"),
+        payMethod: z.enum(["card", "bizum", "transfer", "cod", "paypal"]).default("card"),
       }))
       .mutation(async ({ input }) => {
         // Verificar que Redsys está configurado
@@ -424,7 +443,7 @@ export const appRouter = router({
         return order;
       }),
 
-    updateOrderStatus: adminProcedure
+        updateOrderStatus: adminProcedure
       .input(z.object({
         id: z.number(),
         status: z.enum(["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"]),
@@ -434,6 +453,45 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
-});
 
+  // ─── CÓDIGOS POSTALES (España) ──────────────────────────────────────────────────────────
+  geo: router({
+    /** Busca por código postal exacto → devuelve municipios y provincia */
+    lookupByCp: publicProcedure
+      .input(z.object({ cp: z.string().length(5) }))
+      .query(({ input }) => {
+        const data = getCpData();
+        const matches = data.filter(e => e.cp === input.cp);
+        if (matches.length === 0) return null;
+        // Devolver la primera coincidencia (municipio más común)
+        return {
+          cp: matches[0].cp,
+          municipio: matches[0].municipio,
+          provincia: matches[0].provincia,
+          municipios: Array.from(new Set(matches.map(m => m.municipio))),
+        };
+      }),
+    /** Busca por nombre de municipio (mín. 3 chars) → devuelve hasta 8 sugerencias */
+    lookupByMunicipio: publicProcedure
+      .input(z.object({ query: z.string().min(3).max(100) }))
+      .query(({ input }) => {
+        const data = getCpData();
+        const q = input.query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const seen = new Set<string>();
+        const results: { cp: string; municipio: string; provincia: string }[] = [];
+        for (const e of data) {
+          const norm = e.municipio.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          if (norm.startsWith(q)) {
+            const key = `${e.cp}-${e.municipio}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              results.push(e);
+              if (results.length >= 8) break;
+            }
+          }
+        }
+        return results;
+      }),
+  }),
+});
 export type AppRouter = typeof appRouter;
