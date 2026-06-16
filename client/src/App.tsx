@@ -116,16 +116,7 @@ function AppRouter() {
     );
   }
 
-  return (
-    <>
-      {/* Desktop: pantalla Próximamente */}
-      <ComingSoonDesktop />
-      {/* Móvil: web completa */}
-      <div className="md:hidden">
-        <MobileRouter />
-      </div>
-    </>
-  );
+  return <MobileRouter />;
 }
 
 // NOTE: About Theme

@@ -77,7 +77,7 @@
 
 ## Mejoras checkout
 
-- [ ] Formulario con validaciones estrictas para España (CP 5 dígitos, teléfono +34, provincia)
-- [ ] Selector visual de método de pago (tarjeta / Bizum)
-- [ ] Campo de dirección completo (calle, número, piso, ciudad, provincia, CP)
-- [ ] Pasar método de pago elegido a Redsys (DS_MERCHANT_PAYMETHODS)
+- [x] Formulario con validaciones estrictas para España (CP 5 dígitos, teléfono +34, provincia)
+- [x] Selector visual de método de pago (tarjeta / Bizum)
+- [x] Campo de dirección completo (calle, número, piso, ciudad, provincia, CP)
+- [x] Pasar método de pago elegido a Redsys (DS_MERCHANT_PAYMETHODS)
