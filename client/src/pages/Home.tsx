@@ -2037,7 +2037,7 @@ export default function Home() {
                     </div>
 
                     {/* Mapa móvil: después de la dirección, solo visible en móvil */}
-                    <div className="md:hidden mt-5 relative w-full overflow-hidden rounded-sm" style={{ height: '200px', display: 'block' }}>
+                    <div className="md:hidden mt-5 relative w-full overflow-hidden rounded-sm" style={{ height: '200px' }}>
                       <MapView
                         className="w-full h-full"
                         initialCenter={{ lat: 42.862, lng: -8.6474 }}
