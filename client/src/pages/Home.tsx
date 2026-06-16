@@ -1322,7 +1322,8 @@ function EsenciaVideoCard() {
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       viewport={{ once: true, margin: "-5%" }}
-      className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group"
+      className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group cursor-pointer"
+      onClick={toggle}
     >
       <video
         ref={videoRef}
@@ -1332,11 +1333,29 @@ function EsenciaVideoCard() {
         loop
         disablePictureInPicture
         disableRemotePlayback
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-        style={{ WebkitUserSelect: "none" }}
+        className="absolute inset-0 w-full h-full object-cover"
       />
-      {/* Capa invisible que bloquea toques/clics para suprimir controles nativos del navegador */}
-      <div className="absolute inset-0 z-10" style={{ pointerEvents: "all", touchAction: "none", userSelect: "none", WebkitUserSelect: "none" }} />
+      {!playing && (
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+      )}
+      <AnimatePresence>
+        {!playing && (
+          <motion.div
+            key="play-btn"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          >
+            <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center">
+              <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="absolute top-4 left-4 pointer-events-none">
         <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
       </div>
@@ -1565,10 +1584,17 @@ export default function Home() {
                 {/* Video de fondo: vistas de drón */}
                 <div className="absolute inset-0 w-full h-full overflow-hidden">
                   <iframe
-                    src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&end=225&modestbranding=1&showinfo=0&disablekb=1&fs=0"
+                    src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&end=225&modestbranding=1&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0"
                     title="Elora Smart — De la cantera gallega al baño contemporáneo"
                     className="absolute top-1/2 left-1/2"
-                    style={{ width: "177.78vh", height: "100vh", minWidth: "100%", minHeight: "56.25vw", transform: "translate(-50%, -50%)", pointerEvents: "none" }}
+                    style={{
+                      width: "200vw",
+                      height: "115vw",
+                      minWidth: "177.78vh",
+                      minHeight: "100vh",
+                      transform: "translate(-50%, -50%) scale(1.15)",
+                      pointerEvents: "none"
+                    }}
                     allow="autoplay; encrypted-media"
                     tabIndex={-1}
                   />
