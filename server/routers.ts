@@ -54,6 +54,7 @@ import {
   seedDefaultPaymentMethods,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
+import { sendOrderConfirmationEmail } from "./email";
 
 export const appRouter = router({
   system: systemRouter,
@@ -135,6 +136,11 @@ export const appRouter = router({
         customerEmail: z.string().email().max(320),
         customerPhone: z.string().max(64).optional(),
         address: z.string().max(1000).optional(),
+        shippingAddress: z.string().max(500).optional(),
+        shippingCity: z.string().max(255).optional(),
+        shippingProvince: z.string().max(128).optional(),
+        shippingPostalCode: z.string().max(10).optional(),
+        paymentMethod: z.string().max(32).optional(),
         notes: z.string().max(2000).optional(),
         items: z.array(z.object({
           productId: z.number().optional(),
@@ -154,6 +160,11 @@ export const appRouter = router({
             customerEmail: input.customerEmail,
             customerPhone: input.customerPhone ?? null,
             address: input.address ?? null,
+            shippingAddress: input.shippingAddress ?? null,
+            shippingCity: input.shippingCity ?? null,
+            shippingProvince: input.shippingProvince ?? null,
+            shippingPostalCode: input.shippingPostalCode ?? null,
+            paymentMethod: input.paymentMethod ?? null,
             notes: input.notes ?? null,
             status: "pending",
             total: total.toFixed(2) as unknown as string,
@@ -176,6 +187,30 @@ export const appRouter = router({
           title: `🛒 Nuevo pedido #${orderId} — ${total.toLocaleString('es-ES')}€`,
           content: `Cliente: ${input.customerName}\nEmail: ${input.customerEmail}\n${input.customerPhone ? `Teléfono: ${input.customerPhone}\n` : ''}Total: ${total.toLocaleString('es-ES')}€\n\nProductos:\n${itemsList}`,
         }).catch(() => {});
+
+        // Enviar email de confirmación para métodos de pago manuales
+        // (tarjeta/Bizum van por Redsys y reciben el email desde el webhook IPN)
+        const manualMethods = ["transfer", "cod", "paypal"];
+        if (input.paymentMethod && manualMethods.includes(input.paymentMethod)) {
+          sendOrderConfirmationEmail({
+            to: input.customerEmail,
+            customerName: input.customerName,
+            orderNumber: String(orderId),
+            items: input.items.map(i => ({
+              name: i.productName,
+              quantity: i.quantity,
+              price: i.unitPrice,
+            })),
+            total,
+            shippingAddress: {
+              street: input.shippingAddress ?? input.address ?? "",
+              city: input.shippingCity ?? "",
+              province: input.shippingProvince ?? "",
+              postalCode: input.shippingPostalCode ?? "",
+            },
+            paymentMethod: input.paymentMethod,
+          }).catch(() => {});
+        }
 
         return { success: true, orderId };
       }),
@@ -451,6 +486,50 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await updateOrderStatus(input.id, input.status);
         return { success: true };
+      }),
+  }),
+
+  // ─── CHATBOT IA ─────────────────────────────────────────────────────────────
+  chat: router({
+    message: publicProcedure
+      .input(z.object({
+        messages: z.array(z.object({
+          role: z.enum(["user", "assistant"]),
+          content: z.string(),
+        })).min(1).max(40),
+      }))
+      .mutation(async ({ input }) => {
+        const { invokeLLM } = await import("./_core/llm");
+        const products = await getAllProducts();
+
+        const productSummary = products.map(p => {
+          const highlights = typeof p.highlights === "string" ? JSON.parse(p.highlights) : (p.highlights ?? []);
+          const features = typeof p.features === "string" ? JSON.parse(p.features) : (p.features ?? []);
+          const hl = (highlights as { label: string; value: string }[]).map((h) => `${h.label}: ${h.value}`).join(" · ");
+          const feat = (features as string[]).slice(0, 6).join(", ");
+          return `**${p.name}** (${p.slug}) — ${p.price}€\n  ${p.tagline}\n  Highlights: ${hl}\n  Funciones: ${feat}`;
+        }).join("\n\n");
+
+        const systemPrompt = `Eres el asistente virtual de Elora Smart, una marca gallega de inodoros inteligentes de lujo. Tu misión es ayudar a los clientes a elegir el modelo que mejor se adapta a su baño y necesidades.
+
+Sé cercano, profesional y conciso. Responde siempre en español. No inventes precios ni funciones que no aparezcan en el catálogo.
+
+CATÁLOGO ACTUAL:
+${productSummary}
+
+Cuando recomiendes un producto, menciona su nombre, precio y por qué encaja con las necesidades del cliente. Si el cliente quiere comprar, indícale que puede hacerlo directamente desde la web o contactar por WhatsApp al +34 614 451 901.`;
+
+        const result = await invokeLLM({
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...input.messages,
+          ],
+          maxTokens: 600,
+        });
+
+        const content = result.choices[0]?.message?.content;
+        if (typeof content !== "string") throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Sin respuesta del modelo" });
+        return { reply: content };
       }),
   }),
 

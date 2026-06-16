@@ -580,6 +580,11 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
       customerEmail: form.email.trim(),
       customerPhone: form.telefono.trim() || undefined,
       address: fullAddress || undefined,
+      shippingAddress: addressParts || undefined,
+      shippingCity: form.ciudad.trim() || undefined,
+      shippingProvince: form.provincia || undefined,
+      shippingPostalCode: form.cp.trim() || undefined,
+      paymentMethod: payMethod,
       notes: form.notas.trim() || undefined,
       items: cart.map(item => ({
         productName: item.name,

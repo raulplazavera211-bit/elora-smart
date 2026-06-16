@@ -85,12 +85,12 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                 {product.longDescription}
               </p>
 
-              {/* Highlights — 1 col en móvil muy pequeño, 3 en sm+ */}
-              <div className="grid grid-cols-1 xs:grid-cols-3 sm:grid-cols-3 gap-px bg-border border border-border">
+              {/* Highlights — siempre 3 columnas */}
+              <div className="grid grid-cols-3 gap-px bg-border border border-border">
                 {product.highlights.map((h) => (
-                  <div key={h.label} className="bg-background p-4 sm:p-5 flex flex-col gap-1.5">
-                    <p className="font-body text-[9px] uppercase tracking-widest text-foreground/50 leading-tight">{h.label}</p>
-                    <p className="font-display text-sm sm:text-base md:text-lg uppercase tracking-wide leading-tight">{h.value}</p>
+                  <div key={h.label} className="bg-background p-3 sm:p-5 flex flex-col gap-1">
+                    <p className="font-body text-[8px] sm:text-[9px] uppercase tracking-widest text-foreground/50 leading-tight">{h.label}</p>
+                    <p className="font-display text-xs sm:text-base md:text-lg uppercase tracking-wide leading-tight">{h.value}</p>
                   </div>
                 ))}
               </div>

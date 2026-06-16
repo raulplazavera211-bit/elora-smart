@@ -111,8 +111,18 @@ export const orders = mysqlTable("orders", {
   customerName: varchar("customerName", { length: 255 }).notNull(),
   customerEmail: varchar("customerEmail", { length: 320 }).notNull(),
   customerPhone: varchar("customerPhone", { length: 64 }),
-  /** Optional delivery address */
+  /** Optional delivery address (full, legacy) */
   address: text("address"),
+  /** Shipping address — street + number + floor */
+  shippingAddress: text("shippingAddress"),
+  /** Shipping city */
+  shippingCity: varchar("shippingCity", { length: 255 }),
+  /** Shipping province */
+  shippingProvince: varchar("shippingProvince", { length: 128 }),
+  /** Shipping postal code */
+  shippingPostalCode: varchar("shippingPostalCode", { length: 10 }),
+  /** Payment method chosen by customer */
+  paymentMethod: varchar("paymentMethod", { length: 32 }),
   /** Optional notes from customer */
   notes: text("notes"),
   status: mysqlEnum("status", ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"]).default("pending").notNull(),

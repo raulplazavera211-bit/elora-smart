@@ -9,12 +9,14 @@
  *   2. Verificar firma y extraer resultado
  *   3. Actualizar paymentStatus en la DB
  *   4. Notificar al propietario si el pago fue aprobado
+ *   5. Enviar email de confirmación al cliente si el pago fue aprobado
  */
 
 import type { Express, Request, Response } from "express";
 import { processRedsysNotification } from "./redsys";
-import { updatePaymentStatus, getOrderByRedsysId } from "./db";
+import { updatePaymentStatus, getOrderByRedsysId, getOrderWithItems } from "./db";
 import { notifyOwner } from "./_core/notification";
+import { sendOrderConfirmationEmail } from "./email";
 
 export function registerRedsysWebhook(app: Express): void {
   /**
@@ -51,10 +53,11 @@ export function registerRedsysWebhook(app: Express): void {
       const paymentStatus = result.success ? "paid" : "failed";
       const { orderId } = await updatePaymentStatus(result.redsysOrderId, paymentStatus);
 
-      // Notificar al propietario si el pago fue aprobado
+      // Notificar al propietario y enviar email de confirmación si el pago fue aprobado
       if (result.success && orderId) {
         const order = await getOrderByRedsysId(result.redsysOrderId);
         if (order) {
+          // Notificación al propietario
           notifyOwner({
             title: `✅ Pago confirmado — Pedido #${orderId} — ${order.total}€`,
             content: [
@@ -68,6 +71,29 @@ export function registerRedsysWebhook(app: Express): void {
               .filter(Boolean)
               .join("\n"),
           }).catch(() => {});
+
+          // Email de confirmación al cliente
+          const orderWithItems = await getOrderWithItems(orderId);
+          if (orderWithItems) {
+            sendOrderConfirmationEmail({
+              to: order.customerEmail,
+              customerName: order.customerName,
+              orderNumber: String(orderId),
+              items: orderWithItems.items.map(i => ({
+                name: i.productName,
+                quantity: i.quantity,
+                price: Number(i.unitPrice),
+              })),
+              total: Number(order.total),
+              shippingAddress: {
+                street: order.shippingAddress ?? order.address ?? "",
+                city: order.shippingCity ?? "",
+                province: order.shippingProvince ?? "",
+                postalCode: order.shippingPostalCode ?? "",
+              },
+              paymentMethod: order.paymentMethod ?? "card",
+            }).catch(() => {});
+          }
         }
       }
 
