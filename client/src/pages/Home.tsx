@@ -2007,9 +2007,9 @@ export default function Home() {
                 data-index="4"
                 className="w-full relative overflow-hidden bg-background flex flex-col justify-between min-h-[100dvh]"
               >
-                <div className="flex-1 flex flex-col md:flex-row max-w-[1400px] mx-auto w-full px-6 md:px-16 py-20 md:py-24 gap-12 md:gap-16 flex-wrap">
+                <div className="flex-1 flex flex-col md:flex-row max-w-[1400px] mx-auto w-full px-6 md:px-16 py-20 md:py-24 gap-12 md:gap-16">
                   {/* Texto izquierda */}
-                  <div className="flex flex-col justify-center md:w-1/2">
+                  <div className="flex flex-col justify-center md:w-1/2 min-w-0">
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
                       <span className="font-display text-[30vw] leading-none whitespace-nowrap text-foreground font-bold">ELORA</span>
                     </div>
