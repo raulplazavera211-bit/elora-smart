@@ -1330,9 +1330,13 @@ function EsenciaVideoCard() {
         playsInline
         muted
         loop
-        className="absolute inset-0 w-full h-full object-cover"
+        disablePictureInPicture
+        disableRemotePlayback
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+        style={{ WebkitUserSelect: "none" }}
       />
-      {/* Sin botón de play — el vídeo es solo decorativo */}
+      {/* Capa invisible que bloquea toques/clics para suprimir controles nativos del navegador */}
+      <div className="absolute inset-0 z-10" style={{ pointerEvents: "all", touchAction: "none", userSelect: "none", WebkitUserSelect: "none" }} />
       <div className="absolute top-4 left-4 pointer-events-none">
         <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
       </div>
@@ -1558,19 +1562,19 @@ export default function Home() {
                 data-index="0"
                 className="h-[calc(100dvh-5rem)] md:h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col"
               >
-                {/* Video de fondo: De la cantera gallega al baño contemporáneo */}
+                {/* Video de fondo: vistas de drón */}
                 <div className="absolute inset-0 w-full h-full overflow-hidden">
                   <iframe
                     src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&end=225&modestbranding=1&showinfo=0&disablekb=1&fs=0"
                     title="Elora Smart — De la cantera gallega al baño contemporáneo"
-                    className="absolute top-1/2 left-1/2 pointer-events-none select-none"
-                    style={{ width: "177.78vh", height: "100vh", minWidth: "100%", minHeight: "56.25vw", transform: "translate(-50%, -50%)" }}
+                    className="absolute top-1/2 left-1/2"
+                    style={{ width: "177.78vh", height: "100vh", minWidth: "100%", minHeight: "56.25vw", transform: "translate(-50%, -50%)", pointerEvents: "none" }}
                     allow="autoplay; encrypted-media"
                     tabIndex={-1}
                   />
-                  {/* Capa invisible que bloquea TODOS los clics/toques sobre el iframe */}
-                  <div className="absolute inset-0 z-10" style={{ pointerEvents: "all", touchAction: "none", userSelect: "none", WebkitUserSelect: "none" }} />
                 </div>
+                {/* Capa que cubre TODO el iframe de YouTube — impide que el navegador/iOS muestre controles al tocar */}
+                <div className="absolute inset-0" style={{ zIndex: 5, pointerEvents: "all", touchAction: "none", cursor: "default" }} />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/20" />
 
                 <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pb-16 md:pb-20">
