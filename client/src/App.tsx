@@ -24,7 +24,7 @@ const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.pn
 function ComingSoonDesktop() {
   return (
     <div
-      className="hidden md:flex flex-col items-center justify-center min-h-screen w-full"
+      className="hidden md:flex flex-col items-center justify-center min-h-screen w-full relative"
       style={{
         background: "#0a0a0a",
         backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,164,91,0.08) 0%, transparent 70%)",
@@ -61,6 +61,7 @@ function ComingSoonDesktop() {
           elorasmart.com
         </p>
       </div>
+      <PromoPopup />
     </div>
   );
 }
