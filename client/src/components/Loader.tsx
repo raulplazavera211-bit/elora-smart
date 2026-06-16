@@ -7,8 +7,8 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase('loading'), 100);
-    const t2 = setTimeout(() => setPhase('exit'), 2400);
-    const t3 = setTimeout(() => onComplete(), 3200);
+    const t2 = setTimeout(() => setPhase('exit'), 1200);
+    const t3 = setTimeout(() => onComplete(), 1800);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete]);
 

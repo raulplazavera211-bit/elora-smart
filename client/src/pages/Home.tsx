@@ -1401,6 +1401,12 @@ export default function Home() {
   const { cart, isCartOpen, addToCart: addToCartCtx, removeFromCart, openCart, closeCart, totalItems } = useCart();
   const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
   const [contactSent, setContactSent] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
@@ -2037,7 +2043,18 @@ export default function Home() {
                     </div>
 
                     {/* Mapa móvil: después de la dirección, solo visible en móvil */}
-                    <div className="md:hidden mt-5 relative w-full overflow-hidden rounded-sm" style={{ height: '200px' }}>
+                    {isMobile && (
+                    <div className="mt-5 relative w-full" style={{ height: '200px' }}>
+                      {/* Marco animado con gradiente dorado */}
+                      <div style={{
+                        position: 'absolute', inset: '-2px', borderRadius: '4px', padding: '2px',
+                        background: 'linear-gradient(var(--angle, 0deg), #d97706, #fbbf24, #92400e, #f59e0b, #d97706)',
+                        animation: 'spin-border 3s linear infinite',
+                        zIndex: 10,
+                      }}>
+                        <div style={{ width: '100%', height: '100%', background: '#fff', borderRadius: '2px' }} />
+                      </div>
+                      <div className="absolute overflow-hidden" style={{ inset: '2px', borderRadius: '2px', zIndex: 11 }}>
                       <MapView
                         className="w-full h-full"
                         initialCenter={{ lat: 42.862, lng: -8.6474 }}
@@ -2061,7 +2078,9 @@ export default function Home() {
                         <MapPin className="w-3 h-3 shrink-0" />
                         Cómo llegar
                       </a>
+                      </div>
                     </div>
+                    )}
                   </div>
 
                   {/* Formulario derecha */}

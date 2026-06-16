@@ -118,3 +118,14 @@
     0%, 100% { transform: translateY(0px); }
   }
 }
+
+/* Marco dorado animado para el mapa móvil */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin-border {
+  to { --angle: 360deg; }
+}
