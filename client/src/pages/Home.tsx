@@ -24,7 +24,7 @@ const HERO_IMAGE = "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-80
 
 const PRODUCT_IMAGES: Record<string, string> = {
   "ESENZA": "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
-  "AURA-COMPACT": "/manus-storage/inodoro_lujo_v2_cbb4a0b3.webp",
+  "AURA-COMPACT": "/manus-storage/inodoro_lujo_v2_a0f04654.webp",
   "AURA-SUSPENDIDO": "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
 };
 const SECTIONS = ["Visión", "Esencia", "Por Qué", "Colección", "Contacto"];
@@ -181,7 +181,7 @@ const PRODUCTS: Product[] = [
     description: "Combina tecnología y diseño compacto: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización y control por voz.",
     longDescription:
       "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas como: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio. Ideal para baños con poco espacio o lugares donde quieres ganar amplitud.",
-    img: "/manus-storage/inodoro_lujo_v2_cbb4a0b3.webp",
+    img: "/manus-storage/inodoro_lujo_v2_a0f04654.webp",
     gallery: AURA_COMPACT_GALLERY,
     badges: ["ClimAdapt", "UV · Voz"],
     highlights: [
