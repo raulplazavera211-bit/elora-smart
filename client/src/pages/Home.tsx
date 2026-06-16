@@ -777,8 +777,8 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
             </span>
           </div>
 
-          {/* Imagen — ocupa todo el espacio restante */}
-          <div className="relative overflow-hidden flex-1">
+          {/* Imagen — 55% de la altura disponible */}
+          <div className="relative overflow-hidden" style={{ flex: '0 0 55%' }}>
             {EXPERIENCE_STEPS.map((s, idx) => (
               <motion.div
                 key={idx}
@@ -809,8 +809,8 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
             ))}
           </div>
 
-          {/* Texto del paso activo — altura fija compacta */}
-          <div className="shrink-0 border-t border-background/10 px-5 py-3">
+          {/* Texto del paso activo — flex-1 con tamaños legibles */}
+          <div className="flex-1 border-t border-background/10 px-5 py-4 flex flex-col justify-center">
             <motion.div
               key={activeStep}
               initial={{ opacity: 0, y: 20 }}
@@ -818,12 +818,12 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
             >
-              <p className="font-body text-[9px] uppercase tracking-[0.4em] text-background/40 mb-0.5">{step.eyebrow}</p>
-              <h3 className="font-display text-base uppercase tracking-wide leading-[0.95] text-background mb-0.5">
+              <p className="font-body text-[10px] uppercase tracking-[0.4em] text-background/40 mb-1.5">{step.eyebrow}</p>
+              <h3 className="font-display text-xl uppercase tracking-wide leading-[0.95] text-background mb-1.5">
                 {step.title}
               </h3>
-              <p className="font-body text-sm text-accent-deep mb-1">{step.subtitle}</p>
-              <p className="font-body text-xs text-background/60 leading-relaxed line-clamp-2">{step.body}</p>
+              <p className="font-body text-base text-accent-deep mb-2">{step.subtitle}</p>
+              <p className="font-body text-sm text-background/60 leading-relaxed line-clamp-3">{step.body}</p>
             </motion.div>
           </div>
 
