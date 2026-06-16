@@ -1,10 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Streamdown } from "streamdown";
-import { MessageCircle, X, Send, Loader2, Sparkles } from "lucide-react";
+import { X, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
 
-type Message = { role: "user" | "assistant"; content: string };
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+  recommendedProducts?: { slug: string; name: string; price: string; img: string; tagline: string }[];
+};
 
 const SUGGESTED = [
   "¿Qué modelo me recomiendas?",
@@ -12,29 +17,71 @@ const SUGGESTED = [
   "¿Necesito obra para instalarlo?",
 ];
 
+const WA_NUMBER = "34614451901";
+const WA_URL = `https://wa.me/${WA_NUMBER}?text=Hola%2C%20me%20gustar%C3%ADa%20hablar%20con%20alguien%20del%20equipo%20Elora%20Smart`;
+
+// Icono SVG personalizado: silueta de chat con chispa
+function EloraIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      {/* Burbuja de chat */}
+      <path
+        d="M6 8C6 5.79 7.79 4 10 4H30C32.21 4 34 5.79 34 8V24C34 26.21 32.21 28 30 28H22L14 36V28H10C7.79 28 6 26.21 6 24V8Z"
+        fill="currentColor"
+        fillOpacity="0.15"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* Chispa / estrella */}
+      <path
+        d="M20 11L21.5 15.5H26L22.25 18.25L23.75 22.75L20 20L16.25 22.75L17.75 18.25L14 15.5H18.5L20 11Z"
+        fill="#c9a96e"
+        stroke="#c9a96e"
+        strokeWidth="0.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function ChatBot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [hasUnread, setHasUnread] = useState(false);
+  const [, navigate] = useLocation();
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const chatMutation = trpc.chat.message.useMutation({
     onSuccess: (data) => {
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.reply,
+          recommendedProducts: data.recommendedProducts,
+        },
+      ]);
       if (!open) setHasUnread(true);
     },
   });
 
-  // Scroll al último mensaje
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatMutation.isPending]);
 
-  // Quitar badge al abrir
   useEffect(() => {
-    if (open) setHasUnread(false);
+    if (open) {
+      setHasUnread(false);
+      setTimeout(() => inputRef.current?.focus(), 150);
+    }
   }, [open]);
 
   const send = (text: string) => {
@@ -43,7 +90,9 @@ export function ChatBot() {
     const newMessages: Message[] = [...messages, { role: "user", content: trimmed }];
     setMessages(newMessages);
     setInput("");
-    chatMutation.mutate({ messages: newMessages });
+    chatMutation.mutate({
+      messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -58,35 +107,66 @@ export function ChatBot() {
     }
   };
 
+  const goToProduct = (slug: string) => {
+    setOpen(false);
+    navigate("/coleccion");
+    // Pequeño delay para que navegue primero
+    setTimeout(() => {
+      const el = document.getElementById(`product-${slug}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300);
+  };
+
   return (
     <>
       {/* Panel del chat */}
       <div
         className={cn(
           "fixed bottom-20 right-4 z-50 w-[calc(100vw-2rem)] max-w-sm",
-          "bg-background border border-border shadow-2xl",
-          "flex flex-col transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]",
+          "bg-background border border-border shadow-2xl flex flex-col",
+          "transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]",
           open
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-4 pointer-events-none"
         )}
-        style={{ height: "420px" }}
+        style={{ height: "460px" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-foreground text-background shrink-0">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#c9a96e]" />
+          <div className="flex items-center gap-2.5">
+            <EloraIcon className="w-7 h-7 text-background shrink-0" />
             <div>
-              <p className="font-body text-[10px] uppercase tracking-[0.25em] leading-none">Asistente Elora</p>
-              <p className="font-body text-[9px] text-background/50 tracking-wide mt-0.5">Te ayudo a elegir tu modelo</p>
+              <p className="font-body text-[10px] uppercase tracking-[0.25em] leading-none">
+                Asistente Elora
+              </p>
+              <p className="font-body text-[9px] text-background/50 tracking-wide mt-0.5">
+                Te ayudo a elegir tu modelo
+              </p>
             </div>
           </div>
-          <button
-            onClick={() => setOpen(false)}
-            className="p-1 hover:text-[#c9a96e] transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {/* WhatsApp + cerrar */}
+          <div className="flex items-center gap-2">
+            <a
+              href={WA_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 bg-[#25D366] text-white px-2.5 py-1 text-[9px] font-body uppercase tracking-wider hover:bg-[#1ebe5a] transition-colors"
+              title="Hablar con un humano"
+            >
+              {/* WhatsApp icon */}
+              <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current shrink-0">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
+              <span className="hidden xs:inline">Hablar con humano</span>
+              <span className="xs:hidden">Humano</span>
+            </a>
+            <button
+              onClick={() => setOpen(false)}
+              className="p-1 hover:text-[#c9a96e] transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Mensajes */}
@@ -94,7 +174,7 @@ export function ChatBot() {
           {messages.length === 0 && (
             <div className="flex flex-col gap-4 h-full justify-center">
               <div className="text-center">
-                <Sparkles className="w-8 h-8 text-[#c9a96e] mx-auto mb-2 opacity-60" />
+                <EloraIcon className="w-10 h-10 text-foreground/20 mx-auto mb-2" />
                 <p className="font-body text-xs text-foreground/60 leading-relaxed">
                   Hola, soy el asistente de Elora Smart.<br />
                   ¿En qué puedo ayudarte?
@@ -116,41 +196,75 @@ export function ChatBot() {
           )}
 
           {messages.map((m, i) => (
-            <div
-              key={i}
-              className={cn(
-                "flex gap-2 items-start",
-                m.role === "user" ? "justify-end" : "justify-start"
-              )}
-            >
-              {m.role === "assistant" && (
-                <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="w-3 h-3 text-[#c9a96e]" />
-                </div>
-              )}
+            <div key={i} className="flex flex-col gap-2">
               <div
                 className={cn(
-                  "max-w-[82%] px-3 py-2 text-sm leading-relaxed",
-                  m.role === "user"
-                    ? "bg-foreground text-background font-body text-xs"
-                    : "bg-muted text-foreground"
+                  "flex gap-2 items-start",
+                  m.role === "user" ? "justify-end" : "justify-start"
                 )}
               >
-                {m.role === "assistant" ? (
-                  <div className="prose prose-sm dark:prose-invert max-w-none text-xs">
-                    <Streamdown>{m.content}</Streamdown>
+                {m.role === "assistant" && (
+                  <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center shrink-0 mt-0.5">
+                    <EloraIcon className="w-4 h-4 text-background" />
                   </div>
-                ) : (
-                  <p className="whitespace-pre-wrap">{m.content}</p>
                 )}
+                <div
+                  className={cn(
+                    "max-w-[82%] px-3 py-2 leading-relaxed",
+                    m.role === "user"
+                      ? "bg-foreground text-background font-body text-xs"
+                      : "bg-muted text-foreground"
+                  )}
+                >
+                  {m.role === "assistant" ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none text-xs">
+                      <Streamdown>{m.content}</Streamdown>
+                    </div>
+                  ) : (
+                    <p className="whitespace-pre-wrap text-xs">{m.content}</p>
+                  )}
+                </div>
               </div>
+
+              {/* Tarjetas de productos recomendados */}
+              {m.role === "assistant" && m.recommendedProducts && m.recommendedProducts.length > 0 && (
+                <div className="flex flex-col gap-2 ml-8">
+                  {m.recommendedProducts.map((p) => (
+                    <button
+                      key={p.slug}
+                      onClick={() => goToProduct(p.slug)}
+                      className="flex items-center gap-3 border border-border bg-background hover:border-[#c9a96e] transition-colors p-2 text-left group"
+                    >
+                      <img
+                        src={p.img}
+                        alt={p.name}
+                        className="w-14 h-14 object-cover shrink-0 bg-muted"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-display text-xs uppercase tracking-wide leading-tight truncate group-hover:text-[#c9a96e] transition-colors">
+                          {p.name}
+                        </p>
+                        <p className="font-body text-[10px] text-foreground/50 leading-tight mt-0.5 line-clamp-1">
+                          {p.tagline}
+                        </p>
+                        <p className="font-display text-sm mt-1 text-foreground">
+                          {Number(p.price).toLocaleString("es-ES")} €
+                        </p>
+                      </div>
+                      <span className="font-body text-[9px] uppercase tracking-widest text-[#c9a96e] shrink-0 pr-1">
+                        Ver →
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
 
           {chatMutation.isPending && (
             <div className="flex gap-2 items-start">
               <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center shrink-0">
-                <Sparkles className="w-3 h-3 text-[#c9a96e]" />
+                <EloraIcon className="w-4 h-4 text-background" />
               </div>
               <div className="bg-muted px-3 py-2">
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-foreground/40" />
@@ -189,27 +303,40 @@ export function ChatBot() {
         </form>
       </div>
 
-      {/* Botón flotante */}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className={cn(
-          "fixed bottom-4 right-4 z-50 w-12 h-12",
-          "bg-foreground text-background shadow-lg",
-          "flex items-center justify-center",
-          "hover:bg-[#c9a96e] transition-colors duration-200",
-          "active:scale-95"
+      {/* Botón flotante con icono + etiqueta */}
+      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2">
+        {/* Etiqueta "¿Tienes alguna duda?" — solo cuando está cerrado */}
+        {!open && (
+          <button
+            onClick={() => setOpen(true)}
+            className="bg-foreground text-background font-body text-[10px] uppercase tracking-wider px-3 py-2 shadow-lg hover:bg-[#c9a96e] transition-colors duration-200 whitespace-nowrap"
+          >
+            ¿Tienes alguna duda?
+          </button>
         )}
-        aria-label="Abrir asistente Elora"
-      >
-        {open ? (
-          <X className="w-5 h-5" />
-        ) : (
-          <MessageCircle className="w-5 h-5" />
-        )}
-        {hasUnread && !open && (
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#c9a96e] rounded-full" />
-        )}
-      </button>
+
+        {/* Botón icono */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className={cn(
+            "relative w-12 h-12 shadow-lg flex items-center justify-center",
+            "transition-all duration-200 active:scale-95",
+            open
+              ? "bg-foreground text-background hover:bg-[#c9a96e]"
+              : "bg-[#c9a96e] text-white hover:bg-[#b8935a]"
+          )}
+          aria-label="Abrir asistente Elora"
+        >
+          {open ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <EloraIcon className="w-7 h-7" />
+          )}
+          {hasUnread && !open && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+          )}
+        </button>
+      </div>
     </>
   );
 }

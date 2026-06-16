@@ -501,13 +501,14 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         const { invokeLLM } = await import("./_core/llm");
         const products = await getAllProducts();
+        const productMap = new Map(products.map(p => [p.slug, p]));
 
         const productSummary = products.map(p => {
           const highlights = typeof p.highlights === "string" ? JSON.parse(p.highlights) : (p.highlights ?? []);
           const features = typeof p.features === "string" ? JSON.parse(p.features) : (p.features ?? []);
           const hl = (highlights as { label: string; value: string }[]).map((h) => `${h.label}: ${h.value}`).join(" · ");
           const feat = (features as string[]).slice(0, 6).join(", ");
-          return `**${p.name}** (${p.slug}) — ${p.price}€\n  ${p.tagline}\n  Highlights: ${hl}\n  Funciones: ${feat}`;
+          return `**${p.name}** (slug: ${p.slug}) — ${p.price}€\n  ${p.tagline}\n  Highlights: ${hl}\n  Funciones: ${feat}`;
         }).join("\n\n");
 
         const systemPrompt = `Eres el asistente virtual de Elora Smart, una marca gallega de inodoros inteligentes de lujo. Tu misión es ayudar a los clientes a elegir el modelo que mejor se adapta a su baño y necesidades.
@@ -517,19 +518,38 @@ Sé cercano, profesional y conciso. Responde siempre en español. No inventes pr
 CATÁLOGO ACTUAL:
 ${productSummary}
 
-Cuando recomiendes un producto, menciona su nombre, precio y por qué encaja con las necesidades del cliente. Si el cliente quiere comprar, indícale que puede hacerlo directamente desde la web o contactar por WhatsApp al +34 614 451 901.`;
+IMPORTANTE: Cuando recomiendes uno o varios productos concretos, incluye al final de tu respuesta esta línea exacta (sin espacios extra):
+RECOMENDACIONES:[slug1,slug2]
+
+Ejemplo: RECOMENDACIONES:[esenza,aura-compact]
+
+Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el cliente quiere comprar, indícale que puede hacerlo directamente desde la web.`;
 
         const result = await invokeLLM({
           messages: [
             { role: "system", content: systemPrompt },
             ...input.messages,
           ],
-          maxTokens: 600,
+          maxTokens: 700,
         });
 
-        const content = result.choices[0]?.message?.content;
-        if (typeof content !== "string") throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Sin respuesta del modelo" });
-        return { reply: content };
+        const rawContent = result.choices[0]?.message?.content;
+        if (typeof rawContent !== "string") throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Sin respuesta del modelo" });
+
+        // Extraer slugs de recomendaciones y limpiar la línea del mensaje
+        const recMatch = rawContent.match(/RECOMENDACIONES:\[([^\]]+)\]/);
+        const reply = rawContent.replace(/\nRECOMENDACIONES:\[[^\]]+\]/, "").replace(/RECOMENDACIONES:\[[^\]]+\]/, "").trim();
+
+        let recommendedProducts: { slug: string; name: string; price: string; img: string; tagline: string }[] = [];
+        if (recMatch) {
+          const slugs = recMatch[1].split(",").map(s => s.trim());
+          recommendedProducts = slugs
+            .map(slug => productMap.get(slug))
+            .filter((p): p is NonNullable<typeof p> => !!p)
+            .map(p => ({ slug: p.slug, name: p.name, price: String(p.price), img: p.img ?? "", tagline: p.tagline ?? "" }));
+        }
+
+        return { reply, recommendedProducts };
       }),
   }),
 
