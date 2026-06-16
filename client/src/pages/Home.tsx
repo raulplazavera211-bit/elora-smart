@@ -2020,7 +2020,7 @@ export default function Home() {
                       <span className="font-display text-[30vw] leading-none whitespace-nowrap text-foreground font-bold">ELORA</span>
                     </div>
                     <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 mb-6 relative z-10">Listo para elevar tu espacio</p>
-                    <TypewriterText text="Hablemos de tu baño." tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-[0.9]" speed={45} delay={100} />
+                    <TypewriterText text="Hablemos de tu baño." tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-tight md:leading-[0.9]" speed={45} delay={100} />
                     <p className="font-body text-sm text-foreground/70 leading-relaxed mb-10 max-w-sm relative z-10">
                       Cuéntanos qué tienes en mente. Te asesoramos sin compromiso sobre qué modelo se adapta mejor a tu espacio, instalación y presupuesto.
                     </p>
