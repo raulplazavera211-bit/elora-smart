@@ -210,6 +210,14 @@ export const appRouter = router({
       }),
   }),
 
+  // ─── PAYMENTS (public) ─────────────────────────────────────────────────
+  payments: router({
+    getActive: publicProcedure.query(async () => {
+      await seedDefaultPaymentMethods();
+      return getEnabledPaymentMethods();
+    }),
+  }),
+
   // ─── ADMIN ───────────────────────────────────────────────────────────────
   admin: router({
     // Dashboard stats

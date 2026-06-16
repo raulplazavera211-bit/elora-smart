@@ -90,10 +90,10 @@
 
 ## Banda lateral carrito + Admin pagos
 
-- [ ] Cambiar fondo banda lateral carrito de negro a crema/beige elegante
-- [ ] Formulario Club Elora integrado directamente en la banda lateral del carrito
-- [ ] Tabla payment_methods en DB con campos: id, name, type, enabled, config (JSON), position
-- [ ] Procedimientos tRPC admin: getPaymentMethods, updatePaymentMethod, togglePaymentMethod
-- [ ] Página /admin/pagos con tarjetas de configuración por método (Redsys/Bizum, Transferencia, PayPal, Contrareembolso)
-- [ ] Checkout muestra solo los métodos de pago activos según la configuración del admin
-- [ ] Ruta /admin/pagos registrada en App.tsx y sidebar admin
+- [x] Cambiar fondo banda lateral carrito de negro a crema/beige elegante
+- [x] Formulario Club Elora integrado directamente en la banda lateral del carrito
+- [x] Tabla payment_methods en DB con campos: id, name, type, enabled, config (JSON), position
+- [x] Procedimientos tRPC admin: getPaymentMethods, updatePaymentMethod, togglePaymentMethod
+- [x] Página /admin/pagos con tarjetas de configuración por método (Redsys/Bizum, Transferencia, PayPal, Contrareembolso)
+- [x] Checkout muestra solo los métodos de pago activos según la configuración del admin
+- [x] Ruta /admin/pagos registrada en App.tsx y sidebar admin

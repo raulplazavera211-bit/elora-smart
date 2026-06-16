@@ -397,6 +397,17 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   const [touched, setTouched] = useState<Partial<Record<keyof CheckoutFormState, boolean>>>({});
   const [payMethod, setPayMethod] = useState<PayMethod>("card");
 
+  // ─── Métodos de pago activos (desde el admin) ────────────────────────────
+  const { data: activeMethods } = trpc.payments.getActive.useQuery(undefined, {
+    staleTime: 60_000,
+  });
+  const cardEnabled = !activeMethods || activeMethods.length === 0 || activeMethods.some(m => m.type === "redsys_card");
+  const bizumEnabled = !activeMethods || activeMethods.length === 0 || activeMethods.some(m => m.type === "redsys_bizum");
+  useEffect(() => {
+    if (payMethod === "card" && !cardEnabled && bizumEnabled) setPayMethod("bizum");
+    if (payMethod === "bizum" && !bizumEnabled && cardEnabled) setPayMethod("card");
+  }, [cardEnabled, bizumEnabled, payMethod]);
+
   // ─── Estado widget envío gratis ──────────────────────────────────────────
     const [shippingCity, setShippingCity] = useState("");
   const [shippingProv, setShippingProv] = useState("");
@@ -756,62 +767,64 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </div>
         </div>
 
-        {/* Selector de método */}
+                {/* Selector de método */}
         <div className="flex flex-col gap-3">
           <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">Selecciona tu método de pago</p>
-
           {/* Tarjeta */}
-          <button
-            type="button"
-            onClick={() => setPayMethod("card")}
-            className={`flex items-center gap-4 border p-4 transition-all duration-200 text-left outline-none ${
-              payMethod === "card"
-                ? "border-foreground bg-foreground/5"
-                : "border-border hover:border-foreground/40"
-            }`}
-          >
-            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-              payMethod === "card" ? "border-foreground" : "border-border"
-            }`}>
-              {payMethod === "card" && <div className="w-2.5 h-2.5 rounded-full bg-foreground" />}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
-                <CreditCard className="w-4 h-4 text-foreground/60" />
-                <span className="font-body text-sm font-medium">Tarjeta bancaria</span>
+          {cardEnabled && (
+            <button
+              type="button"
+              onClick={() => setPayMethod("card")}
+              className={`flex items-center gap-4 border p-4 transition-all duration-200 text-left outline-none ${
+                payMethod === "card"
+                  ? "border-foreground bg-foreground/5"
+                  : "border-border hover:border-foreground/40"
+              }`}
+            >
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                payMethod === "card" ? "border-foreground" : "border-border"
+              }`}>
+                {payMethod === "card" && <div className="w-2.5 h-2.5 rounded-full bg-foreground" />}
               </div>
-              <p className="font-body text-xs text-foreground/40">Visa, Mastercard, American Express</p>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <VisaIcon />
-              <MastercardIcon />
-            </div>
-          </button>
-
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1">
+                  <CreditCard className="w-4 h-4 text-foreground/60" />
+                  <span className="font-body text-sm font-medium">Tarjeta bancaria</span>
+                </div>
+                <p className="font-body text-xs text-foreground/40">Visa, Mastercard, American Express</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <VisaIcon />
+                <MastercardIcon />
+              </div>
+            </button>
+          )}
           {/* Bizum */}
-          <button
-            type="button"
-            onClick={() => setPayMethod("bizum")}
-            className={`flex items-center gap-4 border p-4 transition-all duration-200 text-left outline-none ${
-              payMethod === "bizum"
-                ? "border-[#00B259] bg-[#00B259]/5"
-                : "border-border hover:border-[#00B259]/40"
-            }`}
-          >
-            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-              payMethod === "bizum" ? "border-[#00B259]" : "border-border"
-            }`}>
-              {payMethod === "bizum" && <div className="w-2.5 h-2.5 rounded-full bg-[#00B259]" />}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
-                <Smartphone className="w-4 h-4 text-[#00B259]" />
-                <span className="font-body text-sm font-medium">Bizum</span>
+          {bizumEnabled && (
+            <button
+              type="button"
+              onClick={() => setPayMethod("bizum")}
+              className={`flex items-center gap-4 border p-4 transition-all duration-200 text-left outline-none ${
+                payMethod === "bizum"
+                  ? "border-[#00B259] bg-[#00B259]/5"
+                  : "border-border hover:border-[#00B259]/40"
+              }`}
+            >
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                payMethod === "bizum" ? "border-[#00B259]" : "border-border"
+              }`}>
+                {payMethod === "bizum" && <div className="w-2.5 h-2.5 rounded-full bg-[#00B259]" />}
               </div>
-              <p className="font-body text-xs text-foreground/40">Paga desde tu app bancaria en segundos</p>
-            </div>
-            <BizumIcon size="lg" />
-          </button>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1">
+                  <Smartphone className="w-4 h-4 text-[#00B259]" />
+                  <span className="font-body text-sm font-medium">Bizum</span>
+                </div>
+                <p className="font-body text-xs text-foreground/40">Paga desde tu app bancaria en segundos</p>
+              </div>
+              <BizumIcon size="lg" />
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 text-foreground/30 border border-border/50 p-3">
@@ -908,40 +921,42 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </div>
         </div>
 
-        {/* Selector */}
+                {/* Selector */}
         <div className="flex flex-col gap-2">
           <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">Método de pago</p>
-
-          <button type="button" onClick={() => setPayMethod("card")} className={`flex items-center gap-3 border p-3.5 transition-all duration-200 text-left outline-none ${payMethod === "card" ? "border-foreground bg-foreground/5" : "border-border"}`}>
-            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${payMethod === "card" ? "border-foreground" : "border-border"}`}>
-              {payMethod === "card" && <div className="w-2 h-2 rounded-full bg-foreground" />}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-0.5">
-                <CreditCard className="w-3.5 h-3.5 text-foreground/60" />
-                <span className="font-body text-sm font-medium">Tarjeta bancaria</span>
+          {cardEnabled && (
+            <button type="button" onClick={() => setPayMethod("card")} className={`flex items-center gap-3 border p-3.5 transition-all duration-200 text-left outline-none ${payMethod === "card" ? "border-foreground bg-foreground/5" : "border-border"}`}>
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${payMethod === "card" ? "border-foreground" : "border-border"}`}>
+                {payMethod === "card" && <div className="w-2 h-2 rounded-full bg-foreground" />}
               </div>
-              <p className="font-body text-[10px] text-foreground/40">Visa, Mastercard</p>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <VisaIcon />
-              <MastercardIcon />
-            </div>
-          </button>
-
-          <button type="button" onClick={() => setPayMethod("bizum")} className={`flex items-center gap-3 border p-3.5 transition-all duration-200 text-left outline-none ${payMethod === "bizum" ? "border-[#00B259] bg-[#00B259]/5" : "border-border"}`}>
-            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${payMethod === "bizum" ? "border-[#00B259]" : "border-border"}`}>
-              {payMethod === "bizum" && <div className="w-2 h-2 rounded-full bg-[#00B259]" />}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-0.5">
-                <Smartphone className="w-3.5 h-3.5 text-[#00B259]" />
-                <span className="font-body text-sm font-medium">Bizum</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <CreditCard className="w-3.5 h-3.5 text-foreground/60" />
+                  <span className="font-body text-sm font-medium">Tarjeta bancaria</span>
+                </div>
+                <p className="font-body text-[10px] text-foreground/40">Visa, Mastercard</p>
               </div>
-              <p className="font-body text-[10px] text-foreground/40">Paga desde tu app bancaria</p>
-            </div>
-            <BizumIcon size="md" />
-          </button>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <VisaIcon />
+                <MastercardIcon />
+              </div>
+            </button>
+          )}
+          {bizumEnabled && (
+            <button type="button" onClick={() => setPayMethod("bizum")} className={`flex items-center gap-3 border p-3.5 transition-all duration-200 text-left outline-none ${payMethod === "bizum" ? "border-[#00B259] bg-[#00B259]/5" : "border-border"}`}>
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${payMethod === "bizum" ? "border-[#00B259]" : "border-border"}`}>
+                {payMethod === "bizum" && <div className="w-2 h-2 rounded-full bg-[#00B259]" />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <Smartphone className="w-3.5 h-3.5 text-[#00B259]" />
+                  <span className="font-body text-sm font-medium">Bizum</span>
+                </div>
+                <p className="font-body text-[10px] text-foreground/40">Paga desde tu app bancaria</p>
+              </div>
+              <BizumIcon size="md" />
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 text-foreground/30">
