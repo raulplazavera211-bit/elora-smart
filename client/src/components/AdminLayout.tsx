@@ -4,6 +4,7 @@
 
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
+import AdminLogin from "@/pages/AdminLogin";
 import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard,
@@ -65,23 +66,7 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
   }
 
   if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full text-center">
-          <img src={LOGO_URL} alt="Elora Smart" className="h-16 w-auto" />
-          <div>
-            <h1 className="font-display text-2xl uppercase tracking-wide mb-3">Panel de administración</h1>
-            <p className="font-body text-sm text-foreground/60">Inicia sesión para acceder al panel.</p>
-          </div>
-          <button
-            onClick={() => { window.location.href = getLoginUrl(); }}
-            className="bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] px-8 py-4 hover:opacity-90 transition-opacity"
-          >
-            Iniciar sesión
-          </button>
-        </div>
-      </div>
-    );
+    return <AdminLogin />;
   }
 
   if (user.role !== "admin") {
