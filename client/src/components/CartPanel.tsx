@@ -23,7 +23,7 @@ const PROVINCIAS_ESPANA = [
   "Vizcaya", "Zamora", "Zaragoza", "Ceuta", "Melilla",
 ];
 
-export type CartItem = { id: string; name: string; price: number; img: string };
+export type CartItem = { id: string; name: string; price: number; img?: string; quantity?: number };
 type CheckoutStep = "cart" | "checkout" | "payment" | "redirecting";
 type PayMethod = "card" | "bizum";
 

@@ -14,7 +14,8 @@ import { useLocation } from "wouter";
 import { FEATURED_PRODUCTS, ALL_PRODUCTS as ALL_PRODS } from "@/lib/products";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
-import { CartPanel, type CartItem } from "@/components/CartPanel";
+import { CartPanel } from "@/components/CartPanel";
+import { useCart } from "@/contexts/CartContext";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
@@ -1387,27 +1388,20 @@ export default function Home() {
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [addedId, setAddedId] = useState<string | null>(null);
+  const { cart, isCartOpen, addToCart: addToCartCtx, removeFromCart, openCart, closeCart, totalItems } = useCart();
   const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
   const [contactSent, setContactSent] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
-  const addToCart = (item: CartItem) => {
-    setCart((prev) => {
-      const existing = prev.findIndex(i => i.id === item.id);
-      if (existing >= 0) return prev;
-      return [...prev, item];
-    });
+  const addToCart = (item: { id: string; name: string; price: number; img?: string }) => {
+    addToCartCtx(item);
     setAddedId(item.id);
     setTimeout(() => setAddedId(null), 1200);
   };
-  const removeFromCart = (idx: number) => setCart((prev) => prev.filter((_, i) => i !== idx));
-  const cartTotal = cart.reduce((sum, i) => sum + i.price, 0);
 
   const scrollToSection = (idx: number) => {
     sectionRefs.current[idx]?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1472,14 +1466,14 @@ export default function Home() {
           </button>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => openCart()}
               className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center outline-none"
               aria-label="Carrito"
             >
               <ShoppingBag className="w-4 h-4 text-foreground" />
-              {cart.length > 0 && (
+              {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-accent-deep text-background font-body text-[10px] flex items-center justify-center">
-                  {cart.length}
+                  {totalItems}
                 </span>
               )}
             </button>
@@ -1524,13 +1518,13 @@ export default function Home() {
 
           <div className="px-10 w-full flex flex-col gap-5">
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => openCart()}
               className="group flex items-center justify-between w-full border border-border px-4 py-3 hover:border-accent-deep transition-colors outline-none"
             >
               <span className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.25em] text-foreground">
                 <ShoppingBag className="w-4 h-4" /> Comprar
               </span>
-              <span className="font-display text-sm text-accent-deep">{cart.length}</span>
+              <span className="font-display text-sm text-accent-deep">{totalItems}</span>
             </button>
             <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-accent-deep" />
@@ -1562,7 +1556,7 @@ export default function Home() {
         {/* ── CART PANEL ────────────────────────────────────────────────────── */}
         <CartPanel
           isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
+          onClose={() => closeCart()}
           cart={cart}
           onRemove={removeFromCart}
           sections={SECTIONS}
@@ -1578,7 +1572,7 @@ export default function Home() {
             <ProductDetail
               product={selectedProduct}
               onBack={() => setSelectedProduct(null)}
-              onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); setIsCartOpen(true); }}
+              onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); openCart(); }}
             />
           ) : (
             <>
@@ -1927,7 +1921,7 @@ export default function Home() {
                               <button
                                 onClick={() => {
                                   addToCart({ id: prod.id, name: prod.name, price: prod.price, img: prod.img });
-                                  setIsCartOpen(true);
+                                  openCart();
                                 }}
                                 className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                               >

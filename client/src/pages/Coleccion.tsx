@@ -7,26 +7,18 @@ import type { Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
 import { ALL_PRODUCTS } from "@/lib/products";
 import { ReviewsSection } from "@/components/ReviewsSection";
-import { CartPanel, type CartItem } from "@/components/CartPanel";
+import { CartPanel } from "@/components/CartPanel";
+import { useCart } from "@/contexts/CartContext";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
 export default function Coleccion() {
   const [, navigate] = useLocation();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const addToCart = (item: CartItem) => {
-    setCart((prev) => {
-      const existing = prev.findIndex(i => i.id === item.id);
-      if (existing >= 0) return prev;
-      return [...prev, item];
-    });
-  };
-  const removeFromCart = (idx: number) => setCart((prev) => prev.filter((_, i) => i !== idx));
+  const { cart, isCartOpen, addToCart, removeFromCart, openCart, closeCart, totalItems } = useCart();
 
   const openProduct = (product: Product) => {
     setSelectedProduct(product);
@@ -70,13 +62,13 @@ export default function Coleccion() {
         </nav>
         <div className="px-10 w-full flex flex-col gap-5">
           <button
-            onClick={() => setIsCartOpen(true)}
+            onClick={openCart}
             className="group flex items-center justify-between w-full border border-border px-4 py-3 hover:border-accent-deep transition-colors outline-none"
           >
             <span className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.25em] text-foreground">
               <ShoppingBag className="w-4 h-4" /> Carrito
             </span>
-            <span className="font-display text-sm text-accent-deep">{cart.length}</span>
+            <span className="font-display text-sm text-accent-deep">{totalItems}</span>
           </button>
           <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
             <span className="w-2 h-2 rounded-full bg-accent-deep" />
@@ -92,14 +84,14 @@ export default function Coleccion() {
         </button>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setIsCartOpen(true)}
+            onClick={openCart}
             className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center outline-none"
             aria-label="Carrito"
           >
             <ShoppingBag className="w-4 h-4 text-foreground" />
-            {cart.length > 0 && (
+            {totalItems > 0 && (
               <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-accent-deep text-background font-body text-[10px] flex items-center justify-center">
-                {cart.length}
+                {totalItems}
               </span>
             )}
           </button>
@@ -147,7 +139,7 @@ export default function Coleccion() {
           <ProductDetail
             product={selectedProduct}
             onBack={() => setSelectedProduct(null)}
-            onAdd={(item) => { addToCart({ id: item.id, name: item.name, price: item.price, img: item.img }); setIsCartOpen(true); }}
+            onAdd={(item) => { addToCart({ id: item.id, name: item.name, price: item.price, img: item.img }); openCart(); }}
           />
         ) : (
           <>
@@ -231,7 +223,7 @@ export default function Coleccion() {
                         </div>
                         <div className="flex gap-2">
                           <button
-                            onClick={() => { addToCart({ id: prod.id, name: prod.name, price: prod.price, img: prod.img }); setIsCartOpen(true); }}
+                            onClick={() => { addToCart({ id: prod.id, name: prod.name, price: prod.price, img: prod.img }); openCart(); }}
                             className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                           >
                             <ShoppingBag className="w-3.5 h-3.5" />
@@ -294,7 +286,7 @@ export default function Coleccion() {
       {/* ── CART PANEL COMPARTIDO (mismo diseño que Home) ─────────── */}
       <CartPanel
         isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
+        onClose={closeCart}
         cart={cart}
         onRemove={removeFromCart}
       />
