@@ -17,6 +17,7 @@ import AdminPagos from "./pages/admin/AdminPagos";
 import PagoOk from "./pages/PagoOk";
 import PagoKo from "./pages/PagoKo";
 import { ChatBot } from "./components/ChatBot";
+import PromoPopup from "./components/PromoPopup";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -79,6 +80,7 @@ function MobileRouter() {
         <Route component={NotFound} />
       </Switch>
       <ChatBot />
+      <PromoPopup />
     </>
   );
 }
