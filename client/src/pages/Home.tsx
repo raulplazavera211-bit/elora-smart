@@ -1322,8 +1322,7 @@ function EsenciaVideoCard() {
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       viewport={{ once: true, margin: "-5%" }}
-      className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group cursor-pointer"
-      onClick={toggle}
+      className="md:col-span-4 md:row-span-2 relative overflow-hidden border border-border bg-black min-h-[300px] md:min-h-0 group"
     >
       <video
         ref={videoRef}
@@ -1332,40 +1331,17 @@ function EsenciaVideoCard() {
         muted
         loop
         className="absolute inset-0 w-full h-full object-cover"
-        onEnded={() => setPlaying(false)}
       />
-      {!playing && (
-        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-      )}
-      <AnimatePresence>
-        {!playing && (
-          <motion.div
-            key="play-btn"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          >
-            <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center">
-              <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Sin botón de play — el vídeo es solo decorativo */}
       <div className="absolute top-4 left-4 pointer-events-none">
         <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
       </div>
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <div className="relative px-4 py-4 flex items-end justify-between gap-3">
-          {!playing && (
-            <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white max-w-[55%]">
-              De la cantera gallega<br />al baño contemporáneo.
-            </p>
-          )}
+          <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white max-w-[55%]">
+            De la cantera gallega<br />al baño contemporáneo.
+          </p>
           <motion.div
             className="text-right ml-auto"
             animate={{ opacity: [1, 0.25, 1] }}
