@@ -317,26 +317,27 @@ export function ChatBot() {
       </div>
 
       {/* Botón flotante con icono + etiqueta */}
-      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2">
-        {/* Etiqueta "¿Tienes alguna duda?" — solo cuando está cerrado */}
+      <div className="fixed bottom-6 right-5 z-50 flex items-center gap-3">
+        {/* Etiqueta pill — solo cuando está cerrado */}
         {!open && (
           <button
             onClick={() => setOpen(true)}
-            className="bg-foreground text-background font-body text-[10px] uppercase tracking-wider px-3 py-2 shadow-lg hover:bg-[#c9a96e] transition-colors duration-200 whitespace-nowrap"
+            className="bg-white text-[#1a1a1a] font-body text-[11px] tracking-wide px-4 py-2 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.2)] transition-all duration-200 whitespace-nowrap border border-[#e8e0d5]"
           >
             ¿Tienes alguna duda?
           </button>
         )}
 
-        {/* Botón icono */}
+        {/* Botón icono circular */}
         <button
           onClick={() => setOpen((v) => !v)}
           className={cn(
-            "relative w-12 h-12 shadow-lg flex items-center justify-center",
-            "transition-all duration-200 active:scale-95",
+            "relative w-14 h-14 rounded-full flex items-center justify-center",
+            "shadow-[0_8px_30px_rgba(201,169,110,0.5)] hover:shadow-[0_12px_36px_rgba(201,169,110,0.65)]",
+            "transition-all duration-200 active:scale-95 hover:scale-105",
             open
-              ? "bg-foreground text-background hover:bg-[#c9a96e]"
-              : "bg-[#c9a96e] text-white hover:bg-[#b8935a]"
+              ? "bg-[#1a1a1a] text-white"
+              : "bg-gradient-to-br from-[#d4a96a] to-[#b8935a] text-white"
           )}
           aria-label="Abrir asistente Elora"
         >
@@ -346,7 +347,7 @@ export function ChatBot() {
             <EloraIcon className="w-7 h-7" />
           )}
           {hasUnread && !open && (
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+            <span className="absolute top-0.5 right-0.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
           )}
         </button>
       </div>
