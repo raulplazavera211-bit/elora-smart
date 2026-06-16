@@ -1156,23 +1156,23 @@ function ClubEloraSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-10" style={{ background: "radial-gradient(ellipse, #F5A45B 0%, transparent 70%)" }} />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full opacity-5" style={{ background: "radial-gradient(ellipse, #F5A45B 0%, transparent 70%)" }} />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-16 py-24 md:py-32">
-        <div className={`text-center mb-16 md:mb-20 transition-all duration-1000 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          <p className="font-body text-xs uppercase tracking-[0.4em] text-amber-400/70 mb-4">Acceso exclusivo</p>
-          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl uppercase tracking-wide text-white leading-[0.9] mb-6">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-5 md:px-16 py-12 md:py-32">
+        <div className={`text-center mb-8 md:mb-20 transition-all duration-1000 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+          <p className="font-body text-xs uppercase tracking-[0.4em] text-amber-400/70 mb-2">Acceso exclusivo</p>
+          <h2 className="font-display text-4xl md:text-7xl lg:text-8xl uppercase tracking-wide text-white leading-[0.9] mb-4">
             Club
             <span className="block" style={{ WebkitTextStroke: "1px rgba(245,164,91,0.6)", color: "transparent" }}>Elora</span>
           </h2>
-          <p className="font-body text-white/50 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+          <p className="font-body text-white/50 text-sm md:text-lg max-w-xl mx-auto leading-relaxed">
             Únete y sé el primero en descubrir promociones, acceso a preventas y contenido privado.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16 md:mb-20">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 md:mb-20">
           {CLUB_PERKS.map((perk, i) => (
             <div
               key={i}
-              className={`group relative rounded-sm border border-white/10 p-6 md:p-8 hover:border-amber-400/40 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`group relative rounded-sm border border-white/10 p-4 md:p-8 hover:border-amber-400/40 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 background: "rgba(255,255,255,0.03)",
                 transitionDelay: `${200 + i * 100}ms`,
@@ -1181,9 +1181,9 @@ function ClubEloraSection() {
               }}
             >
               <div className="absolute inset-0 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "linear-gradient(135deg, rgba(245,164,91,0.05) 0%, transparent 100%)" }} />
-              <div className="text-3xl mb-4">{perk.icon}</div>
-              <h3 className="font-display text-lg uppercase tracking-wide text-white mb-2">{perk.title}</h3>
-              <p className="font-body text-white/40 text-sm leading-relaxed">{perk.desc}</p>
+              <div className="text-2xl mb-2 md:mb-4">{perk.icon}</div>
+              <h3 className="font-display text-sm md:text-lg uppercase tracking-wide text-white mb-1 md:mb-2">{perk.title}</h3>
+              <p className="font-body text-white/40 text-xs leading-relaxed hidden sm:block">{perk.desc}</p>
             </div>
           ))}
         </div>
@@ -1259,7 +1259,7 @@ function ClubEloraSection() {
           )}
         </div>
 
-        <div className="mt-16 flex items-center justify-center gap-6 opacity-30">
+        <div className="mt-8 md:mt-16 flex items-center justify-center gap-6 opacity-30">
           <div className="h-[1px] w-24 bg-white/30" />
           <span className="font-display text-xs uppercase tracking-[0.4em] text-white/50">Elora Smart · A Coruña</span>
           <div className="h-[1px] w-24 bg-white/30" />
