@@ -752,7 +752,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
         className="md:hidden"
         style={{ height: `${EXPERIENCE_STEPS.length * 100}vh` }}
       >
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col bg-foreground">
+        <div className="sticky top-20 h-[calc(100dvh-5rem)] w-full overflow-hidden flex flex-col bg-foreground">
 
           {/* Cabecera fija móvil */}
           <div className="shrink-0 px-5 pt-8 pb-4 border-b border-background/10 flex items-end justify-between gap-3">

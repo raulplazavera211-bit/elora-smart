@@ -29,7 +29,7 @@ export function Footer() {
 
   return (
     <footer ref={footerRef} className="bg-foreground text-background w-full font-sans antialiased border-t border-border">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 pt-16 pb-8">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16 pt-16 pb-28 md:pb-8">
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-16">
 
