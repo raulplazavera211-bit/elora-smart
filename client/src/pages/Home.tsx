@@ -2008,35 +2008,6 @@ export default function Home() {
                 className="w-full relative overflow-hidden bg-background flex flex-col justify-between min-h-[100dvh]"
               >
                 <div className="flex-1 flex flex-col md:flex-row max-w-[1400px] mx-auto w-full px-6 md:px-16 py-20 md:py-24 gap-12 md:gap-16 flex-wrap">
-                  {/* Mapa móvil — aparece primero en móvil, oculto en escritorio */}
-                  <div className="md:hidden w-full order-first -mx-6 -mt-20 mb-0" style={{ width: 'calc(100% + 3rem)' }}>
-                    <div className="relative w-full h-[220px]">
-                      <MapView
-                        className="w-full h-full"
-                        initialCenter={{ lat: 42.862, lng: -8.6474 }}
-                        initialZoom={16}
-                        onMapReady={(map) => {
-                          const markerEl = document.createElement("div");
-                          markerEl.style.cssText = `width:48px;height:48px;border-radius:50%;background:#fff;border:3px solid #d97706;box-shadow:0 4px 20px rgba(217,119,6,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;`;
-                          const img = document.createElement("img");
-                          img.src = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
-                          img.style.cssText = "width:36px;height:36px;object-fit:contain;";
-                          markerEl.appendChild(img);
-                          new window.google.maps.marker.AdvancedMarkerElement({ map, position: { lat: 42.862, lng: -8.6474 }, content: markerEl });
-                          map.setOptions({ styles: [{ elementType:"geometry",stylers:[{color:"#f5f5f0"}]},{elementType:"labels.text.fill",stylers:[{color:"#616161"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#ffffff"}]},{featureType:"poi",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}], mapTypeControl:false, streetViewControl:false, fullscreenControl:false, zoomControl:false });
-                        }}
-                      />
-                      <a
-                        href="https://maps.google.com/?q=Avenida+da+Mah%C3%ADa+17+Bertamir%C3%A1ns+Ames"
-                        target="_blank" rel="noreferrer"
-                        className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 bg-foreground text-background font-body text-[10px] uppercase tracking-wider px-3 py-2 shadow-lg hover:bg-accent-deep transition-colors"
-                      >
-                        <MapPin className="w-3 h-3 shrink-0" />
-                        Cómo llegar
-                      </a>
-                    </div>
-                  </div>
-
                   {/* Texto izquierda */}
                   <div className="flex flex-col justify-center md:w-1/2">
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
@@ -2062,6 +2033,33 @@ export default function Home() {
                           <span className="block">Tienda física · Bertamiráns (Ames)</span>
                           <span className="block text-xs text-foreground/40 mt-0.5">Av. da Mahía, 17 Bajo 2 · 15220</span>
                         </span>
+                      </a>
+                    </div>
+
+                    {/* Mapa móvil: después de la dirección, solo visible en móvil */}
+                    <div className="md:hidden mt-5 relative w-full h-[200px] overflow-hidden rounded-sm">
+                      <MapView
+                        className="w-full h-full"
+                        initialCenter={{ lat: 42.862, lng: -8.6474 }}
+                        initialZoom={16}
+                        onMapReady={(map) => {
+                          const markerEl = document.createElement("div");
+                          markerEl.style.cssText = `width:44px;height:44px;border-radius:50%;background:#fff;border:3px solid #d97706;box-shadow:0 4px 16px rgba(217,119,6,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;`;
+                          const img = document.createElement("img");
+                          img.src = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+                          img.style.cssText = "width:32px;height:32px;object-fit:contain;";
+                          markerEl.appendChild(img);
+                          new window.google.maps.marker.AdvancedMarkerElement({ map, position: { lat: 42.862, lng: -8.6474 }, content: markerEl });
+                          map.setOptions({ styles: [{elementType:"geometry",stylers:[{color:"#f5f5f0"}]},{elementType:"labels.text.fill",stylers:[{color:"#616161"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#ffffff"}]},{featureType:"poi",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}], mapTypeControl:false, streetViewControl:false, fullscreenControl:false, zoomControl:false });
+                        }}
+                      />
+                      <a
+                        href="https://maps.google.com/?q=Avenida+da+Mahía+17+Bertamiráns+Ames"
+                        target="_blank" rel="noreferrer"
+                        className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 bg-foreground text-background font-body text-[10px] uppercase tracking-wider px-2.5 py-1.5 shadow-md hover:bg-accent-deep transition-colors"
+                      >
+                        <MapPin className="w-3 h-3 shrink-0" />
+                        Cómo llegar
                       </a>
                     </div>
                   </div>
