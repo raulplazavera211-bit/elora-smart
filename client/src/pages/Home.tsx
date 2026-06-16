@@ -723,6 +723,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
     const container = scrollContainer.current;
     const el = sectionRef.current;
     if (!container || !el) return;
+    let inSection = false;
     const handleScroll = () => {
       const containerRect = container.getBoundingClientRect();
       const elRect = el.getBoundingClientRect();
@@ -735,6 +736,12 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
         Math.floor(progress * EXPERIENCE_STEPS.length)
       );
       setActiveStep(idx);
+      // Ocultar chatbot cuando la sección está en vista
+      const nowInSection = scrolled > -80 && scrolled < totalScrollable + 80;
+      if (nowInSection !== inSection) {
+        inSection = nowInSection;
+        window.dispatchEvent(new CustomEvent('experience-section-visible', { detail: { visible: nowInSection } }));
+      }
     };
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
@@ -770,8 +777,8 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
             </span>
           </div>
 
-          {/* Imagen — 45% de la altura disponible */}
-          <div className="relative overflow-hidden" style={{ flex: '0 0 45%' }}>
+          {/* Imagen — ocupa todo el espacio restante */}
+          <div className="relative overflow-hidden flex-1">
             {EXPERIENCE_STEPS.map((s, idx) => (
               <motion.div
                 key={idx}
@@ -802,8 +809,8 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
             ))}
           </div>
 
-          {/* Texto del paso activo — flex-1 toma el espacio restante */}
-          <div className="border-t border-background/10 px-5 py-3 flex-1 overflow-hidden">
+          {/* Texto del paso activo — altura fija compacta */}
+          <div className="shrink-0 border-t border-background/10 px-5 py-3">
             <motion.div
               key={activeStep}
               initial={{ opacity: 0, y: 20 }}
@@ -811,12 +818,12 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
             >
-              <p className="font-body text-[9px] uppercase tracking-[0.4em] text-background/40 mb-1">{step.eyebrow}</p>
-              <h3 className="font-display text-lg uppercase tracking-wide leading-[0.95] text-background mb-1">
+              <p className="font-body text-[9px] uppercase tracking-[0.4em] text-background/40 mb-0.5">{step.eyebrow}</p>
+              <h3 className="font-display text-base uppercase tracking-wide leading-[0.95] text-background mb-0.5">
                 {step.title}
               </h3>
-              <p className="font-body text-sm text-accent-deep mb-2">{step.subtitle}</p>
-              <p className="font-body text-xs text-background/60 leading-relaxed line-clamp-3">{step.body}</p>
+              <p className="font-body text-sm text-accent-deep mb-1">{step.subtitle}</p>
+              <p className="font-body text-xs text-background/60 leading-relaxed line-clamp-2">{step.body}</p>
             </motion.div>
           </div>
 

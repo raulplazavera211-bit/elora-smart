@@ -55,10 +55,22 @@ export function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [hasUnread, setHasUnread] = useState(false);
+  const [hideForExperience, setHideForExperience] = useState(false);
   const [, navigate] = useLocation();
   const bottomRef = useRef<HTMLDivElement>(null);
   const lastAssistantRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Ocultar el botón flotante cuando la sección de Experiencia está en vista
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const visible = (e as CustomEvent).detail?.visible;
+      setHideForExperience(!!visible);
+      if (visible) setOpen(false); // cerrar el chat si estaba abierto
+    };
+    window.addEventListener('experience-section-visible', handler);
+    return () => window.removeEventListener('experience-section-visible', handler);
+  }, []);
 
   const chatMutation = trpc.chat.message.useMutation({
     onSuccess: (data) => {
@@ -316,8 +328,15 @@ export function ChatBot() {
         </form>
       </div>
 
-      {/* Botón flotante con icono + etiqueta */}
-      <div className="fixed bottom-6 right-5 z-50 flex items-center gap-3">
+      {/* Botón flotante con icono + etiqueta — se oculta en la sección Experiencia */}
+      <div
+        className="fixed bottom-6 right-5 z-50 flex items-center gap-3 transition-all duration-300"
+        style={{
+          opacity: hideForExperience ? 0 : 1,
+          pointerEvents: hideForExperience ? 'none' : 'auto',
+          transform: hideForExperience ? 'translateY(20px) scale(0.9)' : 'translateY(0) scale(1)',
+        }}
+      >
         {/* Etiqueta pill — solo cuando está cerrado */}
         {!open && (
           <button
