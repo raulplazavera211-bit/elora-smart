@@ -84,6 +84,6 @@
 
 ## Rediseño checkout v2
 
-- [ ] Paso de cálculo de envío (localidad, provincia, CP) con animación celebratoria "¡Envío gratis!"
-- [ ] Checkout escritorio a pantalla completa: formulario izquierda + resumen derecha
-- [ ] Mantener móvil intacto
+- [x] Paso de cálculo de envío (localidad, provincia, CP) con animación celebratoria "¡Envío gratis!"
+- [x] Checkout escritorio a pantalla completa: formulario izquierda + resumen derecha
+- [x] Mantener móvil intacto

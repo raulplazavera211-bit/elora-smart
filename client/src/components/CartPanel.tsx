@@ -959,36 +959,45 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 <X className="w-4 h-4 text-white/60" />
               </button>
             </div>
-            {cart.length > 0 ? (
-              <div className="px-10 mb-6">
-                <div className="aspect-square w-full overflow-hidden bg-[#1A1A1A]">
-                  <img src={cart[0].img} alt={cart[0].name} className="w-full h-full object-cover opacity-90" />
-                </div>
-              </div>
-            ) : (
-              <div className="px-10 mb-6">
-                <div className="aspect-square w-full bg-[#1A1A1A] flex items-center justify-center">
-                  <ShoppingBag className="w-16 h-16 text-white/10" />
-                </div>
-              </div>
-            )}
-            <div className="px-10 flex flex-col gap-3 mb-6">
-              {cart.map((item, idx) => (
-                <div key={`left-${item.id}-${idx}`} className="flex items-center gap-3 border-b border-white/10 pb-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-0.5">{item.id}</p>
-                    <p className="font-display text-sm uppercase tracking-wide text-white leading-snug">{item.name}</p>
+            {/* Club Elora */}
+            <div className="px-10 mb-8">
+              <div className="border border-white/10 p-6 flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#D67A00]/20 flex items-center justify-center shrink-0">
+                    <Gift className="w-4 h-4 text-[#D67A00]" />
                   </div>
-                  <p className="font-display text-base text-[#D67A00] shrink-0">{item.price.toLocaleString("es-ES")} €</p>
+                  <div>
+                    <p className="font-display text-sm uppercase tracking-[0.2em] text-white">Club Elora</p>
+                    <p className="font-body text-[10px] text-white/40 mt-0.5">Miembros exclusivos</p>
+                  </div>
                 </div>
-              ))}
-              {cart.length > 0 && (
-                <div className="flex justify-between items-baseline pt-1">
-                  <span className="font-body text-[10px] uppercase tracking-widest text-white/30">Total</span>
-                  <span className="font-display text-2xl text-white">{cartTotal.toLocaleString("es-ES")} €</span>
+                <p className="font-body text-xs text-white/60 leading-relaxed">
+                  Únete a nuestra comunidad y disfruta de acceso anticipado a nuevos productos, ofertas exclusivas y contenido premium.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {[
+                    "Descuentos exclusivos para miembros",
+                    "Acceso anticipado a nuevos modelos",
+                    "Soporte prioritario 24/7",
+                  ].map((b, i) => (
+                    <div key={i} className="flex items-center gap-2.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#D67A00] shrink-0" />
+                      <p className="font-body text-[11px] text-white/50">{b}</p>
+                    </div>
+                  ))}
                 </div>
-              )}
+                <a
+                  href="/#club-elora"
+                  onClick={handleClose}
+                  className="mt-1 w-full border border-[#D67A00]/40 hover:border-[#D67A00] text-[#D67A00] font-body text-[10px] uppercase tracking-[0.3em] py-2.5 flex items-center justify-center gap-2 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Unirme al Club
+                </a>
+              </div>
             </div>
+
+            {/* Reseñas */}
             <div className="px-10 mt-auto pb-10">
               <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-4">Lo que dicen nuestros clientes</p>
               <div className="flex flex-col gap-3">
