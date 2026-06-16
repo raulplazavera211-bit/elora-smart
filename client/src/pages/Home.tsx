@@ -2026,9 +2026,12 @@ export default function Home() {
                         <Mail className="w-4 h-4 text-accent-deep" />
                         info@elorasmart.com
                       </a>
-                      <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="flex items-center gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
-                        <MapPin className="w-4 h-4 text-accent-deep" />
-                        Showroom · A Coruña, Galicia
+                      <a href="https://maps.google.com/?q=Avenida+da+Mahía+17+Bertamiráns+Ames" target="_blank" rel="noreferrer" className="flex items-start gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
+                        <MapPin className="w-4 h-4 text-accent-deep mt-0.5 shrink-0" />
+                        <span>
+                          <span className="block">Tienda física · Bertamiráns (Ames)</span>
+                          <span className="block text-xs text-foreground/40 mt-0.5">Av. da Mahía, 17 Bajo 2 · 15220</span>
+                        </span>
                       </a>
                     </div>
                   </div>

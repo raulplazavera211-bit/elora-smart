@@ -74,6 +74,10 @@ export function Footer() {
                 <a href="#" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Linkedin className="w-4 h-4" /></a>
               </div>
               <p className="font-body text-[11px] text-background/50 mt-2">+34 614 45 19 01</p>
+              <a href="https://maps.google.com/?q=Avenida+da+Mah%C3%ADa+17+Bertamir%C3%A1ns+Ames" target="_blank" rel="noreferrer" className="font-body text-[11px] text-background/50 hover:text-white transition-colors mt-1 leading-relaxed block">
+                Tienda física · Bertamiráns (Ames)<br />
+                <span className="text-background/30">Av. da Mahía, 17 Bajo 2 · 15220</span>
+              </a>
             </div>
           </div>
         </div>
