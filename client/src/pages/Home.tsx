@@ -1464,7 +1464,7 @@ export default function Home() {
         </div>
 
         {/* ── DESKTOP LEFT SIDEBAR ──────────────────────────────────────────── */}
-        <aside className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start z-50 shrink-0 relative py-12">
+        <aside className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start z-50 shrink-0 relative py-7">
           <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }} className="px-10 text-left outline-none">
             <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
             <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
@@ -1559,14 +1559,17 @@ export default function Home() {
                 className="h-[calc(100dvh-5rem)] md:h-[100dvh] w-full relative overflow-hidden bg-black flex flex-col"
               >
                 {/* Video de fondo: De la cantera gallega al baño contemporáneo */}
-                <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 w-full h-full overflow-hidden">
                   <iframe
-                    src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&end=225&modestbranding=1&showinfo=0"
+                    src="https://www.youtube-nocookie.com/embed/TDs15k-NTGU?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=TDs15k-NTGU&start=15&end=225&modestbranding=1&showinfo=0&disablekb=1&fs=0"
                     title="Elora Smart — De la cantera gallega al baño contemporáneo"
-                    className="absolute top-1/2 left-1/2 pointer-events-none"
+                    className="absolute top-1/2 left-1/2 pointer-events-none select-none"
                     style={{ width: "177.78vh", height: "100vh", minWidth: "100%", minHeight: "56.25vw", transform: "translate(-50%, -50%)" }}
                     allow="autoplay; encrypted-media"
+                    tabIndex={-1}
                   />
+                  {/* Capa invisible que bloquea TODOS los clics/toques sobre el iframe */}
+                  <div className="absolute inset-0 z-10" style={{ pointerEvents: "all", touchAction: "none", userSelect: "none", WebkitUserSelect: "none" }} />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/20" />
 
