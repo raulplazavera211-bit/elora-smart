@@ -74,3 +74,10 @@
 - [x] Registrar rutas /pago/ok y /pago/ko en App.tsx
 - [x] Guardar credenciales Redsys como variables de entorno
 - [x] Tests vitest para validar configuración Redsys (3/3 pasan)
+
+## Mejoras checkout
+
+- [ ] Formulario con validaciones estrictas para España (CP 5 dígitos, teléfono +34, provincia)
+- [ ] Selector visual de método de pago (tarjeta / Bizum)
+- [ ] Campo de dirección completo (calle, número, piso, ciudad, provincia, CP)
+- [ ] Pasar método de pago elegido a Redsys (DS_MERCHANT_PAYMETHODS)

@@ -84,6 +84,8 @@ export interface CreateRedsysFormParams {
   frontendOrigin: string;
   merchantName?: string;
   productDescription?: string;
+  /** Método de pago: "card" (solo tarjeta) o "bizum" (solo Bizum). Por defecto ambos. */
+  payMethod?: "card" | "bizum";
 }
 
 export function createRedsysForm(params: CreateRedsysFormParams): RedsysFormData {
@@ -124,8 +126,8 @@ export function createRedsysForm(params: CreateRedsysFormParams): RedsysFormData
     DS_MERCHANT_URLOK: urlOk,
     DS_MERCHANT_URLKO: urlKo,
     DS_MERCHANT_CONSUMERLANGUAGE: "1" as LanguageNum,
-    // Permitir tarjeta Y Bizum en el mismo TPV
-    DS_MERCHANT_PAYMETHODS: "T,bizum",
+    // Método de pago: "T" = tarjeta, "bizum" = Bizum, "T,bizum" = ambos
+    DS_MERCHANT_PAYMETHODS: params.payMethod === "bizum" ? "bizum" : params.payMethod === "card" ? "T" : "T,bizum",
   });
 
   return {

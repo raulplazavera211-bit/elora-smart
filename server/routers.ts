@@ -164,6 +164,8 @@ export const appRouter = router({
         orderId: z.number(),
         /** Origen del frontend para construir las URLs de retorno */
         origin: z.string().url(),
+        /** Método de pago elegido por el cliente */
+        payMethod: z.enum(["card", "bizum"]).default("card"),
       }))
       .mutation(async ({ input }) => {
         // Verificar que Redsys está configurado
@@ -188,6 +190,7 @@ export const appRouter = router({
           frontendOrigin: input.origin,
           merchantName: "ELORA SMART",
           productDescription: productDesc.slice(0, 125), // máx 125 chars
+          payMethod: input.payMethod,
         });
 
         // Vincular el redsysOrderId al pedido en la DB
