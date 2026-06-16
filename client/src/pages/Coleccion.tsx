@@ -25,6 +25,21 @@ export default function Coleccion() {
     if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0;
   };
 
+  // Abrir producto directamente si viene con ?producto=slug desde el chatbot
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("producto");
+    if (slug) {
+      const found = ALL_PRODUCTS.find(p => p.id.toLowerCase() === slug.toLowerCase());
+      if (found) {
+        setSelectedProduct(found);
+        if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0;
+      }
+      // Limpiar el query param de la URL sin recargar
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
   // Bloquear scroll del body
   useEffect(() => {
     document.body.style.overflow = "hidden";

@@ -121,14 +121,9 @@ export function ChatBot() {
     }
   };
 
-  const goToProduct = (slug: string) => {
+  const goToProduct = (productId: string) => {
     setOpen(false);
-    navigate("/coleccion");
-    // Pequeño delay para que navegue primero
-    setTimeout(() => {
-      const el = document.getElementById(`product-${slug}`);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 300);
+    navigate(`/coleccion?producto=${encodeURIComponent(productId)}`);
   };
 
   return (
