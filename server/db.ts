@@ -209,3 +209,49 @@ export async function countUsers(): Promise<number> {
   const result = await db.select({ count: sql<number>`count(*)` }).from(users);
   return Number(result[0]?.count ?? 0);
 }
+
+// ─── REDSYS PAYMENT HELPERS ───────────────────────────────────────────────────
+
+/**
+ * Vincula un ID de orden Redsys a un pedido de la DB y marca el pago como
+ * "pending_payment" (esperando confirmación del banco).
+ */
+export async function linkRedsysOrder(orderId: number, redsysOrderId: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(orders)
+    .set({ redsysOrderId, paymentStatus: "pending_payment" })
+    .where(eq(orders.id, orderId));
+}
+
+/**
+ * Actualiza el estado de pago de un pedido a partir del ID de orden Redsys.
+ * Llamado desde el webhook IPN de Redsys.
+ */
+export async function updatePaymentStatus(
+  redsysOrderId: string,
+  paymentStatus: "paid" | "failed"
+): Promise<{ orderId: number | null }> {
+  const db = await getDb();
+  if (!db) return { orderId: null };
+  await db.update(orders)
+    .set({ paymentStatus, status: paymentStatus === "paid" ? "confirmed" : "pending" })
+    .where(eq(orders.redsysOrderId, redsysOrderId));
+  const result = await db.select({ id: orders.id })
+    .from(orders)
+    .where(eq(orders.redsysOrderId, redsysOrderId))
+    .limit(1);
+  return { orderId: result[0]?.id ?? null };
+}
+
+/**
+ * Busca un pedido por su ID de orden Redsys.
+ */
+export async function getOrderByRedsysId(redsysOrderId: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(orders)
+    .where(eq(orders.redsysOrderId, redsysOrderId))
+    .limit(1);
+  return result[0] ?? null;
+}

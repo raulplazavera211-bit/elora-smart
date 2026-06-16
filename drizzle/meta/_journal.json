@@ -15,6 +15,13 @@
       "when": 1781590340474,
       "tag": "0001_zippy_venom",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1781591818839,
+      "tag": "0002_free_tony_stark",
+      "breakpoints": true
     }
   ]
 }

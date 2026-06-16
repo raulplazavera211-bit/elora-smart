@@ -58,3 +58,19 @@
 - [x] Crear página /admin/club-elora — Miembros del Club Elora
 - [x] Registrar todas las rutas admin en App.tsx
 - [x] Instalar dotenv (dependencia faltante del servidor)
+
+## Integración Redsys
+
+- [x] Instalar redsys-easy y decimal.js
+- [x] Crear server/redsys.ts con helper de firma y generación de formulario
+- [x] Crear server/redsysWebhook.ts con handler IPN Express
+- [x] Registrar webhook /api/redsys/notification en server/_core/index.ts
+- [x] Añadir campos redsysOrderId y paymentStatus a tabla orders (db:push)
+- [x] Añadir helpers linkRedsysOrder, updatePaymentStatus, getOrderByRedsysId en server/db.ts
+- [x] Añadir procedimiento orders.initPayment en server/routers.ts
+- [x] Actualizar CartPanel con flujo: carrito → datos → redirección TPV Redsys
+- [x] Crear página /pago/ok (confirmación de pago exitoso)
+- [x] Crear página /pago/ko (pago fallido o cancelado)
+- [x] Registrar rutas /pago/ok y /pago/ko en App.tsx
+- [x] Guardar credenciales Redsys como variables de entorno
+- [x] Tests vitest para validar configuración Redsys (3/3 pasan)

@@ -13,6 +13,8 @@ import AdminPedidos from "./pages/admin/AdminPedidos";
 import AdminClientes from "./pages/admin/AdminClientes";
 import AdminContactos from "./pages/admin/AdminContactos";
 import AdminClubElora from "./pages/admin/AdminClubElora";
+import PagoOk from "./pages/PagoOk";
+import PagoKo from "./pages/PagoKo";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -84,6 +86,18 @@ function MobileRouter() {
 function AppRouter() {
   const [location] = useLocation();
   const isAdmin = location === "/admin" || location.startsWith("/admin/");
+  const isPago = location.startsWith("/pago/");
+
+  // Las páginas de retorno de Redsys son accesibles desde cualquier dispositivo
+  if (isPago) {
+    return (
+      <Switch>
+        <Route path="/pago/ok" component={PagoOk} />
+        <Route path="/pago/ko" component={PagoKo} />
+        <Route component={NotFound} />
+      </Switch>
+    );
+  }
 
   if (isAdmin) {
     return (

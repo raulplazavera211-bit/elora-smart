@@ -117,6 +117,10 @@ export const orders = mysqlTable("orders", {
   notes: text("notes"),
   status: mysqlEnum("status", ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"]).default("pending").notNull(),
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
+  /** Redsys order ID (12 chars) — null until payment is initiated */
+  redsysOrderId: varchar("redsysOrderId", { length: 32 }),
+  /** Payment status from Redsys */
+  paymentStatus: mysqlEnum("paymentStatus", ["unpaid", "pending_payment", "paid", "failed"]).default("unpaid").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

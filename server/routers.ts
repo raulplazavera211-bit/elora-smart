@@ -24,7 +24,11 @@ import {
   getTotalRevenue,
   getAllUsers,
   countUsers,
+  linkRedsysOrder,
+  updatePaymentStatus,
+  getOrderByRedsysId,
 } from "./db";
+import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 
 export const appRouter = router({
   system: systemRouter,
@@ -149,6 +153,51 @@ export const appRouter = router({
         }).catch(() => {});
 
         return { success: true, orderId };
+      }),
+
+    /**
+     * Inicia el pago Redsys para un pedido ya creado.
+     * Devuelve la URL del TPV y los campos del formulario firmado.
+     */
+    initPayment: publicProcedure
+      .input(z.object({
+        orderId: z.number(),
+        /** Origen del frontend para construir las URLs de retorno */
+        origin: z.string().url(),
+      }))
+      .mutation(async ({ input }) => {
+        // Verificar que Redsys está configurado
+        try {
+          getRedsysConfig();
+        } catch {
+          throw new TRPCError({
+            code: "PRECONDITION_FAILED",
+            message: "La pasarela de pago Redsys no está configurada. Contacta con el administrador.",
+          });
+        }
+
+        // Obtener el pedido
+        const order = await getOrderWithItems(input.orderId);
+        if (!order) throw new TRPCError({ code: "NOT_FOUND", message: "Pedido no encontrado" });
+
+        const productDesc = order.items.map(i => `${i.productName} x${i.quantity}`).join(", ");
+
+        // Generar formulario Redsys firmado
+        const form = createRedsysForm({
+          amountEur: order.total,
+          frontendOrigin: input.origin,
+          merchantName: "ELORA SMART",
+          productDescription: productDesc.slice(0, 125), // máx 125 chars
+        });
+
+        // Vincular el redsysOrderId al pedido en la DB
+        await linkRedsysOrder(input.orderId, form.redsysOrderId);
+
+        return {
+          url: form.url,
+          body: form.body,
+          redsysOrderId: form.redsysOrderId,
+        };
       }),
   }),
 

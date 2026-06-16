@@ -1,10 +1,10 @@
-// ─── CartPanel — Panel de carrito con checkout real ──────────────────────────
-// Diseño premium Elora Smart: sidebar oscuro con reseñas + columna de checkout.
-// Paso 2 ahora envía el pedido real a la base de datos via tRPC orders.create.
+// ─── CartPanel — Panel de carrito con checkout Redsys ────────────────────────
+// Flujo: Carrito → Datos de contacto → Redirige al TPV Redsys (tarjeta/Bizum)
+// Al volver de Redsys el usuario llega a /pago/ok o /pago/ko
 
 import { motion, AnimatePresence } from "motion/react";
-import { X, ShoppingBag, ArrowRight, Check, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { X, ShoppingBag, ArrowRight, Check, Loader2, CreditCard, Lock } from "lucide-react";
+import { useRef, useState } from "react";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ import { toast } from "sonner";
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
 export type CartItem = { id: string; name: string; price: number; img: string };
-type CheckoutStep = "cart" | "checkout" | "success";
+type CheckoutStep = "cart" | "checkout" | "redirecting";
 
 function GoogleStarIcon() {
   return (
@@ -33,6 +33,33 @@ function GoogleLogoIcon() {
   );
 }
 
+// Iconos de métodos de pago
+function VisaIcon() {
+  return (
+    <svg viewBox="0 0 48 16" className="h-5 w-auto" fill="none">
+      <text x="0" y="13" fontFamily="Arial" fontWeight="bold" fontSize="16" fill="#1A1F71">VISA</text>
+    </svg>
+  );
+}
+
+function MastercardIcon() {
+  return (
+    <svg viewBox="0 0 38 24" className="h-5 w-auto">
+      <circle cx="15" cy="12" r="10" fill="#EB001B"/>
+      <circle cx="23" cy="12" r="10" fill="#F79E1B"/>
+      <path d="M19 5.3a10 10 0 0 1 0 13.4A10 10 0 0 1 19 5.3z" fill="#FF5F00"/>
+    </svg>
+  );
+}
+
+function BizumIcon() {
+  return (
+    <svg viewBox="0 0 60 20" className="h-5 w-auto">
+      <text x="0" y="15" fontFamily="Arial" fontWeight="bold" fontSize="14" fill="#00B259">Bizum</text>
+    </svg>
+  );
+}
+
 interface CartPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -49,43 +76,54 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     nombre: "", apellidos: "", email: "", telefono: "",
     direccion: "", ciudad: "", cp: "", notas: ""
   });
-  const [orderId, setOrderId] = useState<number | null>(null);
+
+  // Formulario oculto para enviar a Redsys
+  const redsysFormRef = useRef<HTMLFormElement>(null);
+  const [redsysData, setRedsysData] = useState<{
+    url: string;
+    Ds_SignatureVersion: string;
+    Ds_MerchantParameters: string;
+    Ds_Signature: string;
+  } | null>(null);
 
   const cartTotal = cart.reduce((s, i) => s + i.price, 0);
 
+  // Mutación 1: crear el pedido en la DB
   const createOrder = trpc.orders.create.useMutation({
-    onSuccess: (data) => {
-      setOrderId(data.orderId);
-      setCheckoutStep("success");
-      onClearCart?.();
-    },
     onError: (err) => {
       toast.error("No se pudo procesar el pedido. Por favor, inténtalo de nuevo.");
       console.error("[Checkout] Error:", err);
+      setCheckoutStep("checkout");
+    },
+  });
+
+  // Mutación 2: obtener el formulario firmado de Redsys
+  const initPayment = trpc.orders.initPayment.useMutation({
+    onError: (err) => {
+      toast.error(err.message || "Error al iniciar el pago. Inténtalo de nuevo.");
+      console.error("[Redsys] Error:", err);
+      setCheckoutStep("checkout");
     },
   });
 
   function handleClose() {
     onClose();
-    // Reset solo si no estamos en success (para que el usuario vea la confirmación)
-    if (checkoutStep !== "success") {
+    if (checkoutStep !== "redirecting") {
       setCheckoutStep("cart");
     }
-  }
-
-  function handleSuccessClose() {
-    onClose();
-    setCheckoutStep("cart");
-    setCheckoutForm({ nombre: "", apellidos: "", email: "", telefono: "", direccion: "", ciudad: "", cp: "", notas: "" });
-    setOrderId(null);
   }
 
   async function handleSubmitOrder(e: React.FormEvent) {
     e.preventDefault();
     if (cart.length === 0) return;
+
+    setCheckoutStep("redirecting");
+
     const fullName = `${checkoutForm.nombre} ${checkoutForm.apellidos}`.trim();
     const address = [checkoutForm.direccion, checkoutForm.ciudad, checkoutForm.cp].filter(Boolean).join(", ");
-    await createOrder.mutateAsync({
+
+    // Paso 1: crear el pedido
+    const orderResult = await createOrder.mutateAsync({
       customerName: fullName,
       customerEmail: checkoutForm.email,
       customerPhone: checkoutForm.telefono || undefined,
@@ -98,9 +136,33 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         quantity: 1,
       })),
     });
+
+    if (!orderResult?.orderId) return;
+
+    // Paso 2: obtener formulario firmado Redsys
+    const paymentResult = await initPayment.mutateAsync({
+      orderId: orderResult.orderId,
+      origin: window.location.origin,
+    });
+
+    if (!paymentResult) return;
+
+    // Paso 3: vaciar carrito y redirigir al TPV
+    onClearCart?.();
+    setRedsysData({
+      url: paymentResult.url,
+      Ds_SignatureVersion: paymentResult.body.Ds_SignatureVersion,
+      Ds_MerchantParameters: paymentResult.body.Ds_MerchantParameters,
+      Ds_Signature: paymentResult.body.Ds_Signature,
+    });
+
+    // Enviar el formulario oculto al TPV de Redsys
+    setTimeout(() => {
+      redsysFormRef.current?.submit();
+    }, 150);
   }
 
-  const isSubmitting = createOrder.isPending;
+  const isSubmitting = createOrder.isPending || initPayment.isPending || checkoutStep === "redirecting";
 
   // ─── FORM FIELDS ────────────────────────────────────────────────────────────
   const inputClass = "bg-transparent border border-border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors w-full";
@@ -108,531 +170,575 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   const labelClass = "font-body text-[10px] uppercase tracking-[0.25em] text-foreground/50";
 
   return (
-    <motion.div
-      initial={false}
-      animate={isOpen ? { opacity: 1, pointerEvents: "auto" } : { opacity: 0, pointerEvents: "none" }}
-      transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-[60] flex"
-      onClick={handleClose}
-    >
-      {/* Overlay móvil */}
-      <motion.div
-        className="md:hidden flex-1 bg-foreground/30 backdrop-blur-sm"
-        animate={isOpen ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      />
+    <>
+      {/* ── Formulario oculto para POST a Redsys ── */}
+      {redsysData && (
+        <form
+          ref={redsysFormRef}
+          method="POST"
+          action={redsysData.url}
+          style={{ display: "none" }}
+        >
+          <input type="hidden" name="Ds_SignatureVersion" value={redsysData.Ds_SignatureVersion} />
+          <input type="hidden" name="Ds_MerchantParameters" value={redsysData.Ds_MerchantParameters} />
+          <input type="hidden" name="Ds_Signature" value={redsysData.Ds_Signature} />
+        </form>
+      )}
 
-      {/* ── DESKTOP: sidebar izquierdo ── */}
-      <div className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start shrink-0 py-12 z-10">
-        <button onClick={handleClose} className="px-10 text-left outline-none">
-          <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
-          <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
-        </button>
-        {sections && sections.length > 0 && (
-          <nav className="flex flex-col gap-5 w-full px-10">
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
-            {sections.map((item, idx) => (
-              <button
-                key={`cart-nav-${item}`}
-                onClick={() => { handleClose(); onNavigate?.(idx); }}
-                className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
-              >
-                <span className="h-[1px] w-3 bg-foreground/20 group-hover:w-6 transition-all duration-500" />
-                <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">{item}</span>
-                <span className="ml-auto font-body text-[10px] text-foreground/20">0{idx + 1}</span>
-              </button>
-            ))}
-          </nav>
-        )}
-        <div className="px-10 w-full">
-          <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-accent-deep" />
-            Est. Galicia · 2024
+      <motion.div
+        initial={false}
+        animate={isOpen ? { opacity: 1, pointerEvents: "auto" } : { opacity: 0, pointerEvents: "none" }}
+        transition={{ duration: 0.25 }}
+        className="fixed inset-0 z-[60] flex"
+        onClick={handleClose}
+      >
+        {/* Overlay móvil */}
+        <motion.div
+          className="md:hidden flex-1 bg-foreground/30 backdrop-blur-sm"
+          animate={isOpen ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        />
+
+        {/* ── DESKTOP: sidebar izquierdo ── */}
+        <div className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start shrink-0 py-12 z-10">
+          <button onClick={handleClose} className="px-10 text-left outline-none">
+            <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
+            <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
+          </button>
+          {sections && sections.length > 0 && (
+            <nav className="flex flex-col gap-5 w-full px-10">
+              <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
+              {sections.map((item, idx) => (
+                <button
+                  key={`cart-nav-${item}`}
+                  onClick={() => { handleClose(); onNavigate?.(idx); }}
+                  className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
+                >
+                  <span className="h-[1px] w-3 bg-foreground/20 group-hover:w-6 transition-all duration-500" />
+                  <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">{item}</span>
+                  <span className="ml-auto font-body text-[10px] text-foreground/20">0{idx + 1}</span>
+                </button>
+              ))}
+            </nav>
+          )}
+          <div className="px-10 w-full">
+            <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-accent-deep" />
+              Est. Galicia · 2024
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ── DESKTOP: layout 2 columnas ── */}
-      <div className="hidden md:flex flex-1 h-full overflow-hidden">
-        {/* Columna izquierda oscura: imagen + items + reseñas */}
-        <div className="w-[420px] xl:w-[480px] h-full bg-[#0F0F0F] flex flex-col shrink-0 overflow-y-auto">
-          <div className="flex items-center justify-between px-10 pt-10 pb-6 shrink-0">
-            <p className="font-display text-xs uppercase tracking-[0.35em] text-white/40">
-              {checkoutStep === "cart" ? "Tu selección" : checkoutStep === "checkout" ? "Resumen" : "Confirmado"}
-            </p>
-            <button onClick={handleClose} aria-label="Cerrar" className="outline-none w-8 h-8 rounded-full border border-white/10 flex items-center justify-center hover:border-white/30 transition-colors">
-              <X className="w-4 h-4 text-white/60" />
-            </button>
-          </div>
-
-          {cart.length > 0 ? (
-            <div className="px-10 mb-6">
-              <div className="aspect-square w-full overflow-hidden bg-[#1A1A1A]">
-                <img src={cart[0].img} alt={cart[0].name} className="w-full h-full object-cover opacity-90" />
-              </div>
+        {/* ── DESKTOP: layout 2 columnas ── */}
+        <div className="hidden md:flex flex-1 h-full overflow-hidden">
+          {/* Columna izquierda oscura: imagen + items + reseñas */}
+          <div className="w-[420px] xl:w-[480px] h-full bg-[#0F0F0F] flex flex-col shrink-0 overflow-y-auto">
+            <div className="flex items-center justify-between px-10 pt-10 pb-6 shrink-0">
+              <p className="font-display text-xs uppercase tracking-[0.35em] text-white/40">
+                {checkoutStep === "cart" ? "Tu selección" : checkoutStep === "checkout" ? "Resumen" : "Procesando pago"}
+              </p>
+              <button onClick={handleClose} aria-label="Cerrar" className="outline-none w-8 h-8 rounded-full border border-white/10 flex items-center justify-center hover:border-white/30 transition-colors">
+                <X className="w-4 h-4 text-white/60" />
+              </button>
             </div>
-          ) : (
-            <div className="px-10 mb-6">
-              <div className="aspect-square w-full bg-[#1A1A1A] flex items-center justify-center">
-                <ShoppingBag className="w-16 h-16 text-white/10" />
-              </div>
-            </div>
-          )}
 
-          <div className="px-10 flex flex-col gap-3 mb-6">
-            {cart.map((item, idx) => (
-              <div key={`left-${item.id}-${idx}`} className="flex items-center gap-3 border-b border-white/10 pb-3">
-                <div className="flex-1 min-w-0">
-                  <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-0.5">{item.id}</p>
-                  <p className="font-display text-sm uppercase tracking-wide text-white leading-snug">{item.name}</p>
+            {cart.length > 0 ? (
+              <div className="px-10 mb-6">
+                <div className="aspect-square w-full overflow-hidden bg-[#1A1A1A]">
+                  <img src={cart[0].img} alt={cart[0].name} className="w-full h-full object-cover opacity-90" />
                 </div>
-                <p className="font-display text-base text-[#D67A00] shrink-0">{item.price.toLocaleString('es-ES')} €</p>
               </div>
-            ))}
-            {cart.length > 0 && (
-              <div className="flex justify-between items-baseline pt-1">
-                <span className="font-body text-[10px] uppercase tracking-widest text-white/30">Total</span>
-                <span className="font-display text-2xl text-white">{cartTotal.toLocaleString('es-ES')} €</span>
+            ) : (
+              <div className="px-10 mb-6">
+                <div className="aspect-square w-full bg-[#1A1A1A] flex items-center justify-center">
+                  <ShoppingBag className="w-16 h-16 text-white/10" />
+                </div>
               </div>
             )}
+
+            <div className="px-10 flex flex-col gap-3 mb-6">
+              {cart.map((item, idx) => (
+                <div key={`left-${item.id}-${idx}`} className="flex items-center gap-3 border-b border-white/10 pb-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-0.5">{item.id}</p>
+                    <p className="font-display text-sm uppercase tracking-wide text-white leading-snug">{item.name}</p>
+                  </div>
+                  <p className="font-display text-base text-[#D67A00] shrink-0">{item.price.toLocaleString('es-ES')} €</p>
+                </div>
+              ))}
+              {cart.length > 0 && (
+                <div className="flex justify-between items-baseline pt-1">
+                  <span className="font-body text-[10px] uppercase tracking-widest text-white/30">Total</span>
+                  <span className="font-display text-2xl text-white">{cartTotal.toLocaleString('es-ES')} €</span>
+                </div>
+              )}
+            </div>
+
+            <div className="px-10 mt-auto pb-10">
+              <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-4">Lo que dicen nuestros clientes</p>
+              <div className="flex flex-col gap-3">
+                {REVIEWS.slice(0, 3).map((r, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ repeat: Infinity, duration: 3 + i * 0.6, ease: "easeInOut", delay: i * 0.5 }}
+                    className="bg-white/5 border border-white/8 rounded-lg px-4 py-3 backdrop-blur-sm"
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] shrink-0" style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}>
+                        {r.name.charAt(0)}
+                      </div>
+                      <p className="text-white/80 text-[11px] font-semibold">{r.name}</p>
+                      <div className="flex gap-0.5 ml-auto">
+                        {[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}
+                      </div>
+                    </div>
+                    <p className="text-white/50 text-[11px] leading-relaxed line-clamp-2">{r.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 mt-4">
+                <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
+                <p className="text-white/30 text-[10px]">5.0 · 10 reseñas verificadas en Google</p>
+              </div>
+            </div>
           </div>
 
-          <div className="px-10 mt-auto pb-10">
-            <p className="font-body text-[9px] uppercase tracking-[0.3em] text-white/30 mb-4">Lo que dicen nuestros clientes</p>
-            <div className="flex flex-col gap-3">
-              {REVIEWS.slice(0, 3).map((r, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ repeat: Infinity, duration: 3 + i * 0.6, ease: "easeInOut", delay: i * 0.5 }}
-                  className="bg-white/5 border border-white/8 rounded-lg px-4 py-3 backdrop-blur-sm"
-                >
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] shrink-0" style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}>
-                      {r.name.charAt(0)}
+          {/* Columna derecha: carrito / formulario / redirigiendo */}
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            initial={{ x: "100%" }}
+            animate={isOpen ? { x: 0 } : { x: "100%" }}
+            transition={{ type: "spring", stiffness: 320, damping: 38 }}
+            className="flex-1 h-full bg-background flex flex-col"
+          >
+            {checkoutStep !== "redirecting" && (
+              <div className="flex items-center gap-0 px-12 py-5 border-b border-border shrink-0">
+                {["Carrito", "Datos de envío"].map((label, i) => (
+                  <div key={label} className="flex items-center gap-0">
+                    <div className={`flex items-center gap-2.5 ${i === 0 ? (checkoutStep === "cart" ? "text-foreground" : "text-foreground/30") : (checkoutStep === "checkout" ? "text-foreground" : "text-foreground/30")} transition-colors duration-300`}>
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-body transition-all duration-300 ${
+                        (i === 0 && checkoutStep === "cart") || (i === 1 && checkoutStep === "checkout")
+                          ? "bg-foreground text-background"
+                          : i === 0 && checkoutStep === "checkout"
+                          ? "bg-accent-deep text-background"
+                          : "border border-border text-foreground/30"
+                      }`}>
+                        {i === 0 && checkoutStep === "checkout" ? <Check className="w-3 h-3" /> : i + 1}
+                      </div>
+                      <span className="font-body text-xs uppercase tracking-widest">{label}</span>
                     </div>
-                    <p className="text-white/80 text-[11px] font-semibold">{r.name}</p>
-                    <div className="flex gap-0.5 ml-auto">
-                      {[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}
+                    {i < 1 && <div className={`w-12 h-[1px] mx-4 transition-colors duration-300 ${checkoutStep === "checkout" ? "bg-accent-deep" : "bg-border"}`} />}
+                  </div>
+                ))}
+                {checkoutStep === "checkout" && (
+                  <button onClick={() => setCheckoutStep("cart")} className="ml-auto font-body text-[10px] uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors outline-none flex items-center gap-1.5">
+                    <ArrowRight className="w-3 h-3 rotate-180" /> Volver al carrito
+                  </button>
+                )}
+              </div>
+            )}
+
+            <div className="flex-1 overflow-y-auto">
+              {checkoutStep === "redirecting" ? (
+                /* ── Pantalla de redirección al TPV ── */
+                <div className="flex flex-col items-center justify-center h-full px-16 text-center gap-8">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                    className="w-20 h-20 rounded-full border-2 border-accent-deep border-t-transparent flex items-center justify-center"
+                  >
+                    <CreditCard className="w-8 h-8 text-accent-deep" />
+                  </motion.div>
+                  <div>
+                    <h3 className="font-display text-2xl uppercase tracking-wide mb-3">Redirigiendo al pago</h3>
+                    <p className="font-body text-sm text-foreground/60 leading-relaxed max-w-sm">
+                      Te estamos llevando al TPV seguro de Redsys. En unos segundos podrás pagar con tarjeta o Bizum.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 text-foreground/30">
+                    <Lock className="w-4 h-4" />
+                    <span className="font-body text-xs uppercase tracking-widest">Pago 100% seguro · SSL</span>
+                  </div>
+                  <div className="flex items-center gap-4 opacity-50">
+                    <VisaIcon />
+                    <MastercardIcon />
+                    <BizumIcon />
+                  </div>
+                </div>
+              ) : checkoutStep === "checkout" ? (
+                <form
+                  id="checkout-form-desktop"
+                  onSubmit={handleSubmitOrder}
+                  className="px-12 py-10 flex flex-col gap-5 max-w-xl"
+                >
+                  <h2 className="font-display text-2xl uppercase tracking-wide mb-2">Datos de contacto</h2>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Nombre *</label>
+                      <input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className={inputClass} placeholder="Tu nombre" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Apellidos *</label>
+                      <input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className={inputClass} placeholder="Apellidos" />
                     </div>
                   </div>
-                  <p className="text-white/50 text-[11px] leading-relaxed line-clamp-2">{r.text}</p>
-                </motion.div>
-              ))}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Email *</label>
+                      <input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className={inputClass} placeholder="tu@email.com" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Teléfono *</label>
+                      <input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className={inputClass} placeholder="+34 600 000 000" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className={labelClass}>Dirección de envío</label>
+                    <input value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className={inputClass} placeholder="Calle, número, piso" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Ciudad</label>
+                      <input value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className={inputClass} placeholder="Ciudad" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className={labelClass}>C.P.</label>
+                      <input value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className={inputClass} placeholder="00000" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className={labelClass}>Notas adicionales</label>
+                    <textarea rows={3} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className={`${inputClass} resize-none`} placeholder="Instrucciones de entrega, preguntas..." />
+                  </div>
+                  {/* Métodos de pago aceptados */}
+                  <div className="border border-border p-4 flex flex-col gap-3">
+                    <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">Métodos de pago aceptados</p>
+                    <div className="flex items-center gap-4">
+                      <VisaIcon />
+                      <MastercardIcon />
+                      <BizumIcon />
+                    </div>
+                    <div className="flex items-center gap-2 text-foreground/40">
+                      <Lock className="w-3 h-3" />
+                      <span className="font-body text-[10px]">Pago seguro con cifrado SSL · TPV Redsys</span>
+                    </div>
+                  </div>
+                </form>
+              ) : (
+                <div className="px-12 py-10">
+                  {cart.length === 0 ? (
+                    <div className="flex flex-col items-center gap-6 py-20 text-center">
+                      <ShoppingBag className="w-16 h-16 text-foreground/10" />
+                      <div>
+                        <p className="font-display text-xl uppercase tracking-wide text-foreground/30 mb-2">Tu carrito está vacío</p>
+                        <p className="font-body text-sm text-foreground/30">Explora nuestra colección y añade un producto</p>
+                      </div>
+                      <button onClick={handleClose} className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors border border-border px-8 py-3 hover:border-foreground">
+                        Ver colección
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <h2 className="font-display text-2xl uppercase tracking-wide mb-8">Tu pedido</h2>
+                      <AnimatePresence>
+                        <ul className="flex flex-col gap-6">
+                          {cart.map((item, idx) => (
+                            <motion.li
+                              key={`${item.id}-${idx}`}
+                              initial={{ opacity: 0, y: 16 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -16 }}
+                              transition={{ duration: 0.3 }}
+                              className="flex items-center gap-6 border-b border-border pb-6"
+                            >
+                              <div className="w-24 h-24 shrink-0 overflow-hidden border border-border bg-[#F8F8F8]">
+                                <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-1">{item.id}</p>
+                                <p className="font-display text-lg uppercase tracking-wide leading-snug">{item.name}</p>
+                                <p className="font-display text-xl text-accent-deep mt-2">{item.price.toLocaleString('es-ES')} €</p>
+                              </div>
+                              <button onClick={() => onRemove(idx)} className="shrink-0 w-8 h-8 border border-border flex items-center justify-center text-foreground/30 hover:text-foreground hover:border-foreground transition-colors outline-none">
+                                <X className="w-4 h-4" />
+                              </button>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-2 mt-4">
-              <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-              <p className="text-white/30 text-[10px]">5.0 · 10 reseñas verificadas en Google</p>
-            </div>
-          </div>
+
+            {checkoutStep !== "redirecting" && (
+              <div className="px-12 py-8 border-t border-border shrink-0">
+                {checkoutStep === "cart" ? (
+                  <motion.button
+                    onClick={() => setCheckoutStep("checkout")}
+                    disabled={cart.length === 0}
+                    whileHover={cart.length > 0 ? { scale: 1.01 } : {}}
+                    whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
+                    className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group"
+                    style={{ boxShadow: cart.length > 0 ? "0 4px 32px rgba(214,122,0,0.4)" : undefined }}
+                  >
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                    <ShoppingBag className="w-5 h-5 relative z-10" />
+                    <span className="relative z-10">
+                      {cart.length > 0 ? `Continuar · ${cartTotal.toLocaleString('es-ES')} €` : "Añade productos"}
+                    </span>
+                    <motion.span
+                      className="relative z-10 flex items-center"
+                      animate={{ x: [0, 6, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                    >
+                      <ArrowRight className="w-5 h-5" />
+                    </motion.span>
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    type="submit"
+                    form="checkout-form-desktop"
+                    disabled={isSubmitting}
+                    whileHover={!isSubmitting ? { scale: 1.01 } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                    className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
+                    style={{ boxShadow: "0 4px 32px rgba(214,122,0,0.4)" }}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Preparando pago...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                        <CreditCard className="w-5 h-5 relative z-10" />
+                        <span className="relative z-10">Pagar con Redsys · {cartTotal.toLocaleString('es-ES')} €</span>
+                      </>
+                    )}
+                  </motion.button>
+                )}
+                <p className="font-body text-[10px] text-foreground/30 text-center mt-3">
+                  Pago seguro con tarjeta o Bizum · TPV Virtual Redsys
+                </p>
+              </div>
+            )}
+          </motion.div>
         </div>
 
-        {/* Columna derecha: carrito / formulario / éxito */}
+        {/* ── MÓVIL: panel lateral deslizante ── */}
         <motion.div
           onClick={(e) => e.stopPropagation()}
           initial={{ x: "100%" }}
           animate={isOpen ? { x: 0 } : { x: "100%" }}
           transition={{ type: "spring", stiffness: 320, damping: 38 }}
-          className="flex-1 h-full bg-background flex flex-col"
+          className="md:hidden w-full max-w-md h-full bg-background border-l border-border flex flex-col shadow-2xl ml-auto"
         >
-          {checkoutStep !== "success" && (
-            <div className="flex items-center gap-0 px-12 py-5 border-b border-border shrink-0">
-              {["Carrito", "Datos de envío"].map((label, i) => (
+          <div className="flex items-center justify-between px-8 py-6 border-b border-border shrink-0">
+            <div className="flex items-center gap-3">
+              <ShoppingBag className="w-5 h-5 text-foreground" />
+              <p className="font-display text-lg uppercase tracking-widest">
+                {checkoutStep === "cart" ? `Carrito · ${cart.length}` : checkoutStep === "checkout" ? "Datos de contacto" : "Procesando pago"}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              {checkoutStep === "checkout" && (
+                <button onClick={() => setCheckoutStep("cart")} className="font-body text-[10px] uppercase tracking-widest text-foreground/50 hover:text-foreground transition-colors outline-none flex items-center gap-1">
+                  <ArrowRight className="w-3 h-3 rotate-180" /> Volver
+                </button>
+              )}
+              <button onClick={handleClose} aria-label="Cerrar" className="outline-none">
+                <X className="w-5 h-5 text-foreground" />
+              </button>
+            </div>
+          </div>
+
+          {checkoutStep !== "redirecting" && (
+            <div className="flex items-center gap-0 px-8 py-3 border-b border-border shrink-0">
+              {["Carrito", "Datos"].map((label, i) => (
                 <div key={label} className="flex items-center gap-0">
-                  <div className={`flex items-center gap-2.5 ${i === 0 ? (checkoutStep === "cart" ? "text-foreground" : "text-foreground/30") : (checkoutStep === "checkout" ? "text-foreground" : "text-foreground/30")} transition-colors duration-300`}>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-body transition-all duration-300 ${
+                  <div className={`flex items-center gap-2 ${i === 0 ? (checkoutStep === "cart" ? "text-foreground" : "text-foreground/30") : (checkoutStep === "checkout" ? "text-foreground" : "text-foreground/30")} transition-colors duration-300`}>
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-body transition-all duration-300 ${
                       (i === 0 && checkoutStep === "cart") || (i === 1 && checkoutStep === "checkout")
                         ? "bg-foreground text-background"
                         : i === 0 && checkoutStep === "checkout"
                         ? "bg-accent-deep text-background"
                         : "border border-border text-foreground/30"
                     }`}>
-                      {i === 0 && checkoutStep === "checkout" ? <Check className="w-3 h-3" /> : i + 1}
+                      {i === 0 && checkoutStep === "checkout" ? <Check className="w-2.5 h-2.5" /> : i + 1}
                     </div>
-                    <span className="font-body text-xs uppercase tracking-widest">{label}</span>
+                    <span className="font-body text-[10px] uppercase tracking-widest">{label}</span>
                   </div>
-                  {i < 1 && <div className={`w-12 h-[1px] mx-4 transition-colors duration-300 ${checkoutStep === "checkout" ? "bg-accent-deep" : "bg-border"}`} />}
+                  {i < 1 && <div className={`w-8 h-[1px] mx-3 transition-colors duration-300 ${checkoutStep === "checkout" ? "bg-accent-deep" : "bg-border"}`} />}
                 </div>
               ))}
-              {checkoutStep === "checkout" && (
-                <button onClick={() => setCheckoutStep("cart")} className="ml-auto font-body text-[10px] uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors outline-none flex items-center gap-1.5">
-                  <ArrowRight className="w-3 h-3 rotate-180" /> Volver al carrito
-                </button>
-              )}
             </div>
           )}
 
           <div className="flex-1 overflow-y-auto">
-            {checkoutStep === "success" ? (
-              <div className="flex flex-col items-center justify-center h-full px-16 text-center gap-8">
+            {checkoutStep === "redirecting" ? (
+              <div className="flex flex-col items-center justify-center h-full px-8 text-center gap-6">
                 <motion.div
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="w-24 h-24 rounded-full border-2 border-accent-deep flex items-center justify-center"
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                  className="w-16 h-16 rounded-full border-2 border-accent-deep border-t-transparent flex items-center justify-center"
                 >
-                  <Check className="w-12 h-12 text-accent-deep" />
+                  <CreditCard className="w-6 h-6 text-accent-deep" />
                 </motion.div>
                 <div>
-                  <h3 className="font-display text-3xl uppercase tracking-wide mb-3">¡Pedido recibido!</h3>
-                  {orderId && <p className="font-body text-xs uppercase tracking-widest text-foreground/40 mb-3">Pedido #{orderId}</p>}
-                  <p className="font-body text-base text-foreground/60 leading-relaxed max-w-md">
-                    Gracias, {checkoutForm.nombre}. Nos pondremos en contacto contigo en menos de 24h para confirmar tu pedido y coordinar la instalación.
+                  <h3 className="font-display text-xl uppercase tracking-wide mb-2">Redirigiendo al pago</h3>
+                  <p className="font-body text-sm text-foreground/60 leading-relaxed">
+                    Te llevamos al TPV seguro de Redsys para pagar con tarjeta o Bizum.
                   </p>
                 </div>
-                <button
-                  onClick={handleSuccessClose}
-                  className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors border border-border px-8 py-3 hover:border-foreground"
-                >
-                  Volver al inicio
-                </button>
+                <div className="flex items-center gap-2 text-foreground/30">
+                  <Lock className="w-3 h-3" />
+                  <span className="font-body text-[10px] uppercase tracking-widest">Pago seguro SSL</span>
+                </div>
               </div>
             ) : checkoutStep === "checkout" ? (
               <form
-                id="checkout-form-desktop"
+                id="checkout-form"
                 onSubmit={handleSubmitOrder}
-                className="px-12 py-10 flex flex-col gap-5 max-w-xl"
+                className="px-8 py-6 flex flex-col gap-4"
               >
-                <h2 className="font-display text-2xl uppercase tracking-wide mb-2">Datos de contacto</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className={labelClass}>Nombre *</label>
-                    <input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className={inputClass} placeholder="Tu nombre" />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1"><label className={labelClass}>Nombre *</label><input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className={inputClassSm} placeholder="Tu nombre" /></div>
+                  <div className="flex flex-col gap-1"><label className={labelClass}>Apellidos *</label><input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className={inputClassSm} placeholder="Apellidos" /></div>
+                </div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>Email *</label><input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className={inputClassSm} placeholder="tu@email.com" /></div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>Teléfono *</label><input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className={inputClassSm} placeholder="+34 600 000 000" /></div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>Dirección</label><input value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className={inputClassSm} placeholder="Calle, número, piso" /></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1"><label className={labelClass}>Ciudad</label><input value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className={inputClassSm} placeholder="Ciudad" /></div>
+                  <div className="flex flex-col gap-1"><label className={labelClass}>C.P.</label><input value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className={inputClassSm} placeholder="00000" /></div>
+                </div>
+                <div className="flex flex-col gap-1"><label className={labelClass}>Notas</label><textarea rows={2} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className={`${inputClassSm} resize-none`} placeholder="Instrucciones de entrega..." /></div>
+                <div className="border border-border p-3 flex flex-col gap-2">
+                  <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">Métodos de pago</p>
+                  <div className="flex items-center gap-3">
+                    <VisaIcon />
+                    <MastercardIcon />
+                    <BizumIcon />
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className={labelClass}>Apellidos *</label>
-                    <input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className={inputClass} placeholder="Apellidos" />
+                  <div className="flex items-center gap-1.5 text-foreground/40">
+                    <Lock className="w-3 h-3" />
+                    <span className="font-body text-[10px]">TPV Redsys · SSL seguro</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className={labelClass}>Email *</label>
-                    <input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className={inputClass} placeholder="tu@email.com" />
+                <div className="border-t border-border pt-4 mt-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
+                    <span className="font-display text-xl">{cartTotal.toLocaleString('es-ES')} €</span>
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className={labelClass}>Teléfono *</label>
-                    <input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className={inputClass} placeholder="+34 600 000 000" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className={labelClass}>Dirección de envío</label>
-                  <input value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className={inputClass} placeholder="Calle, número, piso" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className={labelClass}>Ciudad</label>
-                    <input value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className={inputClass} placeholder="Ciudad" />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className={labelClass}>C.P.</label>
-                    <input value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className={inputClass} placeholder="00000" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className={labelClass}>Notas adicionales</label>
-                  <textarea rows={3} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className={`${inputClass} resize-none`} placeholder="Instrucciones de entrega, preguntas..." />
+                  <p className="font-body text-[10px] text-foreground/40">IVA incluido · Envío e instalación a coordinar</p>
                 </div>
               </form>
             ) : (
-              <div className="px-12 py-10">
+              <div className="px-8 py-6">
                 {cart.length === 0 ? (
-                  <div className="flex flex-col items-center gap-6 py-20 text-center">
-                    <ShoppingBag className="w-16 h-16 text-foreground/10" />
-                    <div>
-                      <p className="font-display text-xl uppercase tracking-wide text-foreground/30 mb-2">Tu carrito está vacío</p>
-                      <p className="font-body text-sm text-foreground/30">Explora nuestra colección y añade un producto</p>
-                    </div>
-                    <button onClick={handleClose} className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors border border-border px-8 py-3 hover:border-foreground">
-                      Ver colección
-                    </button>
+                  <div className="flex flex-col items-center gap-4 py-12 text-center">
+                    <ShoppingBag className="w-10 h-10 text-foreground/20" />
+                    <p className="font-body text-sm text-foreground/40">Tu carrito está vacío</p>
                   </div>
                 ) : (
-                  <div>
-                    <h2 className="font-display text-2xl uppercase tracking-wide mb-8">Tu pedido</h2>
-                    <AnimatePresence>
-                      <ul className="flex flex-col gap-6">
-                        {cart.map((item, idx) => (
-                          <motion.li
-                            key={`${item.id}-${idx}`}
-                            initial={{ opacity: 0, y: 16 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -16 }}
-                            transition={{ duration: 0.3 }}
-                            className="flex items-center gap-6 border-b border-border pb-6"
-                          >
-                            <div className="w-24 h-24 shrink-0 overflow-hidden border border-border bg-[#F8F8F8]">
-                              <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-1">{item.id}</p>
-                              <p className="font-display text-lg uppercase tracking-wide leading-snug">{item.name}</p>
-                              <p className="font-display text-xl text-accent-deep mt-2">{item.price.toLocaleString('es-ES')} €</p>
-                            </div>
-                            <button onClick={() => onRemove(idx)} className="shrink-0 w-8 h-8 border border-border flex items-center justify-center text-foreground/30 hover:text-foreground hover:border-foreground transition-colors outline-none">
-                              <X className="w-4 h-4" />
-                            </button>
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </AnimatePresence>
-                  </div>
+                  <AnimatePresence>
+                    <ul className="flex flex-col gap-4">
+                      {cart.map((item, idx) => (
+                        <motion.li key={`mob-${item.id}-${idx}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="flex items-center gap-4 border-b border-border pb-4">
+                          <div className="w-16 h-16 shrink-0 overflow-hidden border border-border"><img src={item.img} alt={item.name} className="w-full h-full object-cover" /></div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-0.5">{item.id}</p>
+                            <p className="font-display text-sm uppercase tracking-wide leading-snug">{item.name}</p>
+                            <p className="font-display text-base text-accent-deep mt-1">{item.price.toLocaleString('es-ES')} €</p>
+                          </div>
+                          <button onClick={() => onRemove(idx)} className="shrink-0 text-foreground/30 hover:text-foreground transition-colors outline-none"><X className="w-4 h-4" /></button>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </AnimatePresence>
                 )}
               </div>
             )}
           </div>
 
-          {checkoutStep !== "success" && (
-            <div className="px-12 py-8 border-t border-border shrink-0">
-              {checkoutStep === "cart" ? (
-                <motion.button
-                  onClick={() => setCheckoutStep("checkout")}
-                  disabled={cart.length === 0}
-                  whileHover={cart.length > 0 ? { scale: 1.01 } : {}}
-                  whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
-                  className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group"
-                  style={{ boxShadow: cart.length > 0 ? "0 4px 32px rgba(214,122,0,0.4)" : undefined }}
-                >
-                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                  <ShoppingBag className="w-5 h-5 relative z-10" />
-                  <span className="relative z-10">
-                    {cart.length > 0 ? `Continuar · ${cartTotal.toLocaleString('es-ES')} €` : "Añade productos"}
-                  </span>
-                  <motion.span
-                    className="relative z-10 flex items-center"
-                    animate={{ x: [0, 6, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-                  >
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.span>
-                </motion.button>
-              ) : (
-                <motion.button
-                  type="submit"
-                  form="checkout-form-desktop"
-                  disabled={isSubmitting}
-                  whileHover={!isSubmitting ? { scale: 1.01 } : {}}
-                  whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-                  className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
-                  style={{ boxShadow: "0 4px 32px rgba(214,122,0,0.4)" }}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Enviando pedido...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                      <Check className="w-5 h-5 relative z-10" />
-                      <span className="relative z-10">Confirmar pedido · {cartTotal.toLocaleString('es-ES')} €</span>
-                    </>
-                  )}
-                </motion.button>
+          {checkoutStep !== "redirecting" && (
+            <div className="flex flex-col shrink-0">
+              {checkoutStep === "cart" && (
+                <div className="bg-[#F8F9FA] border-t border-gray-200 px-5 py-3">
+                  <p className="font-display text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2.5 text-center">Estás a punto de unirte a clientes como estos</p>
+                  <div className="flex flex-col gap-1.5">
+                    {REVIEWS.slice(0, 2).map((r, i) => (
+                      <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 2.8 + i * 0.7, ease: "easeInOut", delay: i * 0.4 }} className="flex items-center gap-2 bg-white rounded-md px-2.5 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.10)]">
+                        <div className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0" style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}>{r.name.charAt(0)}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-gray-800 text-[11px] font-semibold leading-none shrink-0">{r.name}</p>
+                            <div className="flex gap-0.5 shrink-0">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
+                          </div>
+                          <p className="text-gray-400 text-[10px] leading-tight line-clamp-1 mt-0.5">{r.text}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-center gap-1.5 mt-2">
+                    <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
+                    <p className="text-gray-400 text-[10px]">5.0 · 10 reseñas</p>
+                    <GoogleLogoIcon />
+                  </div>
+                </div>
               )}
-              <p className="font-body text-[10px] text-foreground/30 text-center mt-3">
-                Pago seguro · Envío e instalación coordinados por Elora
-              </p>
+              <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
+                {checkoutStep === "cart" && cart.length > 0 && (
+                  <div className="flex justify-between items-baseline mb-1">
+                    <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
+                    <span className="font-display text-2xl">{cartTotal.toLocaleString('es-ES')} €</span>
+                  </div>
+                )}
+                {checkoutStep === "cart" ? (
+                  <motion.button
+                    onClick={() => setCheckoutStep("checkout")}
+                    disabled={cart.length === 0}
+                    whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
+                    whileTap={cart.length > 0 ? { scale: 0.97 } : {}}
+                    className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group"
+                    style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}
+                  >
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                    <ShoppingBag className="w-4 h-4 relative z-10" />
+                    <span className="relative z-10">{cart.length > 0 ? `Comprar · ${cartTotal.toLocaleString('es-ES')} €` : "Añade productos"}</span>
+                    <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-4 h-4" /></motion.span>
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    type="submit"
+                    form="checkout-form"
+                    disabled={isSubmitting}
+                    whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.97 } : {}}
+                    className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
+                    style={{ boxShadow: "0 4px 24px rgba(214,122,0,0.35)" }}
+                  >
+                    {isSubmitting ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /><span>Preparando pago...</span></>
+                    ) : (
+                      <>
+                        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                        <CreditCard className="w-4 h-4 relative z-10" />
+                        <span className="relative z-10">Pagar con Redsys</span>
+                      </>
+                    )}
+                  </motion.button>
+                )}
+                <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">Pago seguro con tarjeta o Bizum · TPV Redsys</p>
+              </div>
             </div>
           )}
         </motion.div>
-      </div>
-
-      {/* ── MÓVIL: panel lateral deslizante ── */}
-      <motion.div
-        onClick={(e) => e.stopPropagation()}
-        initial={{ x: "100%" }}
-        animate={isOpen ? { x: 0 } : { x: "100%" }}
-        transition={{ type: "spring", stiffness: 320, damping: 38 }}
-        className="md:hidden w-full max-w-md h-full bg-background border-l border-border flex flex-col shadow-2xl ml-auto"
-      >
-        <div className="flex items-center justify-between px-8 py-6 border-b border-border shrink-0">
-          <div className="flex items-center gap-3">
-            <ShoppingBag className="w-5 h-5 text-foreground" />
-            <p className="font-display text-lg uppercase tracking-widest">
-              {checkoutStep === "cart" ? `Carrito · ${cart.length}` : checkoutStep === "checkout" ? "Datos de contacto" : "Pedido confirmado"}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {checkoutStep === "checkout" && (
-              <button onClick={() => setCheckoutStep("cart")} className="font-body text-[10px] uppercase tracking-widest text-foreground/50 hover:text-foreground transition-colors outline-none flex items-center gap-1">
-                <ArrowRight className="w-3 h-3 rotate-180" /> Volver
-              </button>
-            )}
-            <button onClick={handleClose} aria-label="Cerrar" className="outline-none">
-              <X className="w-5 h-5 text-foreground" />
-            </button>
-          </div>
-        </div>
-
-        {checkoutStep !== "success" && (
-          <div className="flex items-center gap-0 px-8 py-3 border-b border-border shrink-0">
-            {["Carrito", "Datos"].map((label, i) => (
-              <div key={label} className="flex items-center gap-0">
-                <div className={`flex items-center gap-2 ${i === 0 ? (checkoutStep === "cart" ? "text-foreground" : "text-foreground/30") : (checkoutStep === "checkout" ? "text-foreground" : "text-foreground/30")} transition-colors duration-300`}>
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-body transition-all duration-300 ${
-                    (i === 0 && checkoutStep === "cart") || (i === 1 && checkoutStep === "checkout")
-                      ? "bg-foreground text-background"
-                      : i === 0 && checkoutStep === "checkout"
-                      ? "bg-accent-deep text-background"
-                      : "border border-border text-foreground/30"
-                  }`}>
-                    {i === 0 && checkoutStep === "checkout" ? <Check className="w-2.5 h-2.5" /> : i + 1}
-                  </div>
-                  <span className="font-body text-[10px] uppercase tracking-widest">{label}</span>
-                </div>
-                {i < 1 && <div className={`w-8 h-[1px] mx-3 transition-colors duration-300 ${checkoutStep === "checkout" ? "bg-accent-deep" : "bg-border"}`} />}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="flex-1 overflow-y-auto">
-          {checkoutStep === "success" ? (
-            <div className="flex flex-col items-center justify-center h-full px-8 text-center gap-6">
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                className="w-20 h-20 rounded-full border border-accent-deep flex items-center justify-center"
-              >
-                <Check className="w-10 h-10 text-accent-deep" />
-              </motion.div>
-              <div>
-                <h3 className="font-display text-2xl uppercase tracking-wide mb-2">¡Pedido recibido!</h3>
-                {orderId && <p className="font-body text-xs uppercase tracking-widest text-foreground/40 mb-2">Pedido #{orderId}</p>}
-                <p className="font-body text-sm text-foreground/60 leading-relaxed">Gracias, {checkoutForm.nombre}. Nos pondremos en contacto contigo en menos de 24h.</p>
-              </div>
-              <button onClick={handleSuccessClose} className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-foreground transition-colors">
-                Cerrar
-              </button>
-            </div>
-          ) : checkoutStep === "checkout" ? (
-            <form
-              id="checkout-form"
-              onSubmit={handleSubmitOrder}
-              className="px-8 py-6 flex flex-col gap-4"
-            >
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1"><label className={labelClass}>Nombre *</label><input required value={checkoutForm.nombre} onChange={e => setCheckoutForm(f => ({...f, nombre: e.target.value}))} className={inputClassSm} placeholder="Tu nombre" /></div>
-                <div className="flex flex-col gap-1"><label className={labelClass}>Apellidos *</label><input required value={checkoutForm.apellidos} onChange={e => setCheckoutForm(f => ({...f, apellidos: e.target.value}))} className={inputClassSm} placeholder="Apellidos" /></div>
-              </div>
-              <div className="flex flex-col gap-1"><label className={labelClass}>Email *</label><input required type="email" value={checkoutForm.email} onChange={e => setCheckoutForm(f => ({...f, email: e.target.value}))} className={inputClassSm} placeholder="tu@email.com" /></div>
-              <div className="flex flex-col gap-1"><label className={labelClass}>Teléfono *</label><input required type="tel" value={checkoutForm.telefono} onChange={e => setCheckoutForm(f => ({...f, telefono: e.target.value}))} className={inputClassSm} placeholder="+34 600 000 000" /></div>
-              <div className="flex flex-col gap-1"><label className={labelClass}>Dirección</label><input value={checkoutForm.direccion} onChange={e => setCheckoutForm(f => ({...f, direccion: e.target.value}))} className={inputClassSm} placeholder="Calle, número, piso" /></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1"><label className={labelClass}>Ciudad</label><input value={checkoutForm.ciudad} onChange={e => setCheckoutForm(f => ({...f, ciudad: e.target.value}))} className={inputClassSm} placeholder="Ciudad" /></div>
-                <div className="flex flex-col gap-1"><label className={labelClass}>C.P.</label><input value={checkoutForm.cp} onChange={e => setCheckoutForm(f => ({...f, cp: e.target.value}))} className={inputClassSm} placeholder="00000" /></div>
-              </div>
-              <div className="flex flex-col gap-1"><label className={labelClass}>Notas</label><textarea rows={2} value={checkoutForm.notas} onChange={e => setCheckoutForm(f => ({...f, notas: e.target.value}))} className={`${inputClassSm} resize-none`} placeholder="Instrucciones de entrega..." /></div>
-              <div className="border-t border-border pt-4 mt-2">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
-                  <span className="font-display text-xl">{cartTotal.toLocaleString('es-ES')} €</span>
-                </div>
-                <p className="font-body text-[10px] text-foreground/40">IVA incluido · Envío e instalación a coordinar</p>
-              </div>
-            </form>
-          ) : (
-            <div className="px-8 py-6">
-              {cart.length === 0 ? (
-                <div className="flex flex-col items-center gap-4 py-12 text-center">
-                  <ShoppingBag className="w-10 h-10 text-foreground/20" />
-                  <p className="font-body text-sm text-foreground/40">Tu carrito está vacío</p>
-                </div>
-              ) : (
-                <AnimatePresence>
-                  <ul className="flex flex-col gap-4">
-                    {cart.map((item, idx) => (
-                      <motion.li key={`mob-${item.id}-${idx}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="flex items-center gap-4 border-b border-border pb-4">
-                        <div className="w-16 h-16 shrink-0 overflow-hidden border border-border"><img src={item.img} alt={item.name} className="w-full h-full object-cover" /></div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-0.5">{item.id}</p>
-                          <p className="font-display text-sm uppercase tracking-wide leading-snug">{item.name}</p>
-                          <p className="font-display text-base text-accent-deep mt-1">{item.price.toLocaleString('es-ES')} €</p>
-                        </div>
-                        <button onClick={() => onRemove(idx)} className="shrink-0 text-foreground/30 hover:text-foreground transition-colors outline-none"><X className="w-4 h-4" /></button>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </AnimatePresence>
-              )}
-            </div>
-          )}
-        </div>
-
-        {checkoutStep !== "success" && (
-          <div className="flex flex-col shrink-0">
-            {checkoutStep === "cart" && (
-              <div className="bg-[#F8F9FA] border-t border-gray-200 px-5 py-3">
-                <p className="font-display text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2.5 text-center">Estás a punto de unirte a clientes como estos</p>
-                <div className="flex flex-col gap-1.5">
-                  {REVIEWS.slice(0, 2).map((r, i) => (
-                    <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 2.8 + i * 0.7, ease: "easeInOut", delay: i * 0.4 }} className="flex items-center gap-2 bg-white rounded-md px-2.5 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.10)]">
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0" style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}>{r.name.charAt(0)}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <p className="text-gray-800 text-[11px] font-semibold leading-none shrink-0">{r.name}</p>
-                          <div className="flex gap-0.5 shrink-0">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                        </div>
-                        <p className="text-gray-400 text-[10px] leading-tight line-clamp-1 mt-0.5">{r.text}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="flex items-center justify-center gap-1.5 mt-2">
-                  <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                  <p className="text-gray-400 text-[10px]">5.0 · 10 reseñas</p>
-                  <GoogleLogoIcon />
-                </div>
-              </div>
-            )}
-            <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
-              {checkoutStep === "cart" && cart.length > 0 && (
-                <div className="flex justify-between items-baseline mb-1">
-                  <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
-                  <span className="font-display text-2xl">{cartTotal.toLocaleString('es-ES')} €</span>
-                </div>
-              )}
-              {checkoutStep === "cart" ? (
-                <motion.button
-                  onClick={() => setCheckoutStep("checkout")}
-                  disabled={cart.length === 0}
-                  whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
-                  whileTap={cart.length > 0 ? { scale: 0.97 } : {}}
-                  className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group"
-                  style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}
-                >
-                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                  <ShoppingBag className="w-4 h-4 relative z-10" />
-                  <span className="relative z-10">{cart.length > 0 ? `Comprar · ${cartTotal.toLocaleString('es-ES')} €` : "Añade productos"}</span>
-                  <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-4 h-4" /></motion.span>
-                </motion.button>
-              ) : (
-                <motion.button
-                  type="submit"
-                  form="checkout-form"
-                  disabled={isSubmitting}
-                  whileHover={!isSubmitting ? { scale: 1.02 } : {}}
-                  whileTap={!isSubmitting ? { scale: 0.97 } : {}}
-                  className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
-                  style={{ boxShadow: "0 4px 24px rgba(214,122,0,0.35)" }}
-                >
-                  {isSubmitting ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /><span>Enviando...</span></>
-                  ) : (
-                    <>
-                      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                      <Check className="w-4 h-4 relative z-10" />
-                      <span className="relative z-10">Confirmar pedido</span>
-                    </>
-                  )}
-                </motion.button>
-              )}
-              <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">Pago seguro · Envío e instalación coordinados por Elora</p>
-            </div>
-          </div>
-        )}
       </motion.div>
-    </motion.div>
+    </>
   );
 }
