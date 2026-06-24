@@ -58,12 +58,12 @@ function useCountdown() {
   return { hours, minutes, seconds, done: timeLeft <= 0 };
 }
 
-function ComingSoonDesktop() {
+function ComingSoon() {
   const { hours, minutes, seconds, done } = useCountdown();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
-    <div className="hidden md:flex flex-col items-center justify-center min-h-screen w-full relative overflow-hidden bg-black">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full relative overflow-hidden bg-black">
       {/* Video de fondo */}
       <video
         ref={videoRef}
@@ -137,23 +137,23 @@ function ComingSoonDesktop() {
 
         {/* Cuenta atrás */}
         {!done && (
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-1 md:gap-2">
             {[{ val: hours, label: "Horas" }, { val: minutes, label: "Min" }, { val: seconds, label: "Seg" }].map(
               (item, i) => (
-                <div key={item.label} className="flex items-end gap-2">
+                <div key={item.label} className="flex items-end gap-1 md:gap-2">
                   <div className="flex flex-col items-center">
                     <div
                       className="relative flex items-center justify-center"
                       style={{
-                        width: "90px",
-                        height: "90px",
+                        width: "clamp(70px, 20vw, 100px)",
+                        height: "clamp(70px, 20vw, 100px)",
                         background: "rgba(255,255,255,0.03)",
                         border: "1px solid rgba(245,164,91,0.2)",
                         backdropFilter: "blur(10px)",
                       }}
                     >
                       <span
-                        className="text-5xl text-white tabular-nums"
+                        className="text-4xl md:text-5xl text-white tabular-nums"
                         style={{
                           fontFamily: "'Oswald', sans-serif",
                           fontWeight: 200,
@@ -173,7 +173,7 @@ function ComingSoonDesktop() {
                   </div>
                   {i < 2 && (
                     <span
-                      className="text-3xl text-amber-500/40 mb-8"
+                      className="text-2xl md:text-3xl text-amber-500/40 mb-8"
                       style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 200 }}
                     >
                       :
@@ -231,8 +231,9 @@ function MobileRouter() {
 
 /**
  * Wrapper que decide qué mostrar según la ruta actual.
- * - /admin → siempre se muestra el panel de admin (sin el bloqueo de escritorio)
- * - Cualquier otra ruta → pantalla "Próximamente" en escritorio, web completa en móvil
+ * - /admin → siempre se muestra el panel de admin
+ * - /pago/* → páginas de retorno de Redsys
+ * - Cualquier otra ruta → pantalla "Próximamente" en todos los dispositivos
  */
 function AppRouter() {
   const [location] = useLocation();
@@ -268,7 +269,8 @@ function AppRouter() {
     );
   }
 
-  return <MobileRouter />;
+  // Pantalla Próximamente en todos los dispositivos (móvil + escritorio)
+  return <ComingSoon />;
 }
 
 // NOTE: About Theme
