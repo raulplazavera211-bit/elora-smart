@@ -82,18 +82,18 @@ function ComingSoon() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
 
       {/* Contenido central */}
-      <div className="relative z-10 flex flex-col items-center gap-10 px-8 text-center max-w-3xl">
+      <div className="relative z-10 flex flex-col items-center gap-6 md:gap-10 px-6 md:px-8 text-center max-w-3xl w-full">
 
         {/* Logo */}
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-2 md:gap-3">
           <img
             src={LOGO_URL}
             alt="Elora Smart"
-            className="h-16 w-auto brightness-0 invert opacity-95"
+            className="h-10 md:h-16 w-auto"
             style={{ filter: "brightness(0) invert(1) drop-shadow(0 0 20px rgba(245,164,91,0.4))" }}
           />
           <p
-            className="text-[9px] uppercase tracking-[0.6em] text-amber-400/70"
+            className="text-[8px] md:text-[9px] uppercase tracking-[0.5em] md:tracking-[0.6em] text-amber-400/70"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
             Smart · Est. Galicia 2024
@@ -101,7 +101,7 @@ function ComingSoon() {
         </div>
 
         {/* Separador */}
-        <div className="flex items-center gap-4 w-full max-w-xs">
+        <div className="flex items-center gap-4 w-full max-w-[200px] md:max-w-xs">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent to-amber-500/40" />
           <div className="w-1 h-1 rounded-full bg-amber-500/60" />
           <div className="flex-1 h-px bg-gradient-to-l from-transparent to-amber-500/40" />
@@ -110,13 +110,13 @@ function ComingSoon() {
         {/* Título principal */}
         <div>
           <p
-            className="text-[10px] uppercase tracking-[0.6em] text-amber-400/80 mb-5"
+            className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-amber-400/80 mb-3 md:mb-5"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
             Algo extraordinario está a punto de llegar
           </p>
           <h1
-            className="text-6xl xl:text-8xl uppercase text-white leading-none mb-5"
+            className="text-4xl sm:text-5xl md:text-6xl xl:text-8xl uppercase text-white leading-tight md:leading-none mb-3 md:mb-5"
             style={{
               fontFamily: "'Oswald', sans-serif",
               fontWeight: 200,
@@ -127,33 +127,33 @@ function ComingSoon() {
             {done ? "Ya estamos aquí" : "Próximamente"}
           </h1>
           <p
-            className="text-white/50 text-sm tracking-[0.2em] uppercase leading-relaxed max-w-md mx-auto"
+            className="text-white/50 text-xs md:text-sm tracking-[0.15em] md:tracking-[0.2em] uppercase leading-relaxed max-w-xs md:max-w-md mx-auto"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Estamos ultimando los últimos detalles para ofrecerte<br />
-            la experiencia Elora que mereces.
+            Estamos ultimando los últimos detalles<br className="hidden md:block" />
+            {" "}para ofrecerte la experiencia Elora que mereces.
           </p>
         </div>
 
         {/* Cuenta atrás */}
         {!done && (
-          <div className="flex items-end gap-1 md:gap-2">
+          <div className="flex items-end gap-2 md:gap-3">
             {[{ val: hours, label: "Horas" }, { val: minutes, label: "Min" }, { val: seconds, label: "Seg" }].map(
               (item, i) => (
-                <div key={item.label} className="flex items-end gap-1 md:gap-2">
+                <div key={item.label} className="flex items-end gap-2 md:gap-3">
                   <div className="flex flex-col items-center">
                     <div
                       className="relative flex items-center justify-center"
                       style={{
-                        width: "clamp(70px, 20vw, 100px)",
-                        height: "clamp(70px, 20vw, 100px)",
-                        background: "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(245,164,91,0.2)",
+                        width: "clamp(72px, 22vw, 100px)",
+                        height: "clamp(72px, 22vw, 100px)",
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(245,164,91,0.25)",
                         backdropFilter: "blur(10px)",
                       }}
                     >
                       <span
-                        className="text-4xl md:text-5xl text-white tabular-nums"
+                        className="text-3xl sm:text-4xl md:text-5xl text-white tabular-nums"
                         style={{
                           fontFamily: "'Oswald', sans-serif",
                           fontWeight: 200,
@@ -165,7 +165,7 @@ function ComingSoon() {
                       </span>
                     </div>
                     <p
-                      className="text-[9px] uppercase tracking-[0.4em] text-amber-400/50 mt-2"
+                      className="text-[8px] md:text-[9px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-amber-400/50 mt-2"
                       style={{ fontFamily: "'Outfit', sans-serif" }}
                     >
                       {item.label}
@@ -173,7 +173,7 @@ function ComingSoon() {
                   </div>
                   {i < 2 && (
                     <span
-                      className="text-2xl md:text-3xl text-amber-500/40 mb-8"
+                      className="text-xl md:text-3xl text-amber-500/40 mb-9"
                       style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 200 }}
                     >
                       :
@@ -186,7 +186,7 @@ function ComingSoon() {
         )}
 
         {/* Separador inferior */}
-        <div className="flex items-center gap-4 w-full max-w-xs">
+        <div className="flex items-center gap-4 w-full max-w-[200px] md:max-w-xs">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent to-amber-500/30" />
           <div className="w-1 h-1 rounded-full bg-amber-500/40" />
           <div className="flex-1 h-px bg-gradient-to-l from-transparent to-amber-500/30" />
@@ -194,7 +194,7 @@ function ComingSoon() {
 
         {/* Tagline inferior */}
         <p
-          className="text-white/20 text-xs tracking-[0.4em] uppercase"
+          className="text-white/20 text-[10px] tracking-[0.3em] md:tracking-[0.4em] uppercase"
           style={{ fontFamily: "'Outfit', sans-serif" }}
         >
           elorasmart.online · Bertamiráns, Galicia
