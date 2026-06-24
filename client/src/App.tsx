@@ -18,49 +18,192 @@ import PagoOk from "./pages/PagoOk";
 import PagoKo from "./pages/PagoKo";
 import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
+import { useEffect, useRef, useState } from "react";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+const HERO_VIDEO = "/manus-storage/elora-hero-drone-trimmed_8ab79e91.mp4";
+
+// Duración del contador: 22 horas en ms
+const COUNTDOWN_DURATION_MS = 22 * 60 * 60 * 1000;
+
+function useCountdown() {
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const stored = localStorage.getItem("elora_countdown_end");
+    if (stored) {
+      const end = parseInt(stored, 10);
+      const diff = end - Date.now();
+      return diff > 0 ? diff : 0;
+    }
+    const end = Date.now() + COUNTDOWN_DURATION_MS;
+    localStorage.setItem("elora_countdown_end", String(end));
+    return COUNTDOWN_DURATION_MS;
+  });
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const interval = setInterval(() => {
+      const stored = localStorage.getItem("elora_countdown_end");
+      if (stored) {
+        const diff = parseInt(stored, 10) - Date.now();
+        setTimeLeft(diff > 0 ? diff : 0);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timeLeft]);
+
+  const hours = String(Math.floor(timeLeft / (1000 * 60 * 60))).padStart(2, "0");
+  const minutes = String(Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
+  const seconds = String(Math.floor((timeLeft % (1000 * 60)) / 1000)).padStart(2, "0");
+
+  return { hours, minutes, seconds, done: timeLeft <= 0 };
+}
 
 function ComingSoonDesktop() {
+  const { hours, minutes, seconds, done } = useCountdown();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   return (
-    <div
-      className="hidden md:flex flex-col items-center justify-center min-h-screen w-full relative"
-      style={{
-        background: "#0a0a0a",
-        backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,164,91,0.08) 0%, transparent 70%)",
-      }}
-    >
-      <div className="flex flex-col items-center gap-8 px-8 text-center">
-        <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto brightness-0 invert opacity-90" />
-        <div className="w-16 h-px bg-amber-500/60" />
-        <div>
+    <div className="hidden md:flex flex-col items-center justify-center min-h-screen w-full relative overflow-hidden bg-black">
+      {/* Video de fondo */}
+      <video
+        ref={videoRef}
+        src={HERO_VIDEO}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-40"
+      />
+      {/* Gradiente oscuro encima del video */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
+
+      {/* Línea superior decorativa */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+
+      {/* Contenido central */}
+      <div className="relative z-10 flex flex-col items-center gap-10 px-8 text-center max-w-3xl">
+
+        {/* Logo */}
+        <div className="flex flex-col items-center gap-3">
+          <img
+            src={LOGO_URL}
+            alt="Elora Smart"
+            className="h-16 w-auto brightness-0 invert opacity-95"
+            style={{ filter: "brightness(0) invert(1) drop-shadow(0 0 20px rgba(245,164,91,0.4))" }}
+          />
           <p
-            className="text-[10px] uppercase tracking-[0.5em] text-amber-500/80 mb-4"
+            className="text-[9px] uppercase tracking-[0.6em] text-amber-400/70"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Versión escritorio
-          </p>
-          <h1
-            className="text-5xl md:text-7xl uppercase tracking-wide text-white leading-none mb-4"
-            style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 300 }}
-          >
-            Próximamente
-          </h1>
-          <p
-            className="text-white/40 text-sm tracking-widest uppercase"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
-            Mientras tanto, visítanos desde tu móvil.
+            Smart · Est. Galicia 2024
           </p>
         </div>
-        <div className="w-16 h-px bg-amber-500/60" />
+
+        {/* Separador */}
+        <div className="flex items-center gap-4 w-full max-w-xs">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-amber-500/40" />
+          <div className="w-1 h-1 rounded-full bg-amber-500/60" />
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-amber-500/40" />
+        </div>
+
+        {/* Título principal */}
+        <div>
+          <p
+            className="text-[10px] uppercase tracking-[0.6em] text-amber-400/80 mb-5"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            Algo extraordinario está a punto de llegar
+          </p>
+          <h1
+            className="text-6xl xl:text-8xl uppercase text-white leading-none mb-5"
+            style={{
+              fontFamily: "'Oswald', sans-serif",
+              fontWeight: 200,
+              letterSpacing: "0.08em",
+              textShadow: "0 0 60px rgba(245,164,91,0.15)",
+            }}
+          >
+            {done ? "Ya estamos aquí" : "Próximamente"}
+          </h1>
+          <p
+            className="text-white/50 text-sm tracking-[0.2em] uppercase leading-relaxed max-w-md mx-auto"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            Estamos ultimando los últimos detalles para ofrecerte<br />
+            la experiencia Elora que mereces.
+          </p>
+        </div>
+
+        {/* Cuenta atrás */}
+        {!done && (
+          <div className="flex items-end gap-2">
+            {[{ val: hours, label: "Horas" }, { val: minutes, label: "Min" }, { val: seconds, label: "Seg" }].map(
+              (item, i) => (
+                <div key={item.label} className="flex items-end gap-2">
+                  <div className="flex flex-col items-center">
+                    <div
+                      className="relative flex items-center justify-center"
+                      style={{
+                        width: "90px",
+                        height: "90px",
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(245,164,91,0.2)",
+                        backdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <span
+                        className="text-5xl text-white tabular-nums"
+                        style={{
+                          fontFamily: "'Oswald', sans-serif",
+                          fontWeight: 200,
+                          letterSpacing: "0.05em",
+                          textShadow: "0 0 30px rgba(245,164,91,0.3)",
+                        }}
+                      >
+                        {item.val}
+                      </span>
+                    </div>
+                    <p
+                      className="text-[9px] uppercase tracking-[0.4em] text-amber-400/50 mt-2"
+                      style={{ fontFamily: "'Outfit', sans-serif" }}
+                    >
+                      {item.label}
+                    </p>
+                  </div>
+                  {i < 2 && (
+                    <span
+                      className="text-3xl text-amber-500/40 mb-8"
+                      style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 200 }}
+                    >
+                      :
+                    </span>
+                  )}
+                </div>
+              )
+            )}
+          </div>
+        )}
+
+        {/* Separador inferior */}
+        <div className="flex items-center gap-4 w-full max-w-xs">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-amber-500/30" />
+          <div className="w-1 h-1 rounded-full bg-amber-500/40" />
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-amber-500/30" />
+        </div>
+
+        {/* Tagline inferior */}
         <p
-          className="text-white/20 text-xs tracking-[0.3em] uppercase"
+          className="text-white/20 text-xs tracking-[0.4em] uppercase"
           style={{ fontFamily: "'Outfit', sans-serif" }}
         >
-          elorasmart.com
+          elorasmart.online · Bertamiráns, Galicia
         </p>
       </div>
+
+      {/* Línea inferior decorativa */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+
       <PromoPopup />
     </div>
   );
