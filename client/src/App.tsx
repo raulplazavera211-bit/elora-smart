@@ -23,19 +23,24 @@ import { useEffect, useRef, useState } from "react";
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 const HERO_VIDEO = "/manus-storage/elora-hero-drone-trimmed_8ab79e91.mp4";
 
-// Duración del contador: 22 horas en ms
-const COUNTDOWN_DURATION_MS = 22 * 60 * 60 * 1000;
+// Duración del contador: 34 horas en ms (22h originales + 12h extra)
+const COUNTDOWN_DURATION_MS = 34 * 60 * 60 * 1000;
+// Versión del contador — al cambiar este valor se fuerza reset en todos los visitantes
+const COUNTDOWN_VERSION = "v2";
 
 function useCountdown() {
   const [timeLeft, setTimeLeft] = useState(() => {
+    const storedVersion = localStorage.getItem("elora_countdown_version");
     const stored = localStorage.getItem("elora_countdown_end");
-    if (stored) {
+    // Si la versión cambió, resetear el contador
+    if (stored && storedVersion === COUNTDOWN_VERSION) {
       const end = parseInt(stored, 10);
       const diff = end - Date.now();
       return diff > 0 ? diff : 0;
     }
     const end = Date.now() + COUNTDOWN_DURATION_MS;
     localStorage.setItem("elora_countdown_end", String(end));
+    localStorage.setItem("elora_countdown_version", COUNTDOWN_VERSION);
     return COUNTDOWN_DURATION_MS;
   });
 
