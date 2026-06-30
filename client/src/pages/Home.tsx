@@ -1397,9 +1397,31 @@ export default function Home() {
 
   useEffect(() => {
     if (productsQuery.data) {
-      const featured = productsQuery.data.filter((p: any) => 
-        ['ESENZA', 'AURA-COMPACT', 'AURA-SUSPENDIDO'].includes(p.slug)
-      );
+      const parseJsonField = (val: any, fallback: any) => {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') { try { return JSON.parse(val); } catch { return fallback; } }
+        if (val && typeof val === 'object') return val;
+        return fallback;
+      };
+      const featured = productsQuery.data
+        .filter((p: any) => ['esenza', 'esenza-compact', 'aura-compact'].includes(p.slug?.toLowerCase()))
+        .map((p: any) => ({
+          ...p,
+          id: p.slug,
+          price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
+          img: p.img || '',
+          gallery: parseJsonField(p.gallery, []),
+          badges: parseJsonField(p.badges, []),
+          highlights: parseJsonField(p.highlights, []),
+          features: parseJsonField(p.features, []),
+          pitch: parseJsonField(p.pitch, []),
+          technical: parseJsonField(p.technical, []),
+          dimensions: parseJsonField(p.dimensions, []),
+          inTheBox: parseJsonField(p.inTheBox, []),
+          installation: parseJsonField(p.installation, []),
+          warranty: parseJsonField(p.warranty, { years: 3, details: '' }),
+          faqs: parseJsonField(p.faqs, []),
+        }));
       if (featured.length > 0) {
         setHomeProducts(featured as any);
       }
