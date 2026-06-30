@@ -498,17 +498,26 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         const buffer = Buffer.from(input.imageBase64, "base64");
-        const fileName = input.fileName || `product-${input.productId}-${Date.now()}.jpg`;
-        const { url } = await storagePut(`products/${fileName}`, buffer, "image/jpeg");
+        const ext = (input.fileName || "image.jpg").split(".").pop()?.toLowerCase() || "jpg";
+        const mimeMap: Record<string, string> = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" };
+        const mime = mimeMap[ext] || "image/jpeg";
+        const fileName = `product-${input.productId}-${Date.now()}.${ext}`;
+        const { url } = await storagePut(`products/${fileName}`, buffer, mime);
 
         if (input.imageType === "main") {
           await updateProduct(input.productId, { img: url });
         } else {
           const product = await getProductById(input.productId);
           if (!product) throw new TRPCError({ code: "NOT_FOUND", message: "Producto no encontrado" });
-          const gallery = (product.gallery as string[]) || [];
+          // Parsear gallery: puede ser string JSON, array, o null
+          let gallery: string[] = [];
+          if (Array.isArray(product.gallery)) {
+            gallery = product.gallery as string[];
+          } else if (typeof product.gallery === "string") {
+            try { gallery = JSON.parse(product.gallery); } catch { gallery = []; }
+          }
           gallery.push(url);
-          await updateProduct(input.productId, { gallery });
+          await updateProduct(input.productId, { gallery: gallery as unknown as string[] });
         }
         return { success: true, url };
       }),
@@ -525,8 +534,15 @@ export const appRouter = router({
         if (product.img === input.imageUrl) {
           await updateProduct(input.productId, { img: null });
         } else {
-          const gallery = ((product.gallery as string[]) || []).filter(url => url !== input.imageUrl);
-          await updateProduct(input.productId, { gallery });
+          // Parsear gallery: puede ser string JSON, array, o null
+          let gallery: string[] = [];
+          if (Array.isArray(product.gallery)) {
+            gallery = product.gallery as string[];
+          } else if (typeof product.gallery === "string") {
+            try { gallery = JSON.parse(product.gallery); } catch { gallery = []; }
+          }
+          const filtered = gallery.filter(url => url !== input.imageUrl);
+          await updateProduct(input.productId, { gallery: filtered as unknown as string[] });
         }
         return { success: true };
       }),

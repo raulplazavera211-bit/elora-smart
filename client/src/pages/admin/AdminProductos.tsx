@@ -228,7 +228,12 @@ export default function AdminProductos() {
                     <ProductImageManager
                       productId={product.id}
                       currentMainImage={product.img}
-                      currentGallery={(product.gallery as string[]) || []}
+                      currentGallery={(() => {
+                        const g = product.gallery;
+                        if (Array.isArray(g)) return g as string[];
+                        if (typeof g === "string") { try { return JSON.parse(g) as string[]; } catch { return []; } }
+                        return [];
+                      })()}
                       onSuccess={() => utils.admin.getProducts.invalidate()}
                     />
                   </div>
