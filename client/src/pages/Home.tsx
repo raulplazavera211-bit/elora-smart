@@ -639,7 +639,7 @@ const EXTRA_PRODUCTS: Product[] = [
 ];
 
 const ALL_PRODUCTS = ALL_PRODS;
-const HOME_PRODUCTS = FEATURED_PRODUCTS;
+const HOME_PRODUCTS_FALLBACK = FEATURED_PRODUCTS;
 
 // ─── Tipos ─────────────────────────────────────────────────────────────────────
 // CartItem importado desde @/components/CartPanel
@@ -1392,6 +1392,19 @@ function EsenciaVideoCard() {
 
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
+  const [homeProducts, setHomeProducts] = useState(HOME_PRODUCTS_FALLBACK);
+  const productsQuery = trpc.products.getAll.useQuery();
+
+  useEffect(() => {
+    if (productsQuery.data) {
+      const featured = productsQuery.data.filter((p: any) => 
+        ['ESENZA', 'AURA-COMPACT', 'AURA-SUSPENDIDO'].includes(p.slug)
+      );
+      if (featured.length > 0) {
+        setHomeProducts(featured as any);
+      }
+    }
+  }, [productsQuery.data]);
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -1900,7 +1913,7 @@ export default function Home() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-                    {HOME_PRODUCTS.map((prod, idx) => (
+                    {homeProducts.map((prod, idx) => (
                       <motion.div
                         key={prod.id}
                         initial={{ opacity: 0, y: 60, scale: 0.95 }}

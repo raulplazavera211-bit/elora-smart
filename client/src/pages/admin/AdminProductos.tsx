@@ -1,8 +1,9 @@
 // ─── AdminProductos — Gestión de productos ───────────────────────────────────
 import { AdminLayout } from "@/components/AdminLayout";
+import { ProductImageManager } from "@/components/ProductImageManager";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
-import { Package, Edit2, Eye, EyeOff, Loader2, AlertCircle, Check, X } from "lucide-react";
+import { Package, Edit2, Eye, EyeOff, Loader2, AlertCircle, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminProductos() {
@@ -26,6 +27,7 @@ export default function AdminProductos() {
   });
 
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<{ price: string; stock: string; name: string; tagline: string }>({
     price: "", stock: "", name: "", tagline: ""
   });
@@ -112,127 +114,127 @@ export default function AdminProductos() {
             <p className="font-body text-sm text-foreground/30">Haz clic en "Cargar los 6 productos" para empezar.</p>
           </div>
         ) : (
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-foreground/3">
-                  <th className="text-left px-5 py-3 font-body text-[10px] uppercase tracking-widest text-foreground/40">Producto</th>
-                  <th className="text-left px-5 py-3 font-body text-[10px] uppercase tracking-widest text-foreground/40 hidden lg:table-cell">Precio</th>
-                  <th className="text-left px-5 py-3 font-body text-[10px] uppercase tracking-widest text-foreground/40 hidden md:table-cell">Stock</th>
-                  <th className="text-left px-5 py-3 font-body text-[10px] uppercase tracking-widest text-foreground/40">Estado</th>
-                  <th className="text-right px-5 py-3 font-body text-[10px] uppercase tracking-widest text-foreground/40">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map(product => (
-                  <tr key={product.id} className="border-b border-border last:border-0 hover:bg-foreground/2 transition-colors">
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-4">
-                        {product.img && (
-                          <div className="w-12 h-12 shrink-0 overflow-hidden border border-border bg-foreground/5 rounded">
-                            <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
-                          </div>
-                        )}
-                        <div className="min-w-0">
-                          {editingId === product.id ? (
-                            <input
-                              value={editForm.name}
-                              onChange={e => setEditForm(f => ({...f, name: e.target.value}))}
-                              className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-full max-w-xs"
-                            />
-                          ) : (
-                            <p className="font-body text-sm font-medium text-foreground truncate">{product.name}</p>
-                          )}
-                          {editingId === product.id ? (
-                            <input
-                              value={editForm.tagline}
-                              onChange={e => setEditForm(f => ({...f, tagline: e.target.value}))}
-                              className="bg-background border border-border px-2 py-1 font-body text-xs text-foreground/60 focus:outline-none focus:border-accent-deep w-full max-w-xs mt-1"
-                              placeholder="Tagline..."
-                            />
-                          ) : (
-                            <p className="font-body text-xs text-foreground/40 truncate mt-0.5">{product.tagline ?? ""}</p>
-                          )}
-                        </div>
+          <div className="space-y-4">
+            {data.map(product => (
+              <div key={product.id} className="bg-card border border-border rounded-lg overflow-hidden">
+                <div className="p-5 flex items-center justify-between hover:bg-foreground/2 transition-colors">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    {product.img && (
+                      <div className="w-16 h-16 shrink-0 overflow-hidden border border-border bg-foreground/5 rounded">
+                        <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
                       </div>
-                    </td>
-                    <td className="px-5 py-4 hidden lg:table-cell">
+                    )}
+                    <div className="min-w-0 flex-1">
                       {editingId === product.id ? (
-                        <div className="flex items-center gap-1">
+                        <div className="space-y-2">
+                          <input
+                            value={editForm.name}
+                            onChange={e => setEditForm(f => ({...f, name: e.target.value}))}
+                            className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-full max-w-xs"
+                          />
+                          <input
+                            value={editForm.tagline}
+                            onChange={e => setEditForm(f => ({...f, tagline: e.target.value}))}
+                            className="bg-background border border-border px-2 py-1 font-body text-xs text-foreground/60 focus:outline-none focus:border-accent-deep w-full max-w-xs"
+                            placeholder="Tagline..."
+                          />
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="number"
+                              value={editForm.price}
+                              onChange={e => setEditForm(f => ({...f, price: e.target.value}))}
+                              className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-24"
+                              step="0.01"
+                              min="0"
+                            />
+                            <span className="font-body text-xs text-foreground/40">€</span>
+                          </div>
                           <input
                             type="number"
-                            value={editForm.price}
-                            onChange={e => setEditForm(f => ({...f, price: e.target.value}))}
-                            className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-24"
-                            step="0.01"
+                            value={editForm.stock}
+                            onChange={e => setEditForm(f => ({...f, stock: e.target.value}))}
+                            className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-20"
                             min="0"
                           />
-                          <span className="font-body text-xs text-foreground/40">€</span>
                         </div>
                       ) : (
-                        <span className="font-display text-sm text-foreground">{parseFloat(product.price).toLocaleString('es-ES')} €</span>
+                        <>
+                          <p className="font-body text-sm font-medium text-foreground truncate">{product.name}</p>
+                          <p className="font-body text-xs text-foreground/40 truncate mt-0.5">{product.tagline ?? ""}</p>
+                          <div className="flex gap-4 mt-2 font-body text-xs text-foreground/60">
+                            <span>{parseFloat(product.price).toLocaleString('es-ES')} €</span>
+                            <span>Stock: {product.stock}</span>
+                          </div>
+                        </>
                       )}
-                    </td>
-                    <td className="px-5 py-4 hidden md:table-cell">
-                      {editingId === product.id ? (
-                        <input
-                          type="number"
-                          value={editForm.stock}
-                          onChange={e => setEditForm(f => ({...f, stock: e.target.value}))}
-                          className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-20"
-                          min="0"
-                        />
-                      ) : (
-                        <span className="font-body text-sm text-foreground/70">{product.stock}</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-4">
-                      <button
-                        onClick={() => toggleActive(product.id, product.active)}
-                        disabled={updateProduct.isPending}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-body text-[10px] uppercase tracking-widest transition-colors ${
-                          product.active
-                            ? "bg-green-500/20 text-green-400 hover:bg-green-500/30"
-                            : "bg-foreground/10 text-foreground/40 hover:bg-foreground/20"
-                        }`}
-                      >
-                        {product.active ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
-                        {product.active ? "Activo" : "Oculto"}
-                      </button>
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      {editingId === product.id ? (
-                        <div className="flex items-center gap-2 justify-end">
-                          <button
-                            onClick={() => saveEdit(product.id)}
-                            disabled={updateProduct.isPending}
-                            className="flex items-center gap-1 bg-green-500/20 text-green-400 hover:bg-green-500/30 px-3 py-1.5 rounded font-body text-xs transition-colors"
-                          >
-                            {updateProduct.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
-                            Guardar
-                          </button>
-                          <button
-                            onClick={cancelEdit}
-                            className="flex items-center gap-1 bg-foreground/10 text-foreground/50 hover:bg-foreground/20 px-3 py-1.5 rounded font-body text-xs transition-colors"
-                          >
-                            <X className="w-3 h-3" />
-                            Cancelar
-                          </button>
-                        </div>
-                      ) : (
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 ml-4">
+                    <button
+                      onClick={() => toggleActive(product.id, product.active)}
+                      disabled={updateProduct.isPending}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-body text-[10px] uppercase tracking-widest transition-colors ${
+                        product.active
+                          ? "bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                          : "bg-foreground/10 text-foreground/40 hover:bg-foreground/20"
+                      }`}
+                    >
+                      {product.active ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                      {product.active ? "Activo" : "Oculto"}
+                    </button>
+
+                    {editingId === product.id ? (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => saveEdit(product.id)}
+                          disabled={updateProduct.isPending}
+                          className="flex items-center gap-1 bg-green-500/20 text-green-400 hover:bg-green-500/30 px-3 py-1.5 rounded font-body text-xs transition-colors"
+                        >
+                          {updateProduct.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
+                          Guardar
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="flex items-center gap-1 bg-foreground/10 text-foreground/50 hover:bg-foreground/20 px-3 py-1.5 rounded font-body text-xs transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                          Cancelar
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => startEdit(product)}
-                          className="flex items-center gap-1.5 text-foreground/40 hover:text-foreground transition-colors font-body text-xs ml-auto"
+                          className="flex items-center gap-1.5 text-foreground/40 hover:text-foreground transition-colors font-body text-xs"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                           Editar
                         </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        <button
+                          onClick={() => setExpandedId(expandedId === product.id ? null : product.id)}
+                          className="flex items-center gap-1.5 text-foreground/40 hover:text-foreground transition-colors font-body text-xs"
+                        >
+                          {expandedId === product.id ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                          Imágenes
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {expandedId === product.id && (
+                  <div className="border-t border-border p-6 bg-foreground/1">
+                    <ProductImageManager
+                      productId={product.id}
+                      currentMainImage={product.img}
+                      currentGallery={(product.gallery as string[]) || []}
+                      onSuccess={() => utils.admin.getProducts.invalidate()}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

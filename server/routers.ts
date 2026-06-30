@@ -55,6 +55,7 @@ import {
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 import { sendOrderConfirmationEmail } from "./email";
+import { storagePut } from "./storage";
 
 export const appRouter = router({
   system: systemRouter,
@@ -485,6 +486,48 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         await updateOrderStatus(input.id, input.status);
+        return { success: true };
+      }),
+
+    uploadProductImage: adminProcedure
+      .input(z.object({
+        productId: z.number(),
+        imageBase64: z.string(),
+        imageType: z.enum(["main", "gallery"]),
+        fileName: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const buffer = Buffer.from(input.imageBase64, "base64");
+        const fileName = input.fileName || `product-${input.productId}-${Date.now()}.jpg`;
+        const { url } = await storagePut(`products/${fileName}`, buffer, "image/jpeg");
+
+        if (input.imageType === "main") {
+          await updateProduct(input.productId, { img: url });
+        } else {
+          const product = await getProductById(input.productId);
+          if (!product) throw new TRPCError({ code: "NOT_FOUND", message: "Producto no encontrado" });
+          const gallery = (product.gallery as string[]) || [];
+          gallery.push(url);
+          await updateProduct(input.productId, { gallery });
+        }
+        return { success: true, url };
+      }),
+
+    removeProductImage: adminProcedure
+      .input(z.object({
+        productId: z.number(),
+        imageUrl: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const product = await getProductById(input.productId);
+        if (!product) throw new TRPCError({ code: "NOT_FOUND", message: "Producto no encontrado" });
+        
+        if (product.img === input.imageUrl) {
+          await updateProduct(input.productId, { img: null });
+        } else {
+          const gallery = ((product.gallery as string[]) || []).filter(url => url !== input.imageUrl);
+          await updateProduct(input.productId, { gallery });
+        }
         return { success: true };
       }),
   }),
