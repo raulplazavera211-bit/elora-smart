@@ -274,8 +274,16 @@ function AppRouter() {
     );
   }
 
-  // Pantalla Próximamente en todos los dispositivos (móvil + escritorio)
-  return <ComingSoon />;
+  // Mostrar la web completa
+  return (
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route path="/coleccion" component={Coleccion} />
+      <Route path="/pago/ok" component={PagoOk} />
+      <Route path="/pago/ko" component={PagoKo} />
+      <Route component={NotFound} />
+    </Switch>
+  );
 }
 
 // NOTE: About Theme
