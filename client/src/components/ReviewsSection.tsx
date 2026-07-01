@@ -1,8 +1,8 @@
 // ─── Sección de reseñas compartida ───────────────────────────────────────────
-// Usa REVIEWS y AVATAR_COLORS de @/lib/reviews (fuente única de verdad).
-// Importar en cualquier página que necesite mostrar las reseñas.
+// Usa getReviews(lang) de @/lib/reviews para mostrar reseñas en el idioma activo.
 
-import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
+import { useTranslation } from "react-i18next";
+import { getReviews, AVATAR_COLORS } from "@/lib/reviews";
 
 function GoogleStarIcon() {
   return (
@@ -23,7 +23,7 @@ function GoogleLogoIcon() {
   );
 }
 
-function ReviewCard({ r, idx }: { r: typeof REVIEWS[number]; idx: number }) {
+function ReviewCard({ r, idx }: { r: ReturnType<typeof getReviews>[number]; idx: number }) {
   const color = AVATAR_COLORS[idx % AVATAR_COLORS.length];
   return (
     <div className="w-[300px] md:w-[340px] flex-shrink-0 bg-white rounded-xl shadow-[0_1px_6px_rgba(0,0,0,0.12)] p-5 border border-gray-100 hover:shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition-shadow duration-300">
@@ -51,23 +51,25 @@ function ReviewCard({ r, idx }: { r: typeof REVIEWS[number]; idx: number }) {
 }
 
 export function ReviewsSection() {
-  const doubled = [...REVIEWS, ...REVIEWS];
+  const { t, i18n } = useTranslation();
+  const reviews = getReviews(i18n.language);
+  const doubled = [...reviews, ...reviews];
   return (
     <section className="w-full bg-[#F8F9FA] py-20 md:py-28 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 md:px-16 mb-12">
         <div className="flex items-center gap-2 mb-3">
           <GoogleLogoIcon />
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-gray-400">Reseñas verificadas en Google</p>
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-gray-400">{t('reviews.verified')}</p>
         </div>
         <div className="flex items-end justify-between">
           <h2 className="font-display text-4xl md:text-6xl uppercase tracking-wide text-foreground leading-[0.9]">
-            Lo que dicen nuestros clientes
+            {t('reviews.title')}
           </h2>
           <div className="hidden md:flex items-center gap-3 bg-white rounded-xl px-5 py-3 shadow-sm border border-gray-100">
             <div className="text-center">
               <p className="font-bold text-gray-900 text-2xl leading-none">5.0</p>
               <div className="flex gap-0.5 mt-1">{[1,2,3,4,5].map(i => <GoogleStarIcon key={i} />)}</div>
-              <p className="text-gray-400 text-xs mt-1">10 reseñas</p>
+              <p className="text-gray-400 text-xs mt-1">{t('reviews.count')}</p>
             </div>
           </div>
         </div>
@@ -76,14 +78,14 @@ export function ReviewsSection() {
       {/* Carrusel infinito fila 1 → izquierda */}
       <div className="relative">
         <div className="flex gap-5 w-max" style={{ animation: "marquee-left 40s linear infinite" }}>
-          {doubled.map((r, i) => <ReviewCard key={i} r={r} idx={i % REVIEWS.length} />)}
+          {doubled.map((r, i) => <ReviewCard key={i} r={r} idx={i % reviews.length} />)}
         </div>
       </div>
 
       {/* Carrusel infinito fila 2 → derecha */}
       <div className="relative mt-5">
         <div className="flex gap-5 w-max" style={{ animation: "marquee-right 50s linear infinite" }}>
-          {[...doubled].reverse().map((r, i) => <ReviewCard key={i} r={r} idx={(REVIEWS.length - 1 - (i % REVIEWS.length))} />)}
+          {[...doubled].reverse().map((r, i) => <ReviewCard key={i} r={r} idx={(reviews.length - 1 - (i % reviews.length))} />)}
         </div>
       </div>
 

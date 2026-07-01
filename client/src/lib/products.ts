@@ -608,3 +608,43 @@ export const ALL_PRODUCTS: Product[] = [
 export const FEATURED_PRODUCTS = ALL_PRODUCTS.filter(p =>
   ["ESENZA", "AURA-COMPACT", "AURA-SUSPENDIDO"].includes(p.id)
 );
+
+// ─── Productos localizados ────────────────────────────────────────────────────
+import { getProductLocale } from "@/i18n/products";
+
+/**
+ * Devuelve ALL_PRODUCTS con los textos (name, tagline, description,
+ * longDescription, badges, highlights, pitch, features, technical,
+ * dimensions, inTheBox, installation, warranty.details, faqs) en el
+ * idioma solicitado. Los datos no-textuales (img, gallery, price, etc.)
+ * se mantienen del catálogo base.
+ */
+export function getLocalizedProducts(lang: string): Product[] {
+  return ALL_PRODUCTS.map(p => {
+    const loc = getProductLocale(p.id, lang);
+    if (!loc) return p;
+    return {
+      ...p,
+      name: loc.name,
+      tagline: loc.tagline,
+      description: loc.description,
+      longDescription: loc.longDescription,
+      badges: loc.badges,
+      highlights: loc.highlights,
+      pitch: loc.pitch,
+      features: loc.features,
+      technical: loc.technical,
+      dimensions: loc.dimensions,
+      inTheBox: loc.inTheBox,
+      installation: loc.installation,
+      warranty: { ...p.warranty, details: loc.warrantyDetails },
+      faqs: loc.faqs,
+    };
+  });
+}
+
+export function getLocalizedFeatured(lang: string): Product[] {
+  return getLocalizedProducts(lang).filter(p =>
+    ["ESENZA", "AURA-COMPACT", "AURA-SUSPENDIDO"].includes(p.id)
+  );
+}

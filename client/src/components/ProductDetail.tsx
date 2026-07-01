@@ -104,14 +104,14 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                   {product.originalPrice && (
                     <div className="flex items-center gap-2">
                       <span className="font-body text-sm text-foreground/40 line-through">
-                        {product.originalPrice.toLocaleString('es-ES')} €
+                        {product.originalPrice.toLocaleString()} €
                       </span>
                       <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-2 py-0.5 rounded">
                         {t('coleccion.offer')}
                       </span>
                     </div>
                   )}
-                  <p className="font-display text-3xl sm:text-4xl md:text-5xl tracking-wide">{product.price.toLocaleString('es-ES')} €</p>
+                  <p className="font-display text-3xl sm:text-4xl md:text-5xl tracking-wide">{product.price.toLocaleString()} €</p>
                   <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mt-1">{t('coleccion.vatIncl')}</p>
                 </div>
               </div>
@@ -339,9 +339,9 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
           <div>
             <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-3">{t('product.readyForBath')}</p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-5xl uppercase tracking-wide leading-[0.95] mb-3">
-              {product.name.replace("Inodoro inteligente ", "").replace("Váter ", "")}<br />{t('product.waitingForYou')}
+              {product.name}<br />{t('product.waitingForYou')}
             </h2>
-            <p className="font-display text-xl sm:text-2xl tracking-wide">{product.price.toLocaleString('es-ES')} €</p>
+            <p className="font-display text-xl sm:text-2xl tracking-wide">{product.price.toLocaleString()} €</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <button

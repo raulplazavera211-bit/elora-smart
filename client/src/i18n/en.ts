@@ -56,6 +56,8 @@ const en = {
     title: "The Collection",
     complete: "Complete",
     filterAll: "All",
+    filterEsenza: "ESENZA Range",
+    filterAura: "AURA Range",
     viewDetail: "View detail",
     body: "Six models. One philosophy: advanced hygiene, premium design and the peace of mind of Elora service behind every piece.",
     offer: "Sale",
@@ -73,6 +75,8 @@ const en = {
 
   contacto: {
     eyebrow: "Ready to elevate your space",
+    headline: "Let's talk about your bathroom.",
+    storeTitle: "Elora Smart · Physical Store",
     title: "Let's talk about your bathroom.",
     body: "Tell us what you have in mind. We advise you without commitment on which model best suits your space, installation and budget.",
     store: "Physical store · Bertamiráns (Ames)",
@@ -357,6 +361,73 @@ const en = {
     already: "You are already a member of Elora Club.",
     noSpam: "No spam. You can unsubscribe at any time.",
     error: "Error joining Elora Club. Please try again.",
+  },
+
+  experience: {
+    eyebrow: "The Experience",
+    title: "How it works",
+    titleHighlight: " every time.",
+    steps: [
+      { number: "01", eyebrow: "The moment you approach", title: "The lid lifts automatically", subtitle: "for you", body: "A sensor detects your presence and lifts the lid before you arrive. Without touching anything. Without effort. The toilet already knows you’re there.", tag: "Presence sensor" },
+      { number: "02", eyebrow: "Standing or seated", title: "It detects your posture", subtitle: "and resolves it instantly", body: "It recognises whether you are standing or seated and adjusts behaviour: seat opening, flush type and lid closing. More comfort, fewer gestures.", tag: "Posture detection" },
+      { number: "03", eyebrow: "CLIMADAPT seat", title: "Integrated heating", subtitle: "adjustable to 4 temperatures", body: "The seat adapts automatically to the ambient temperature. Natural, 33°C, 37°C or 39°C. Never again the cold touch of ceramic at dawn.", tag: "CLIMADAPT" },
+      { number: "04", eyebrow: "Complete hygiene with water", title: "Rear, feminine and mobile wash", subtitle: "adjustable temperature and pressure", body: "Instant hot water. Self-cleaning nozzle in stainless steel. Three customisable wash modes. The hygiene that paper can never provide.", tag: "Triple wash system" },
+      { number: "05", eyebrow: "Super-Typhoon drying", title: "In less than 30 seconds", subtitle: "adjustable temperature and speed", body: "A high-performance air jet dries completely in less than 30 seconds. 5 speeds, 4 temperatures. The reality of a paper-free toilet.", tag: "Paper-free" },
+      { number: "06", eyebrow: "Hygienic foam shield", title: "Prevents splashing", subtitle: "and blocks odours", body: "Before each use, the toilet creates a foam barrier in the water. Prevents splashing, neutralises odours and keeps the ceramic cleaner.", tag: "Foam shield" },
+      { number: "07", eyebrow: "Total control", title: "Remote control", subtitle: "to save your preferences", body: "Remote control with memory for 2 users. Saves your temperature settings, wash modes and drying. Fully personalised, always ready.", tag: "2 user profiles" },
+      { number: "08", eyebrow: "UV sterilising lamp", title: "Disinfects completely", subtitle: "with ultraviolet UV", body: "The UV lamp eliminates bacteria and germs automatically. Ambient deodorisation included. The cleanest bathroom, always.", tag: "AURA range" },
+    ],
+  },
+
+  manifestoFeats: [
+    { title: "Real Hygiene", body: "The integrated bidet with warm water cleans with an effectiveness that paper can never achieve. More care, less irritation, zero waste." },
+    { title: "Daily Health", body: "Heated seat, air drying and active carbon filter. A daily gesture that protects sensitive skin and improves wellbeing." },
+    { title: "Silent Luxury", body: "Soft-close lid, ambient night light and personalised modes. Five-star hotel comfort, every morning, at home." },
+  ],
+
+  clubSection: {
+    eyebrow: "Exclusive access",
+    title1: "Club",
+    title2: "Elora",
+    subtitle: "Join and be the first to discover promotions, pre-sale access and private content.",
+    perks: [
+      { title: "Pre-sale access", desc: "Be the first to reserve new models with exclusive discounts before anyone else." },
+      { title: "Private content", desc: "Usage guides, maintenance tips and brand news exclusively for members." },
+      { title: "Exclusive promotions", desc: "Offers and discounts we don’t publish on any other channel. Club members only." },
+      { title: "Priority support", desc: "Direct contact with Elora’s technical team. Guaranteed response in less than 24h." },
+    ],
+    namePlaceholder: "Name",
+    nameLabel: "Name",
+    emailLabel: "Email *",
+    privacyText: "I accept the",
+    privacyLink: "Privacy Policy",
+    joinBtn: "Join Elora Club",
+    joining: "Sending...",
+    welcomeTitle: "Welcome to the club",
+    welcomeBody: "You will soon receive exclusive news in your email.",
+    footer: "Elora Smart · Galicia",
+    error: "Error joining the club. Please try again.",
+  },
+
+  esenciaCards: [
+    { title: "Showroom in Galicia", body: "Come and try it. You’ll fall in love and understand why it changes your daily life." },
+    { title: "10-year warranty", body: "We advise you before, during and after. So you make the right choice and feel at ease." },
+    { title: "Simple installation", body: "You just need a nearby socket and your trusted plumber. Nothing more." },
+    { title: "Real hygiene", body: "Warm water, self-cleaning nozzle and drying in 30 seconds. No paper." },
+  ],
+
+  video: {
+    location: "A Coruña · Galicia",
+    title: "From the Galician quarry to the contemporary bathroom.",
+    waitLabel: "Wait,",
+    waitTitle: "Listen to me.",
+    waitSub: "It’s important.",
+  },
+
+  reviews: {
+    eyebrow: "Verified reviews on Google",
+    title: "What our customers say",
+    count: "10 reviews",
   },
 
   lang: {

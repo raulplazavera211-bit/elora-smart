@@ -7,7 +7,7 @@ import { ArrowLeft, ShoppingBag, X, Menu, MapPin, ShieldCheck, Wrench } from "lu
 import { ProductDetail } from "@/components/ProductDetail";
 import type { Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
-import { ALL_PRODUCTS } from "@/lib/products";
+import { getLocalizedProducts } from "@/lib/products";
 import { trpc } from "@/lib/trpc";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { CartPanel } from "@/components/CartPanel";
@@ -16,12 +16,12 @@ import { useCart } from "@/contexts/CartContext";
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
 export default function Coleccion() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [, navigate] = useLocation();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [displayProducts, setDisplayProducts] = useState<Product[]>(ALL_PRODUCTS as Product[]);
+  const [displayProducts, setDisplayProducts] = useState<Product[]>(() => getLocalizedProducts('es') as Product[]);
 
   const { cart, isCartOpen, addToCart, removeFromCart, openCart, closeCart, totalItems } = useCart();
 
@@ -36,7 +36,8 @@ export default function Coleccion() {
         return fallback;
       };
       // Merge: usar datos de BD para img/gallery, resto del fallback hardcodeado
-      const merged = ALL_PRODUCTS.map((fallback) => {
+      const localizedBase = getLocalizedProducts(i18n.language);
+      const merged = localizedBase.map((fallback) => {
         const fromDb = productsQuery.data.find((p: any) => p.slug?.toLowerCase() === fallback.id?.toLowerCase());
         if (!fromDb) return fallback;
         return {
@@ -49,7 +50,14 @@ export default function Coleccion() {
       });
       setDisplayProducts(merged);
     }
-  }, [productsQuery.data]);
+  }, [productsQuery.data, i18n.language]);
+
+  // Actualizar textos de productos cuando cambie el idioma (sin datos de BD)
+  useEffect(() => {
+    if (!productsQuery.data || productsQuery.data.length === 0) {
+      setDisplayProducts(getLocalizedProducts(i18n.language) as Product[]);
+    }
+  }, [i18n.language]);
 
   const openProduct = (product: Product) => {
     setSelectedProduct(product);
@@ -216,7 +224,7 @@ export default function Coleccion() {
 
               {/* Filtros */}
               <div className="mt-10 mb-12 flex gap-3 flex-wrap">
-                {[t('coleccion.filterAll'), 'Gama ESENZA', 'Gama AURA'].map((f) => (
+                {[t('coleccion.filterAll'), t('coleccion.filterEsenza'), t('coleccion.filterAura')].map((f) => (
                   <span key={f} className="font-body text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-border text-foreground/50 cursor-default">
                     {f}
                   </span>
@@ -248,12 +256,12 @@ export default function Coleccion() {
                           <span
                             key={b}
                             className={`font-body text-[9px] uppercase tracking-[0.2em] px-2 py-1 ${
-                              b === "Más vendido"
+                              b.toLowerCase().includes('vendido') || b.toLowerCase().includes('seller') || b.toLowerCase().includes('vendido') || b.toLowerCase().includes('vendu') || b.toLowerCase().includes('venduto') || b.toLowerCase().includes('mais vendido')
                                 ? "bg-amber-500 text-white font-semibold"
                                 : "bg-foreground text-background"
                             }`}
                           >
-                            {b === "Más vendido" ? "★ " + b : b}
+                            {b.toLowerCase().includes('vendido') || b.toLowerCase().includes('seller') || b.toLowerCase().includes('vendu') || b.toLowerCase().includes('venduto') || b.toLowerCase().includes('mais vendido') ? "★ " + b : b}
                           </span>
                         ))}
                       </div>
@@ -271,12 +279,12 @@ export default function Coleccion() {
                           <div className="flex flex-col gap-0.5">
                             {prod.originalPrice && (
                               <span className="font-body text-xs text-foreground/40 line-through">
-                                {prod.originalPrice.toLocaleString('es-ES')} €
+                                {prod.originalPrice.toLocaleString()} €
                               </span>
                             )}
                             <div className="flex items-baseline gap-2">
                               <span className="font-display text-2xl tracking-wide text-foreground">
-                                {prod.price.toLocaleString('es-ES')} €
+                                {prod.price.toLocaleString()} €
                               </span>
                               {prod.originalPrice && (
                                 <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
@@ -314,17 +322,17 @@ export default function Coleccion() {
                   <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.experience')}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
-                  {[
-                    { icon: MapPin, title: "Showroom en Galicia", body: "Ven y pruébalo. Te enamorarás y entenderás por qué cambia tu día a día." },
-                    { icon: ShieldCheck, title: "Garantía 5 años", body: "Fabricado para durar décadas. Respaldado por el servicio técnico oficial Elora." },
-                    { icon: Wrench, title: "Instalación incluida", body: "Nuestro equipo coordina la instalación en toda la Península. Sin complicaciones." },
-                  ].map(({ icon: Icon, title, body }) => (
-                    <div key={title} className="bg-background px-8 py-10 flex flex-col gap-4">
+                  {(t('esenciaCards', { returnObjects: true }) as Array<{title:string;body:string}>).slice(0,3).map((item, ei) => {
+                    const ICONS_C = [MapPin, ShieldCheck, Wrench];
+                    const Icon = ICONS_C[ei];
+                    return (
+                    <div key={item.title} className="bg-background px-8 py-10 flex flex-col gap-4">
                       <Icon className="w-6 h-6 text-accent-deep" />
-                      <h4 className="font-display text-lg uppercase tracking-wide">{title}</h4>
-                      <p className="font-body text-sm text-foreground/60 leading-relaxed">{body}</p>
+                      <h4 className="font-display text-lg uppercase tracking-wide">{item.title}</h4>
+                      <p className="font-body text-sm text-foreground/60 leading-relaxed">{item.body}</p>
                     </div>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
             </div>
@@ -339,7 +347,7 @@ export default function Coleccion() {
                 {t('nav.backHome')}
               </button>
               <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/30">
-                Elora Smart · Galicia · 2024
+                {t('footer.taglineShort')}
               </p>
             </div>
 

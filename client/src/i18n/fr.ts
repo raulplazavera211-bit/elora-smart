@@ -56,6 +56,8 @@ const fr = {
     title: "La Collection",
     complete: "Complète",
     filterAll: "Tous",
+    filterEsenza: "Gamme ESENZA",
+    filterAura: "Gamme AURA",
     viewDetail: "Voir le détail",
     body: "Six modèles. Une même philosophie : hygiène avancée, design premium et la tranquillité du service Elora derrière chaque pièce.",
     offer: "Promo",
@@ -73,6 +75,8 @@ const fr = {
 
   contacto: {
     eyebrow: "Prêt à élever votre espace",
+    headline: "Parlons de votre salle de bain.",
+    storeTitle: "Elora Smart · Boutique Physique",
     title: "Parlons de votre salle de bain.",
     body: "Dites-nous ce que vous avez en tête. Nous vous conseillons sans engagement sur le modèle qui convient le mieux à votre espace, installation et budget.",
     store: "Magasin physique · Bertamiráns (Ames)",
@@ -357,6 +361,73 @@ const fr = {
     already: "Vous êtes déjà membre du Club Elora.",
     noSpam: "Pas de spam. Vous pouvez vous désabonner à tout moment.",
     error: "Erreur lors de l'inscription au Club Elora. Veuillez réessayer.",
+  },
+
+  experience: {
+    eyebrow: "L'Expérience",
+    title: "Comment ça fonctionne",
+    titleHighlight: " à chaque fois.",
+    steps: [
+      { number: "01", eyebrow: "Au moment où vous approchez", title: "Le couvercle se lève automatiquement", subtitle: "pour vous", body: "Un capteur détecte votre présence et soulève le couvercle avant votre arrivée. Sans rien toucher. Sans effort. Les toilettes savent déjà que vous êtes là.", tag: "Capteur de présence" },
+      { number: "02", eyebrow: "Debout ou assis", title: "Détecte votre posture", subtitle: "et s'adapte instantanément", body: "Il reconnaît si vous êtes debout ou assis et ajuste le comportement : ouverture du siège, type de chasse et fermeture du couvercle. Plus de confort, moins de gestes.", tag: "Détection de posture" },
+      { number: "03", eyebrow: "Siège CLIMADAPT", title: "Chauffage intégré", subtitle: "réglable sur 4 températures", body: "Le siège s'adapte automatiquement à la température ambiante. Natural, 33°C, 37°C ou 39°C. Plus jamais le contact froid de la céramique au lever.", tag: "CLIMADAPT" },
+      { number: "04", eyebrow: "Hygiène complète avec l'eau", title: "Lavage postérieur, féminin et mobile", subtitle: "température et pression réglables", body: "Eau chaude instantanée. Buse autonettoyante en acier inoxydable. Trois modes de lavage personnalisables. L'hygiène que le papier ne peut jamais offrir.", tag: "Système de lavage triple" },
+      { number: "05", eyebrow: "Séchage Super-Typhon", title: "En moins de 30 secondes", subtitle: "température et vitesse réglables", body: "Un jet d'air haute performance sèche complètement en moins de 30 secondes. 5 vitesses, 4 températures. La réalité de toilettes sans papier.", tag: "Sans papier" },
+      { number: "06", eyebrow: "Bouclier de mousse hygiénique", title: "Prévient les éclaboussures", subtitle: "et bloque les odeurs", body: "Avant chaque utilisation, les toilettes créent une barrière de mousse dans l'eau. Évite les éclaboussures, neutralise les odeurs et garde la céramique plus propre.", tag: "Bouclier de mousse" },
+      { number: "07", eyebrow: "Contrôle total", title: "Télécommande", subtitle: "pour enregistrer vos préférences", body: "Télécommande avec mémoire pour 2 utilisateurs. Enregistre vos réglages de température, modes de lavage et séchage. Tout personnalisé, toujours prêt.", tag: "2 profils utilisateur" },
+      { number: "08", eyebrow: "Lampe stérilisatrice UV", title: "Désinfecte complètement", subtitle: "avec UV ultraviolet", body: "La lampe UV élimine bactéries et germes automatiquement. Désodorisation de l'ambiance incluse. La salle de bain la plus propre, toujours.", tag: "Gamme AURA" },
+    ],
+  },
+
+  manifestoFeats: [
+    { title: "Hygiène Réelle", body: "Le bidet intégré avec eau tiède nettoie avec une efficacité que le papier n'atteint jamais. Plus de soin, moins d'irritation, zéro déchet." },
+    { title: "Santé Quotidienne", body: "Siège chauffant, séchage par air et filtre à charbon actif. Un geste quotidien qui protège la peau sensible et améliore le bien-être." },
+    { title: "Luxe Silencieux", body: "Couvercle à fermeture assistée, veilleuse ambiante et modes personnalisés. Le confort d'un hôtel cinq étoiles, chaque matin, chez vous." },
+  ],
+
+  clubSection: {
+    eyebrow: "Accès exclusif",
+    title1: "Club",
+    title2: "Elora",
+    subtitle: "Rejoignez-nous et soyez le premier à découvrir des promotions, l'accès aux préventes et du contenu privé.",
+    perks: [
+      { title: "Accès aux préventes", desc: "Soyez le premier à réserver de nouveaux modèles avec des remises exclusives avant tout le monde." },
+      { title: "Contenu privé", desc: "Guides d'utilisation, astuces d'entretien et actualités de la marque exclusivement pour les membres." },
+      { title: "Promotions exclusives", desc: "Offres et remises que nous ne publions sur aucun autre canal. Uniquement pour le club." },
+      { title: "Support prioritaire", desc: "Contact direct avec l'équipe technique d'Elora. Réponse garantie en moins de 24h." },
+    ],
+    namePlaceholder: "Prénom",
+    nameLabel: "Prénom",
+    emailLabel: "Email *",
+    privacyText: "J'accepte la",
+    privacyLink: "Politique de confidentialité",
+    joinBtn: "Rejoindre le Club Elora",
+    joining: "Envoi en cours...",
+    welcomeTitle: "Bienvenue au club",
+    welcomeBody: "Vous recevrez bientôt des nouvelles exclusives dans votre email.",
+    footer: "Elora Smart · Galice",
+    error: "Erreur lors de l'inscription au club. Veuillez réessayer.",
+  },
+
+  esenciaCards: [
+    { title: "Showroom en Galice", body: "Venez l'essayer. Vous en tomberez amoureux et comprendrez pourquoi cela change votre quotidien." },
+    { title: "10 ans de garantie", body: "Nous vous conseillons avant, pendant et après. Pour que vous fassiez le bon choix en toute sérénité." },
+    { title: "Installation simple", body: "Vous avez juste besoin d'une prise à proximité et de votre plombier de confiance. Rien de plus." },
+    { title: "Hygiène réelle", body: "Eau tiède, buse autonettoyante et séchage en 30 secondes. Sans papier." },
+  ],
+
+  video: {
+    location: "La Corogne · Galice",
+    title: "De la carrière galicienne à la salle de bain contemporaine.",
+    waitLabel: "Attendez,",
+    waitTitle: "Écoutez-moi.",
+    waitSub: "C'est important.",
+  },
+
+  reviews: {
+    eyebrow: "Avis vérifiés sur Google",
+    title: "Ce que disent nos clients",
+    count: "10 avis",
   },
 
   lang: {

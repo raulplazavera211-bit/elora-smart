@@ -56,6 +56,8 @@ const pt = {
     title: "A Coleção",
     complete: "Completa",
     filterAll: "Todos",
+    filterEsenza: "Gama ESENZA",
+    filterAura: "Gama AURA",
     viewDetail: "Ver detalhe",
     body: "Seis modelos. Uma mesma filosofia: higiene avançada, design premium e a tranquilidade do serviço Elora por trás de cada peça.",
     offer: "Promoção",
@@ -73,6 +75,8 @@ const pt = {
 
   contacto: {
     eyebrow: "Pronto para elevar o seu espaço",
+    headline: "Vamos falar do seu banheiro.",
+    storeTitle: "Elora Smart · Loja Física",
     title: "Falemos da sua casa de banho.",
     body: "Conte-nos o que tem em mente. Aconselhamos sem compromisso sobre qual o modelo que melhor se adapta ao seu espaço, instalação e orçamento.",
     store: "Loja física · Bertamiráns (Ames)",
@@ -357,6 +361,73 @@ const pt = {
     already: "Já é membro do Clube Elora.",
     noSpam: "Sem spam. Pode cancelar a qualquer momento.",
     error: "Erro ao juntar-se ao Clube Elora. Tente novamente.",
+  },
+
+  experience: {
+    eyebrow: "A Experiência",
+    title: "Como funciona",
+    titleHighlight: " cada vez.",
+    steps: [
+      { number: "01", eyebrow: "No momento em que se aproxima", title: "A tampa levanta-se automaticamente", subtitle: "para si", body: "Um sensor deteta a sua presença e levanta a tampa antes de chegar. Sem tocar em nada. Sem esforço. A sanítaria já sabe que está lá.", tag: "Sensor de presença" },
+      { number: "02", eyebrow: "De pé ou sentado", title: "Deteta a sua postura", subtitle: "e resolve de imediato", body: "Reconhece se está de pé ou sentado e ajusta o comportamento: abertura do assento, tipo de descarga e fecho da tampa. Mais conforto, menos gestos.", tag: "Deteção de postura" },
+      { number: "03", eyebrow: "Assento CLIMADAPT", title: "Aquecimento integrado", subtitle: "ajustável em 4 temperaturas", body: "O assento adapta-se automaticamente à temperatura ambiente. Natural, 33°C, 37°C ou 39°C. Nunca mais o contacto frio da cerâmica de manhã.", tag: "CLIMADAPT" },
+      { number: "04", eyebrow: "Higiene completa com água", title: "Lavagem posterior, feminina e móvel", subtitle: "temperatura e pressão ajustáveis", body: "Agua quente instantânea. Bocal autolimpiante em aço inoxidável. Três modos de lavagem personalizáveis. A higiene que o papel nunca pode dar.", tag: "Sistema de lavagem triplo" },
+      { number: "05", eyebrow: "Secagem Super-Tufão", title: "Em menos de 30 segundos", subtitle: "temperatura e velocidade ajustáveis", body: "Um jato de ar de alto desempenho seca completamente em menos de 30 segundos. 5 velocidades, 4 temperaturas. A realidade de uma sanítaria sem papel.", tag: "Sem papel" },
+      { number: "06", eyebrow: "Escudo de espuma higiénica", title: "Previne salpicos", subtitle: "e bloqueia odores", body: "Antes de cada utilização, a sanítaria cria uma barreira de espuma na água. Evita salpicos, neutraliza odores e mantém a cerâmica mais limpa.", tag: "Escudo de espuma" },
+      { number: "07", eyebrow: "Controlo total", title: "Controlo remoto", subtitle: "para guardar as suas preferências", body: "Controlo remoto com memória para 2 utilizadores. Guarda as suas definições de temperatura, modos de lavagem e secagem. Tudo personalizado, sempre pronto.", tag: "2 perfis de utilizador" },
+      { number: "08", eyebrow: "Lâmpada esterilizadora UV", title: "Desinfeta completamente", subtitle: "com UV ultravioleta", body: "A lâmpada UV elimina bactérias e germes automaticamente. Desodorização do ambiente incluída. A casa de banho mais limpa, sempre.", tag: "Gama AURA" },
+    ],
+  },
+
+  manifestoFeats: [
+    { title: "Higiene Real", body: "O bidê integrado com água morna limpa com uma eficácia que o papel nunca alcança. Mais cuidado, menos irritação, zero resíduos." },
+    { title: "Saúde Diária", body: "Assento com aquecimento, secagem por ar e filtro de carvão ativo. Um gesto quotidiano que protege a pele sensível e melhora o bem-estar." },
+    { title: "Luxo Silencioso", body: "Tampa de fecho assistido, luz noturna ambiente e modos personalizados. O conforto de um hotel cinco estrelas, todas as manhãs, em casa." },
+  ],
+
+  clubSection: {
+    eyebrow: "Acesso exclusivo",
+    title1: "Clube",
+    title2: "Elora",
+    subtitle: "Junte-se e seja o primeiro a descobrir promoções, acesso a pré-vendas e conteúdo privado.",
+    perks: [
+      { title: "Acesso a pré-vendas", desc: "Seja o primeiro a reservar novos modelos com descontos exclusivos antes de qualquer pessoa." },
+      { title: "Conteúdo privado", desc: "Guias de utilização, dicas de manutenção e novidades da marca exclusivamente para membros." },
+      { title: "Promoções exclusivas", desc: "Ofertas e descontos que não publicamos em nenhum outro canal. Só para o clube." },
+      { title: "Suporte prioritário", desc: "Contacto direto com a equipa técnica da Elora. Resposta garantida em menos de 24h." },
+    ],
+    namePlaceholder: "Nome",
+    nameLabel: "Nome",
+    emailLabel: "Email *",
+    privacyText: "Aceito a",
+    privacyLink: "Política de Privacidade",
+    joinBtn: "Juntar-me ao Clube Elora",
+    joining: "A enviar...",
+    welcomeTitle: "Bem-vindo ao clube",
+    welcomeBody: "Em breve receberá novidades exclusivas no seu email.",
+    footer: "Elora Smart · Galiza",
+    error: "Erro ao juntar-se ao clube. Tente novamente.",
+  },
+
+  esenciaCards: [
+    { title: "Showroom na Galiza", body: "Venha experimentar. Vai apaixonar-se e perceber por que muda o seu dia a dia." },
+    { title: "10 anos de garantia", body: "Aconselhamo-lo antes, durante e depois. Para que acerte e fique descansado." },
+    { title: "Instalação simples", body: "Só precisa de uma tomada perto e do seu canalizador de confiança. Nada mais." },
+    { title: "Higiene real", body: "Agua morna, bocal autolimpiante e secagem em 30 segundos. Sem papel." },
+  ],
+
+  video: {
+    location: "A Coruña · Galiza",
+    title: "Da pedreira galega à casa de banho contemporânea.",
+    waitLabel: "Espere,",
+    waitTitle: "Ouve-me.",
+    waitSub: "É importante.",
+  },
+
+  reviews: {
+    eyebrow: "Avaliações verificadas no Google",
+    title: "O que dizem os nossos clientes",
+    count: "10 avaliações",
   },
 
   lang: {

@@ -56,6 +56,8 @@ const it = {
     title: "La Collezione",
     complete: "Completa",
     filterAll: "Tutti",
+    filterEsenza: "Gamma ESENZA",
+    filterAura: "Gamma AURA",
     viewDetail: "Vedi dettaglio",
     body: "Sei modelli. Una stessa filosofia: igiene avanzata, design premium e la tranquillità del servizio Elora dietro ogni pezzo.",
     offer: "Offerta",
@@ -73,6 +75,8 @@ const it = {
 
   contacto: {
     eyebrow: "Pronto a elevare il tuo spazio",
+    headline: "Parliamo del tuo bagno.",
+    storeTitle: "Elora Smart · Negozio Fisico",
     title: "Parliamo del tuo bagno.",
     body: "Dicci cosa hai in mente. Ti consigliamo senza impegno su quale modello si adatta meglio al tuo spazio, installazione e budget.",
     store: "Negozio fisico · Bertamiráns (Ames)",
@@ -357,6 +361,73 @@ const it = {
     already: "Sei già membro del Club Elora.",
     noSpam: "Niente spam. Puoi annullare l'iscrizione in qualsiasi momento.",
     error: "Errore durante l'iscrizione al Club Elora. Riprova.",
+  },
+
+  experience: {
+    eyebrow: "L'Esperienza",
+    title: "Come funziona",
+    titleHighlight: " ogni volta.",
+    steps: [
+      { number: "01", eyebrow: "Nel momento in cui ti avvicini", title: "Il coperchio si alza automaticamente", subtitle: "per te", body: "Un sensore rileva la tua presenza e solleva il coperchio prima che tu arrivi. Senza toccare nulla. Senza sforzo. Il water sa già che sei lì.", tag: "Sensore di presenza" },
+      { number: "02", eyebrow: "In piedi o seduto", title: "Rileva la tua postura", subtitle: "e si adatta immediatamente", body: "Riconosce se sei in piedi o seduto e regola il comportamento: apertura del sedile, tipo di scarico e chiusura del coperchio. Più comfort, meno gesti.", tag: "Rilevamento postura" },
+      { number: "03", eyebrow: "Sedile CLIMADAPT", title: "Riscaldamento integrato", subtitle: "regolabile su 4 temperature", body: "Il sedile si adatta automaticamente alla temperatura ambiente. Naturale, 33°C, 37°C o 39°C. Mai più il contatto freddo della ceramica al mattino.", tag: "CLIMADAPT" },
+      { number: "04", eyebrow: "Igiene completa con l'acqua", title: "Lavaggio posteriore, femminile e mobile", subtitle: "temperatura e pressione regolabili", body: "Acqua calda istantanea. Ugello autopulente in acciaio inossidabile. Tre modalità di lavaggio personalizzabili. L'igiene che la carta non può mai dare.", tag: "Sistema di lavaggio triplo" },
+      { number: "05", eyebrow: "Asciugatura Super-Tifone", title: "In meno di 30 secondi", subtitle: "temperatura e velocità regolabili", body: "Un getto d'aria ad alte prestazioni asciuga completamente in meno di 30 secondi. 5 velocità, 4 temperature. La realtà di un water senza carta.", tag: "Senza carta" },
+      { number: "06", eyebrow: "Scudo di schiuma igienica", title: "Previene gli schizzi", subtitle: "e blocca i cattivi odori", body: "Prima di ogni utilizzo, il water crea una barriera di schiuma nell'acqua. Evita schizzi, neutralizza gli odori e mantiene la ceramica più pulita.", tag: "Scudo di schiuma" },
+      { number: "07", eyebrow: "Controllo totale", title: "Telecomando", subtitle: "per salvare le tue preferenze", body: "Telecomando con memoria per 2 utenti. Salva le tue impostazioni di temperatura, modalità di lavaggio e asciugatura. Tutto personalizzato, sempre pronto.", tag: "2 profili utente" },
+      { number: "08", eyebrow: "Lampada sterilizzatrice UV", title: "Disinfetta completamente", subtitle: "con UV ultravioletto", body: "La lampada UV elimina batteri e germi automaticamente. Deodorizzazione dell'ambiente inclusa. Il bagno più pulito, sempre.", tag: "Gamma AURA" },
+    ],
+  },
+
+  manifestoFeats: [
+    { title: "Igiene Reale", body: "Il bidet integrato con acqua tiepida pulisce con un'efficacia che la carta non raggiunge mai. Più cura, meno irritazione, zero rifiuti." },
+    { title: "Salute Quotidiana", body: "Sedile riscaldato, asciugatura ad aria e filtro al carbone attivo. Un gesto quotidiano che protegge la pelle sensibile e migliora il benessere." },
+    { title: "Lusso Silenzioso", body: "Coperchio a chiusura assistita, luce notturna ambientale e modalità personalizzate. Il comfort di un hotel cinque stelle, ogni mattina, a casa." },
+  ],
+
+  clubSection: {
+    eyebrow: "Accesso esclusivo",
+    title1: "Club",
+    title2: "Elora",
+    subtitle: "Unisciti e sii il primo a scoprire promozioni, accesso alle prevendite e contenuti privati.",
+    perks: [
+      { title: "Accesso alle prevendite", desc: "Sii il primo a prenotare nuovi modelli con sconti esclusivi prima di chiunque altro." },
+      { title: "Contenuti privati", desc: "Guide all'uso, consigli di manutenzione e novità del brand esclusivamente per i membri." },
+      { title: "Promozioni esclusive", desc: "Offerte e sconti che non pubblichiamo su nessun altro canale. Solo per il club." },
+      { title: "Supporto prioritario", desc: "Contatto diretto con il team tecnico di Elora. Risposta garantita in meno di 24h." },
+    ],
+    namePlaceholder: "Nome",
+    nameLabel: "Nome",
+    emailLabel: "Email *",
+    privacyText: "Accetto la",
+    privacyLink: "Politica sulla privacy",
+    joinBtn: "Unirmi al Club Elora",
+    joining: "Invio in corso...",
+    welcomeTitle: "Benvenuto nel club",
+    welcomeBody: "Presto riceverai novità esclusive nella tua email.",
+    footer: "Elora Smart · Galizia",
+    error: "Errore durante l'iscrizione al club. Riprova.",
+  },
+
+  esenciaCards: [
+    { title: "Showroom in Galizia", body: "Vieni a provarlo. Te ne innamorerai e capirai perché cambia la tua vita quotidiana." },
+    { title: "10 anni di garanzia", body: "Ti consigliamo prima, durante e dopo. Per fare la scelta giusta e stare tranquillo." },
+    { title: "Installazione semplice", body: "Hai solo bisogno di una presa vicina e del tuo idraulico di fiducia. Nient'altro." },
+    { title: "Igiene reale", body: "Acqua tiepida, ugello autopulente e asciugatura in 30 secondi. Senza carta." },
+  ],
+
+  video: {
+    location: "A Coruña · Galizia",
+    title: "Dalla cava galiziana al bagno contemporaneo.",
+    waitLabel: "Aspetta,",
+    waitTitle: "Ascoltami.",
+    waitSub: "È importante.",
+  },
+
+  reviews: {
+    eyebrow: "Recensioni verificate su Google",
+    title: "Cosa dicono i nostri clienti",
+    count: "10 recensioni",
   },
 
   lang: {

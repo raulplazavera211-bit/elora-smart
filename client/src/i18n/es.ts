@@ -61,6 +61,8 @@ const es = {
     title: "La Colección",
     complete: "Completa",
     filterAll: "Todos",
+    filterEsenza: "Gama ESENZA",
+    filterAura: "Gama AURA",
     viewDetail: "Ver detalle",
     body: "Seis modelos. Una misma filosofía: higiene avanzada, diseño premium y la tranquilidad del servicio Elora detrás de cada pieza.",
     offer: "Oferta",
@@ -79,7 +81,9 @@ const es = {
   // ── Contacto (Capítulo 5) ────────────────────────────────────────────────────
   contacto: {
     eyebrow: "Listo para elevar tu espacio",
+    headline: "Hablemos de tu baño.",
     title: "Hablemos de tu baño.",
+    storeTitle: "Elora Smart · Tienda Física",
     body: "Cuéntanos qué tienes en mente. Te asesoramos sin compromiso sobre qué modelo se adapta mejor a tu espacio, instalación y presupuesto.",
     store: "Tienda física · Bertamiráns (Ames)",
     storeAddress: "Av. da Mahía, 17 Bajo 2 · 15220",
@@ -372,6 +376,79 @@ const es = {
     already: "Ya eres miembro del Club Elora.",
     noSpam: "Sin spam. Puedes darte de baja cuando quieras.",
     error: "Error al unirse al Club Elora. Inténtalo de nuevo.",
+  },
+
+  // ── Sección Experiencia ────────────────────────────────────────────────────
+  experience: {
+    eyebrow: "La Experiencia",
+    title: "Así funciona",
+    titleHighlight: " cada vez.",
+    steps: [
+      { number: "01", eyebrow: "En el instante en que te acercas", title: "La tapa se levanta automáticamente", subtitle: "para ti", body: "Un sensor detecta tu presencia y levanta la tapa antes de que llegues. Sin tocar nada. Sin esfuerzo. El inodoro ya sabe que estás ahí.", tag: "Sensor de presencia" },
+      { number: "02", eyebrow: "De pie o sentado", title: "Detecta tu postura", subtitle: "y lo resuelve al instante", body: "Reconoce si estás de pie o sentado y ajusta el comportamiento: apertura de asiento, tipo de descarga y cierre de tapa. Más comodidad, menos gestos.", tag: "Detección de postura" },
+      { number: "03", eyebrow: "Asiento CLIMADAPT", title: "Calefacción integrada", subtitle: "ajustable en 4 temperaturas", body: "El asiento se adapta automáticamente a la temperatura ambiente. Natural, 33°C, 37°C o 39°C. Nunca más el contacto frío de la cerámica al amanecer.", tag: "CLIMADAPT" },
+      { number: "04", eyebrow: "Higiene completa con agua", title: "Lavado posterior, femenino y móvil", subtitle: "temperatura y presión ajustables", body: "Agua caliente instantánea. Boquilla autolimpiable en acero inoxidable. Tres modos de lavado personalizables. La higiene que el papel nunca puede dar.", tag: "Sistema de lavado triple" },
+      { number: "05", eyebrow: "Secado Súper-Tifón", title: "En menos de 30 segundos", subtitle: "temperatura y velocidad ajustables", body: "Un chorro de aire de alto rendimiento seca completamente en menos de 30 segundos. 5 velocidades, 4 temperaturas. La realidad de un inodoro sin papel.", tag: "Sin papel" },
+      { number: "06", eyebrow: "Escudo de espuma higiénica", title: "Previene las salpicaduras", subtitle: "y bloquea olores", body: "Antes de cada uso, el inodoro crea una barrera de espuma en el agua. Evita salpicaduras, neutraliza olores y mantiene la cerámica más limpia.", tag: "Escudo de espuma" },
+      { number: "07", eyebrow: "Control total", title: "Mando a distancia", subtitle: "para guardar tus preferencias", body: "Mando en español con memoria para 2 usuarios. Guarda tus ajustes de temperatura, modos de lavado y secado. Todo personalizado, siempre listo.", tag: "2 perfiles de usuario" },
+      { number: "08", eyebrow: "Lámpara esterilizadora UV", title: "Desinfecta por completo", subtitle: "con UV ultravioleta", body: "La lámpara UV elimina bacterias y gérmenes de forma automática. Desodorización del ambiente incluida. El baño más limpio, siempre.", tag: "Gama AURA" },
+    ],
+  },
+
+  // ── Manifiesto features ──────────────────────────────────────────────────────
+  manifestoFeats: [
+    { title: "Higiene Real", body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos." },
+    { title: "Salud Diaria", body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar." },
+    { title: "Lujo Silencioso", body: "Tapa de cierre asistido, luz nocturna ambiental y modos personalizados. El confort de un hotel cinco estrellas, cada mañana, en casa." },
+  ],
+
+  // ── Club Elora section ───────────────────────────────────────────────────────
+  clubSection: {
+    eyebrow: "Acceso exclusivo",
+    title1: "Club",
+    title2: "Elora",
+    subtitle: "Únete y sé el primero en descubrir promociones, acceso a preventas y contenido privado.",
+    perks: [
+      { title: "Acceso a preventas", desc: "Sé el primero en reservar nuevos modelos con descuentos exclusivos antes que nadie." },
+      { title: "Contenido privado", desc: "Guías de uso, trucos de mantenimiento y novedades de la marca solo para miembros." },
+      { title: "Promociones exclusivas", desc: "Ofertas y descuentos que no publicamos en ningún otro canal. Solo para el club." },
+      { title: "Soporte prioritario", desc: "Atención directa con el equipo técnico de Elora. Respuesta garantizada en menos de 24h." },
+    ],
+    namePlaceholder: "Nombre",
+    nameLabel: "Nombre",
+    emailLabel: "Email *",
+    privacyText: "Acepto la",
+    privacyLink: "Política de Privacidad",
+    joinBtn: "Unirme al Club Elora",
+    joining: "Enviando...",
+    welcomeTitle: "Bienvenido al club",
+    welcomeBody: "Pronto recibirás novedades exclusivas en tu email.",
+    footer: "Elora Smart · Galicia",
+    error: "Error al unirte al club. Inténtalo de nuevo.",
+  },
+
+  // ── Esencia cards ────────────────────────────────────────────────────────────
+  esenciaCards: [
+    { title: "Showroom en Galicia", body: "Ven y pruébalo. Te enamorarás y entenderás por qué cambia tu día a día." },
+    { title: "10 años de garantía", body: "Te asesoramos antes, durante y después. Para que aciertes y estés tranquilo." },
+    { title: "Instalación sencilla", body: "Solo necesitas un enchufe cerca y a tu fontanero de confianza. Nada más." },
+    { title: "Higiene real", body: "Agua templada, boquilla autolimpiable y secado en 30 segundos. Sin papel." },
+  ],
+
+  // ── Video Esencia ────────────────────────────────────────────────────────────
+  video: {
+    location: "A Coruña · Galicia",
+    title: "De la cantera gallega al baño contemporáneo.",
+    waitLabel: "Espera,",
+    waitTitle: "Escúchame.",
+    waitSub: "Es importante.",
+  },
+
+  // ── Reseñas ──────────────────────────────────────────────────────────────────
+  reviews: {
+    eyebrow: "Reseñas verificadas en Google",
+    title: "Lo que dicen nuestros clientes",
+    count: "10 reseñas",
   },
 
   // ── Selector de idioma ───────────────────────────────────────────────────────

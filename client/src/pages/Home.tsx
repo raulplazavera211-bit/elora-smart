@@ -13,7 +13,7 @@ import { TypewriterText } from "@/components/TypewriterText";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
 import { useLocation } from "wouter";
-import { FEATURED_PRODUCTS, ALL_PRODUCTS as ALL_PRODS } from "@/lib/products";
+import { getLocalizedFeatured, getLocalizedProducts } from "@/lib/products";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { CartPanel } from "@/components/CartPanel";
@@ -640,8 +640,7 @@ const EXTRA_PRODUCTS: Product[] = [
   },
 ];
 
-const ALL_PRODUCTS = ALL_PRODS;
-const HOME_PRODUCTS_FALLBACK = FEATURED_PRODUCTS;
+// HOME_PRODUCTS_FALLBACK se genera dinámicamente según el idioma en el componente
 
 // ─── Tipos ─────────────────────────────────────────────────────────────────────
 // CartItem importado desde @/components/CartPanel
@@ -655,12 +654,15 @@ const ESENCIA_CARDS = [
 ];
 
 function EsenciaCarousel() {
+  const { t } = useTranslation();
+  const ICONS = [MapPin, ShieldCheck, Wrench, Sparkles];
+  const cards = (t('esenciaCards', { returnObjects: true }) as Array<{title:string;body:string}>).map((c, i) => ({ ...c, icon: ICONS[i], accent: '#d97706' }));
   const [active, setActive] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setActive(i => (i + 1) % ESENCIA_CARDS.length), 2800);
-    return () => clearInterval(t);
-  }, []);
-  const card = ESENCIA_CARDS[active];
+    const timer = setInterval(() => setActive(i => (i + 1) % cards.length), 2800);
+    return () => clearInterval(timer);
+  }, [cards.length]);
+  const card = cards[active];
   const Icon = card.icon;
   return (
     <div className="relative w-full h-full flex flex-col justify-between p-5 overflow-hidden bg-foreground text-background">
@@ -695,7 +697,7 @@ function EsenciaCarousel() {
       </motion.div>
       {/* Indicadores */}
       <div className="flex gap-1.5 mt-3">
-        {ESENCIA_CARDS.map((_, i) => (
+        {cards.map((_, i) => (
           <button key={i} onClick={() => setActive(i)}
             className="h-[3px] rounded-full transition-all duration-500 cursor-pointer"
             style={{ width: i === active ? 20 : 8, background: i === active ? card.accent : 'rgba(var(--background), 0.2)' }}
@@ -719,6 +721,9 @@ const EXPERIENCE_STEPS = [
 ];
 
 function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObject<HTMLDivElement | null> }) {
+  const { t } = useTranslation();
+  const i18nSteps = t('experience.steps', { returnObjects: true }) as Array<{number:string;eyebrow:string;title:string;subtitle:string;body:string;tag:string}>;
+  const STEPS = i18nSteps.map((s, i) => ({ ...s, image: EXPERIENCE_STEPS[i]?.image ?? '' }));
   const [activeStep, setActiveStep] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -735,8 +740,8 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
       const scrolled = -relativeTop;
       const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
       const idx = Math.min(
-        EXPERIENCE_STEPS.length - 1,
-        Math.floor(progress * EXPERIENCE_STEPS.length)
+        STEPS.length - 1,
+        Math.floor(progress * STEPS.length)
       );
       setActiveStep(idx);
       // Ocultar chatbot cuando la sección está en vista
@@ -750,7 +755,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
     return () => container.removeEventListener('scroll', handleScroll);
   }, [scrollContainer]);
 
-  const step = EXPERIENCE_STEPS[activeStep];
+  const step = STEPS[activeStep];
 
   return (
     <section
@@ -760,7 +765,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
       {/* ── MOBILE: mismo scroll-pin pero vertical ── */}
       <div
         className="md:hidden"
-        style={{ height: `${EXPERIENCE_STEPS.length * 100}vh` }}
+        style={{ height: `${STEPS.length * 100}vh` }}
       >
         <div className="sticky top-20 h-[calc(100dvh-5rem)] w-full overflow-hidden flex flex-col bg-foreground">
 
@@ -768,21 +773,21 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
           <div className="shrink-0 px-5 pt-5 pb-3 border-b border-background/10 flex items-end justify-between gap-3">
             <div>
               <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent-deep mb-1 flex items-center gap-2">
-                <span className="w-4 h-[1px] bg-accent-deep" /> La Experiencia
+                <span className="w-4 h-[1px] bg-accent-deep" /> {t('experience.eyebrow')}
               </p>
               <h2 className="font-display text-xl uppercase tracking-wide leading-[0.9]">
-                Así funciona<span className="text-accent-deep"> cada vez.</span>
+                {t('experience.title')}<span className="text-accent-deep">{t('experience.titleHighlight')}</span>
               </h2>
             </div>
             {/* Contador */}
             <span className="shrink-0 font-body text-[10px] uppercase tracking-[0.3em] text-background/40">
-              {String(activeStep + 1).padStart(2, '0')} / {String(EXPERIENCE_STEPS.length).padStart(2, '0')}
+              {String(activeStep + 1).padStart(2, '0')} / {String(STEPS.length).padStart(2, '0')}
             </span>
           </div>
 
           {/* Imagen — 55% de la altura disponible */}
           <div className="relative overflow-hidden" style={{ flex: '0 0 55%' }}>
-            {EXPERIENCE_STEPS.map((s, idx) => (
+            {STEPS.map((s, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, scale: 0.94, y: 20 }}
@@ -832,7 +837,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
 
           {/* Dots de progreso */}
           <div className="shrink-0 px-5 pb-3 flex items-center gap-1.5">
-            {EXPERIENCE_STEPS.map((_, i) => (
+            {STEPS.map((_, i) => (
               <div
                 key={i}
                 className={`transition-all duration-300 rounded-full ${
@@ -848,7 +853,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
           <div className="shrink-0 h-[2px] bg-background/10">
             <motion.div
               className="h-full bg-accent-deep"
-              animate={{ width: `${((activeStep + 1) / EXPERIENCE_STEPS.length) * 100}%` }}
+              animate={{ width: `${((activeStep + 1) / STEPS.length) * 100}%` }}
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             />
           </div>
@@ -858,7 +863,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
       {/* ── DESKTOP: scroll-pin con sticky ── */}
       <div
         className="hidden md:block"
-        style={{ height: `${EXPERIENCE_STEPS.length * 100}vh` }}
+        style={{ height: `${STEPS.length * 100}vh` }}
       >
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col">
 
@@ -866,15 +871,15 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
           <div className="shrink-0 px-16 pt-10 pb-6 border-b border-background/10 flex items-end justify-between gap-4">
             <div>
               <p className="font-body text-[10px] uppercase tracking-[0.35em] text-accent-deep mb-3 flex items-center gap-3">
-                <span className="w-6 h-[1px] bg-accent-deep" /> La Experiencia
+                <span className="w-6 h-[1px] bg-accent-deep" /> {t('experience.eyebrow')}
               </p>
               <h2 className="font-display text-6xl uppercase tracking-wide leading-[0.9]">
-                Así funciona<span className="text-accent-deep"> cada vez.</span>
+                {t('experience.title')}<span className="text-accent-deep">{t('experience.titleHighlight')}</span>
               </h2>
             </div>
             {/* Dots + contador */}
             <div className="flex items-center gap-2">
-              {EXPERIENCE_STEPS.map((_, i) => (
+              {STEPS.map((_, i) => (
                 <div
                   key={i}
                   className={`transition-all duration-300 rounded-full ${
@@ -885,7 +890,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
                 />
               ))}
               <span className="ml-3 font-body text-[10px] uppercase tracking-[0.3em] text-background/40">
-                {String(activeStep + 1).padStart(2, '0')} / {String(EXPERIENCE_STEPS.length).padStart(2, '0')}
+                {String(activeStep + 1).padStart(2, '0')} / {String(STEPS.length).padStart(2, '0')}
               </span>
             </div>
           </div>
@@ -914,7 +919,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
 
             {/* Imagen */}
             <div className="w-1/2 relative border-l border-background/10">
-              {EXPERIENCE_STEPS.map((s, idx) => (
+              {STEPS.map((s, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, scale: 0.92, y: 30 }}
@@ -935,7 +940,7 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
           <div className="shrink-0 h-[3px] bg-background/10">
             <motion.div
               className="h-full bg-accent-deep"
-              animate={{ width: `${((activeStep + 1) / EXPERIENCE_STEPS.length) * 100}%` }}
+              animate={{ width: `${((activeStep + 1) / STEPS.length) * 100}%` }}
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             />
           </div>
@@ -971,9 +976,18 @@ const MANIFESTO_FEATS = [
 ];
 
 function ManifiestoAccordion() {
+  const { t } = useTranslation();
+  const ICONS_MANIF = [Sparkles, ShieldCheck, Thermometer];
+  const IMGS_MANIF = [
+    "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80",
+    "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&q=80",
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+  ];
+  const COLORS_MANIF = ["from-sky-900/70", "from-emerald-900/70", "from-stone-900/80"];
+  const feats = (t('manifestoFeats', { returnObjects: true }) as Array<{title:string;body:string}>).map((f, i) => ({ ...f, icon: ICONS_MANIF[i], img: IMGS_MANIF[i], color: COLORS_MANIF[i] }));
   return (
     <div className="md:hidden flex flex-col gap-0 border border-border overflow-hidden">
-      {MANIFESTO_FEATS.map((feat, i) => {
+      {feats.map((feat, i) => {
         const Icon = feat.icon;
         return (
           <motion.div
@@ -1116,6 +1130,8 @@ const CLUB_PERKS = [
 ];
 
 function ClubEloraSection() {
+  const { t } = useTranslation();
+  const clubPerks = t('clubSection.perks', { returnObjects: true }) as Array<{icon:string;title:string;desc:string}>;
   const [form, setForm] = useState({ nombre: "", email: "", acepto: false });
   const [sent, setSent] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -1126,7 +1142,7 @@ function ClubEloraSection() {
       setSent(true);
     },
     onError: (err) => {
-      toast.error(err.message || "Error al unirte al club. Inténtalo de nuevo.");
+      toast.error(err.message || t('clubSection.errorJoin'));
     },
   });
 
@@ -1160,18 +1176,18 @@ function ClubEloraSection() {
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-5 md:px-16 py-12 md:py-32">
         <div className={`text-center mb-8 md:mb-20 transition-all duration-1000 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          <p className="font-body text-xs uppercase tracking-[0.4em] text-amber-400/70 mb-2">Acceso exclusivo</p>
+          <p className="font-body text-xs uppercase tracking-[0.4em] text-amber-400/70 mb-2">{t('clubSection.eyebrow')}</p>
           <h2 className="font-display text-4xl md:text-7xl lg:text-8xl uppercase tracking-wide text-white leading-[0.9] mb-4">
             Club
             <span className="block" style={{ WebkitTextStroke: "1px rgba(245,164,91,0.6)", color: "transparent" }}>Elora</span>
           </h2>
           <p className="font-body text-white/50 text-sm md:text-lg max-w-xl mx-auto leading-relaxed">
-            Únete y sé el primero en descubrir promociones, acceso a preventas y contenido privado.
+            {t('clubSection.subtitle')}
           </p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 md:mb-20">
-          {CLUB_PERKS.map((perk, i) => (
+          {clubPerks.map((perk, i) => (
             <div
               key={i}
               className={`group relative rounded-sm border border-white/10 p-4 md:p-8 hover:border-amber-400/40 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
@@ -1186,6 +1202,7 @@ function ClubEloraSection() {
               <div className="text-2xl mb-2 md:mb-4">{perk.icon}</div>
               <h3 className="font-display text-sm md:text-lg uppercase tracking-wide text-white mb-1 md:mb-2">{perk.title}</h3>
               <p className="font-body text-white/40 text-xs leading-relaxed hidden sm:block">{perk.desc}</p>
+
             </div>
           ))}
         </div>
@@ -1201,24 +1218,24 @@ function ClubEloraSection() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="font-display text-2xl uppercase tracking-wide text-white mb-2">Bienvenido al club</h3>
-              <p className="font-body text-white/50 text-sm">Pronto recibirás novedades exclusivas en tu email.</p>
+              <h3 className="font-display text-2xl uppercase tracking-wide text-white mb-2">{t('clubSection.welcomeTitle')}</h3>
+              <p className="font-body text-white/50 text-sm">{t('clubSection.welcomeBody')}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">Nombre</label>
+                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">{t('clubSection.fieldName')}</label>
                   <input
                     type="text"
                     value={form.nombre}
                     onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))}
-                    placeholder="Tu nombre"
+                    placeholder={t('clubSection.placeholderName')}
                     className="w-full bg-white/5 border border-white/15 rounded-sm px-4 py-3 font-body text-sm text-white placeholder-white/25 focus:outline-none focus:border-amber-400/60 transition-colors duration-300"
                   />
                 </div>
                 <div>
-                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">Email *</label>
+                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">{t('clubSection.fieldEmail')}</label>
                   <input
                     type="email"
                     required
@@ -1243,9 +1260,9 @@ function ClubEloraSection() {
                   )}
                 </div>
                 <span className="font-body text-xs text-white/40 leading-relaxed">
-                  Acepto la{" "}
+                  {t('clubSection.acceptPrefix')}{" "}
                   <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noopener noreferrer" className="text-amber-400/70 hover:text-amber-400 underline underline-offset-2 transition-colors">
-                    Política de Privacidad
+                    {t('clubSection.privacyLink')}
                   </a>
                 </span>
               </label>
@@ -1255,7 +1272,7 @@ function ClubEloraSection() {
                 className="w-full py-4 font-display text-sm uppercase tracking-[0.3em] transition-all duration-300 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ background: form.acepto && !signupMutation.isPending ? "linear-gradient(135deg, #F5A45B, #e8923a)" : "rgba(255,255,255,0.08)", color: form.acepto && !signupMutation.isPending ? "#001F3F" : "rgba(255,255,255,0.3)" }}
               >
-                {signupMutation.isPending ? "Enviando..." : "Unirme al Club Elora"}
+                {signupMutation.isPending ? t('clubSection.sending') : t('clubSection.ctaJoin')}
               </button>
             </form>
           )}
@@ -1273,6 +1290,7 @@ function ClubEloraSection() {
 
 // ─── Componente de vídeo Esencia ─────────────────────────────────────────────
 function EsenciaVideoCard() {
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -1367,13 +1385,13 @@ function EsenciaVideoCard() {
         )}
       </AnimatePresence>
       <div className="absolute top-4 left-4 pointer-events-none">
-        <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">A Coruña · Galicia</span>
+        <span className="font-body text-[10px] uppercase tracking-[0.3em] text-white bg-accent-deep px-2 py-1">{t('video.location')}</span>
       </div>
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <div className="relative px-4 py-4 flex items-end justify-between gap-3">
           <p className="font-display text-sm md:text-base uppercase tracking-wide leading-tight text-white max-w-[55%]">
-            De la cantera gallega<br />al baño contemporáneo.
+            {t('video.title')}
           </p>
           <motion.div
             className="text-right ml-auto"
@@ -1381,9 +1399,9 @@ function EsenciaVideoCard() {
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
           >
             <div className="inline-block bg-amber-500/90 backdrop-blur-sm px-3 py-2 border-l-2 border-white/40">
-              <p className="font-body text-[8px] uppercase tracking-[0.3em] text-white/80 leading-tight">Espera,</p>
-              <p className="font-display text-sm uppercase tracking-wide text-white leading-tight">Escúchame.</p>
-              <p className="font-body text-[8px] uppercase tracking-[0.2em] text-white/70 leading-tight mt-0.5">Es importante.</p>
+              <p className="font-body text-[8px] uppercase tracking-[0.3em] text-white/80 leading-tight">{t('video.waitLabel')}</p>
+              <p className="font-display text-sm uppercase tracking-wide text-white leading-tight">{t('video.waitTitle')}</p>
+              <p className="font-body text-[8px] uppercase tracking-[0.2em] text-white/70 leading-tight mt-0.5">{t('video.waitSub')}</p>
             </div>
           </motion.div>
         </div>
@@ -1394,7 +1412,7 @@ function EsenciaVideoCard() {
 
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
-  const [homeProducts, setHomeProducts] = useState(HOME_PRODUCTS_FALLBACK);
+  const [homeProducts, setHomeProducts] = useState(() => getLocalizedFeatured('es'));
   const productsQuery = trpc.products.getAll.useQuery();
 
   useEffect(() => {
@@ -1502,8 +1520,15 @@ export default function Home() {
     return () => observer.disconnect();
   }, [selectedProduct]);
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const SECTIONS = [t('nav.vision'), t('nav.esencia'), t('nav.manifiesto'), t('nav.coleccion'), t('nav.contacto')];
+
+  // Actualizar productos cuando cambie el idioma
+  useEffect(() => {
+    if (!productsQuery.data || productsQuery.data.length === 0) {
+      setHomeProducts(getLocalizedFeatured(i18n.language));
+    }
+  }, [i18n.language, productsQuery.data]);
 
   const setSectionRef = (index: number) => (el: HTMLElement | null) => {
     sectionRefs.current[index] = el;
@@ -1893,7 +1918,7 @@ export default function Home() {
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
                         <span className="w-6 h-[1px] bg-accent-deep" /> {t('manifiesto.eyebrow')}
                       </p>
-                      <TypewriterText text="Por qué un inodoro deja de ser un mueble." tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95] whitespace-pre-line" speed={35} delay={100} />
+                      <TypewriterText text={t('manifiesto.headline')} tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95] whitespace-pre-line" speed={35} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
                       {t('manifiesto.body')}
@@ -1902,12 +1927,9 @@ export default function Home() {
 
                   {/* ─ Desktop: grid 3 columnas ─ */}
                   <div className="hidden md:grid grid-cols-3 gap-px bg-border border border-border relative z-10">
-                    {[
-                      { icon: Sparkles, title: "Higiene Real", body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos." },
-                      { icon: ShieldCheck, title: "Salud Diaria", body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar." },
-                      { icon: Thermometer, title: "Lujo Silencioso", body: "Tapa de cierre asistido, luz nocturna ambiental y modos personalizados. El confort de un hotel cinco estrellas, cada mañana, en casa." },
-                    ].map((feat) => {
-                      const Icon = feat.icon;
+                    {(t('manifestoFeats', { returnObjects: true }) as Array<{title:string;body:string}>).map((feat, fi) => {
+                      const ICONS_D = [Sparkles, ShieldCheck, Thermometer];
+                      const Icon = ICONS_D[fi];
                       return (
                         <div key={feat.title} className="bg-background p-8 md:p-10 flex flex-col gap-6">
                           <div className="flex items-center justify-between">
@@ -1952,7 +1974,7 @@ export default function Home() {
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
                         <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.eyebrow')}
                       </p>
-                      <TypewriterText text="La Colección" tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]" speed={40} delay={100} />
+                      <TypewriterText text={t('coleccion.title')} tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]" speed={40} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
                       {t('coleccion.body')}
@@ -1981,7 +2003,7 @@ export default function Home() {
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                           <span className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-foreground text-background font-body text-[9px] uppercase tracking-[0.25em] px-2 py-1">
-                            Ver detalle
+                            {t('coleccion.viewDetail')}
                           </span>
                         </button>
 
@@ -1997,12 +2019,12 @@ export default function Home() {
                               <div className="flex flex-col gap-0.5">
                                 {prod.originalPrice && (
                                   <span className="font-body text-xs text-foreground/40 line-through">
-                                    {(typeof prod.originalPrice === 'number' ? prod.originalPrice : parseFloat(String(prod.originalPrice))).toLocaleString('es-ES')} €
+                                    {(typeof prod.originalPrice === 'number' ? prod.originalPrice : parseFloat(String(prod.originalPrice))).toLocaleString()} €
                                   </span>
                                 )}
                                 <div className="flex items-baseline gap-2">
                                   <span className="font-display text-2xl tracking-wide text-foreground">
-                                    {prod.price.toLocaleString('es-ES')} €
+                                    {prod.price.toLocaleString()} €
                                   </span>
                                   {prod.originalPrice && (
                                     <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
@@ -2056,12 +2078,9 @@ export default function Home() {
                       <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.experience')}
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
-                      {[
-                        { icon: MapPin, title: "Showroom en Galicia", body: "Ven y pruébalo. Te enamorarás y entenderás por qué cambia tu día a día." },
-                        { icon: ShieldCheck, title: "Garantías y SAT", body: "Te asesoramos antes, durante y después. Para que aciertes y estés tranquilo." },
-                        { icon: Wrench, title: "Instalación sencilla", body: "Solo necesitas un enchufe cerca y a tu fontanero de confianza. Nada más." },
-                      ].map((item) => {
-                        const Icon = item.icon;
+                      {(t('esenciaCards', { returnObjects: true }) as Array<{title:string;body:string}>).slice(0,3).map((item, ei) => {
+                        const ICONS_E = [MapPin, ShieldCheck, Wrench];
+                        const Icon = ICONS_E[ei];
                         return (
                           <div key={item.title} className="bg-background p-8 md:p-10 flex flex-col gap-5">
                             <Icon className="w-6 h-6 text-accent-deep" />
@@ -2098,7 +2117,7 @@ export default function Home() {
                       <span className="font-display text-[30vw] leading-none whitespace-nowrap text-foreground font-bold">ELORA</span>
                     </div>
                     <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 mb-6 relative z-10">{t('contacto.eyebrow')}</p>
-                    <TypewriterText text="Hablemos de tu baño." tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-tight md:leading-[0.9]" speed={45} delay={100} />
+                      <TypewriterText text={t('contacto.headline')} tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-tight md:leading-[0.9]" speed={45} delay={100} />
                     <p className="font-body text-sm text-foreground/70 leading-relaxed mb-10 max-w-sm relative z-10">
                       {t('contacto.body')}
                     </p>
@@ -2277,7 +2296,7 @@ export default function Home() {
                           markerEl.appendChild(img);
                           new window.google.maps.marker.AdvancedMarkerElement({
                             map, position: { lat: 42.862, lng: -8.6474 },
-                            content: markerEl, title: "Elora Smart · Tienda Física Bertamiráns",
+                            content: markerEl, title: t('contacto.storeTitle'),
                           });
                           map.setOptions({
                             styles: [
@@ -2296,8 +2315,8 @@ export default function Home() {
                       />
                       {/* Overlay dirección */}
                       <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm border border-amber-200 px-3 py-2.5 shadow-lg pointer-events-none">
-                        <p className="font-body text-[11px] font-semibold text-foreground uppercase tracking-wider">Elora Smart · Tienda Física</p>
-                        <p className="font-body text-[10px] text-foreground/60 mt-0.5">Av. da Mahía, 17 Bajo 2 · 15220 Bertamiráns</p>
+                        <p className="font-body text-[11px] font-semibold text-foreground uppercase tracking-wider">{t('contacto.storeTitle')}</p>
+                        <p className="font-body text-[10px] text-foreground/60 mt-0.5">{t('contacto.storeAddress')}</p>
                       </div>
                       {/* Botón Cómo llegar — solo en móvil */}
                       <div className="absolute bottom-4 right-4 md:hidden">
