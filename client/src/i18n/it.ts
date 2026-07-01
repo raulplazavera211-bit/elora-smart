@@ -454,6 +454,10 @@ const it = {
     cancel: "Annulla",
     yourDoor: "la tua porta",
   },
+  whatsapp: {
+    bubble: "Hai qualche domanda?",
+    reply: "Rispondiamo subito",
+  },
 } as const;
 
 export default it;

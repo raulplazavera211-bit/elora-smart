@@ -19,6 +19,7 @@ import PagoOk from "./pages/PagoOk";
 import PagoKo from "./pages/PagoKo";
 import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
+import { WhatsAppButton } from "./components/WhatsAppButton";
 import { useEffect, useRef, useState } from "react";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
@@ -278,13 +279,18 @@ function AppRouter() {
 
   // Mostrar la web completa
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/coleccion" component={Coleccion} />
-      <Route path="/pago/ok" component={PagoOk} />
-      <Route path="/pago/ko" component={PagoKo} />
-      <Route component={NotFound} />
-    </Switch>
+    <>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/coleccion" component={Coleccion} />
+        <Route path="/pago/ok" component={PagoOk} />
+        <Route path="/pago/ko" component={PagoKo} />
+        <Route component={NotFound} />
+      </Switch>
+      <ChatBot />
+      <PromoPopup />
+      <WhatsAppButton />
+    </>
   );
 }
 
