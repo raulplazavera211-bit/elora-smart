@@ -21,9 +21,22 @@ export function TypewriterText({
   const [started, setStarted] = useState(false);
   const [done, setDone] = useState(false);
   const ref = useRef<HTMLElement>(null);
+  // Track previous text to detect changes (e.g. language switch or i18n init)
+  const prevTextRef = useRef(text);
 
-  // Trigger when element enters viewport
+  // When text changes (language switch / i18n ready), reset and re-trigger
   useEffect(() => {
+    if (prevTextRef.current !== text) {
+      prevTextRef.current = text;
+      setStarted(false);
+      setDisplayed("");
+      setDone(false);
+    }
+  }, [text]);
+
+  // Trigger when element enters viewport (re-runs when started resets to false)
+  useEffect(() => {
+    if (started) return; // already running, no need to re-observe
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -37,7 +50,8 @@ export function TypewriterText({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [delay]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [delay, started]);
 
   // Typewriter effect
   useEffect(() => {

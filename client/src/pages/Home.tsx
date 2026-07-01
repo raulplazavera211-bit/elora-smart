@@ -1917,7 +1917,7 @@ export default function Home() {
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
                         <span className="w-6 h-[1px] bg-accent-deep" /> {t('manifiesto.eyebrow')}
                       </p>
-                      <TypewriterText text={t('manifiesto.headline')} tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95] whitespace-pre-line" speed={35} delay={100} />
+                      <TypewriterText key={`manifiesto-${i18n.language}`} text={`${t('manifiesto.title1')}\n${t('manifiesto.title2')}`} tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95] whitespace-pre-line" speed={35} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
                       {t('manifiesto.body')}
@@ -1973,7 +1973,7 @@ export default function Home() {
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
                         <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.eyebrow')}
                       </p>
-                      <TypewriterText text={t('coleccion.title')} tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]" speed={40} delay={100} />
+                      <TypewriterText key={`coleccion-${i18n.language}`} text={t('coleccion.title')} tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]" speed={40} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
                       {t('coleccion.body')}
@@ -2116,7 +2116,7 @@ export default function Home() {
                       <span className="font-display text-[30vw] leading-none whitespace-nowrap text-foreground font-bold">ELORA</span>
                     </div>
                     <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 mb-6 relative z-10">{t('contacto.eyebrow')}</p>
-                      <TypewriterText text={t('contacto.headline')} tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-tight md:leading-[0.9]" speed={45} delay={100} />
+                      <TypewriterText key={`contacto-${i18n.language}`} text={t('contacto.headline')} tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-tight md:leading-[0.9]" speed={45} delay={100} />
                     <p className="font-body text-sm text-foreground/70 leading-relaxed mb-10 max-w-sm relative z-10">
                       {t('contacto.body')}
                     </p>
