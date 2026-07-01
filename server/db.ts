@@ -13,6 +13,7 @@ import {
   InsertOrder,
   orderItems,
   InsertOrderItem,
+  adminCredentials,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -366,4 +367,31 @@ export async function seedDefaultPaymentMethods(): Promise<void> {
   for (const method of defaults) {
     await upsertPaymentMethod(method);
   }
+}
+
+// ─── ADMIN CREDENTIALS ───────────────────────────────────────────────────────
+
+export async function getAdminCredentialByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(adminCredentials).where(eq(adminCredentials.email, email.toLowerCase())).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function upsertAdminCredential(email: string, passwordHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const existing = await getAdminCredentialByEmail(email);
+  if (existing) {
+    await db.update(adminCredentials).set({ passwordHash, updatedAt: new Date() }).where(eq(adminCredentials.email, email.toLowerCase()));
+  } else {
+    await db.insert(adminCredentials).values({ email: email.toLowerCase(), passwordHash });
+  }
+}
+
+export async function countAdminCredentials(): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  const rows = await db.select({ count: sql<number>`count(*)` }).from(adminCredentials);
+  return Number(rows[0]?.count ?? 0);
 }

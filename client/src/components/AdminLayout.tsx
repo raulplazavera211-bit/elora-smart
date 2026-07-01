@@ -2,8 +2,6 @@
 // Sidebar con navegación completa al estilo WooCommerce.
 // Requiere rol admin; redirige al login si no autenticado.
 
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 import AdminLogin from "@/pages/AdminLogin";
 import { Link, useLocation } from "wouter";
 import {
@@ -41,20 +39,20 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children, title }: AdminLayoutProps) {
-  const { loading, user } = useAuth();
+  const { data: adminUser, isLoading } = trpc.auth.adminMe.useQuery();
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const logout = trpc.auth.logout.useMutation({
     onSuccess: () => {
-      window.location.href = "/";
+      window.location.href = "/admin";
     },
     onError: () => {
       toast.error("Error al cerrar sesión");
     },
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="flex flex-col items-center gap-4">
@@ -65,25 +63,8 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
     );
   }
 
-  if (!user) {
+  if (!adminUser) {
     return <AdminLogin />;
-  }
-
-  if (user.role !== "admin") {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="flex flex-col items-center gap-6 p-8 max-w-md w-full text-center">
-          <img src={LOGO_URL} alt="Elora Smart" className="h-16 w-auto" />
-          <div>
-            <h1 className="font-display text-2xl uppercase tracking-wide mb-3">Acceso restringido</h1>
-            <p className="font-body text-sm text-foreground/60">No tienes permisos de administrador.</p>
-          </div>
-          <Link href="/" className="font-body text-xs uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors">
-            Volver al inicio
-          </Link>
-        </div>
-      </div>
-    );
   }
 
   const activeItem = NAV_ITEMS.find(item =>
@@ -135,11 +116,11 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
       <div className="px-3 py-4 border-t border-white/8">
         <div className="flex items-center gap-3 px-3 py-2 mb-2">
           <div className="w-8 h-8 rounded-full bg-accent-deep/20 flex items-center justify-center text-accent-deep font-bold text-sm shrink-0">
-            {user.name?.charAt(0).toUpperCase() ?? "A"}
+            {adminUser.email?.charAt(0).toUpperCase() ?? "A"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-body text-xs text-white/70 truncate">{user.name ?? "Admin"}</p>
-            <p className="font-body text-[10px] text-white/30 truncate">{user.email ?? ""}</p>
+            <p className="font-body text-xs text-white/70 truncate">Administrador</p>
+            <p className="font-body text-[10px] text-white/30 truncate">{adminUser.email ?? ""}</p>
           </div>
         </div>
         <button

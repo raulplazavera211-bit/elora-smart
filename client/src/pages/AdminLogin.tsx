@@ -1,19 +1,79 @@
-import { getLoginUrl } from "@/const";
-import { motion } from "motion/react";
-import { Shield, Lock, ArrowRight } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Shield, Lock, Eye, EyeOff, ArrowRight, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { useLocation } from "wouter";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
-// Partícula decorativa flotante
+// ─── CAPTCHA matemático ────────────────────────────────────────────────────────
+function generateCaptcha() {
+  const ops = ["+", "-", "×"] as const;
+  const op = ops[Math.floor(Math.random() * ops.length)];
+  let a: number, b: number, answer: number;
+  if (op === "+") {
+    a = Math.floor(Math.random() * 12) + 1;
+    b = Math.floor(Math.random() * 12) + 1;
+    answer = a + b;
+  } else if (op === "-") {
+    a = Math.floor(Math.random() * 12) + 5;
+    b = Math.floor(Math.random() * a) + 1;
+    answer = a - b;
+  } else {
+    a = Math.floor(Math.random() * 9) + 2;
+    b = Math.floor(Math.random() * 5) + 2;
+    answer = a * b;
+  }
+  return { question: `${a} ${op} ${b}`, answer };
+}
+
 function FloatingOrb({ className }: { className?: string }) {
   return (
-    <div
-      className={`absolute rounded-full blur-3xl opacity-20 pointer-events-none ${className}`}
-    />
+    <div className={`absolute rounded-full blur-3xl opacity-20 pointer-events-none ${className}`} />
   );
 }
 
 export default function AdminLogin() {
+  const [, navigate] = useLocation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [captcha, setCaptcha] = useState(generateCaptcha);
+  const [captchaInput, setCaptchaInput] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const refreshCaptcha = useCallback(() => {
+    setCaptcha(generateCaptcha());
+    setCaptchaInput("");
+  }, []);
+
+  const loginMutation = trpc.auth.adminLogin.useMutation({
+    onSuccess: () => {
+      setSuccess(true);
+      setTimeout(() => navigate("/admin"), 800);
+    },
+    onError: (err) => {
+      setError(err.message || "Credenciales incorrectas");
+      refreshCaptcha();
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    // Validar CAPTCHA
+    const captchaAnswer = parseInt(captchaInput.trim(), 10);
+    if (isNaN(captchaAnswer) || captchaAnswer !== captcha.answer) {
+      setError("La respuesta al CAPTCHA no es correcta");
+      refreshCaptcha();
+      return;
+    }
+
+    loginMutation.mutate({ email: email.trim(), password });
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden">
       {/* Fondo decorativo */}
@@ -53,7 +113,7 @@ export default function AdminLogin() {
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-              className="flex flex-col items-center mb-10"
+              className="flex flex-col items-center mb-8"
             >
               <img
                 src={LOGO_URL}
@@ -81,7 +141,7 @@ export default function AdminLogin() {
                 Acceso seguro
               </h1>
               <p className="font-body text-sm text-white/40 leading-relaxed">
-                Inicia sesión con tu cuenta autorizada para acceder al panel de gestión.
+                Introduce tus credenciales de administrador para continuar.
               </p>
             </motion.div>
 
@@ -89,17 +149,17 @@ export default function AdminLogin() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ delay: 0.3, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
               className="flex items-center justify-center gap-6 mb-8"
             >
               <div className="flex items-center gap-1.5 text-white/25">
                 <Shield className="w-3.5 h-3.5 text-[#c9a96e]/60" />
-                <span className="font-body text-[10px] uppercase tracking-widest">OAuth2</span>
+                <span className="font-body text-[10px] uppercase tracking-widest">Cifrado</span>
               </div>
               <div className="w-px h-3 bg-white/10" />
               <div className="flex items-center gap-1.5 text-white/25">
                 <Lock className="w-3.5 h-3.5 text-[#c9a96e]/60" />
-                <span className="font-body text-[10px] uppercase tracking-widest">Cifrado SSL</span>
+                <span className="font-body text-[10px] uppercase tracking-widest">SSL</span>
               </div>
               <div className="w-px h-3 bg-white/10" />
               <div className="flex items-center gap-1.5 text-white/25">
@@ -108,28 +168,137 @@ export default function AdminLogin() {
               </div>
             </motion.div>
 
-            {/* Botón de login */}
-            <motion.div
+            {/* Formulario */}
+            <motion.form
+              onSubmit={handleSubmit}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ delay: 0.35, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+              className="flex flex-col gap-4"
             >
+              {/* Email */}
+              <div className="flex flex-col gap-1.5">
+                <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40">
+                  Correo electrónico
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                  placeholder="admin@elorasmart.com"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 font-body text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e]/50 focus:bg-white/8 transition-all duration-200"
+                />
+              </div>
+
+              {/* Contraseña */}
+              <div className="flex flex-col gap-1.5">
+                <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40">
+                  Contraseña
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                    placeholder="••••••••"
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 pr-12 font-body text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e]/50 focus:bg-white/8 transition-all duration-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(v => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors outline-none"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* CAPTCHA matemático */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40">
+                    Verificación
+                  </label>
+                  <button
+                    type="button"
+                    onClick={refreshCaptcha}
+                    className="flex items-center gap-1 text-white/25 hover:text-white/50 transition-colors outline-none"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span className="font-body text-[9px] uppercase tracking-widest">Nueva</span>
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 bg-white/5 border border-white/10 rounded-lg px-5 py-3 font-display text-lg text-[#c9a96e] tracking-wide select-none">
+                    {captcha.question} = ?
+                  </div>
+                  <input
+                    type="number"
+                    value={captchaInput}
+                    onChange={e => setCaptchaInput(e.target.value)}
+                    required
+                    placeholder="?"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 font-body text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e]/50 focus:bg-white/8 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                </div>
+              </div>
+
+              {/* Error */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3"
+                  >
+                    <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                    <span className="font-body text-xs text-red-400">{error}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Botón de acceso */}
               <button
-                onClick={() => { window.location.href = getLoginUrl(); }}
-                className="group w-full relative overflow-hidden rounded-xl py-4 px-6 font-body text-sm uppercase tracking-[0.3em] transition-all duration-300 active:scale-[0.98]"
+                type="submit"
+                disabled={loginMutation.isPending || success}
+                className="group relative overflow-hidden rounded-xl py-4 px-6 font-body text-sm uppercase tracking-[0.3em] transition-all duration-300 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed mt-2"
                 style={{
-                  background: "linear-gradient(135deg, #d4a96a 0%, #b8935a 50%, #c9a96e 100%)",
+                  background: success
+                    ? "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)"
+                    : "linear-gradient(135deg, #d4a96a 0%, #b8935a 50%, #c9a96e 100%)",
                   boxShadow: "0 8px 32px rgba(201,169,110,0.35), 0 2px 8px rgba(0,0,0,0.4)",
                 }}
               >
                 {/* Shimmer */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                {!loginMutation.isPending && !success && (
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                )}
                 <span className="relative flex items-center justify-center gap-3 text-white font-semibold">
-                  Iniciar sesión
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+                  {success ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      Acceso concedido
+                    </>
+                  ) : loginMutation.isPending ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Verificando...
+                    </>
+                  ) : (
+                    <>
+                      Acceder al panel
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+                    </>
+                  )}
                 </span>
               </button>
-            </motion.div>
+            </motion.form>
 
             {/* Nota de seguridad */}
             <motion.p
@@ -140,7 +309,7 @@ export default function AdminLogin() {
             >
               Solo usuarios autorizados pueden acceder a este panel.
               <br />
-              La sesión se cierra automáticamente por inactividad.
+              La sesión se cierra automáticamente tras 7 días.
             </motion.p>
           </div>
 

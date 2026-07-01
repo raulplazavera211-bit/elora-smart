@@ -186,3 +186,19 @@ export const paymentMethods = mysqlTable("payment_methods", {
 });
 export type PaymentMethod = typeof paymentMethods.$inferSelect;
 export type InsertPaymentMethod = typeof paymentMethods.$inferInsert;
+
+/**
+ * Admin credentials for custom email/password login.
+ * Separate from Manus OAuth — used exclusively for the admin panel.
+ */
+export const adminCredentials = mysqlTable("admin_credentials", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  /** bcrypt hash of the password */
+  passwordHash: varchar("passwordHash", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AdminCredential = typeof adminCredentials.$inferSelect;
+export type InsertAdminCredential = typeof adminCredentials.$inferInsert;

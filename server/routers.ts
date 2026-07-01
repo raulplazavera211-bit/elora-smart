@@ -24,6 +24,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
+import bcrypt from "bcryptjs";
 import {
   insertContactSubmission,
   insertClubEloraSignup,
@@ -52,6 +53,9 @@ import {
   togglePaymentMethod,
   updatePaymentMethodConfig,
   seedDefaultPaymentMethods,
+  getAdminCredentialByEmail,
+  upsertAdminCredential,
+  countAdminCredentials,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 import { sendOrderConfirmationEmail } from "./email";
@@ -65,8 +69,71 @@ export const appRouter = router({
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      // Also clear admin session cookie
+      ctx.res.clearCookie("elora_admin_session", { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
+
+    // ─── ADMIN CUSTOM LOGIN ────────────────────────────────────────────────
+    adminLogin: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        password: z.string().min(1),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const cred = await getAdminCredentialByEmail(input.email);
+        if (!cred) throw new TRPCError({ code: "UNAUTHORIZED", message: "Credenciales incorrectas" });
+        const valid = await bcrypt.compare(input.password, cred.passwordHash);
+        if (!valid) throw new TRPCError({ code: "UNAUTHORIZED", message: "Credenciales incorrectas" });
+        // Sign a JWT session for the admin
+        const { SignJWT } = await import("jose");
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET || "elora-admin-secret");
+        const token = await new SignJWT({ role: "admin", email: cred.email })
+          .setProtectedHeader({ alg: "HS256" })
+          .setExpirationTime("7d")
+          .sign(secret);
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie("elora_admin_session", token, {
+          ...cookieOptions,
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+        });
+        return { success: true };
+      }),
+
+    // Verify admin session (used by frontend to check if logged in)
+    adminMe: publicProcedure.query(async ({ ctx }) => {
+      try {
+        const { parse: parseCookies } = await import("cookie");
+        const cookies = parseCookies(ctx.req.headers.cookie || "");
+        const token = cookies["elora_admin_session"];
+        if (!token) return null;
+        const { jwtVerify } = await import("jose");
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET || "elora-admin-secret");
+        const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
+        if (payload.role !== "admin") return null;
+        return { email: payload.email as string, role: "admin" as const };
+      } catch {
+        return null;
+      }
+    }),
+
+    // Setup: create admin credentials (only works if no admin exists yet, or from existing admin)
+    adminSetup: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+        setupKey: z.string(), // one-time setup key from env
+      }))
+      .mutation(async ({ input }) => {
+        const expectedKey = process.env.ADMIN_SETUP_KEY || "elora-setup-2024";
+        if (input.setupKey !== expectedKey) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Clave de configuración incorrecta" });
+        }
+        const hash = await bcrypt.hash(input.password, 12);
+        await upsertAdminCredential(input.email, hash);
+        return { success: true };
+      }),
   }),
 
   // ─── CONTACT FORM ────────────────────────────────────────────────────────

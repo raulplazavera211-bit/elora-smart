@@ -36,6 +36,13 @@
       "when": 1781597494444,
       "tag": "0004_plain_marauders",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1782925021122,
+      "tag": "0005_regular_zeigeist",
+      "breakpoints": true
     }
   ]
 }
