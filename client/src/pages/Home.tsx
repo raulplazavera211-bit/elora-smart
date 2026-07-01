@@ -1546,10 +1546,15 @@ export default function Home() {
 
         {/* ── DESKTOP LEFT SIDEBAR ──────────────────────────────────────────── */}
         <aside className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start z-50 shrink-0 relative py-7">
-          <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }} className="px-10 text-left outline-none">
-            <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
-            <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
-          </button>
+          <div className="px-10 text-left">
+            <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }} className="outline-none text-left">
+              <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
+              <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
+            </button>
+            <div className="mt-4">
+              <LanguageSwitcher />
+            </div>
+          </div>
 
           <nav className="flex flex-col gap-5 w-full px-10">
             <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t('nav.index')}</p>
@@ -1588,7 +1593,6 @@ export default function Home() {
                 <span className="w-2 h-2 rounded-full bg-accent-deep" />
                 Est. Galicia · 2024
               </div>
-              <LanguageSwitcher />
             </div>
           </div>
         </aside>

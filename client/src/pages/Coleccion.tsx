@@ -86,6 +86,9 @@ export default function Coleccion() {
           <button onClick={() => navigate("/")} className="outline-none">
             <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
           </button>
+          <div className="mt-4">
+            <LanguageSwitcher />
+          </div>
         </div>
         <nav className="flex flex-col gap-5 w-full px-10 flex-1">
           <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t('nav.index')}</p>
@@ -121,7 +124,6 @@ export default function Coleccion() {
               <span className="w-2 h-2 rounded-full bg-accent-deep" />
               Est. Galicia · 2024
             </div>
-            <LanguageSwitcher />
           </div>
         </div>
       </aside>
