@@ -79,6 +79,7 @@ export const appRouter = router({
       .input(z.object({
         email: z.string().email(),
         password: z.string().min(1),
+        rememberMe: z.boolean().optional().default(false),
       }))
       .mutation(async ({ input, ctx }) => {
         const cred = await getAdminCredentialByEmail(input.email);
@@ -88,14 +89,17 @@ export const appRouter = router({
         // Sign a JWT session for the admin
         const { SignJWT } = await import("jose");
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "elora-admin-secret");
+        // rememberMe: 30 days; otherwise: 8 hours (session)
+        const expiresIn = input.rememberMe ? "30d" : "8h";
+        const maxAgeMs = input.rememberMe ? 30 * 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
         const token = await new SignJWT({ role: "admin", email: cred.email })
           .setProtectedHeader({ alg: "HS256" })
-          .setExpirationTime("7d")
+          .setExpirationTime(expiresIn)
           .sign(secret);
         const cookieOptions = getSessionCookieOptions(ctx.req);
         ctx.res.cookie("elora_admin_session", token, {
           ...cookieOptions,
-          maxAge: 7 * 24 * 60 * 60 * 1000,
+          maxAge: maxAgeMs,
           httpOnly: true,
         });
         return { success: true };

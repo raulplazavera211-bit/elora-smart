@@ -38,6 +38,7 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [captcha, setCaptcha] = useState(generateCaptcha);
   const [captchaInput, setCaptchaInput] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +52,8 @@ export default function AdminLogin() {
   const loginMutation = trpc.auth.adminLogin.useMutation({
     onSuccess: () => {
       setSuccess(true);
-      setTimeout(() => navigate("/admin"), 800);
+      // Hard redirect so the admin session cookie is picked up correctly
+      setTimeout(() => { window.location.href = "/admin"; }, 700);
     },
     onError: (err) => {
       setError(err.message || "Credenciales incorrectas");
@@ -71,7 +73,7 @@ export default function AdminLogin() {
       return;
     }
 
-    loginMutation.mutate({ email: email.trim(), password });
+    loginMutation.mutate({ email: email.trim(), password, rememberMe });
   };
 
   return (
@@ -216,6 +218,31 @@ export default function AdminLogin() {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+              </div>
+
+              {/* Recordar sesión */}
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRememberMe(v => !v)}
+                  className={`relative w-10 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${
+                    rememberMe ? "bg-[#c9a96e]" : "bg-white/10"
+                  }`}
+                  aria-checked={rememberMe}
+                  role="switch"
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${
+                      rememberMe ? "translate-x-5" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+                <span className="font-body text-xs text-white/40 select-none">
+                  Recordar inicio de sesión
+                  <span className="block text-[10px] text-white/20">
+                    {rememberMe ? "Sesión activa 30 días" : "Sesión activa 8 horas"}
+                  </span>
+                </span>
               </div>
 
               {/* CAPTCHA matemático */}
