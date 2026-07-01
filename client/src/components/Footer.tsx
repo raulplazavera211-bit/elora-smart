@@ -1,4 +1,17 @@
-import { ArrowUp, ArrowRight, Instagram, Twitter, Linkedin } from "lucide-react";
+import { ArrowUp, ArrowRight, Instagram, Linkedin } from "lucide-react";
+
+// Iconos SVG para TikTok y Facebook (no disponibles en lucide-react)
+const TikTokIcon = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+  </svg>
+);
 import { useEffect, useRef, useState } from "react";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
@@ -69,9 +82,10 @@ export function Footer() {
             <div className="flex flex-col gap-3 col-span-2 md:col-span-1">
               <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">Social</h4>
               <div className="flex gap-4 md:justify-end">
-                <a href="https://www.instagram.com/elorasmart/" target="_blank" rel="noreferrer" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Instagram className="w-4 h-4" /></a>
-                <a href="#" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Twitter className="w-4 h-4" /></a>
-                <a href="#" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Linkedin className="w-4 h-4" /></a>
+                <a href="https://www.instagram.com/elora_smart/" target="_blank" rel="noreferrer" aria-label="Instagram" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Instagram className="w-4 h-4" /></a>
+                <a href="https://www.linkedin.com/company/elora-smart/" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Linkedin className="w-4 h-4" /></a>
+                <a href="https://www.tiktok.com/@elora_smart" target="_blank" rel="noreferrer" aria-label="TikTok" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><TikTokIcon /></a>
+                <a href="https://www.facebook.com/elorasmart" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><FacebookIcon /></a>
               </div>
               <p className="font-body text-[11px] text-background/50 mt-2">+34 614 45 19 01</p>
               <a href="https://maps.google.com/?q=Avenida+da+Mah%C3%ADa+17+Bertamir%C3%A1ns+Ames" target="_blank" rel="noreferrer" className="font-body text-[11px] text-background/50 hover:text-white transition-colors mt-1 leading-relaxed block">
