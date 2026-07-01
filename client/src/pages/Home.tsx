@@ -1412,42 +1412,39 @@ function EsenciaVideoCard() {
 
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
+  const { t, i18n } = useTranslation();
   const [homeProducts, setHomeProducts] = useState(() => getLocalizedFeatured('es'));
   const productsQuery = trpc.products.getAll.useQuery();
 
   useEffect(() => {
-    if (productsQuery.data) {
-      const parseJsonField = (val: any, fallback: any) => {
-        if (Array.isArray(val)) return val;
-        if (typeof val === 'string') { try { return JSON.parse(val); } catch { return fallback; } }
-        if (val && typeof val === 'object') return val;
-        return fallback;
-      };
-      const featured = productsQuery.data
-        .filter((p: any) => ['esenza', 'esenza-compact', 'aura-compact'].includes(p.slug?.toLowerCase()))
-        .map((p: any) => ({
-          ...p,
-          id: p.slug,
-          price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
-          originalPrice: p.originalPrice ? (typeof p.originalPrice === 'number' ? p.originalPrice : parseFloat(p.originalPrice)) : null,
-          img: p.img || '',
-          gallery: parseJsonField(p.gallery, []),
-          badges: parseJsonField(p.badges, []),
-          highlights: parseJsonField(p.highlights, []),
-          features: parseJsonField(p.features, []),
-          pitch: parseJsonField(p.pitch, []),
-          technical: parseJsonField(p.technical, []),
-          dimensions: parseJsonField(p.dimensions, []),
-          inTheBox: parseJsonField(p.inTheBox, []),
-          installation: parseJsonField(p.installation, []),
-          warranty: parseJsonField(p.warranty, { years: 3, details: '' }),
-          faqs: parseJsonField(p.faqs, []),
-        }));
-      if (featured.length > 0) {
-        setHomeProducts(featured as any);
-      }
+    const parseJsonField = (val: any, fallback: any) => {
+      if (Array.isArray(val)) return val;
+      if (typeof val === 'string') { try { return JSON.parse(val); } catch { return fallback; } }
+      if (val && typeof val === 'object') return val;
+      return fallback;
+    };
+    // Siempre partir de los productos localizados como base
+    const localizedBase = getLocalizedFeatured(i18n.language);
+    if (productsQuery.data && productsQuery.data.length > 0) {
+      // Merge: textos del idioma activo + img/gallery/price de la BD
+      const merged = localizedBase.map((fallback) => {
+        const fromDb = productsQuery.data.find((p: any) =>
+          p.slug?.toLowerCase() === fallback.id?.toLowerCase()
+        );
+        if (!fromDb) return fallback;
+        return {
+          ...fallback,
+          img: fromDb.img || fallback.img,
+          gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
+          price: fromDb.price ? (typeof fromDb.price === 'number' ? fromDb.price : parseFloat(fromDb.price)) : fallback.price,
+          originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : null,
+        };
+      });
+      setHomeProducts(merged as any);
+    } else {
+      setHomeProducts(localizedBase);
     }
-  }, [productsQuery.data]);
+  }, [productsQuery.data, i18n.language]);
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -1520,15 +1517,17 @@ export default function Home() {
     return () => observer.disconnect();
   }, [selectedProduct]);
 
-  const { t, i18n } = useTranslation();
   const SECTIONS = [t('nav.vision'), t('nav.esencia'), t('nav.manifiesto'), t('nav.coleccion'), t('nav.contacto')];
 
-  // Actualizar productos cuando cambie el idioma
+  // Actualizar selectedProduct cuando cambia el idioma (para que el modal se traduzca)
   useEffect(() => {
-    if (!productsQuery.data || productsQuery.data.length === 0) {
-      setHomeProducts(getLocalizedFeatured(i18n.language));
+    if (selectedProduct) {
+      const allLoc = getLocalizedProducts(i18n.language);
+      const updated = allLoc.find(p => p.id === selectedProduct.id);
+      if (updated) setSelectedProduct({ ...selectedProduct, ...updated, img: selectedProduct.img, gallery: selectedProduct.gallery });
     }
-  }, [i18n.language, productsQuery.data]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18n.language]);
 
   const setSectionRef = (index: number) => (el: HTMLElement | null) => {
     sectionRefs.current[index] = el;
@@ -1889,7 +1888,7 @@ export default function Home() {
                           </div>
                         </div>
                         <button
-                          onClick={() => openProduct(PRODUCTS.find(p => p.id === "AURA-SUSPENDIDO")!)}
+                          onClick={() => { const p = getLocalizedProducts(i18n.language).find(p => p.id === 'AURA-SUSPENDIDO'); if (p) openProduct(p); }}
                           className="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.97] text-white font-body text-[9px] uppercase tracking-[0.25em] py-2 flex items-center justify-center gap-1.5 transition-colors"
                         >
                           {t('esencia.viewDetail')}
