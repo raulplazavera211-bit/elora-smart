@@ -31,7 +31,9 @@ export const adminProcedure = t.procedure.use(
   t.middleware(async opts => {
     const { ctx, next } = opts;
 
-    if (!ctx.user || ctx.user.role !== 'admin') {
+    // Accept either: Elora custom admin session OR Manus OAuth user with admin role
+    const hasAccess = ctx.isEloraAdmin || (ctx.user?.role === 'admin');
+    if (!hasAccess) {
       throw new TRPCError({ code: "FORBIDDEN", message: NOT_ADMIN_ERR_MSG });
     }
 
