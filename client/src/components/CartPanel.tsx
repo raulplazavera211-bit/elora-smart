@@ -2,6 +2,7 @@
 // Flujo: Carrito → Datos de envío (validados para España) → Método de pago → TPV Redsys
 
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { X, ShoppingBag, ArrowRight, Check, Loader2, CreditCard, Lock, AlertCircle, Smartphone, Truck, Gift, MapPin, Sparkles } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
@@ -28,51 +29,51 @@ type CheckoutStep = "cart" | "checkout" | "payment" | "redirecting";
 type PayMethod = "card" | "bizum" | "transfer" | "cod" | "paypal";
 
 // ─── Validaciones España ──────────────────────────────────────────────────────
-function validateCP(cp: string): string | null {
+// Validation functions now accept a t() function for i18n
+function validateCP(cp: string, t: (k: string) => string): string | null {
   const clean = cp.trim();
-  if (!clean) return "El código postal es obligatorio";
-  if (!/^\d{5}$/.test(clean)) return "El código postal debe tener exactamente 5 dígitos";
+  if (!clean) return t("checkout.cpRequired");
+  if (!/^\d{5}$/.test(clean)) return t("checkout.cpInvalid");
   const num = parseInt(clean, 10);
-  if (num < 1000 || num > 52999) return "Código postal no válido para España";
+  if (num < 1000 || num > 52999) return t("checkout.cpNotSpain");
   return null;
 }
 
-function validateTelefono(tel: string): string | null {
+function validateTelefono(tel: string, t: (k: string) => string): string | null {
   const clean = tel.trim().replace(/\s/g, "").replace(/-/g, "");
-  if (!clean) return "El teléfono es obligatorio";
-  // Acepta: 6XXXXXXXX, 7XXXXXXXX, 9XXXXXXXX, +346XXXXXXXX, 0034...
+  if (!clean) return t("checkout.phoneRequired");
   const stripped = clean.replace(/^(\+34|0034)/, "");
   if (!/^[679]\d{8}$/.test(stripped)) {
-    return "Introduce un teléfono español válido (ej: 600 123 456 o +34 600 123 456)";
+    return t("checkout.phoneInvalid");
   }
   return null;
 }
 
-function validateEmail(email: string): string | null {
-  if (!email.trim()) return "El email es obligatorio";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return "Introduce un email válido";
+function validateEmail(email: string, t: (k: string) => string): string | null {
+  if (!email.trim()) return t("checkout.emailRequired");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return t("checkout.emailInvalid");
   return null;
 }
 
-function validateNombre(val: string, label: string): string | null {
-  if (!val.trim()) return `${label} es obligatorio`;
-  if (val.trim().length < 2) return `${label} debe tener al menos 2 caracteres`;
+function validateNombre(val: string, label: string, t: (k: string) => string): string | null {
+  if (!val.trim()) return `${label} ${t("checkout.fieldRequired")}`;
+  if (val.trim().length < 2) return `${label} ${t("checkout.fieldMin")}`;
   return null;
 }
 
-function validateDireccion(val: string): string | null {
-  if (!val.trim()) return "La dirección es obligatoria";
-  if (val.trim().length < 5) return "Introduce la dirección completa (calle y número)";
+function validateDireccion(val: string, t: (k: string) => string): string | null {
+  if (!val.trim()) return t("checkout.addressRequired");
+  if (val.trim().length < 5) return t("checkout.addressMin");
   return null;
 }
 
-function validateCiudad(val: string): string | null {
-  if (!val.trim()) return "La ciudad/localidad es obligatoria";
+function validateCiudad(val: string, t: (k: string) => string): string | null {
+  if (!val.trim()) return t("checkout.cityRequired");
   return null;
 }
 
-function validateProvincia(val: string): string | null {
-  if (!val) return "Selecciona una provincia";
+function validateProvincia(val: string, t: (k: string) => string): string | null {
+  if (!val) return t("checkout.provinceRequired");
   return null;
 }
 
@@ -145,6 +146,7 @@ function Field({
 
 // ─── Club Elora formulario inline ───────────────────────────────────────────
 function ClubEloraInlineForm() {
+  const { t } = useTranslation();
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
@@ -157,7 +159,7 @@ function ClubEloraInlineForm() {
         setDone(true);
       }
     },
-    onError: () => toast.error("Error al unirse al Club Elora. Inténtalo de nuevo."),
+    onError: () => toast.error(t("club.error")),
   });
 
   const inputCls = "bg-white/70 border border-foreground/15 px-3 py-2 font-body text-xs text-foreground placeholder-foreground/30 focus:outline-none focus:border-[#D67A00] transition-colors w-full";
@@ -172,8 +174,8 @@ function ClubEloraInlineForm() {
         <div className="w-10 h-10 rounded-full bg-[#D67A00]/15 flex items-center justify-center">
           <Sparkles className="w-5 h-5 text-[#D67A00]" />
         </div>
-        <p className="font-display text-sm uppercase tracking-wide text-foreground">¡Bienvenida al Club!</p>
-        <p className="font-body text-[11px] text-foreground/50">Te hemos enviado un email de confirmación.</p>
+        <p className="font-display text-sm uppercase tracking-wide text-foreground">{t("cart.clubWelcome")}</p>
+        <p className="font-body text-[11px] text-foreground/50">{t("cart.clubConfirm")}</p>
       </motion.div>
     );
   }
@@ -182,7 +184,7 @@ function ClubEloraInlineForm() {
     return (
       <div className="flex items-center gap-2 py-2">
         <Check className="w-4 h-4 text-[#D67A00] shrink-0" />
-        <p className="font-body text-[11px] text-foreground/60">Ya eres miembro del Club Elora.</p>
+        <p className="font-body text-[11px] text-foreground/60">{t("cart.clubAlready")}</p>
       </div>
     );
   }
@@ -198,14 +200,14 @@ function ClubEloraInlineForm() {
     >
       <input
         type="text"
-        placeholder="Tu nombre (opcional)"
+        placeholder={t("cart.clubNamePlaceholder")}
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         className={inputCls}
       />
       <input
         type="email"
-        placeholder="Tu email *"
+        placeholder={t("cart.clubEmailPlaceholder")}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
@@ -221,9 +223,9 @@ function ClubEloraInlineForm() {
         ) : (
           <Sparkles className="w-3.5 h-3.5" />
         )}
-        Unirme al Club
+        {t("cart.clubJoin")}
       </button>
-      <p className="font-body text-[9px] text-foreground/30 text-center">Sin spam. Puedes darte de baja cuando quieras.</p>
+      <p className="font-body text-[9px] text-foreground/30 text-center">{t("cart.clubNoSpam")}</p>
     </form>
   );
 }
@@ -271,6 +273,7 @@ function ShippingWidget({
   cpError: string | null; checked: boolean; showFree: boolean;
   onCheck: () => void; compact?: boolean;
 }) {
+  const { t } = useTranslation();
   const inputCls = `bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors w-full`;
   const selectCls = `bg-background border border-border px-3 py-2.5 font-body text-sm text-foreground focus:outline-none focus:border-foreground transition-colors w-full appearance-none cursor-pointer`;
 
@@ -316,8 +319,8 @@ function ShippingWidget({
               transition={{ delay: 0.25 }}
               className="text-center"
             >
-              <p className="font-display text-lg uppercase tracking-wide text-green-500">¡Envío gratis!</p>
-              <p className="font-body text-xs text-foreground/60 mt-1">Tu pedido llega sin coste a <span className="font-semibold text-foreground">{city}</span></p>
+              <p className="font-display text-lg uppercase tracking-wide text-green-500">{t("cart.freeShipping")}</p>
+              <p className="font-body text-xs text-foreground/60 mt-1">{t("cart.freeShippingTo")} <span className="font-semibold text-foreground">{city}</span></p>
             </motion.div>
             <motion.div
               initial={{ opacity: 0 }}
@@ -326,7 +329,7 @@ function ShippingWidget({
               className="flex items-center gap-2 text-green-500/60"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span className="font-body text-[10px] uppercase tracking-widest">Envío estándar incluido</span>
+              <span className="font-body text-[10px] uppercase tracking-widest">{t("cart.freeShippingIncluded")}</span>
               <Sparkles className="w-3.5 h-3.5" />
             </motion.div>
           </motion.div>
@@ -336,7 +339,7 @@ function ShippingWidget({
       {/* Cabecera */}
       <div className="flex items-center gap-2">
         <MapPin className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
-        <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Calcular envío</p>
+        <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50">{t("cart.calcShipping")}</p>
         {checked && (
           <motion.span
             initial={{ opacity: 0, scale: 0 }}
@@ -344,7 +347,7 @@ function ShippingWidget({
             className="ml-auto flex items-center gap-1.5 font-body text-[10px] text-green-500"
           >
             <Check className="w-3 h-3" />
-            Envío gratis
+            {t("cart.freeShippingCheck")}
           </motion.span>
         )}
       </div>
@@ -355,11 +358,11 @@ function ShippingWidget({
           value={city}
           onChange={e => setCity(e.target.value)}
           className={inputCls}
-          placeholder="Localidad"
+          placeholder={t("cart.localityField")}
         />
         <div className="relative">
           <select value={prov} onChange={e => setProv(e.target.value)} className={selectCls}>
-            <option value="">Provincia...</option>
+            <option value="">{t("cart.provinceField")}</option>
             {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
           </select>
           <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-foreground/40 text-xs">▾</div>
@@ -368,7 +371,7 @@ function ShippingWidget({
           value={cp}
           onChange={e => { setCp(e.target.value.replace(/\D/g, "").slice(0, 5)); }}
           className={`${inputCls} ${cpError ? "border-red-400" : ""}`}
-          placeholder="C.P."
+          placeholder={t("cart.cpField")}
           inputMode="numeric"
           maxLength={5}
         />
@@ -383,7 +386,7 @@ function ShippingWidget({
         className="w-full border border-foreground/20 hover:border-foreground text-foreground font-body text-[10px] uppercase tracking-[0.25em] py-2.5 flex items-center justify-center gap-2 transition-colors"
       >
         <Truck className="w-3.5 h-3.5" />
-        Calcular envío
+        {t("cart.calcShipping")}
       </motion.button>
     </div>
   );
@@ -391,6 +394,7 @@ function ShippingWidget({
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sections, onNavigate }: CartPanelProps) {
+  const { t } = useTranslation();
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>("cart");
   const [form, setForm] = useState<CheckoutFormState>(EMPTY_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof CheckoutFormState, string>>>({});
@@ -448,9 +452,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   // Popup de envío (solo móvil)
   const [showShippingPopup, setShowShippingPopup] = useState(false);
   function checkShipping() {
-    const cpErr = validateCP(shippingCp);
-    if (!shippingCity.trim()) { toast.error("Introduce tu localidad"); return; }
-    if (!shippingProv) { toast.error("Selecciona tu provincia"); return; }
+    const cpErr = validateCP(shippingCp, t);
+    if (!shippingCity.trim()) { toast.error(t("checkout.cityRequired")); return; }
+    if (!shippingProv) { toast.error(t("checkout.provinceRequired")); return; }
     if (cpErr) { setShippingCpError(cpErr); return; }
     setShippingCpError(null);
     setShippingChecked(true);
@@ -482,7 +486,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
   const createOrder = trpc.orders.create.useMutation({
     onError: (err) => {
-      toast.error("No se pudo procesar el pedido. Por favor, inténtalo de nuevo.");
+      toast.error(t("misc.error"));
       console.error("[Checkout] Error:", err);
       setCheckoutStep("checkout");
     },
@@ -490,7 +494,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
   const initPayment = trpc.orders.initPayment.useMutation({
     onError: (err) => {
-      toast.error(err.message || "Error al iniciar el pago. Inténtalo de nuevo.");
+      toast.error(err.message || t("misc.error"));
       console.error("[Redsys] Error:", err);
       setCheckoutStep("payment");
     },
@@ -509,28 +513,28 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   function validateAll(): boolean {
     const newErrors: Partial<Record<keyof CheckoutFormState, string>> = {};
 
-    const nombreErr = validateNombre(form.nombre, "El nombre");
+    const nombreErr = validateNombre(form.nombre, t("checkout.name"), t);
     if (nombreErr) newErrors.nombre = nombreErr;
 
-    const apellidosErr = validateNombre(form.apellidos, "Los apellidos");
+    const apellidosErr = validateNombre(form.apellidos, t("checkout.surnames"), t);
     if (apellidosErr) newErrors.apellidos = apellidosErr;
 
-    const emailErr = validateEmail(form.email);
+    const emailErr = validateEmail(form.email, t);
     if (emailErr) newErrors.email = emailErr;
 
-    const telErr = validateTelefono(form.telefono);
+    const telErr = validateTelefono(form.telefono, t);
     if (telErr) newErrors.telefono = telErr;
 
-    const dirErr = validateDireccion(form.direccion);
+    const dirErr = validateDireccion(form.direccion, t);
     if (dirErr) newErrors.direccion = dirErr;
 
-    const ciudadErr = validateCiudad(form.ciudad);
+    const ciudadErr = validateCiudad(form.ciudad, t);
     if (ciudadErr) newErrors.ciudad = ciudadErr;
 
-    const provErr = validateProvincia(form.provincia);
+    const provErr = validateProvincia(form.provincia, t);
     if (provErr) newErrors.provincia = provErr;
 
-    const cpErr = validateCP(form.cp);
+    const cpErr = validateCP(form.cp, t);
     if (cpErr) newErrors.cp = cpErr;
 
     setErrors(newErrors);
@@ -550,7 +554,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   function handleContinueToPayment(e: React.FormEvent) {
     e.preventDefault();
     if (!validateAll()) {
-      toast.error("Por favor, revisa los campos marcados en rojo.");
+      toast.error(t("misc.error"));
       return;
     }
     setCheckoutStep("payment");
@@ -643,34 +647,34 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         className="px-12 py-10 flex flex-col gap-5 max-w-xl"
         noValidate
       >
-        <h2 className="font-display text-2xl uppercase tracking-wide mb-2">Datos de envío</h2>
-        <p className="font-body text-xs text-foreground/50 -mt-3">Solo enviamos a España peninsular, Baleares, Canarias, Ceuta y Melilla.</p>
+        <h2 className="font-display text-2xl uppercase tracking-wide mb-2">{t("checkout.title")}</h2>
+        <p className="font-body text-xs text-foreground/50 -mt-3">{t("checkout.onlySpain")}</p>
 
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Nombre" required error={touched.nombre ? errors.nombre : null}>
+          <Field label={t("checkout.name")} required error={touched.nombre ? errors.nombre : null}>
             <input
               value={form.nombre}
               onChange={e => setField("nombre", e.target.value)}
               onBlur={() => markTouched("nombre")}
               className={inputClass("nombre")}
-              placeholder="Tu nombre"
+              placeholder={t("checkout.namePlaceholder")}
               autoComplete="given-name"
             />
           </Field>
-          <Field label="Apellidos" required error={touched.apellidos ? errors.apellidos : null}>
+          <Field label={t("checkout.surnames")} required error={touched.apellidos ? errors.apellidos : null}>
             <input
               value={form.apellidos}
               onChange={e => setField("apellidos", e.target.value)}
               onBlur={() => markTouched("apellidos")}
               className={inputClass("apellidos")}
-              placeholder="Apellidos"
+              placeholder={t("checkout.surnamesPlaceholder")}
               autoComplete="family-name"
             />
           </Field>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Email" required error={touched.email ? errors.email : null}>
+          <Field label={t("checkout.email")} required error={touched.email ? errors.email : null}>
             <input
               type="email"
               value={form.email}
@@ -682,7 +686,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               inputMode="email"
             />
           </Field>
-          <Field label="Teléfono" required error={touched.telefono ? errors.telefono : null}>
+          <Field label={t("checkout.phone")} required error={touched.telefono ? errors.telefono : null}>
             <input
               type="tel"
               value={form.telefono}
@@ -697,37 +701,37 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         </div>
 
         <div className="grid grid-cols-[2fr_1fr_1fr] gap-4">
-          <Field label="Calle / Avenida" required error={touched.direccion ? errors.direccion : null}>
+          <Field label={t("checkout.street")} required error={touched.direccion ? errors.direccion : null}>
             <input
               value={form.direccion}
               onChange={e => setField("direccion", e.target.value)}
               onBlur={() => markTouched("direccion")}
               className={inputClass("direccion")}
-              placeholder="Calle Mayor"
+              placeholder={t("checkout.streetPlaceholder")}
               autoComplete="address-line1"
             />
           </Field>
-          <Field label="Número" error={null}>
+          <Field label={t("checkout.number")} error={null}>
             <input
               value={form.numero}
               onChange={e => setField("numero", e.target.value)}
               className={inputClass("numero")}
-              placeholder="12"
+              placeholder={t("checkout.numberPlaceholder")}
               autoComplete="address-line2"
             />
           </Field>
-          <Field label="Piso / Puerta" error={null}>
+          <Field label={t("checkout.floor")} error={null}>
             <input
               value={form.piso}
               onChange={e => setField("piso", e.target.value)}
               className={inputClass("piso")}
-              placeholder="3ºA"
+              placeholder={t("checkout.floorPlaceholder")}
             />
           </Field>
         </div>
 
         <div className="grid grid-cols-[2fr_2fr_1fr] gap-4">
-          <Field label="Ciudad / Localidad" required error={touched.ciudad ? errors.ciudad : null}>
+          <Field label={t("checkout.city")} required error={touched.ciudad ? errors.ciudad : null}>
             <div className="relative">
               <input
                 value={form.ciudad}
@@ -743,7 +747,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 onBlur={() => { markTouched("ciudad"); setTimeout(() => setShowMunicipioSuggestions(false), 200); }}
                 onFocus={() => { if (form.ciudad.length >= 3) setShowMunicipioSuggestions(true); }}
                 className={inputClass("ciudad")}
-                placeholder="Madrid"
+                placeholder={t("checkout.cityPlaceholder")}
                 autoComplete="off"
               />
               {showMunicipioSuggestions && municipioSuggestions && municipioSuggestions.length > 0 && (
@@ -770,7 +774,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               )}
             </div>
           </Field>
-          <Field label="Provincia" required error={touched.provincia ? errors.provincia : null}>
+          <Field label={t("checkout.province")} required error={touched.provincia ? errors.provincia : null}>
             <div className="relative">
               <select
                 value={form.provincia}
@@ -778,13 +782,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 onBlur={() => markTouched("provincia")}
                 className={selectClass("provincia")}
               >
-                <option value="">Selecciona...</option>
+                <option value="">{t("checkout.selectProvince")}</option>
                 {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
               <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40">▾</div>
             </div>
           </Field>
-          <Field label="C.P." required error={touched.cp ? errors.cp : null}>
+          <Field label={t("checkout.cp")} required error={touched.cp ? errors.cp : null}>
             <input
               value={form.cp}
               onChange={e => {
@@ -794,7 +798,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               }}
               onBlur={() => markTouched("cp")}
               className={inputClass("cp")}
-              placeholder="28001"
+              placeholder={t("checkout.cpPlaceholder")}
               inputMode="numeric"
               maxLength={5}
               autoComplete="postal-code"
@@ -802,13 +806,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </Field>
         </div>
 
-        <Field label="Notas adicionales" error={null}>
+        <Field label={t("checkout.notes")} error={null}>
           <textarea
             rows={3}
             value={form.notas}
             onChange={e => setField("notas", e.target.value)}
             className={`${inputClass("notas")} resize-none`}
-            placeholder="Instrucciones de entrega, horario preferido, preguntas..."
+            placeholder={t("checkout.notesPlaceholder")}
           />
         </Field>
       </form>
@@ -820,8 +824,8 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     return (
       <div className="px-12 py-10 flex flex-col gap-6 max-w-xl">
         <div>
-          <h2 className="font-display text-2xl uppercase tracking-wide mb-1">Método de pago</h2>
-          <p className="font-body text-xs text-foreground/50">Elige cómo quieres pagar. Serás redirigido al TPV seguro de Redsys.</p>
+          <h2 className="font-display text-2xl uppercase tracking-wide mb-1">{t("checkout.paymentMethod")}</h2>
+          <p className="font-body text-xs text-foreground/50">{t("checkout.bizumSub")}</p>
         </div>
 
         {/* Badge envío gratis animado */}
@@ -831,8 +835,8 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
           </span>
           <div className="flex-1">
-            <p className="font-body text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">¡Envío gratis a toda España!</p>
-            <p className="font-body text-[10px] text-emerald-600/70 dark:text-emerald-500/70 mt-0.5">Tu pedido llega sin coste adicional</p>
+            <p className="font-body text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">{t("cart.freeShippingBadge")}</p>
+            <p className="font-body text-[10px] text-emerald-600/70 dark:text-emerald-500/70 mt-0.5">{t("cart.freeShippingBadgeSub")}</p>
           </div>
           <span className="text-xl">🚚</span>
           {/* Efecto de brillo deslizante */}
@@ -840,7 +844,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         </div>
         {/* Resumen del pedido */}
         <div className="border border-border p-5 flex flex-col gap-3 bg-foreground/[0.02]">
-          <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">Resumen del pedido</p>
+          <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">{t("checkout.orderSummary")}</p>
           {cart.map((item, idx) => (
             <div key={idx} className="flex justify-between items-center">
               <span className="font-body text-sm text-foreground/70">{item.name}</span>
@@ -848,14 +852,14 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
             </div>
           ))}
           <div className="border-t border-border pt-3 flex justify-between items-baseline">
-            <span className="font-body text-xs uppercase tracking-widest text-foreground/50">Total con IVA</span>
+            <span className="font-body text-xs uppercase tracking-widest text-foreground/50">{t("cart.totalVat")}</span>
             <span className="font-display text-2xl">{cartTotal.toLocaleString("es-ES")} €</span>
           </div>
         </div>
 
                 {/* Selector de método */}
         <div className="flex flex-col gap-3">
-          <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">Selecciona tu método de pago</p>
+          <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">{t("checkout.paymentMethodSelect")}</p>
           {/* Tarjeta */}
           {cardEnabled && (
             <button
@@ -875,9 +879,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
                   <CreditCard className="w-4 h-4 text-foreground/60" />
-                  <span className="font-body text-sm font-medium">Tarjeta bancaria</span>
+                  <span className="font-body text-sm font-medium">{t("checkout.card")}</span>
                 </div>
-                <p className="font-body text-xs text-foreground/40">Visa, Mastercard, American Express</p>
+                <p className="font-body text-xs text-foreground/40">{t("checkout.cardSub")}</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <VisaIcon />
@@ -904,9 +908,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
                   <Smartphone className="w-4 h-4 text-[#00B259]" />
-                  <span className="font-body text-sm font-medium">Bizum</span>
+                  <span className="font-body text-sm font-medium">{t("checkout.bizum")}</span>
                 </div>
-                <p className="font-body text-xs text-foreground/40">Paga desde tu app bancaria en segundos</p>
+                <p className="font-body text-xs text-foreground/40">{t("checkout.bizumSub")}</p>
               </div>
               <BizumIcon size="lg" />
             </button>
@@ -915,7 +919,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
         <div className="flex items-center gap-2 text-foreground/30 border border-border/50 p-3">
           <Lock className="w-3.5 h-3.5 shrink-0" />
-          <span className="font-body text-[10px]">Pago 100% seguro con cifrado SSL · TPV Virtual Redsys · Banco Santander</span>
+          <span className="font-body text-[10px]">{t("cart.securePayFull")}</span>
         </div>
       </div>
     );
@@ -1107,24 +1111,24 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   }
 
   // ─── Pasos del stepper ────────────────────────────────────────────────────
-  const STEPS = ["Carrito", "Datos de envío", "Pago"];
+  const STEPS_KEYS = ["cart.steps.cart", "cart.steps.shipping", "cart.steps.payment"] as const;
   const stepIndex = checkoutStep === "cart" ? 0 : checkoutStep === "checkout" ? 1 : 2;
 
   function StepBar({ mobile = false }: { mobile?: boolean }) {
     if (checkoutStep === "redirecting") return null;
     return (
       <div className={`flex items-center gap-0 ${mobile ? "px-8 py-3" : "px-12 py-5"} border-b border-border shrink-0`}>
-        {STEPS.map((label, i) => (
-          <div key={label} className="flex items-center gap-0">
+        {STEPS_KEYS.map((key, i) => (
+          <div key={key} className="flex items-center gap-0">
             <div className={`flex items-center gap-2 transition-colors duration-300 ${i <= stepIndex ? "text-foreground" : "text-foreground/30"}`}>
               <div className={`${mobile ? "w-5 h-5 text-[10px]" : "w-6 h-6 text-[11px]"} rounded-full flex items-center justify-center font-body transition-all duration-300 ${
                 i < stepIndex ? "bg-accent-deep text-background" : i === stepIndex ? "bg-foreground text-background" : "border border-border text-foreground/30"
               }`}>
                 {i < stepIndex ? <Check className={mobile ? "w-2.5 h-2.5" : "w-3 h-3"} /> : i + 1}
               </div>
-              <span className={`font-body uppercase tracking-widest ${mobile ? "text-[9px]" : "text-xs"}`}>{label}</span>
+              <span className={`font-body uppercase tracking-widest ${mobile ? "text-[9px]" : "text-xs"}`}>{t(key)}</span>
             </div>
-            {i < STEPS.length - 1 && (
+            {i < STEPS_KEYS.length - 1 && (
               <div className={`${mobile ? "w-6 mx-2" : "w-10 mx-3"} h-[1px] transition-colors duration-300 ${i < stepIndex ? "bg-accent-deep" : "bg-border"}`} />
             )}
           </div>
@@ -1134,7 +1138,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
             onClick={() => setCheckoutStep(checkoutStep === "payment" ? "checkout" : "cart")}
             className={`ml-auto font-body ${mobile ? "text-[9px]" : "text-[10px]"} uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors outline-none flex items-center gap-1.5`}
           >
-            <ArrowRight className="w-3 h-3 rotate-180" /> Volver
+            <ArrowRight className="w-3 h-3 rotate-180" /> {t("cart.back")}
           </button>
         )}
       </div>
@@ -1174,7 +1178,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </button>
           {sections && sections.length > 0 && (
             <nav className="flex flex-col gap-5 w-full px-10">
-              <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
+              <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t("nav.index")}</p>
               {sections.map((item, idx) => (
                 <button key={`cart-nav-${item}`} onClick={() => { handleClose(); onNavigate?.(idx); }} className="group text-left outline-none flex items-center gap-4 transition-all duration-500">
                   <span className="h-[1px] w-3 bg-foreground/20 group-hover:w-6 transition-all duration-500" />
@@ -1198,7 +1202,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           <div className="w-[420px] xl:w-[480px] h-full bg-[#F5F0E8] flex flex-col shrink-0 overflow-y-auto">
             <div className="flex items-center justify-between px-10 pt-10 pb-6 shrink-0">
               <p className="font-display text-xs uppercase tracking-[0.35em] text-foreground/40">
-                {checkoutStep === "cart" ? "Tu selección" : checkoutStep === "checkout" ? "Resumen del pedido" : checkoutStep === "payment" ? "Confirmar pago" : "Procesando pago"}
+                {checkoutStep === "cart" ? t("cart.title") : checkoutStep === "checkout" ? t("cart.titleCheckout") : checkoutStep === "payment" ? t("cart.titlePayment") : t("cart.titleRedirecting")}
               </p>
               <button onClick={handleClose} aria-label="Cerrar" className="outline-none w-8 h-8 rounded-full border border-foreground/10 flex items-center justify-center hover:border-foreground/30 transition-colors">
                 <X className="w-4 h-4 text-foreground/50" />
@@ -1212,12 +1216,12 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <Gift className="w-4 h-4 text-[#D67A00]" />
                   </div>
                   <div>
-                    <p className="font-display text-sm uppercase tracking-[0.2em] text-foreground">Club Elora</p>
-                    <p className="font-body text-[10px] text-foreground/40 mt-0.5">Miembros exclusivos</p>
+                    <p className="font-display text-sm uppercase tracking-[0.2em] text-foreground">{t("cart.clubTitle")}</p>
+                    <p className="font-body text-[10px] text-foreground/40 mt-0.5">{t("cart.clubSub")}</p>
                   </div>
                 </div>
                 <p className="font-body text-xs text-foreground/60 leading-relaxed">
-                  Únete y disfruta de descuentos exclusivos, acceso anticipado a nuevos modelos y soporte prioritario.
+                  {t("cart.clubBody")}
                 </p>
                 {/* Formulario inline */}
                 <ClubEloraInlineForm />
@@ -1226,7 +1230,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
             {/* Reseñas */}
             <div className="px-10 mt-auto pb-10">
-              <p className="font-body text-[9px] uppercase tracking-[0.3em] text-foreground/30 mb-4">Lo que dicen nuestros clientes</p>
+              <p className="font-body text-[9px] uppercase tracking-[0.3em] text-foreground/30 mb-4">{t("cart.reviewsTitle")}</p>
               <div className="flex flex-col gap-3">
                 {REVIEWS.slice(0, 3).map((r, i) => (
                   <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 3 + i * 0.6, ease: "easeInOut", delay: i * 0.5 }} className="bg-white/60 border border-foreground/8 rounded-lg px-4 py-3">
@@ -1241,7 +1245,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               </div>
               <div className="flex items-center gap-2 mt-4">
                 <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                <p className="text-foreground/30 text-[10px]">5.0 · 10 reseñas verificadas en Google</p>
+                <p className="text-foreground/30 text-[10px]">5.0 · 10 {t("cart.reviews")}</p>
               </div>
             </div>
           </div>
@@ -1262,14 +1266,14 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <CreditCard className="w-8 h-8 text-accent-deep" />
                   </motion.div>
                   <div>
-                    <h3 className="font-display text-2xl uppercase tracking-wide mb-3">Redirigiendo al pago</h3>
+                    <h3 className="font-display text-2xl uppercase tracking-wide mb-3">{t("cart.redirecting")}</h3>
                     <p className="font-body text-sm text-foreground/60 leading-relaxed max-w-sm">
-                      Te llevamos al TPV seguro de Redsys para pagar con {payMethod === "bizum" ? "Bizum" : "tarjeta"}.
+                      {t("cart.redirectingBody")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")}.
                     </p>
                   </div>
                   <div className="flex items-center gap-3 text-foreground/30">
                     <Lock className="w-4 h-4" />
-                    <span className="font-body text-xs uppercase tracking-widest">Pago 100% seguro · SSL</span>
+                    <span className="font-body text-xs uppercase tracking-widest">{t("cart.secureSsl")}</span>
                   </div>
                   <div className="flex items-center gap-4 opacity-50">
                     <VisaIcon />
@@ -1287,14 +1291,14 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <div className="flex flex-col items-center gap-6 py-20 text-center">
                       <ShoppingBag className="w-16 h-16 text-foreground/10" />
                       <div>
-                        <p className="font-display text-xl uppercase tracking-wide text-foreground/30 mb-2">Tu carrito está vacío</p>
-                        <p className="font-body text-sm text-foreground/30">Explora nuestra colección y añade un producto</p>
+                        <p className="font-display text-xl uppercase tracking-wide text-foreground/30 mb-2">{t("cart.empty")}</p>
+                        <p className="font-body text-sm text-foreground/30">{t("cart.emptyBody")}</p>
                       </div>
-                      <button onClick={handleClose} className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors border border-border px-8 py-3 hover:border-foreground">Ver colección</button>
+                      <button onClick={handleClose} className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors border border-border px-8 py-3 hover:border-foreground">{t("cart.viewCollection")}</button>
                     </div>
                   ) : (
                     <div>
-                      <h2 className="font-display text-2xl uppercase tracking-wide mb-8">Tu pedido</h2>
+                      <h2 className="font-display text-2xl uppercase tracking-wide mb-8">{t("cart.yourOrder")}</h2>
                       <AnimatePresence>
                         <ul className="flex flex-col gap-6">
                           {cart.map((item, idx) => (
@@ -1338,30 +1342,30 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   <motion.button onClick={() => setCheckoutStep("checkout")} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.01 } : {}} whileTap={cart.length > 0 ? { scale: 0.98 } : {}} className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 32px rgba(214,122,0,0.4)" : undefined }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ShoppingBag className="w-5 h-5 relative z-10" />
-                    <span className="relative z-10">{cart.length > 0 ? `Continuar · ${cartTotal.toLocaleString("es-ES")} €` : "Añade productos"}</span>
+                    <span className="relative z-10">{cart.length > 0 ? `${t("cart.continue")} · ${cartTotal.toLocaleString("es-ES")} €` : t("cart.addProducts")}</span>
                     <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-5 h-5" /></motion.span>
                   </motion.button>
                 ) : checkoutStep === "checkout" ? (
                   <motion.button type="submit" form="checkout-form-desktop" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }} className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 relative overflow-hidden group" style={{ boxShadow: "0 4px 32px rgba(214,122,0,0.4)" }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ArrowRight className="w-5 h-5 relative z-10" />
-                    <span className="relative z-10">Continuar al pago</span>
+                    <span className="relative z-10">{t("cart.continueTo")}</span>
                   </motion.button>
                 ) : (
                   <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.01 } : {}} whileTap={!isSubmitting ? { scale: 0.98 } : {}} className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: "0 4px 32px rgba(214,122,0,0.4)" }}>
                     {isSubmitting ? (
-                      <><Loader2 className="w-5 h-5 animate-spin" /><span>Preparando pago...</span></>
+                      <><Loader2 className="w-5 h-5 animate-spin" /><span>{t("cart.preparing")}</span></>
                     ) : (
                       <>
                         <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                         {payMethod === "bizum" ? <Smartphone className="w-5 h-5 relative z-10 text-[#00B259]" /> : <CreditCard className="w-5 h-5 relative z-10" />}
-                        <span className="relative z-10">Pagar con {payMethod === "bizum" ? "Bizum" : "tarjeta"} · {cartTotal.toLocaleString("es-ES")} €</span>
+                        <span className="relative z-10">{t("cart.payWith")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")} · {cartTotal.toLocaleString("es-ES")} €</span>
                       </>
                     )}
                   </motion.button>
                 )}
                 <p className="font-body text-[10px] text-foreground/30 text-center mt-3">
-                  Pago seguro con tarjeta o Bizum · TPV Virtual Redsys
+                  {t("cart.securePay")}
                 </p>
               </div>
             )}
@@ -1380,7 +1384,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
             <div className="flex items-center gap-3">
               <ShoppingBag className="w-5 h-5 text-foreground" />
               <p className="font-display text-lg uppercase tracking-widest">
-                {checkoutStep === "cart" ? `Carrito · ${cart.length}` : checkoutStep === "checkout" ? "Datos de envío" : checkoutStep === "payment" ? "Método de pago" : "Procesando pago"}
+                {checkoutStep === "cart" ? `${t("cart.steps.cart")} · ${cart.length}` : checkoutStep === "checkout" ? t("cart.steps.shipping") : checkoutStep === "payment" ? t("cart.steps.payment") : t("cart.titleRedirecting")}
               </p>
             </div>
             <button onClick={handleClose} aria-label="Cerrar" className="outline-none">
@@ -1397,14 +1401,14 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   <CreditCard className="w-6 h-6 text-accent-deep" />
                 </motion.div>
                 <div>
-                  <h3 className="font-display text-xl uppercase tracking-wide mb-2">Redirigiendo al pago</h3>
+                  <h3 className="font-display text-xl uppercase tracking-wide mb-2">{t("cart.redirecting")}</h3>
                   <p className="font-body text-sm text-foreground/60 leading-relaxed">
-                    Te llevamos al TPV seguro de Redsys para pagar con {payMethod === "bizum" ? "Bizum" : "tarjeta"}.
+                    {t("cart.redirectingBody")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")}.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 text-foreground/30">
                   <Lock className="w-3 h-3" />
-                  <span className="font-body text-[10px] uppercase tracking-widest">Pago seguro SSL</span>
+                  <span className="font-body text-[10px] uppercase tracking-widest">{t("cart.secureSsl")}</span>
                 </div>
               </div>
             ) : checkoutStep === "payment" ? (
@@ -1416,7 +1420,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 {cart.length === 0 ? (
                   <div className="flex flex-col items-center gap-4 py-12 text-center">
                     <ShoppingBag className="w-10 h-10 text-foreground/20" />
-                    <p className="font-body text-sm text-foreground/40">Tu carrito está vacío</p>
+                    <p className="font-body text-sm text-foreground/40">{t("cart.empty")}</p>
                   </div>
                 ) : (
                   <>
@@ -1446,7 +1450,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
             <div className="flex flex-col shrink-0">
               {checkoutStep === "cart" && (
                 <div className="bg-[#F8F9FA] border-t border-gray-200 px-5 py-3">
-                  <p className="font-display text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2.5 text-center">Estás a punto de unirte a clientes como estos</p>
+                  <p className="font-display text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2.5 text-center">{t("cart.joinClub")}</p>
                   <div className="flex flex-col gap-1.5">
                     {REVIEWS.slice(0, 2).map((r, i) => (
                       <motion.div key={i} animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 2.8 + i * 0.7, ease: "easeInOut", delay: i * 0.4 }} className="flex items-center gap-2 bg-white rounded-md px-2.5 py-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.10)]">
@@ -1463,7 +1467,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   </div>
                   <div className="flex items-center justify-center gap-1.5 mt-2">
                     <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                    <p className="text-gray-400 text-[10px]">5.0 · 10 reseñas</p>
+                    <p className="text-gray-400 text-[10px]">5.0 · 10 {t("cart.reviewsShort")}</p>
                     <GoogleLogoIcon />
                   </div>
                 </div>
@@ -1471,7 +1475,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
                 {checkoutStep === "cart" && cart.length > 0 && (
                   <div className="flex justify-between items-baseline mb-1">
-                    <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">Total</span>
+                    <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">{t("cart.total")}</span>
                     <span className="font-display text-2xl">{cartTotal.toLocaleString("es-ES")} €</span>
                   </div>
                 )}
@@ -1479,29 +1483,29 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   <motion.button onClick={() => { if (cart.length > 0) setShowShippingPopup(true); }} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.02 } : {}} whileTap={cart.length > 0 ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ShoppingBag className="w-4 h-4 relative z-10" />
-                    <span className="relative z-10">{cart.length > 0 ? `Comprar · ${cartTotal.toLocaleString("es-ES")} €` : "Añade productos"}</span>
+                    <span className="relative z-10">{cart.length > 0 ? `${t("cart.buy")} · ${cartTotal.toLocaleString("es-ES")} €` : t("cart.addProducts")}</span>
                     <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-4 h-4" /></motion.span>
                   </motion.button>
                 ) : checkoutStep === "checkout" ? (
                   <motion.button type="submit" form="checkout-form" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 relative overflow-hidden group" style={{ boxShadow: "0 4px 24px rgba(214,122,0,0.35)" }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ArrowRight className="w-4 h-4 relative z-10" />
-                    <span className="relative z-10">Continuar al pago</span>
+                    <span className="relative z-10">{t("cart.continueTo")}</span>
                   </motion.button>
                 ) : (
                   <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.02 } : {}} whileTap={!isSubmitting ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: "0 4px 24px rgba(214,122,0,0.35)" }}>
                     {isSubmitting ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /><span>Preparando pago...</span></>
+                      <><Loader2 className="w-4 h-4 animate-spin" /><span>{t("cart.preparing")}</span></>
                     ) : (
                       <>
                         <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                         {payMethod === "bizum" ? <Smartphone className="w-4 h-4 relative z-10 text-[#00B259]" /> : <CreditCard className="w-4 h-4 relative z-10" />}
-                        <span className="relative z-10">Pagar con {payMethod === "bizum" ? "Bizum" : "tarjeta"} · {cartTotal.toLocaleString("es-ES")} €</span>
+                        <span className="relative z-10">{t("cart.payWith")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")} · {cartTotal.toLocaleString("es-ES")} €</span>
                       </>
                     )}
                   </motion.button>
                 )}
-                <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">Pago seguro con tarjeta o Bizum · TPV Redsys</p>
+                <p className="font-body text-[10px] text-foreground/30 text-center leading-relaxed">{t("cart.securePay")}</p>
               </div>
             </div>
           )}
@@ -1565,7 +1569,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                           transition={{ delay: 0.15 }}
                           className="font-display text-2xl uppercase tracking-wide text-foreground"
                         >
-                          ¡Envío gratis!
+                          {t("cart.freeShipping")}
                         </motion.p>
                         <motion.p
                           initial={{ opacity: 0, y: 8 }}
@@ -1573,7 +1577,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                           transition={{ delay: 0.3 }}
                           className="font-body text-sm text-foreground/50 mt-1"
                         >
-                          Tu pedido llega sin coste a {shippingCity || "tu puerta"} ✨
+                          {t("cart.freeShippingTo")} {shippingCity || t("misc.yourDoor")} ✨
                         </motion.p>
                       </div>
                       <motion.div
@@ -1583,7 +1587,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                         className="flex items-center gap-2 bg-accent-deep/10 px-4 py-2 rounded-full"
                       >
                         <Truck className="w-4 h-4 text-accent-deep" />
-                        <span className="font-body text-xs text-accent-deep font-semibold">Envío: 0,00 €</span>
+                        <span className="font-body text-xs text-accent-deep font-semibold">{t("cart.shippingZero")}</span>
                       </motion.div>
                       <motion.p
                         initial={{ opacity: 0 }}
@@ -1591,7 +1595,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                         transition={{ delay: 0.7 }}
                         className="font-body text-[11px] text-foreground/30"
                       >
-                        Preparando tu checkout...
+                        {t("cart.preparingCheckout")}
                       </motion.p>
                     </motion.div>
                   )}
@@ -1601,13 +1605,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 {!showFreeShipping && (
                   <>
                     <div className="flex flex-col gap-1">
-                      <h3 className="font-display text-lg uppercase tracking-wide text-foreground">¿Dónde enviamos?</h3>
-                      <p className="font-body text-xs text-foreground/40">Comprueba que el envío es gratuito a tu zona</p>
+                      <h3 className="font-display text-lg uppercase tracking-wide text-foreground">{t("cart.whereShip")}</h3>
+                      <p className="font-body text-xs text-foreground/40">{t("cart.whereShipSub")}</p>
                     </div>
                     <div className="flex flex-col gap-3">
                       <input
                         type="text"
-                        placeholder="Localidad *"
+                        placeholder={t("cart.localityPlaceholder")}
                         value={shippingCity}
                         onChange={(e) => setShippingCity(e.target.value)}
                         className="bg-transparent border border-border px-3 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors"
@@ -1617,13 +1621,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                         onChange={(e) => setShippingProv(e.target.value)}
                         className="bg-background border border-border px-3 py-3 font-body text-sm text-foreground focus:outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
                       >
-                        <option value="">Provincia *</option>
+                        <option value="">{t("cart.provinceField")}</option>
                         {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
                       </select>
                       <div className="flex flex-col gap-1">
                         <input
                           type="text"
-                          placeholder="Código postal *"
+                          placeholder={t("cart.cpPlaceholder")}
                           value={shippingCp}
                           onChange={(e) => { setShippingCp(e.target.value); setShippingCpError(null); }}
                           maxLength={5}
@@ -1641,13 +1645,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                       className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-2 transition-colors hover:bg-[#B86800]"
                     >
                       <Truck className="w-4 h-4" />
-                      Calcular envío
+                      {t("cart.calcShipping")}
                     </button>
                     <button
                       onClick={() => setShowShippingPopup(false)}
                       className="w-full border border-border text-foreground/50 font-body text-xs uppercase tracking-[0.2em] py-3 hover:border-foreground/30 transition-colors"
                     >
-                      Cancelar
+                      {t("misc.cancel")}
                     </button>
                   </>
                 )}

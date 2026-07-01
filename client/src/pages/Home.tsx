@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -17,6 +18,7 @@ import { ReviewsSection } from "@/components/ReviewsSection";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { CartPanel } from "@/components/CartPanel";
 import { useCart } from "@/contexts/CartContext";
+import { LanguageSwitcher, LanguageDetectionBanner } from "@/components/LanguageSwitcher";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
@@ -27,7 +29,7 @@ const PRODUCT_IMAGES: Record<string, string> = {
   "AURA-COMPACT": "/manus-storage/inodoro_lujo_v2_a0f04654.webp",
   "AURA-SUSPENDIDO": "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
 };
-const SECTIONS = ["Visión", "Esencia", "Por Qué", "Colección", "Contacto"];
+// SECTIONS se genera dinámicamente con i18n dentro del componente
 
 const ESENZA_GALLERY = [
   "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
@@ -1500,6 +1502,9 @@ export default function Home() {
     return () => observer.disconnect();
   }, [selectedProduct]);
 
+  const { t } = useTranslation();
+  const SECTIONS = [t('nav.vision'), t('nav.esencia'), t('nav.manifiesto'), t('nav.coleccion'), t('nav.contacto')];
+
   const setSectionRef = (index: number) => (el: HTMLElement | null) => {
     sectionRefs.current[index] = el;
   };
@@ -1515,11 +1520,12 @@ export default function Home() {
           <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }}>
             <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
           </button>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <button
               onClick={() => openCart()}
               className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center outline-none"
-              aria-label="Carrito"
+              aria-label={t('nav.cart')}
             >
               <ShoppingBag className="w-4 h-4 text-foreground" />
               {totalItems > 0 && (
@@ -1531,7 +1537,7 @@ export default function Home() {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center transition-transform duration-300 outline-none"
-              aria-label="Menú"
+              aria-label={t('nav.menu')}
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -1546,7 +1552,7 @@ export default function Home() {
           </button>
 
           <nav className="flex flex-col gap-5 w-full px-10">
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
+            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t('nav.index')}</p>
             {SECTIONS.map((item, idx) => {
               const isActive = !selectedProduct && activeIndex === idx;
               return (
@@ -1573,21 +1579,33 @@ export default function Home() {
               className="group flex items-center justify-between w-full border border-border px-4 py-3 hover:border-accent-deep transition-colors outline-none"
             >
               <span className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.25em] text-foreground">
-                <ShoppingBag className="w-4 h-4" /> Comprar
+                <ShoppingBag className="w-4 h-4" /> {t('coleccion.buy')}
               </span>
               <span className="font-display text-sm text-accent-deep">{totalItems}</span>
             </button>
-            <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-accent-deep" />
-              Est. Galicia · 2024
+            <div className="flex items-center justify-between">
+              <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-accent-deep" />
+                Est. Galicia · 2024
+              </div>
+              <LanguageSwitcher />
             </div>
           </div>
         </aside>
 
         {/* ── MOBILE FULLSCREEN MENU ────────────────────────────────────────── */}
         <div className={`fixed inset-0 bg-background z-40 transform transition-transform duration-500 ease-out flex flex-col justify-center px-8 md:hidden ${isMenuOpen ? "translate-y-0" : "translate-y-full"}`}>
+          <div className="absolute top-6 right-6 flex items-center gap-3">
+            <LanguageSwitcher />
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center outline-none"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
           <nav className="flex flex-col gap-7 pb-16">
-            <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">Índice</p>
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">{t('nav.index')}</p>
             {SECTIONS.map((item, idx) => {
               const isActive = !selectedProduct && activeIndex === idx;
               return (
@@ -1603,6 +1621,8 @@ export default function Home() {
             })}
           </nav>
         </div>
+
+        <LanguageDetectionBanner />
 
         {/* ── CART PANEL ────────────────────────────────────────────────────── */}
         <CartPanel
@@ -1655,20 +1675,20 @@ export default function Home() {
                 <div className="relative z-10 flex flex-col justify-end h-full px-8 md:px-20 max-w-3xl pb-16 md:pb-20">
                   <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] text-white/80 mb-6 md:mb-8 flex items-center gap-4">
                     <span className="w-8 h-[1px] bg-accent-deep"></span>
-                    Elegancia Neo-Corporativa
+                    {t('hero.eyebrow')}
                   </p>
                   <h1 className="font-display text-[14vw] md:text-[8vw] leading-[0.85] uppercase tracking-tight text-white drop-shadow-lg">
-                    Mejora tu<br />
-                    <span className="text-accent">calidad de vida.</span>
+                    {t('hero.title1')}<br />
+                    <span className="text-accent">{t('hero.title2')}</span>
                   </h1>
                   <p className="mt-8 md:mt-12 max-w-md font-body text-sm md:text-base text-white/90 leading-relaxed border-l border-accent-deep pl-6 backdrop-blur-md bg-black/20 p-5">
-                    Hay un momento del día que es solo tuyo. Ya es hora de disfrutarlo. Inodoros inteligentes que fusionan alta tecnología con la noble solidez de la piedra gallega.
+                    {t('hero.body')}
                   </p>
                   <button
                     onClick={() => scrollToSection(3)}
                     className="mt-8 group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-white/80 border-b border-white/30 pb-2 w-fit hover:text-accent hover:border-accent transition-colors"
                   >
-                    Ver la colección
+                    {t('hero.cta')}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -1690,10 +1710,10 @@ export default function Home() {
                     viewport={{ once: true, margin: "-10%" }}
                   >
                     <p className="font-body text-[10px] md:text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
-                      <span className="w-6 h-[1px] bg-accent-deep" /> La Esencia · Feito en Galicia
+                      <span className="w-6 h-[1px] bg-accent-deep" /> {t('esencia.eyebrow')}
                     </p>
                     <h2 className="font-display text-3xl md:text-5xl uppercase tracking-wide leading-[0.95]">
-                      Alma gallega,<br />precisión absoluta.
+                      {t('esencia.title1')}<br />{t('esencia.title2')}
                     </h2>
                   </motion.div>
                   <motion.p
@@ -1703,7 +1723,7 @@ export default function Home() {
                     viewport={{ once: true, margin: "-10%" }}
                     className="font-body text-sm text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6"
                   >
-                    Diseñamos desde Galicia, donde la piedra y el atlántico marcan el ritmo. Cada Elora se piensa en gallego antes de viajar a tu baño.
+                    {t('esencia.body')}
                   </motion.p>
                 </div>
 
@@ -1739,7 +1759,7 @@ export default function Home() {
                       {/* Eyebrow */}
                       <div className="flex items-center gap-2">
                         <span className="w-5 h-[1px] bg-accent"></span>
-                        <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent">Est. Galicia · 2024</p>
+                        <p className="font-body text-[9px] uppercase tracking-[0.35em] text-accent">{t('esencia.estab')}</p>
                       </div>
 
                       {/* Claim central */}
@@ -1751,7 +1771,7 @@ export default function Home() {
                           transition={{ delay: 0.4, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
                           className="font-display text-2xl md:text-3xl uppercase tracking-wide leading-tight text-white mb-2"
                         >
-                          Confía en<br />Elora.
+                          {t('esencia.trust')}<br />{t('esencia.trustBrand')}
                         </motion.p>
                         <motion.p
                           initial={{ opacity: 0, x: -20 }}
@@ -1760,7 +1780,7 @@ export default function Home() {
                           transition={{ delay: 0.55, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
                           className="font-body text-xs text-white/60 uppercase tracking-widest"
                         >
-                          Calidad gallega, para tu baño.
+                          {t('esencia.trustSub')}
                         </motion.p>
                       </div>
 
@@ -1768,12 +1788,12 @@ export default function Home() {
                       <div className="flex items-end gap-4">
                         <div>
                           <p className="font-display text-4xl md:text-5xl text-accent leading-none">10</p>
-                          <p className="font-body text-[9px] uppercase tracking-widest text-white/50">años de garantía</p>
+                          <p className="font-body text-[9px] uppercase tracking-widest text-white/50">{t('esencia.years')}</p>
                         </div>
                         <div className="w-[1px] h-8 bg-white/20"></div>
                         <div>
                           <p className="font-display text-4xl md:text-5xl text-white leading-none">100<span className="text-accent text-2xl">%</span></p>
-                          <p className="font-body text-[9px] uppercase tracking-widest text-white/50">origen gallego</p>
+                          <p className="font-body text-[9px] uppercase tracking-widest text-white/50">{t('esencia.origin')}</p>
                         </div>
                       </div>
                     </div>
@@ -1818,7 +1838,7 @@ export default function Home() {
                           transition={{ duration: 1.2, repeat: Infinity, repeatDelay: 2 }}
                           className="text-white text-[11px]"
                         >★</motion.span>
-                        <span className="font-body text-[9px] uppercase tracking-[0.3em] text-white font-semibold">Top Ventas</span>
+                        <span className="font-body text-[9px] uppercase tracking-[0.3em] text-white font-semibold">{t('esencia.topSales')}</span>
                         <span className="ml-auto font-body text-[9px] text-white/70 uppercase tracking-widest">#1</span>
                       </div>
 
@@ -1843,7 +1863,7 @@ export default function Home() {
                           onClick={() => openProduct(PRODUCTS.find(p => p.id === "AURA-SUSPENDIDO")!)}
                           className="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.97] text-white font-body text-[9px] uppercase tracking-[0.25em] py-2 flex items-center justify-center gap-1.5 transition-colors"
                         >
-                          Ver producto
+                          {t('esencia.viewDetail')}
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </button>
                       </div>
@@ -1867,12 +1887,12 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16 relative z-10">
                     <div>
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
-                        <span className="w-6 h-[1px] bg-accent-deep" /> El Manifiesto
+                        <span className="w-6 h-[1px] bg-accent-deep" /> {t('manifiesto.eyebrow')}
                       </p>
                       <TypewriterText text="Por qué un inodoro deja de ser un mueble." tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95] whitespace-pre-line" speed={35} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
-                      Pasamos casi un año y medio de nuestra vida en el baño. Sin embargo, lo seguimos tratando como una pieza secundaria. En Elora rediseñamos ese momento íntimo desde la higiene, la salud y el silencio.
+                      {t('manifiesto.body')}
                     </p>
                   </div>
 
@@ -1902,13 +1922,13 @@ export default function Home() {
 
                   <div className="mt-10 md:mt-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-border pt-8 relative z-10">
                     <p className="font-display text-xl md:text-2xl uppercase tracking-wide max-w-xl leading-tight">
-                      No es un electrodoméstico. <span className="text-accent-deep">Es la pieza más íntima de tu arquitectura.</span>
+                      {t('manifiesto.quote')}
                     </p>
                     <button
                       onClick={() => scrollToSection(3)}
                       className="group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-foreground border-b border-foreground pb-2 hover:text-accent-deep hover:border-accent-deep transition-colors"
                     >
-                      Descubre la colección
+                      {t('manifiesto.discoverCta')}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
@@ -1926,12 +1946,12 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-14">
                     <div>
                       <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
-                        <span className="w-6 h-[1px] bg-accent-deep" /> Exclusivo Elora®
+                        <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.eyebrow')}
                       </p>
                       <TypewriterText text="La Colección" tag="h2" className="font-display text-4xl md:text-6xl uppercase tracking-wide leading-[0.95]" speed={40} delay={100} />
                     </div>
                     <p className="font-body text-sm md:text-base text-foreground/70 leading-relaxed max-w-md md:border-l md:border-border md:pl-6">
-                      Seis modelos. Una misma filosofía: higiene avanzada, diseño premium y la tranquilidad del servicio Elora detrás de cada pieza.
+                      {t('coleccion.body')}
                     </p>
                   </div>
 
@@ -1982,12 +2002,12 @@ export default function Home() {
                                   </span>
                                   {prod.originalPrice && (
                                     <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
-                                      Oferta
+                                      {t('coleccion.offer')}
                                     </span>
                                   )}
                                 </div>
                               </div>
-                              <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">IVA incl.</span>
+                              <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">{t('coleccion.vatIncl')}</span>
                             </div>
                             <div className="flex gap-2">
                               <button
@@ -1998,13 +2018,13 @@ export default function Home() {
                                 className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                               >
                                 <ShoppingBag className="w-3.5 h-3.5" />
-                                Comprar
+                                {t('coleccion.buy')}
                               </button>
                               <button
                                 onClick={() => openProduct(prod)}
                                 className="px-4 border border-border font-body text-[10px] uppercase tracking-[0.2em] text-foreground hover:border-accent-deep hover:text-accent-deep transition-colors active:scale-[0.97]"
                               >
-                                Info
+                                {t('coleccion.info')}
                               </button>
                             </div>
                           </div>
@@ -2019,7 +2039,7 @@ export default function Home() {
                       onClick={() => navigate("/coleccion")}
                       className="group inline-flex items-center gap-4 border border-foreground px-8 py-4 font-body text-xs uppercase tracking-[0.3em] text-foreground hover:bg-foreground hover:text-background transition-all duration-300 active:scale-[0.97]"
                     >
-                      Ver los 6 modelos
+                      {t('coleccion.viewAll')}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40">
@@ -2029,7 +2049,7 @@ export default function Home() {
 
                   <div className="mt-12 md:mt-16">
                     <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-8 flex items-center gap-3">
-                      <span className="w-6 h-[1px] bg-accent-deep" /> La experiencia Elora
+                      <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.experience')}
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
                       {[
@@ -2073,10 +2093,10 @@ export default function Home() {
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
                       <span className="font-display text-[30vw] leading-none whitespace-nowrap text-foreground font-bold">ELORA</span>
                     </div>
-                    <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 mb-6 relative z-10">Listo para elevar tu espacio</p>
+                    <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/50 mb-6 relative z-10">{t('contacto.eyebrow')}</p>
                     <TypewriterText text="Hablemos de tu baño." tag="h2" className="font-display text-5xl md:text-7xl uppercase tracking-wide mb-6 relative z-10 leading-tight md:leading-[0.9]" speed={45} delay={100} />
                     <p className="font-body text-sm text-foreground/70 leading-relaxed mb-10 max-w-sm relative z-10">
-                      Cuéntanos qué tienes en mente. Te asesoramos sin compromiso sobre qué modelo se adapta mejor a tu espacio, instalación y presupuesto.
+                      {t('contacto.body')}
                     </p>
                     <div className="flex flex-col gap-4 relative z-10">
                       <a href="tel:+34614451901" className="flex items-center gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
@@ -2090,8 +2110,8 @@ export default function Home() {
                       <a href="https://maps.google.com/?q=Avenida+da+Mahía+17+Bertamiráns+Ames" target="_blank" rel="noreferrer" className="flex items-start gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
                         <MapPin className="w-4 h-4 text-accent-deep mt-0.5 shrink-0" />
                         <span>
-                          <span className="block">Tienda física · Bertamiráns (Ames)</span>
-                          <span className="block text-xs text-foreground/40 mt-0.5">Av. da Mahía, 17 Bajo 2 · 15220</span>
+                          <span className="block">{t('contacto.store')}</span>
+                          <span className="block text-xs text-foreground/40 mt-0.5">{t('contacto.storeAddress')}</span>
                         </span>
                       </a>
                     </div>
@@ -2130,7 +2150,7 @@ export default function Home() {
                         className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 bg-foreground text-background font-body text-[10px] uppercase tracking-wider px-2.5 py-1.5 shadow-md hover:bg-accent-deep transition-colors"
                       >
                         <MapPin className="w-3 h-3 shrink-0" />
-                        Cómo llegar
+                        {t('contacto.directions')}
                       </a>
                       </div>
                     </div>
@@ -2142,40 +2162,40 @@ export default function Home() {
                     {contactSent ? (
                       <div className="border border-accent-deep p-10 flex flex-col items-center justify-center text-center gap-4 h-full min-h-[400px]">
                         <Sparkles className="w-8 h-8 text-accent-deep" />
-                        <h3 className="font-display text-3xl uppercase tracking-wide">¡Mensaje enviado!</h3>
+                        <h3 className="font-display text-3xl uppercase tracking-wide">{t('contacto.form.successTitle')}</h3>
                         <p className="font-body text-sm text-foreground/70 leading-relaxed max-w-xs">
-                          Nos pondremos en contacto contigo en menos de 24 horas. Gracias por confiar en Elora Smart.
+                          {t('contacto.form.successBody')}
                         </p>
                         <button
                           onClick={() => setContactSent(false)}
                           className="mt-4 font-body text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-accent-deep transition-colors border-b border-foreground/20 pb-1"
                         >
-                          Enviar otro mensaje
+                          {t('contacto.form.sendAnother')}
                         </button>
                       </div>
                     ) : (
                       <form onSubmit={handleContactSubmit} className="border border-border p-8 md:p-10 flex flex-col gap-6">
                         <div>
                           <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-1 flex items-center gap-3">
-                            <span className="w-6 h-[1px] bg-accent-deep" /> Solicita información
+                            <span className="w-6 h-[1px] bg-accent-deep" /> {t('contacto.form.eyebrow')}
                           </p>
-                          <h3 className="font-display text-2xl uppercase tracking-wide mt-2">Catálogo privado</h3>
+                          <h3 className="font-display text-2xl uppercase tracking-wide mt-2">{t('contacto.form.title')}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="flex flex-col gap-2">
-                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Nombre *</label>
+                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">{t('contacto.form.name')} *</label>
                             <input
                               type="text"
                               required
                               value={contactForm.nombre}
                               onChange={(e) => setContactForm({ ...contactForm, nombre: e.target.value })}
                               className="border-b border-border bg-transparent font-body text-sm text-foreground py-2 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30"
-                              placeholder="Tu nombre"
+                              placeholder={t('contacto.form.namePlaceholder')}
                             />
                           </div>
                           <div className="flex flex-col gap-2">
-                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Teléfono</label>
+                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">{t('contacto.form.phone')}</label>
                             <input
                               type="tel"
                               value={contactForm.telefono}
@@ -2187,25 +2207,25 @@ export default function Home() {
                         </div>
 
                         <div className="flex flex-col gap-2">
-                          <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Email *</label>
+                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">{t('contacto.form.email')} *</label>
                           <input
                             type="email"
                             required
                             value={contactForm.email}
                             onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                             className="border-b border-border bg-transparent font-body text-sm text-foreground py-2 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30"
-                            placeholder="tu@email.com"
+                            placeholder="tu@email.com" // keep as-is, universal
                           />
                         </div>
 
                         <div className="flex flex-col gap-2">
-                          <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">Mensaje</label>
+                            <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">{t('contacto.form.message')}</label>
                           <textarea
                             rows={4}
                             value={contactForm.mensaje}
                             onChange={(e) => setContactForm({ ...contactForm, mensaje: e.target.value })}
                             className="border border-border bg-transparent font-body text-sm text-foreground p-3 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30 resize-none"
-                            placeholder="Cuéntanos sobre tu baño, qué modelo te interesa o cualquier duda..."
+                            placeholder={t('contacto.form.messagePlaceholder')}
                           />
                         </div>
 
@@ -2215,15 +2235,15 @@ export default function Home() {
                           className="group w-full bg-foreground text-background font-body text-xs uppercase tracking-wider py-4 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors relative overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                           <Send className="w-3.5 h-3.5 shrink-0" />
-                          {contactMutation.isPending ? "Enviando..." : "Solicitar catálogo privado"}
+                          {contactMutation.isPending ? t('contacto.form.submitting') : t('contacto.form.submit')}
                         </button>
 
                         <p className="font-body text-[10px] text-foreground/40 leading-relaxed">
-                          Al enviar este formulario aceptas nuestra{" "}
+                          {t('contacto.form.privacy')}{" "}
                           <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noreferrer" className="underline hover:text-accent-deep transition-colors">
-                            política de privacidad
+                            {t('contacto.form.privacyLink')}
                           </a>
-                          . No compartimos tus datos con terceros.
+                          {t('contacto.form.privacyEnd')}
                         </p>
                       </form>
                     )}
@@ -2284,7 +2304,7 @@ export default function Home() {
                           className="inline-flex items-center gap-1.5 bg-foreground text-background font-body text-[10px] uppercase tracking-wider px-3 py-2 shadow-lg hover:bg-accent-deep transition-colors"
                         >
                           <MapPin className="w-3 h-3 shrink-0" />
-                          Cómo llegar
+                          {t('contacto.directions')}
                         </a>
                       </div>
                     </div>

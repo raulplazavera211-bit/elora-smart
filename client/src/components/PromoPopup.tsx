@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { X, Gift, Check } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslation } from "react-i18next";
 
-const KIT_ITEMS = [
-  "Mini-cepillos de mantenimiento",
-  "Esponja Konjac anti-rayaduras",
-  "Gamuza eco de bambú antibacteriana",
-  "Limpiador ecológico para cerámica",
-];
+// KIT_ITEMS se genera dinámicamente con i18n
 
 const STORAGE_KEY = "elora_promo_popup_dismissed";
 
 export default function PromoPopup() {
+  const { t } = useTranslation();
+  const KIT_ITEMS = [
+    t('promo.items.hose'),
+    t('promo.items.valve'),
+    t('promo.items.seat'),
+    t('promo.items.guide'),
+  ];
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function PromoPopup() {
                 {/* Botón cerrar — grande y visible */}
                 <button
                   onClick={handleClose}
-                  aria-label="Cerrar"
+                  aria-label={t('nav.close')}
                   className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-500 hover:text-stone-800 transition-all active:scale-95"
                 >
                   <X className="w-5 h-5" />
@@ -82,7 +85,7 @@ export default function PromoPopup() {
                   >
                     <span className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-700 font-body text-[10px] uppercase tracking-[0.35em] px-3 py-1.5 rounded-full">
                       <Gift className="w-3 h-3" />
-                      Regalo exclusivo junio
+                      {t('promo.badge')}
                     </span>
                   </motion.div>
 
@@ -93,16 +96,16 @@ export default function PromoPopup() {
                     transition={{ delay: 0.2, duration: 0.38 }}
                   >
                     <h2 className="font-display text-2xl uppercase tracking-wide text-stone-900 leading-tight mb-1">
-                      Llévate{" "}
+                      {t('promo.title')}{" "}
                       <span
                         className="font-display"
                         style={{ color: "#c9a96e" }}
                       >
-                        GRATIS
+                        {t('promo.titleHighlight')}
                       </span>
                     </h2>
                     <h3 className="font-display text-base uppercase tracking-wider text-stone-700 mb-2">
-                      nuestro Kit ECO-CARE
+                      {t('promo.body').split('.')[0]}
                     </h3>
                     <div className="inline-flex items-center gap-2 bg-amber-50 rounded-full px-3 py-1 mb-3">
                       <span className="font-body text-xs text-stone-400 line-through">65€</span>
@@ -111,7 +114,7 @@ export default function PromoPopup() {
                       </span>
                     </div>
                     <p className="font-body text-sm text-stone-500 leading-relaxed mb-4">
-                      Con la compra de cualquier inodoro inteligente Elora Smart.
+                      {t('promo.limited')}
                     </p>
                   </motion.div>
 
@@ -126,7 +129,7 @@ export default function PromoPopup() {
                     className="space-y-2 mb-6"
                   >
                     <p className="font-body text-[10px] uppercase tracking-[0.35em] text-stone-400 mb-2">
-                      Kit ECO-CARE incluye:
+                      {t('promo.badge')}:
                     </p>
                     {KIT_ITEMS.map((item, i) => (
                       <motion.div
@@ -163,14 +166,14 @@ export default function PromoPopup() {
                       }}
                     >
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                      <span className="relative">Quiero mi kit gratis →</span>
+                      <span className="relative">{t('promo.cta')} →</span>
                     </button>
 
                     <button
                       onClick={handleClose}
                       className="w-full font-body text-xs text-stone-400 hover:text-stone-600 transition-colors py-1.5"
                     >
-                      No, gracias
+                      {t('promo.dismiss')}
                     </button>
                   </motion.div>
                 </div>

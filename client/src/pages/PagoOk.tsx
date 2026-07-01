@@ -6,10 +6,12 @@ import { motion } from "motion/react";
 import { CheckCircle, ArrowRight, Phone, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
 export default function PagoOk() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [redsysOrderId, setRedsysOrderId] = useState<string | null>(null);
 
@@ -28,7 +30,7 @@ export default function PagoOk() {
         </button>
         <div className="flex items-center gap-2 text-foreground/40">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="font-body text-xs uppercase tracking-widest">Pago confirmado</span>
+          <span className="font-body text-xs uppercase tracking-widest">{t('pagoOk.confirmed')}</span>
         </div>
       </header>
 
@@ -62,7 +64,7 @@ export default function PagoOk() {
             transition={{ delay: 0.2 }}
           >
             <h1 className="font-display text-4xl md:text-5xl uppercase tracking-wide mb-4">
-              ¡Pago realizado!
+              {t('pagoOk.title')}
             </h1>
             {redsysOrderId && (
               <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4">
@@ -70,7 +72,7 @@ export default function PagoOk() {
               </p>
             )}
             <p className="font-body text-base text-foreground/60 leading-relaxed mb-10">
-              Tu pago ha sido procesado correctamente. Recibirás un email de confirmación en breve y nuestro equipo se pondrá en contacto contigo para coordinar la instalación.
+              {t('pagoOk.body')}
             </p>
           </motion.div>
 
@@ -81,12 +83,12 @@ export default function PagoOk() {
             transition={{ delay: 0.4 }}
             className="border border-border p-6 mb-8 text-left"
           >
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-4">¿Qué ocurre ahora?</p>
+            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-4">{t('pagoOk.nextTitle')}</p>
             <div className="flex flex-col gap-4">
               {[
-                { step: "01", text: "Recibirás un email de confirmación con los detalles de tu pedido." },
-                { step: "02", text: "Nuestro equipo técnico contactará contigo en menos de 24h para coordinar la instalación." },
-                { step: "03", text: "Un instalador certificado acudirá a tu domicilio en la fecha acordada." },
+                { step: "01", text: t('pagoOk.step1') },
+                { step: "02", text: t('pagoOk.step2') },
+                { step: "03", text: t('pagoOk.step3') },
               ].map(({ step, text }) => (
                 <div key={step} className="flex items-start gap-4">
                   <span className="font-display text-2xl text-accent-deep/40 shrink-0 leading-none">{step}</span>
@@ -108,14 +110,14 @@ export default function PagoOk() {
               className="flex items-center justify-center gap-2 border border-border px-6 py-3 font-body text-xs uppercase tracking-widest text-foreground/60 hover:text-foreground hover:border-foreground transition-colors"
             >
               <Phone className="w-4 h-4" />
-              Llamar a Elora
+              {t('pagoOk.callUs')}
             </a>
             <a
               href="mailto:info@elorasmart.com"
               className="flex items-center justify-center gap-2 border border-border px-6 py-3 font-body text-xs uppercase tracking-widest text-foreground/60 hover:text-foreground hover:border-foreground transition-colors"
             >
               <Mail className="w-4 h-4" />
-              Enviar email
+              {t('pagoOk.sendEmail')}
             </a>
           </motion.div>
 
@@ -126,7 +128,7 @@ export default function PagoOk() {
             onClick={() => navigate("/")}
             className="inline-flex items-center gap-2 font-body text-xs uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors"
           >
-            Volver al inicio
+            {t('nav.backHome')}
             <ArrowRight className="w-4 h-4" />
           </motion.button>
         </div>
@@ -135,7 +137,7 @@ export default function PagoOk() {
       {/* Footer mínimo */}
       <footer className="px-8 py-4 border-t border-border">
         <p className="font-body text-[10px] text-foreground/30 text-center uppercase tracking-widest">
-          Elora Smart · Inodoros inteligentes · Est. Galicia 2024
+          {t('footer.taglineShort')}
         </p>
       </footer>
     </div>

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { motion } from "motion/react";
 import { ArrowLeft, ShoppingBag, X, Menu, MapPin, ShieldCheck, Wrench } from "lucide-react";
 import { ProductDetail } from "@/components/ProductDetail";
@@ -14,6 +16,7 @@ import { useCart } from "@/contexts/CartContext";
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
 export default function Coleccion() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -85,13 +88,13 @@ export default function Coleccion() {
           </button>
         </div>
         <nav className="flex flex-col gap-5 w-full px-10 flex-1">
-          <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Índice</p>
+          <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t('nav.index')}</p>
           <button
             onClick={() => { setSelectedProduct(null); if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0; }}
             className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
           >
             <span className="h-[1px] w-8 bg-accent-deep transition-all duration-500" />
-            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground transition-colors duration-500">Colección</span>
+            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground transition-colors duration-500">{t('nav.coleccion')}</span>
             <span className="ml-auto font-body text-[10px] text-accent-deep">01</span>
           </button>
           <button
@@ -99,7 +102,7 @@ export default function Coleccion() {
             className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
           >
             <span className="h-[1px] w-3 bg-foreground/20 group-hover:w-6 group-hover:bg-foreground/40 transition-all duration-500" />
-            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">Inicio</span>
+            <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">{t('nav.home')}</span>
             <span className="ml-auto font-body text-[10px] text-foreground/20">02</span>
           </button>
         </nav>
@@ -109,13 +112,16 @@ export default function Coleccion() {
             className="group flex items-center justify-between w-full border border-border px-4 py-3 hover:border-accent-deep transition-colors outline-none"
           >
             <span className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.25em] text-foreground">
-              <ShoppingBag className="w-4 h-4" /> Carrito
+              <ShoppingBag className="w-4 h-4" /> {t('nav.cart')}
             </span>
             <span className="font-display text-sm text-accent-deep">{totalItems}</span>
           </button>
-          <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-accent-deep" />
-            Est. Galicia · 2024
+          <div className="flex items-center justify-between">
+            <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-accent-deep" />
+              Est. Galicia · 2024
+            </div>
+            <LanguageSwitcher />
           </div>
         </div>
       </aside>
@@ -125,11 +131,12 @@ export default function Coleccion() {
         <button onClick={() => navigate("/")} className="outline-none">
           <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
         </button>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <button
             onClick={openCart}
             className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center outline-none"
-            aria-label="Carrito"
+            aria-label={t('nav.cart')}
           >
             <ShoppingBag className="w-4 h-4 text-foreground" />
             {totalItems > 0 && (
@@ -141,7 +148,7 @@ export default function Coleccion() {
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center transition-transform duration-300 outline-none"
-            aria-label="Menú"
+            aria-label={t('nav.menu')}
           >
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -157,18 +164,18 @@ export default function Coleccion() {
           <X className="w-5 h-5" />
         </button>
         <nav className="flex flex-col gap-7 pb-16">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">Índice</p>
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">{t('nav.index')}</p>
           <button
             onClick={() => { setSelectedProduct(null); setIsMenuOpen(false); }}
             className="text-left font-display text-4xl uppercase tracking-wide text-foreground outline-none flex items-center gap-4"
           >
-            <span className="text-sm font-body text-accent-deep">01</span>Colección
+            <span className="text-sm font-body text-accent-deep">01</span>{t('nav.coleccion')}
           </button>
           <button
             onClick={() => { navigate("/"); setIsMenuOpen(false); }}
             className="text-left font-display text-4xl uppercase tracking-wide text-foreground/30 outline-none flex items-center gap-4"
           >
-            <span className="text-sm font-body text-foreground/30">02</span>Inicio
+            <span className="text-sm font-body text-foreground/30">02</span>{t('nav.home')}
           </button>
         </nav>
       </div>
@@ -194,20 +201,20 @@ export default function Coleccion() {
                 transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
               >
                 <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
-                  <span className="w-6 h-[1px] bg-accent-deep" /> Exclusivo Elora®
+                  <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.eyebrow')}
                 </p>
                 <h1 className="font-display text-5xl md:text-7xl uppercase tracking-wide leading-[0.9] mb-6">
-                  La Colección<br />
-                  <span className="text-foreground/30">Completa</span>
+                  {t('coleccion.title')}<br />
+                  <span className="text-foreground/30">{t('coleccion.complete')}</span>
                 </h1>
                 <p className="font-body text-sm md:text-base text-foreground/60 max-w-xl leading-relaxed">
-                  Seis modelos. Una misma filosofía: higiene avanzada, diseño premium y la tranquilidad del servicio Elora detrás de cada pieza.
+                  {t('coleccion.body')}
                 </p>
               </motion.div>
 
               {/* Filtros */}
               <div className="mt-10 mb-12 flex gap-3 flex-wrap">
-                {["Todos", "Gama ESENZA", "Gama AURA"].map((f) => (
+                {[t('coleccion.filterAll'), 'Gama ESENZA', 'Gama AURA'].map((f) => (
                   <span key={f} className="font-body text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-border text-foreground/50 cursor-default">
                     {f}
                   </span>
@@ -249,7 +256,7 @@ export default function Coleccion() {
                         ))}
                       </div>
                       <span className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-foreground text-background font-body text-[9px] uppercase tracking-[0.25em] px-2 py-1">
-                        Ver detalle
+                        {t('coleccion.viewDetail')}
                       </span>
                     </button>
 
@@ -271,12 +278,12 @@ export default function Coleccion() {
                               </span>
                               {prod.originalPrice && (
                                 <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
-                                  Oferta
+                                  {t('coleccion.offer')}
                                 </span>
                               )}
                             </div>
                           </div>
-                          <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">IVA incl.</span>
+                          <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">{t('coleccion.vatIncl')}</span>
                         </div>
                         <div className="flex gap-2">
                           <button
@@ -284,13 +291,13 @@ export default function Coleccion() {
                             className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                           >
                             <ShoppingBag className="w-3.5 h-3.5" />
-                            Comprar
+                            {t('coleccion.buy')}
                           </button>
                           <button
                             onClick={() => openProduct(prod)}
                             className="px-4 border border-border font-body text-[10px] uppercase tracking-[0.2em] text-foreground hover:border-accent-deep hover:text-accent-deep transition-colors active:scale-[0.97]"
                           >
-                            Info
+                            {t('coleccion.info')}
                           </button>
                         </div>
                       </div>
@@ -302,7 +309,7 @@ export default function Coleccion() {
               {/* Bloque La experiencia Elora */}
               <div className="mt-16">
                 <p className="font-body text-xs uppercase tracking-[0.3em] text-accent-deep mb-8 flex items-center gap-3">
-                  <span className="w-6 h-[1px] bg-accent-deep" /> La experiencia Elora
+                  <span className="w-6 h-[1px] bg-accent-deep" /> {t('coleccion.experience')}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
                   {[
@@ -327,7 +334,7 @@ export default function Coleccion() {
                 className="group inline-flex items-center gap-3 font-body text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-accent-deep transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                Volver al inicio
+                {t('nav.backHome')}
               </button>
               <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/30">
                 Elora Smart · Galicia · 2024

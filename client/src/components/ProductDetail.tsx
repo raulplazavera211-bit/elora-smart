@@ -3,6 +3,7 @@ import {
   ArrowLeft, ShoppingBag, Truck, Wrench, Shield,
   Sparkles, Droplets, Thermometer, Wind, Zap, Check
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export type ProductSpec = { label: string; value: string };
 
@@ -37,6 +38,7 @@ type Props = {
 const PITCH_ICONS = [Sparkles, Droplets, Thermometer, Wind, Zap, Shield];
 
 export function ProductDetail({ product, onBack, onAdd }: Props) {
+  const { t } = useTranslation();
   return (
     <motion.div
       className="min-h-full bg-background"
@@ -53,7 +55,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
             className="group inline-flex items-center gap-2 font-body text-[10px] uppercase tracking-[0.3em] text-foreground/60 hover:text-accent-deep transition-colors mb-6"
           >
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-            Volver a la colección
+            {t('product.backToCollection')}
           </button>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
@@ -105,12 +107,12 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                         {product.originalPrice.toLocaleString('es-ES')} €
                       </span>
                       <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-2 py-0.5 rounded">
-                        Oferta
+                        {t('coleccion.offer')}
                       </span>
                     </div>
                   )}
                   <p className="font-display text-3xl sm:text-4xl md:text-5xl tracking-wide">{product.price.toLocaleString('es-ES')} €</p>
-                  <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mt-1">IVA incluido</p>
+                  <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mt-1">{t('coleccion.vatIncl')}</p>
                 </div>
               </div>
 
@@ -121,26 +123,26 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                   className="group flex-1 inline-flex items-center justify-center gap-3 bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  Comprar ahora
+                  {t('product.buyNow')}
                 </button>
                 <button
                   onClick={onBack}
                   className="flex-1 inline-flex items-center justify-center gap-3 border border-border font-body text-xs uppercase tracking-[0.3em] py-4 hover:border-accent-deep hover:text-accent-deep transition-colors"
                 >
-                  Ver colección
+                  {t('product.viewCollection')}
                 </button>
               </div>
 
               {/* Garantías — 1 col en móvil, 3 en sm+ */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 pt-4 mt-1 border-t border-border">
                 <div className="flex items-center gap-2 font-body text-[10px] uppercase tracking-widest text-foreground/60">
-                  <Truck className="w-3.5 h-3.5 text-accent-deep shrink-0" /> Envío Península
+                  <Truck className="w-3.5 h-3.5 text-accent-deep shrink-0" /> {t('product.shipping')}
                 </div>
                 <div className="flex items-center gap-2 font-body text-[10px] uppercase tracking-widest text-foreground/60">
-                  <Wrench className="w-3.5 h-3.5 text-accent-deep shrink-0" /> Instalación guiada
+                  <Wrench className="w-3.5 h-3.5 text-accent-deep shrink-0" /> {t('product.guidedInstall')}
                 </div>
                 <div className="flex items-center gap-2 font-body text-[10px] uppercase tracking-widest text-foreground/60">
-                  <Shield className="w-3.5 h-3.5 text-accent-deep shrink-0" /> {product.warranty.years} años garantía
+                  <Shield className="w-3.5 h-3.5 text-accent-deep shrink-0" /> {product.warranty.years} {t('product.yearsWarranty')}
                 </div>
               </div>
             </div>
@@ -153,7 +155,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-14">
           <div>
             <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-3 flex items-center gap-3">
-              <span className="w-5 h-[1px] bg-accent-deep" /> Por qué {product.id}
+              <span className="w-5 h-[1px] bg-accent-deep" /> {t('product.whyThis')} {product.id}
             </p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-5xl uppercase tracking-wide leading-[0.95]">
               {product.description}
@@ -179,7 +181,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
       {product.gallery.length > 0 && (
         <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-16 pb-12 md:pb-24">
           <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-5 flex items-center gap-3">
-            <span className="w-5 h-[1px] bg-accent-deep" /> Galería
+              <span className="w-5 h-[1px] bg-accent-deep" /> {t('product.gallery')}
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
             {product.gallery.map((g) => (
@@ -196,10 +198,10 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-16 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-16">
           <div className="lg:col-span-2">
             <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
-              <span className="w-5 h-[1px] bg-accent-deep" /> Características
+              <span className="w-5 h-[1px] bg-accent-deep" /> {t('product.features')}
             </p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase tracking-wide leading-[0.95] mb-6">
-              Todo lo que incluye {product.id}.
+              {t('product.allIncluded')} {product.id}.
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
               {product.features.map((f) => (
@@ -213,9 +215,9 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
 
           <div className="bg-background border border-border p-5 md:p-8 flex flex-col gap-4 h-fit">
             <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep flex items-center gap-3">
-              <span className="w-5 h-[1px] bg-accent-deep" /> Dimensiones
+              <span className="w-5 h-[1px] bg-accent-deep" /> {t('product.dimensions')}
             </p>
-            <h3 className="font-display text-xl uppercase tracking-wide leading-tight">Medidas exactas</h3>
+            <h3 className="font-display text-xl uppercase tracking-wide leading-tight">{t('product.exactMeasures')}</h3>
             <ul className="flex flex-col gap-3 mt-1">
               {product.dimensions.map((d) => (
                 <li key={d.label} className="flex items-center justify-between gap-4 border-b border-border pb-3 last:border-0">
@@ -231,10 +233,10 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
       {/* ESPECIFICACIONES TÉCNICAS */}
       <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-16 py-12 md:py-24">
         <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
-          <span className="w-5 h-[1px] bg-accent-deep" /> Especificaciones técnicas
+              <span className="w-5 h-[1px] bg-accent-deep" /> {t('product.techSpecs')}
         </p>
         <h2 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase tracking-wide leading-[0.95] mb-8 md:mb-14">
-          Ingeniería al detalle.
+              {t('product.engineeringDetail')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border">
           {product.technical.map((group) => (
@@ -257,8 +259,8 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
       <section className="bg-foreground text-background">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-16 py-12 md:py-24 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
           <div>
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent mb-4">En la caja</p>
-            <h3 className="font-display text-xl uppercase tracking-wide leading-tight mb-5">Lo que recibes</h3>
+            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent mb-4">{t('product.inTheBox')}</p>
+            <h3 className="font-display text-xl uppercase tracking-wide leading-tight mb-5">{t('product.whatYouGet')}</h3>
             <ul className="flex flex-col gap-3">
               {product.inTheBox.map((item) => (
                 <li key={item} className="flex items-start gap-3 font-body text-sm text-background/80 border-b border-background/10 pb-3">
@@ -269,8 +271,8 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
             </ul>
           </div>
           <div>
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Instalación</p>
-            <h3 className="font-display text-xl uppercase tracking-wide leading-tight mb-5">Sencilla y guiada</h3>
+            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent mb-4">{t('product.installation')}</p>
+            <h3 className="font-display text-xl uppercase tracking-wide leading-tight mb-5">{t('product.easyAndGuided')}</h3>
             <ol className="flex flex-col gap-4">
               {product.installation.map((step, i) => (
                 <li key={step} className="flex items-start gap-4">
@@ -281,22 +283,22 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
             </ol>
           </div>
           <div>
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent mb-4">Garantía</p>
-            <h3 className="font-display text-xl uppercase tracking-wide leading-tight mb-5">{product.warranty.years} años Elora SAT</h3>
+            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent mb-4">{t('product.warranty')}</p>
+            <h3 className="font-display text-xl uppercase tracking-wide leading-tight mb-5">{product.warranty.years} {t('product.yearsEloraSAT')}</h3>
             <p className="font-body text-sm text-background/80 leading-relaxed mb-5">{product.warranty.details}</p>
             {/* Garantía — 3 cols en todos los tamaños (iconos pequeños, texto corto) */}
             <div className="grid grid-cols-3 gap-2 border-t border-background/15 pt-5">
               <div className="flex flex-col gap-1.5">
                 <Shield className="w-4 h-4 text-accent" />
-                <span className="font-body text-[9px] uppercase tracking-widest text-background/60 leading-tight">Cobertura total</span>
+                <span className="font-body text-[9px] uppercase tracking-widest text-background/60 leading-tight">{t('product.totalCoverage')}</span>
               </div>
               <div className="flex flex-col gap-1.5">
                 <Wrench className="w-4 h-4 text-accent" />
-                <span className="font-body text-[9px] uppercase tracking-widest text-background/60 leading-tight">SAT en Galicia</span>
+                <span className="font-body text-[9px] uppercase tracking-widest text-background/60 leading-tight">{t('product.satGalicia')}</span>
               </div>
               <div className="flex flex-col gap-1.5">
                 <Truck className="w-4 h-4 text-accent" />
-                <span className="font-body text-[9px] uppercase tracking-widest text-background/60 leading-tight">Recogida incluida</span>
+                <span className="font-body text-[9px] uppercase tracking-widest text-background/60 leading-tight">{t('product.pickupIncluded')}</span>
               </div>
             </div>
           </div>
@@ -308,13 +310,13 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16">
           <div>
             <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-4 flex items-center gap-3">
-              <span className="w-5 h-[1px] bg-accent-deep" /> Preguntas frecuentes
+              <span className="w-5 h-[1px] bg-accent-deep" /> {t('product.faq')}
             </p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase tracking-wide leading-[0.95]">
-              Resolvemos<br />tus dudas.
+              {t('product.faqTitle')}
             </h2>
             <p className="font-body text-sm text-foreground/70 leading-relaxed mt-5">
-              Si necesitas algo más, escríbenos: te atendemos directamente desde Galicia.
+              {t('product.faqBody')}
             </p>
           </div>
           <div className="md:col-span-2 flex flex-col">
@@ -335,9 +337,9 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
       <section className="bg-muted border-t border-border">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-16 py-12 md:py-24 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
           <div>
-            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-3">Listo para tu baño</p>
+            <p className="font-body text-[10px] uppercase tracking-[0.3em] text-accent-deep mb-3">{t('product.readyForBath')}</p>
             <h2 className="font-display text-2xl sm:text-3xl md:text-5xl uppercase tracking-wide leading-[0.95] mb-3">
-              {product.name.replace("Inodoro inteligente ", "").replace("Váter ", "")}<br />te está esperando.
+              {product.name.replace("Inodoro inteligente ", "").replace("Váter ", "")}<br />{t('product.waitingForYou')}
             </h2>
             <p className="font-display text-xl sm:text-2xl tracking-wide">{product.price.toLocaleString('es-ES')} €</p>
           </div>
@@ -347,13 +349,13 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
               className="group inline-flex items-center justify-center gap-3 bg-foreground text-background font-body text-xs uppercase tracking-[0.3em] py-4 px-8 hover:bg-accent-deep transition-colors active:scale-[0.97]"
             >
               <ShoppingBag className="w-4 h-4" />
-              Comprar
+              {t('coleccion.buy')}
             </button>
             <button
               onClick={onBack}
               className="inline-flex items-center justify-center gap-3 border border-border font-body text-xs uppercase tracking-[0.3em] py-4 px-8 hover:border-accent-deep hover:text-accent-deep transition-colors"
             >
-              Volver a la colección
+              {t('product.backToCollection')}
             </button>
           </div>
         </div>

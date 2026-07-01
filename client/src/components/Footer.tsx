@@ -13,10 +13,12 @@ const FacebookIcon = () => (
   </svg>
 );
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
 export function Footer() {
+  const { t } = useTranslation();
   const scrollToTop = () => {
     document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -50,16 +52,16 @@ export function Footer() {
           <div className="md:col-span-5 flex flex-col items-start" style={anim(100)}>
             <img src={LOGO_URL} alt="Elora Smart" className="h-10 md:h-12 w-auto brightness-0 invert opacity-90 mb-6" />
             <p className="font-body text-[13px] text-background/60 leading-relaxed max-w-sm mb-8">
-              Redefiniendo el estándar europeo con inodoros inteligentes diseñados para la estética y el bienestar diario. Feito en Galicia.
+              {t('footer.tagline')}
             </p>
             <div className="relative w-full max-w-[280px] group">
               <input
                 type="email"
-                placeholder="Suscríbete a novedades"
+                placeholder={t('footer.newsletter')}
                 className="w-full bg-transparent border-b border-background/20 pb-2 text-[13px] text-background placeholder:text-background/40 outline-none focus:border-background/60 transition-colors"
-                aria-label="Email para newsletter"
+                aria-label={t('footer.newsletter')}
               />
-              <button className="absolute right-0 bottom-2 text-background/40 hover:text-background transition-colors" aria-label="Suscribirse">
+              <button className="absolute right-0 bottom-2 text-background/40 hover:text-background transition-colors"               aria-label={t('footer.newsletterBtn')}>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -68,16 +70,16 @@ export function Footer() {
           {/* Links */}
           <div className="md:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-8 justify-items-start md:justify-items-end text-left md:text-right" style={anim(200)}>
             <div className="flex flex-col gap-3">
-              <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">Colección</h4>
+              <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">{t('footer.products')}</h4>
               <a href="#" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">ESENZA</a>
               <a href="#" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">AURA Compact</a>
               <a href="#" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">AURA Suspendido</a>
             </div>
             <div className="flex flex-col gap-3">
-              <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">Soporte</h4>
-              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">Instalación</a>
-              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">Garantía</a>
-              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">Contacto</a>
+              <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">{t('footer.company')}</h4>
+              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('product.installation')}</a>
+              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('product.warranty')}</a>
+              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('nav.contacto')}</a>
             </div>
             <div className="flex flex-col gap-3 col-span-2 md:col-span-1">
               <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">Social</h4>
@@ -89,8 +91,8 @@ export function Footer() {
               </div>
               <p className="font-body text-[11px] text-background/50 mt-2">+34 614 45 19 01</p>
               <a href="https://maps.google.com/?q=Avenida+da+Mah%C3%ADa+17+Bertamir%C3%A1ns+Ames" target="_blank" rel="noreferrer" className="font-body text-[11px] text-background/50 hover:text-white transition-colors mt-1 leading-relaxed block">
-                Tienda física · Bertamiráns (Ames)<br />
-                <span className="text-background/30">Av. da Mahía, 17 Bajo 2 · 15220</span>
+                {t('contacto.store')}<br />
+                <span className="text-background/30">{t('contacto.storeAddress')}</span>
               </a>
             </div>
           </div>
@@ -103,17 +105,17 @@ export function Footer() {
               © {new Date().getFullYear()} Elora Smart
             </span>
             <div className="flex gap-6">
-              <a href="https://elorasmart.com/aviso-legal/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">Aviso Legal</a>
-              <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">Privacidad</a>
-              <a href="https://elorasmart.com/politica-de-cookies/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">Cookies</a>
+              <a href="https://elorasmart.com/aviso-legal/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.legal')}</a>
+              <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.privacy')}</a>
+              <a href="https://elorasmart.com/politica-de-cookies/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.cookies')}</a>
             </div>
           </div>
           <button
             onClick={scrollToTop}
             className="group flex items-center gap-3 text-background/40 hover:text-background transition-colors mt-4 md:mt-0"
-            title="Subir al inicio"
+            title={t('footer.backTop')}
           >
-            <span className="font-body text-[10px] uppercase tracking-widest block md:hidden">Subir al inicio</span>
+            <span className="font-body text-[10px] uppercase tracking-widest block md:hidden">{t('footer.backTop')}</span>
             <div className="p-2 border border-background/20 rounded-full group-hover:bg-background group-hover:text-foreground group-hover:border-background transition-all">
               <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
