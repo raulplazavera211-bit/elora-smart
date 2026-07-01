@@ -28,17 +28,18 @@ export default function AdminProductos() {
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState<{ price: string; stock: string; name: string; tagline: string }>({
-    price: "", stock: "", name: "", tagline: ""
+  const [editForm, setEditForm] = useState<{ price: string; stock: string; name: string; tagline: string; originalPrice: string }>({
+    price: "", stock: "", name: "", tagline: "", originalPrice: ""
   });
 
-  function startEdit(product: { id: number; price: string; stock: number; name: string; tagline?: string | null }) {
+  function startEdit(product: { id: number; price: string; stock: number; name: string; tagline?: string | null; originalPrice?: string | null }) {
     setEditingId(product.id);
     setEditForm({
       price: product.price,
       stock: String(product.stock),
       name: product.name,
       tagline: product.tagline ?? "",
+      originalPrice: product.originalPrice ? String(parseFloat(String(product.originalPrice))) : "",
     });
   }
 
@@ -51,12 +52,15 @@ export default function AdminProductos() {
     const stock = parseInt(editForm.stock, 10);
     if (isNaN(price) || price <= 0) { toast.error("Precio inválido"); return; }
     if (isNaN(stock) || stock < 0) { toast.error("Stock inválido"); return; }
+    const originalPrice = editForm.originalPrice.trim() ? parseFloat(editForm.originalPrice) : null;
+    if (editForm.originalPrice.trim() && (isNaN(originalPrice!) || originalPrice! <= 0)) { toast.error("Precio original inválido"); return; }
     updateProduct.mutate({
       id,
       price,
       stock,
       name: editForm.name.trim() || undefined,
       tagline: editForm.tagline.trim() || undefined,
+      originalPrice: originalPrice,
     });
     setEditingId(null);
   }
@@ -138,16 +142,30 @@ export default function AdminProductos() {
                             className="bg-background border border-border px-2 py-1 font-body text-xs text-foreground/60 focus:outline-none focus:border-accent-deep w-full max-w-xs"
                             placeholder="Tagline..."
                           />
-                          <div className="flex items-center gap-1">
-                            <input
-                              type="number"
-                              value={editForm.price}
-                              onChange={e => setEditForm(f => ({...f, price: e.target.value}))}
-                              className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-24"
-                              step="0.01"
-                              min="0"
-                            />
-                            <span className="font-body text-xs text-foreground/40">€</span>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                value={editForm.price}
+                                onChange={e => setEditForm(f => ({...f, price: e.target.value}))}
+                                className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-24"
+                                step="0.01"
+                                min="0"
+                              />
+                              <span className="font-body text-xs text-foreground/40">€ precio</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                value={editForm.originalPrice}
+                                onChange={e => setEditForm(f => ({...f, originalPrice: e.target.value}))}
+                                className="bg-background border border-border px-2 py-1 font-body text-sm text-foreground focus:outline-none focus:border-accent-deep w-24"
+                                step="0.01"
+                                min="0"
+                                placeholder="Sin rebaja"
+                              />
+                              <span className="font-body text-xs text-foreground/40">€ antes</span>
+                            </div>
                           </div>
                           <input
                             type="number"
@@ -161,8 +179,11 @@ export default function AdminProductos() {
                         <>
                           <p className="font-body text-sm font-medium text-foreground truncate">{product.name}</p>
                           <p className="font-body text-xs text-foreground/40 truncate mt-0.5">{product.tagline ?? ""}</p>
-                          <div className="flex gap-4 mt-2 font-body text-xs text-foreground/60">
-                            <span>{parseFloat(product.price).toLocaleString('es-ES')} €</span>
+                          <div className="flex gap-4 mt-2 font-body text-xs text-foreground/60 flex-wrap">
+                            <span className="font-semibold text-foreground">{parseFloat(product.price).toLocaleString('es-ES')} €</span>
+                            {product.originalPrice && (
+                              <span className="line-through text-foreground/40">{parseFloat(String(product.originalPrice)).toLocaleString('es-ES')} €</span>
+                            )}
                             <span>Stock: {product.stock}</span>
                           </div>
                         </>

@@ -91,6 +91,8 @@ export const products = mysqlTable("products", {
   warranty: json("warranty").$type<{years: number; details: string}>(),
   /** JSON array of FAQ objects {q, a} */
   faqs: json("faqs").$type<{q: string; a: string}[]>(),
+  /** Original price before discount — null means no discount */
+  originalPrice: decimal("originalPrice", { precision: 10, scale: 2 }),
   stock: int("stock").default(999).notNull(),
   active: boolean("active").default(true).notNull(),
   sortOrder: int("sortOrder").default(0).notNull(),
@@ -202,3 +204,33 @@ export const adminCredentials = mysqlTable("admin_credentials", {
 
 export type AdminCredential = typeof adminCredentials.$inferSelect;
 export type InsertAdminCredential = typeof adminCredentials.$inferInsert;
+
+/**
+ * Discount coupons.
+ * Admins can create percentage or fixed-amount coupons with optional expiry and usage limits.
+ */
+export const coupons = mysqlTable("coupons", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Coupon code (case-insensitive, stored uppercase) */
+  code: varchar("code", { length: 64 }).notNull().unique(),
+  /** Human-readable description */
+  description: varchar("description", { length: 255 }),
+  /** Discount type */
+  type: mysqlEnum("type", ["percentage", "fixed"]).notNull(),
+  /** Discount value: percentage (0-100) or fixed amount in EUR */
+  value: decimal("value", { precision: 10, scale: 2 }).notNull(),
+  /** Minimum order amount to apply coupon — null means no minimum */
+  minOrderAmount: decimal("minOrderAmount", { precision: 10, scale: 2 }),
+  /** Maximum uses allowed — null means unlimited */
+  maxUses: int("maxUses"),
+  /** Current use count */
+  usedCount: int("usedCount").default(0).notNull(),
+  /** Expiry date — null means no expiry */
+  expiresAt: timestamp("expiresAt"),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Coupon = typeof coupons.$inferSelect;
+export type InsertCoupon = typeof coupons.$inferInsert;

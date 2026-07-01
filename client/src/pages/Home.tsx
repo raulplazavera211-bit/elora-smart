@@ -1409,6 +1409,7 @@ export default function Home() {
           ...p,
           id: p.slug,
           price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
+          originalPrice: p.originalPrice ? (typeof p.originalPrice === 'number' ? p.originalPrice : parseFloat(p.originalPrice)) : null,
           img: p.img || '',
           gallery: parseJsonField(p.gallery, []),
           badges: parseJsonField(p.badges, []),
@@ -1969,9 +1970,23 @@ export default function Home() {
                           {/* Precio + botones */}
                           <div className="mt-auto pt-4 border-t border-border">
                             <div className="flex items-baseline justify-between mb-3">
-                              <span className="font-display text-2xl tracking-wide text-foreground">
-                                {prod.price.toLocaleString('es-ES')} €
-                              </span>
+                              <div className="flex flex-col gap-0.5">
+                                {prod.originalPrice && (
+                                  <span className="font-body text-xs text-foreground/40 line-through">
+                                    {(typeof prod.originalPrice === 'number' ? prod.originalPrice : parseFloat(String(prod.originalPrice))).toLocaleString('es-ES')} €
+                                  </span>
+                                )}
+                                <div className="flex items-baseline gap-2">
+                                  <span className="font-display text-2xl tracking-wide text-foreground">
+                                    {prod.price.toLocaleString('es-ES')} €
+                                  </span>
+                                  {prod.originalPrice && (
+                                    <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
+                                      Oferta
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                               <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">IVA incl.</span>
                             </div>
                             <div className="flex gap-2">

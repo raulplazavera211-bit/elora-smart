@@ -25,6 +25,7 @@ export type Product = {
   warranty: { years: number; details: string };
   faqs: { q: string; a: string }[];
   price: number;
+  originalPrice?: number | null;
 };
 
 type Props = {
@@ -97,7 +98,17 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
 
               {/* Precio */}
               <div className="flex items-end justify-between mt-2">
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-1">
+                  {product.originalPrice && (
+                    <div className="flex items-center gap-2">
+                      <span className="font-body text-sm text-foreground/40 line-through">
+                        {product.originalPrice.toLocaleString('es-ES')} €
+                      </span>
+                      <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-2 py-0.5 rounded">
+                        Oferta
+                      </span>
+                    </div>
+                  )}
                   <p className="font-display text-3xl sm:text-4xl md:text-5xl tracking-wide">{product.price.toLocaleString('es-ES')} €</p>
                   <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mt-1">IVA incluido</p>
                 </div>

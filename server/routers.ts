@@ -56,6 +56,12 @@ import {
   getAdminCredentialByEmail,
   upsertAdminCredential,
   countAdminCredentials,
+  getAllCoupons,
+  getCouponByCode,
+  insertCoupon,
+  updateCoupon,
+  deleteCoupon,
+  incrementCouponUsage,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 import { sendOrderConfirmationEmail } from "./email";
@@ -378,16 +384,100 @@ export const appRouter = router({
         tagline: z.string().max(512).optional(),
         description: z.string().optional(),
         price: z.number().positive().optional(),
+        /** Set to null to remove the original price (discount) */
+        originalPrice: z.number().positive().nullable().optional(),
         stock: z.number().int().min(0).optional(),
         active: z.boolean().optional(),
         sortOrder: z.number().int().optional(),
       }))
       .mutation(async ({ input }) => {
-        const { id, price, ...rest } = input;
+        const { id, price, originalPrice, ...rest } = input;
         const updateData: Record<string, unknown> = { ...rest };
         if (price !== undefined) updateData.price = price.toFixed(2);
+        if (originalPrice !== undefined) updateData.originalPrice = originalPrice !== null ? originalPrice.toFixed(2) : null;
         await updateProduct(id, updateData as Parameters<typeof updateProduct>[1]);
         return { success: true };
+      }),
+
+    // ─── COUPONS ────────────────────────────────────────────────────────────
+    getCoupons: adminProcedure.query(async () => {
+      return getAllCoupons();
+    }),
+
+    createCoupon: adminProcedure
+      .input(z.object({
+        code: z.string().min(2).max(64),
+        description: z.string().max(255).optional(),
+        type: z.enum(["percentage", "fixed"]),
+        value: z.number().positive(),
+        minOrderAmount: z.number().positive().optional(),
+        maxUses: z.number().int().positive().optional(),
+        expiresAt: z.date().optional(),
+        active: z.boolean().default(true),
+      }))
+      .mutation(async ({ input }) => {
+        const { value, minOrderAmount, ...rest } = input;
+        const id = await insertCoupon({
+          ...rest,
+          value: value.toFixed(2),
+          minOrderAmount: minOrderAmount !== undefined ? minOrderAmount.toFixed(2) : null,
+          expiresAt: input.expiresAt ?? null,
+        } as Parameters<typeof insertCoupon>[0]);
+        return { success: true, id };
+      }),
+
+    updateCoupon: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        code: z.string().min(2).max(64).optional(),
+        description: z.string().max(255).optional(),
+        type: z.enum(["percentage", "fixed"]).optional(),
+        value: z.number().positive().optional(),
+        minOrderAmount: z.number().positive().nullable().optional(),
+        maxUses: z.number().int().positive().nullable().optional(),
+        expiresAt: z.date().nullable().optional(),
+        active: z.boolean().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, value, minOrderAmount, ...rest } = input;
+        const updateData: Record<string, unknown> = { ...rest };
+        if (value !== undefined) updateData.value = value.toFixed(2);
+        if (minOrderAmount !== undefined) updateData.minOrderAmount = minOrderAmount !== null ? minOrderAmount.toFixed(2) : null;
+        await updateCoupon(id, updateData as Parameters<typeof updateCoupon>[1]);
+        return { success: true };
+      }),
+
+    deleteCoupon: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteCoupon(input.id);
+        return { success: true };
+      }),
+
+    // ─── VALIDATE COUPON (public) ────────────────────────────────────────────
+    validateCoupon: publicProcedure
+      .input(z.object({
+        code: z.string(),
+        orderAmount: z.number().positive(),
+      }))
+      .mutation(async ({ input }) => {
+        const coupon = await getCouponByCode(input.code);
+        if (!coupon) throw new TRPCError({ code: 'NOT_FOUND', message: 'Cupón no encontrado' });
+        if (!coupon.active) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón no está activo' });
+        if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón ha caducado' });
+        if (coupon.maxUses !== null && coupon.usedCount >= coupon.maxUses) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón ha alcanzado el límite de usos' });
+        const minAmount = coupon.minOrderAmount ? parseFloat(String(coupon.minOrderAmount)) : 0;
+        if (input.orderAmount < minAmount) throw new TRPCError({ code: 'BAD_REQUEST', message: `El pedido mínimo para este cupón es ${minAmount.toFixed(2)} €` });
+        const value = parseFloat(String(coupon.value));
+        const discount = coupon.type === 'percentage' ? (input.orderAmount * value) / 100 : Math.min(value, input.orderAmount);
+        return {
+          id: coupon.id,
+          code: coupon.code,
+          type: coupon.type,
+          value,
+          discount: parseFloat(discount.toFixed(2)),
+          description: coupon.description,
+        };
       }),
 
     seedProducts: adminProcedure.mutation(async () => {

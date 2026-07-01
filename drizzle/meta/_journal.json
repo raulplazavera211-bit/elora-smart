@@ -43,6 +43,13 @@
       "when": 1782925021122,
       "tag": "0005_regular_zeigeist",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1782926117372,
+      "tag": "0006_quick_swordsman",
+      "breakpoints": true
     }
   ]
 }

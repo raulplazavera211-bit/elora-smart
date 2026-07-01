@@ -40,6 +40,8 @@ export default function Coleccion() {
           ...fallback,
           img: fromDb.img || fallback.img,
           gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
+          price: fromDb.price ? (typeof fromDb.price === 'number' ? fromDb.price : parseFloat(fromDb.price)) : fallback.price,
+          originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : null,
         } as Product;
       });
       setDisplayProducts(merged);
@@ -257,9 +259,23 @@ export default function Coleccion() {
                       <p className="font-body text-xs text-accent-deep leading-tight">{prod.tagline}</p>
                       <div className="mt-auto pt-4 border-t border-border">
                         <div className="flex items-baseline justify-between mb-3">
-                          <span className="font-display text-2xl tracking-wide text-foreground">
-                            {prod.price.toLocaleString('es-ES')} €
-                          </span>
+                          <div className="flex flex-col gap-0.5">
+                            {prod.originalPrice && (
+                              <span className="font-body text-xs text-foreground/40 line-through">
+                                {prod.originalPrice.toLocaleString('es-ES')} €
+                              </span>
+                            )}
+                            <div className="flex items-baseline gap-2">
+                              <span className="font-display text-2xl tracking-wide text-foreground">
+                                {prod.price.toLocaleString('es-ES')} €
+                              </span>
+                              {prod.originalPrice && (
+                                <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
+                                  Oferta
+                                </span>
+                              )}
+                            </div>
+                          </div>
                           <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">IVA incl.</span>
                         </div>
                         <div className="flex gap-2">

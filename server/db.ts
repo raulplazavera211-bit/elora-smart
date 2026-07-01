@@ -395,3 +395,45 @@ export async function countAdminCredentials(): Promise<number> {
   const rows = await db.select({ count: sql<number>`count(*)` }).from(adminCredentials);
   return Number(rows[0]?.count ?? 0);
 }
+
+// ─── COUPONS ─────────────────────────────────────────────────────────────────
+import { coupons, Coupon, InsertCoupon } from "../drizzle/schema";
+
+export async function getAllCoupons(): Promise<Coupon[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(coupons).orderBy(desc(coupons.createdAt));
+}
+
+export async function getCouponByCode(code: string): Promise<Coupon | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(coupons).where(eq(coupons.code, code.toUpperCase())).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function insertCoupon(data: InsertCoupon): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.insert(coupons).values({ ...data, code: data.code.toUpperCase() });
+  return (result[0] as { insertId: number }).insertId ?? null;
+}
+
+export async function updateCoupon(id: number, data: Partial<InsertCoupon>): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const update = data.code ? { ...data, code: data.code.toUpperCase() } : data;
+  await db.update(coupons).set(update).where(eq(coupons.id, id));
+}
+
+export async function deleteCoupon(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(coupons).where(eq(coupons.id, id));
+}
+
+export async function incrementCouponUsage(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(coupons).set({ usedCount: sql`usedCount + 1` }).where(eq(coupons.id, id));
+}
