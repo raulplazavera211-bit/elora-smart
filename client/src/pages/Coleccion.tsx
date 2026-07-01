@@ -6,6 +6,7 @@ import { ProductDetail } from "@/components/ProductDetail";
 import type { Product } from "@/components/ProductDetail";
 import { Footer } from "@/components/Footer";
 import { ALL_PRODUCTS } from "@/lib/products";
+import { trpc } from "@/lib/trpc";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { CartPanel } from "@/components/CartPanel";
 import { useCart } from "@/contexts/CartContext";
@@ -17,8 +18,33 @@ export default function Coleccion() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [displayProducts, setDisplayProducts] = useState<Product[]>(ALL_PRODUCTS as Product[]);
 
   const { cart, isCartOpen, addToCart, removeFromCart, openCart, closeCart, totalItems } = useCart();
+
+  // Cargar productos desde la BD para que los cambios del admin se reflejen
+  const productsQuery = trpc.products.getAll.useQuery();
+  useEffect(() => {
+    if (productsQuery.data && productsQuery.data.length > 0) {
+      const parseJsonField = (val: any, fallback: any) => {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') { try { return JSON.parse(val); } catch { return fallback; } }
+        if (val && typeof val === 'object') return val;
+        return fallback;
+      };
+      // Merge: usar datos de BD para img/gallery, resto del fallback hardcodeado
+      const merged = ALL_PRODUCTS.map((fallback) => {
+        const fromDb = productsQuery.data.find((p: any) => p.slug?.toLowerCase() === fallback.id?.toLowerCase());
+        if (!fromDb) return fallback;
+        return {
+          ...fallback,
+          img: fromDb.img || fallback.img,
+          gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
+        } as Product;
+      });
+      setDisplayProducts(merged);
+    }
+  }, [productsQuery.data]);
 
   const openProduct = (product: Product) => {
     setSelectedProduct(product);
@@ -30,7 +56,7 @@ export default function Coleccion() {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("producto");
     if (slug) {
-      const found = ALL_PRODUCTS.find(p => p.id.toLowerCase() === slug.toLowerCase());
+      const found = displayProducts.find(p => p.id.toLowerCase() === slug.toLowerCase());
       if (found) {
         setSelectedProduct(found);
         if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0;
@@ -188,7 +214,7 @@ export default function Coleccion() {
 
               {/* Grid 6 productos */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-                {ALL_PRODUCTS.map((prod, i) => (
+                {displayProducts.map((prod, i) => (
                   <motion.div
                     key={prod.id}
                     initial={{ opacity: 0, y: 40 }}
