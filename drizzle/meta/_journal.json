@@ -50,6 +50,13 @@
       "when": 1782926117372,
       "tag": "0006_quick_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1783103823120,
+      "tag": "0007_acoustic_vision",
+      "breakpoints": true
     }
   ]
 }

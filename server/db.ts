@@ -14,6 +14,10 @@ import {
   orderItems,
   InsertOrderItem,
   adminCredentials,
+  sitePopups,
+  InsertSitePopup,
+  experienceSlides,
+  InsertExperienceSlide,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -436,4 +440,109 @@ export async function incrementCouponUsage(id: number): Promise<void> {
   const db = await getDb();
   if (!db) return;
   await db.update(coupons).set({ usedCount: sql`usedCount + 1` }).where(eq(coupons.id, id));
+}
+
+// ─── Site Popups ──────────────────────────────────────────────────────────────
+export async function getAllPopups() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(sitePopups).orderBy(sitePopups.createdAt);
+}
+
+export async function getActivePopup() {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(sitePopups).where(eq(sitePopups.active, true)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getPopupById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(sitePopups).where(eq(sitePopups.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function insertPopup(data: InsertSitePopup): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.insert(sitePopups).values(data);
+  return (result[0] as { insertId: number }).insertId ?? null;
+}
+
+export async function updatePopup(id: number, data: Partial<InsertSitePopup>): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(sitePopups).set(data).where(eq(sitePopups.id, id));
+}
+
+export async function deletePopup(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(sitePopups).where(eq(sitePopups.id, id));
+}
+
+/** Desactiva todos los popups y activa solo el indicado */
+export async function activatePopup(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(sitePopups).set({ active: false });
+  await db.update(sitePopups).set({ active: true }).where(eq(sitePopups.id, id));
+}
+
+export async function deactivateAllPopups(): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(sitePopups).set({ active: false });
+}
+
+// ─── Experience Slides ────────────────────────────────────────────────────────
+export async function getAllExperienceSlides() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(experienceSlides).orderBy(experienceSlides.sortOrder);
+}
+
+export async function getActiveExperienceSlides() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(experienceSlides)
+    .where(eq(experienceSlides.active, true))
+    .orderBy(experienceSlides.sortOrder);
+}
+
+export async function getExperienceSlideById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(experienceSlides).where(eq(experienceSlides.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function insertExperienceSlide(data: InsertExperienceSlide): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.insert(experienceSlides).values(data);
+  return (result[0] as { insertId: number }).insertId ?? null;
+}
+
+export async function updateExperienceSlide(id: number, data: Partial<InsertExperienceSlide>): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(experienceSlides).set(data).where(eq(experienceSlides.id, id));
+}
+
+export async function deleteExperienceSlide(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(experienceSlides).where(eq(experienceSlides.id, id));
+}
+
+export async function reorderExperienceSlides(orderedIds: number[]): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      db.update(experienceSlides).set({ sortOrder: index }).where(eq(experienceSlides.id, id))
+    )
+  );
 }

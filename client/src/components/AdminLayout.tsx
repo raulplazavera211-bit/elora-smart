@@ -17,6 +17,8 @@ import {
   ChevronRight,
   CreditCard,
   Tag,
+  Megaphone,
+  Images,
 } from "lucide-react";
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
@@ -33,6 +35,8 @@ const NAV_ITEMS = [
   { icon: Star, label: "Club Elora", path: "/admin/club-elora" },
   { icon: CreditCard, label: "Pagos", path: "/admin/pagos" },
   { icon: Tag, label: "Cupones", path: "/admin/cupones" },
+  { icon: Megaphone, label: "Popups", path: "/admin/popups" },
+  { icon: Images, label: "Experiencia", path: "/admin/experiencia" },
 ];
 
 interface AdminLayoutProps {

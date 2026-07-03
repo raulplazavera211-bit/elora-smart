@@ -15,6 +15,8 @@ import AdminContactos from "./pages/admin/AdminContactos";
 import AdminClubElora from "./pages/admin/AdminClubElora";
 import AdminPagos from "./pages/admin/AdminPagos";
 import AdminCupones from "./pages/admin/AdminCupones";
+import AdminPopups from "./pages/admin/AdminPopups";
+import AdminExperiencia from "./pages/admin/AdminExperiencia";
 import PagoOk from "./pages/PagoOk";
 import PagoKo from "./pages/PagoKo";
 import { ChatBot } from "./components/ChatBot";
@@ -270,6 +272,8 @@ function AppRouter() {
         <Route path="/admin/club-elora" component={AdminClubElora} />
         <Route path="/admin/pagos" component={AdminPagos} />
         <Route path="/admin/cupones" component={AdminCupones} />
+        <Route path="/admin/popups" component={AdminPopups} />
+        <Route path="/admin/experiencia" component={AdminExperiencia} />
         {/* Legacy admin (fallback) */}
         <Route path="/admin/legacy" component={Admin} />
         <Route component={AdminDashboard} />

@@ -34,7 +34,7 @@ export function WhatsAppButton() {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3"
+      className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3"
       style={{ pointerEvents: "none" }}
     >
       {/* Burbuja de mensaje */}
@@ -45,13 +45,13 @@ export function WhatsAppButton() {
           opacity: showBubble ? 1 : 0,
           transform: showBubble ? "translateY(0) scale(1)" : "translateY(8px) scale(0.95)",
           transition: "opacity 250ms cubic-bezier(0.23,1,0.32,1), transform 250ms cubic-bezier(0.23,1,0.32,1)",
-          transformOrigin: "bottom right",
+          transformOrigin: "bottom left",
         }}
       >
         <div className="bg-white text-gray-800 rounded-2xl rounded-br-sm shadow-xl px-4 py-3 max-w-[220px] border border-gray-100">
           <button
             onClick={handleDismiss}
-            className="absolute -top-2 -right-2 w-5 h-5 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors"
+            className="absolute -top-2 -left-2 w-5 h-5 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors"
             aria-label="Cerrar"
           >
             <X className="w-3 h-3 text-gray-600" />
@@ -65,7 +65,7 @@ export function WhatsAppButton() {
         </div>
         {/* Triángulo apuntando al botón */}
         <div
-          className="absolute -bottom-2 right-4 w-0 h-0"
+          className="absolute -bottom-2 left-4 w-0 h-0"
           style={{
             borderLeft: "8px solid transparent",
             borderRight: "8px solid transparent",

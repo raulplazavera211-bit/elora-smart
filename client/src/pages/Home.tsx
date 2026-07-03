@@ -722,8 +722,20 @@ const EXPERIENCE_STEPS = [
 
 function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObject<HTMLDivElement | null> }) {
   const { t } = useTranslation();
+  const { data: dbSlides } = trpc.experience.getSlides.useQuery(undefined, { staleTime: 5 * 60 * 1000, retry: false });
+  // Use DB slides if available, otherwise fall back to i18n + hardcoded images
   const i18nSteps = t('experience.steps', { returnObjects: true }) as Array<{number:string;eyebrow:string;title:string;subtitle:string;body:string;tag:string}>;
-  const STEPS = i18nSteps.map((s, i) => ({ ...s, image: EXPERIENCE_STEPS[i]?.image ?? '' }));
+  const STEPS = (dbSlides && dbSlides.length > 0)
+    ? dbSlides.map(s => ({
+        number: s.step,
+        eyebrow: s.description ?? '',
+        title: s.title,
+        subtitle: '',
+        body: s.description ?? '',
+        tag: s.step,
+        image: s.imageUrl ?? '',
+      }))
+    : i18nSteps.map((s, i) => ({ ...s, image: EXPERIENCE_STEPS[i]?.image ?? '' }));
   const [activeStep, setActiveStep] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
 

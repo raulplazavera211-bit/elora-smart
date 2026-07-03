@@ -234,3 +234,69 @@ export const coupons = mysqlTable("coupons", {
 
 export type Coupon = typeof coupons.$inferSelect;
 export type InsertCoupon = typeof coupons.$inferInsert;
+
+/**
+ * Site popups. Admins can create, edit, enable/disable promotional popups.
+ * The frontend fetches the active popup and displays it.
+ */
+export const sitePopups = mysqlTable("site_popups", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Internal name for identification in admin panel */
+  name: varchar("name", { length: 255 }).notNull(),
+  /** Badge text (e.g. "🎁 REGALO EXCLUSIVO JUNIO") */
+  badge: varchar("badge", { length: 255 }),
+  /** Main title */
+  title: varchar("title", { length: 512 }).notNull(),
+  /** Highlighted part of title (shown in gold) */
+  titleHighlight: varchar("titleHighlight", { length: 255 }),
+  /** Subtitle (e.g. "valorado en 65€") */
+  subtitle: varchar("subtitle", { length: 255 }),
+  /** Body text */
+  body: text("body"),
+  /** JSON array of kit items (strings) */
+  items: json("items").$type<string[]>(),
+  /** CTA button label */
+  ctaLabel: varchar("ctaLabel", { length: 255 }).default("Ver la colección").notNull(),
+  /** CTA button URL */
+  ctaUrl: varchar("ctaUrl", { length: 512 }).default("/coleccion").notNull(),
+  /** Dismiss link label */
+  dismissLabel: varchar("dismissLabel", { length: 255 }).default("No, gracias").notNull(),
+  /** Footer note (e.g. "Oferta válida hasta fin de stock") */
+  footerNote: varchar("footerNote", { length: 512 }),
+  /** Whether this popup is currently active (shown to visitors) */
+  active: boolean("active").default(false).notNull(),
+  /** Delay in ms before showing popup */
+  delayMs: int("delayMs").default(2000).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SitePopup = typeof sitePopups.$inferSelect;
+export type InsertSitePopup = typeof sitePopups.$inferInsert;
+
+/**
+ * Experience section slides. Admins can upload photos, set titles, descriptions
+ * and reorder them. The frontend renders them in sortOrder.
+ */
+export const experienceSlides = mysqlTable("experience_slides", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Step number shown as label (e.g. "01") */
+  step: varchar("step", { length: 8 }).notNull(),
+  /** Slide title */
+  title: varchar("title", { length: 255 }).notNull(),
+  /** Slide description */
+  description: text("description"),
+  /** Image URL (uploaded to storage) */
+  imageUrl: text("imageUrl"),
+  /** Storage key for deletion */
+  imageKey: text("imageKey"),
+  /** Display order (lower = first) */
+  sortOrder: int("sortOrder").default(0).notNull(),
+  /** Whether this slide is visible */
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ExperienceSlide = typeof experienceSlides.$inferSelect;
+export type InsertExperienceSlide = typeof experienceSlides.$inferInsert;

@@ -2,26 +2,55 @@ import { useEffect, useState } from "react";
 import { X, Gift, Check } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
-
-// KIT_ITEMS se genera dinámicamente con i18n
+import { trpc } from "@/lib/trpc";
+import { useLocation } from "wouter";
 
 const STORAGE_KEY = "elora_promo_popup_dismissed";
 
 export default function PromoPopup() {
   const { t } = useTranslation();
-  const KIT_ITEMS = [
+  const [location] = useLocation();
+  const [visible, setVisible] = useState(false);
+
+  // Fetch active popup from DB
+  const { data: dbPopup, isLoading } = trpc.popups.getActive.useQuery(undefined, {
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // i18n fallback values
+  const fallbackItems = [
     t('promo.items.hose'),
     t('promo.items.valve'),
     t('promo.items.seat'),
     t('promo.items.guide'),
   ];
-  const [visible, setVisible] = useState(false);
+
+  // Determine content: DB popup takes priority over i18n fallback
+  const badge = dbPopup?.badge ?? t('promo.badge');
+  const title = dbPopup?.title ?? t('promo.title');
+  const titleHighlight = dbPopup?.titleHighlight ?? t('promo.titleHighlight');
+  const subtitle = dbPopup?.subtitle ?? t('promo.subtitle');
+  const body = dbPopup?.body ?? t('promo.body');
+  const items: string[] = (dbPopup?.items && dbPopup.items.length > 0) ? dbPopup.items : fallbackItems;
+  const ctaLabel = dbPopup?.ctaLabel ?? t('promo.cta');
+  const ctaUrl = dbPopup?.ctaUrl ?? "/coleccion";
+  const dismissLabel = dbPopup?.dismissLabel ?? t('promo.dismiss');
+  const footerNote = dbPopup?.footerNote;
+  const delayMs = dbPopup?.delayMs ?? 2000;
+
+  // Don't show on admin pages
+  const isAdmin = location.startsWith("/admin");
 
   useEffect(() => {
+    if (isAdmin) return;
+    if (isLoading) return; // Wait for DB response before deciding
+    // If DB has a popup but it's not active (null returned), don't show
+    // getActive returns null when no active popup → use fallback i18n popup
     if (sessionStorage.getItem(STORAGE_KEY)) return;
-    const timer = setTimeout(() => setVisible(true), 2000);
+    const timer = setTimeout(() => setVisible(true), delayMs);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isLoading, delayMs, isAdmin]);
 
   const handleClose = () => {
     setVisible(false);
@@ -30,8 +59,10 @@ export default function PromoPopup() {
 
   const handleCTA = () => {
     handleClose();
-    window.location.href = "/coleccion";
+    window.location.href = ctaUrl;
   };
+
+  if (isAdmin) return null;
 
   return (
     <AnimatePresence>
@@ -65,7 +96,7 @@ export default function PromoPopup() {
                 {/* Franja dorada superior */}
                 <div className="h-1 bg-gradient-to-r from-[#c9a96e] via-[#e8c98a] to-[#c9a96e]" />
 
-                {/* Botón cerrar — grande y visible */}
+                {/* Botón cerrar */}
                 <button
                   onClick={handleClose}
                   aria-label={t('nav.close')}
@@ -85,7 +116,7 @@ export default function PromoPopup() {
                   >
                     <span className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-700 font-body text-[10px] uppercase tracking-[0.35em] px-3 py-1.5 rounded-full">
                       <Gift className="w-3 h-3" />
-                      {t('promo.badge')}
+                      {badge}
                     </span>
                   </motion.div>
 
@@ -96,23 +127,23 @@ export default function PromoPopup() {
                     transition={{ delay: 0.2, duration: 0.38 }}
                   >
                     <h2 className="font-display text-2xl uppercase tracking-wide text-stone-900 leading-tight mb-1">
-                      {t('promo.title')}{" "}
-                      <span
-                        className="font-display"
-                        style={{ color: "#c9a96e" }}
-                      >
-                        {t('promo.titleHighlight')}
-                      </span>
+                      {title}{" "}
+                      {titleHighlight && (
+                        <span className="font-display" style={{ color: "#c9a96e" }}>
+                          {titleHighlight}
+                        </span>
+                      )}
                     </h2>
-                    <h3 className="font-display text-base uppercase tracking-wider text-stone-700 mb-2">
-                      {t('promo.subtitle')}
-                    </h3>
-                    <p className="font-body text-sm text-stone-500 leading-relaxed mb-4">
-                      {t('promo.body')}
-                    </p>
-                    <p className="font-body text-xs text-stone-400 mb-4">
-                      {t('promo.limited')}
-                    </p>
+                    {subtitle && (
+                      <h3 className="font-display text-base uppercase tracking-wider text-stone-700 mb-2">
+                        {subtitle}
+                      </h3>
+                    )}
+                    {body && (
+                      <p className="font-body text-sm text-stone-500 leading-relaxed mb-4">
+                        {body}
+                      </p>
+                    )}
                   </motion.div>
 
                   {/* Separador */}
@@ -126,11 +157,11 @@ export default function PromoPopup() {
                     className="space-y-2 mb-6"
                   >
                     <p className="font-body text-[10px] uppercase tracking-[0.35em] text-stone-400 mb-2">
-                      {t('promo.badge')}:
+                      {t('promo.kitLabel')}:
                     </p>
-                    {KIT_ITEMS.map((item, i) => (
+                    {items.map((item, i) => (
                       <motion.div
-                        key={item}
+                        key={i}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.36 + i * 0.06, duration: 0.3 }}
@@ -163,15 +194,19 @@ export default function PromoPopup() {
                       }}
                     >
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                      <span className="relative">{t('promo.cta')} →</span>
+                      <span className="relative">{ctaLabel} →</span>
                     </button>
 
                     <button
                       onClick={handleClose}
                       className="w-full font-body text-xs text-stone-400 hover:text-stone-600 transition-colors py-1.5"
                     >
-                      {t('promo.dismiss')}
+                      {dismissLabel}
                     </button>
+
+                    {footerNote && (
+                      <p className="text-center font-body text-[10px] text-stone-300 pt-1">{footerNote}</p>
+                    )}
                   </motion.div>
                 </div>
               </div>

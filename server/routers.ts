@@ -62,6 +62,20 @@ import {
   updateCoupon,
   deleteCoupon,
   incrementCouponUsage,
+  getAllPopups,
+  getActivePopup,
+  getPopupById,
+  insertPopup,
+  updatePopup,
+  deletePopup,
+  activatePopup,
+  deactivateAllPopups,
+  getAllExperienceSlides,
+  getActiveExperienceSlides,
+  insertExperienceSlide,
+  updateExperienceSlide,
+  deleteExperienceSlide,
+  reorderExperienceSlides,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 import { sendOrderConfirmationEmail } from "./email";
@@ -810,6 +824,172 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
           }
         }
         return results;
+      }),
+  }),
+
+  // ─── Site Popups ───────────────────────────────────────────────────────────
+  popups: router({
+    /** Public: get the currently active popup (shown to all visitors) */
+    getActive: publicProcedure.query(async () => {
+      return await getActivePopup();
+    }),
+
+    /** Admin: list all popups */
+    list: adminProcedure.query(async () => {
+      return await getAllPopups();
+    }),
+
+    /** Admin: get single popup */
+    getById: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const popup = await getPopupById(input.id);
+        if (!popup) throw new TRPCError({ code: "NOT_FOUND", message: "Popup no encontrado" });
+        return popup;
+      }),
+
+    /** Admin: create popup */
+    create: adminProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        badge: z.string().optional(),
+        title: z.string().min(1),
+        titleHighlight: z.string().optional(),
+        subtitle: z.string().optional(),
+        body: z.string().optional(),
+        items: z.array(z.string()).optional(),
+        ctaLabel: z.string().default("Ver la colección"),
+        ctaUrl: z.string().default("/coleccion"),
+        dismissLabel: z.string().default("No, gracias"),
+        footerNote: z.string().optional(),
+        active: z.boolean().default(false),
+        delayMs: z.number().default(2000),
+      }))
+      .mutation(async ({ input }) => {
+        // If activating this popup, deactivate all others first
+        if (input.active) await deactivateAllPopups();
+        const id = await insertPopup(input);
+        return { id };
+      }),
+
+    /** Admin: update popup */
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        name: z.string().min(1).optional(),
+        badge: z.string().optional(),
+        title: z.string().min(1).optional(),
+        titleHighlight: z.string().optional(),
+        subtitle: z.string().optional(),
+        body: z.string().optional(),
+        items: z.array(z.string()).optional(),
+        ctaLabel: z.string().optional(),
+        ctaUrl: z.string().optional(),
+        dismissLabel: z.string().optional(),
+        footerNote: z.string().optional(),
+        delayMs: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updatePopup(id, data);
+        return { success: true };
+      }),
+
+    /** Admin: toggle active state — only one popup can be active at a time */
+    setActive: adminProcedure
+      .input(z.object({ id: z.number(), active: z.boolean() }))
+      .mutation(async ({ input }) => {
+        if (input.active) {
+          await activatePopup(input.id);
+        } else {
+          await updatePopup(input.id, { active: false });
+        }
+        return { success: true };
+      }),
+
+    /** Admin: delete popup */
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deletePopup(input.id);
+        return { success: true };
+      }),
+  }),
+
+  // ─── Experience Slides ─────────────────────────────────────────────────────
+  experience: router({
+    /** Public: get active slides ordered by sortOrder */
+    getSlides: publicProcedure.query(async () => {
+      return await getActiveExperienceSlides();
+    }),
+
+    /** Admin: get all slides (including inactive) */
+    adminList: adminProcedure.query(async () => {
+      return await getAllExperienceSlides();
+    }),
+
+    /** Admin: create slide */
+    create: adminProcedure
+      .input(z.object({
+        step: z.string().min(1).max(8),
+        title: z.string().min(1),
+        description: z.string().optional(),
+        imageUrl: z.string().optional(),
+        imageKey: z.string().optional(),
+        sortOrder: z.number().default(0),
+        active: z.boolean().default(true),
+      }))
+      .mutation(async ({ input }) => {
+        const id = await insertExperienceSlide(input);
+        return { id };
+      }),
+
+    /** Admin: update slide */
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        step: z.string().min(1).max(8).optional(),
+        title: z.string().min(1).optional(),
+        description: z.string().optional(),
+        imageUrl: z.string().optional(),
+        imageKey: z.string().optional(),
+        sortOrder: z.number().optional(),
+        active: z.boolean().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateExperienceSlide(id, data);
+        return { success: true };
+      }),
+
+    /** Admin: reorder slides */
+    reorder: adminProcedure
+      .input(z.object({ orderedIds: z.array(z.number()) }))
+      .mutation(async ({ input }) => {
+        await reorderExperienceSlides(input.orderedIds);
+        return { success: true };
+      }),
+
+    /** Admin: delete slide */
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteExperienceSlide(input.id);
+        return { success: true };
+      }),
+
+    /** Admin: upload image for a slide — returns storage URL */
+    uploadImage: adminProcedure
+      .input(z.object({
+        filename: z.string(),
+        mimeType: z.string(),
+        base64: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const buffer = Buffer.from(input.base64, "base64");
+        const key = `experience/${Date.now()}-${input.filename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url, key };
       }),
   }),
 });
