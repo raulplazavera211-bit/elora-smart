@@ -242,7 +242,7 @@ export default function AdminCupones() {
 
       {/* Create / Edit Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md" style={{ zIndex: 200 }}>
           <DialogHeader>
             <DialogTitle>{editingId !== null ? "Editar cupón" : "Nuevo cupón"}</DialogTitle>
           </DialogHeader>
@@ -263,7 +263,7 @@ export default function AdminCupones() {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[300]">
                     <SelectItem value="percentage">Porcentaje (%)</SelectItem>
                     <SelectItem value="fixed">Importe fijo (€)</SelectItem>
                   </SelectContent>

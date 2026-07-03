@@ -232,6 +232,8 @@ export const appRouter = router({
         shippingCity: z.string().max(255).optional(),
         shippingProvince: z.string().max(128).optional(),
         shippingPostalCode: z.string().max(10).optional(),
+        shippingCountry: z.string().max(128).optional(),
+        shippingCost: z.number().min(0).optional(),
         paymentMethod: z.string().max(32).optional(),
         notes: z.string().max(2000).optional(),
         items: z.array(z.object({
@@ -244,7 +246,8 @@ export const appRouter = router({
         })).min(1),
       }))
       .mutation(async ({ input, ctx }) => {
-        const total = input.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+        const itemsTotal = input.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+        const total = itemsTotal + (input.shippingCost ?? 0);
         const orderId = await createOrder(
           {
             userId: ctx.user?.id ?? null,
@@ -257,7 +260,11 @@ export const appRouter = router({
             shippingProvince: input.shippingProvince ?? null,
             shippingPostalCode: input.shippingPostalCode ?? null,
             paymentMethod: input.paymentMethod ?? null,
-            notes: input.notes ?? null,
+            notes: [
+              input.notes ?? null,
+              input.shippingCountry ? `País: ${input.shippingCountry}` : null,
+              input.shippingCost != null && input.shippingCost > 0 ? `Envío: ${input.shippingCost.toFixed(2)}€` : null,
+            ].filter(Boolean).join(" | ") || null,
             status: "pending",
             total: total.toFixed(2) as unknown as string,
           },
@@ -277,7 +284,7 @@ export const appRouter = router({
         const itemsList = input.items.map(i => `• ${i.productName} x${i.quantity} — ${(i.unitPrice * i.quantity).toLocaleString('es-ES')}€`).join("\n");
         notifyOwner({
           title: `🛒 Nuevo pedido #${orderId} — ${total.toLocaleString('es-ES')}€`,
-          content: `Cliente: ${input.customerName}\nEmail: ${input.customerEmail}\n${input.customerPhone ? `Teléfono: ${input.customerPhone}\n` : ''}Total: ${total.toLocaleString('es-ES')}€\n\nProductos:\n${itemsList}`,
+          content: `Cliente: ${input.customerName}\nEmail: ${input.customerEmail}\n${input.customerPhone ? `Teléfono: ${input.customerPhone}\n` : ''}País: ${input.shippingCountry ?? 'España'}\nEnvío: ${input.shippingCost ? `${input.shippingCost.toFixed(2)}€` : 'Gratis'}\nTotal: ${total.toLocaleString('es-ES')}€\n\nProductos:\n${itemsList}`,
         }).catch(() => {});
 
         // Enviar email de confirmación para métodos de pago manuales

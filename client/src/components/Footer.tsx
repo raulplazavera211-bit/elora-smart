@@ -1,4 +1,5 @@
 import { ArrowUp, ArrowRight, Instagram, Linkedin } from "lucide-react";
+import { Link } from "wouter";
 
 // Iconos SVG para TikTok y Facebook (no disponibles en lucide-react)
 const TikTokIcon = () => (
@@ -104,10 +105,11 @@ export function Footer() {
             <span className="font-body text-[10px] uppercase tracking-widest text-background/40">
               © {new Date().getFullYear()} Elora Smart
             </span>
-            <div className="flex gap-6">
-              <a href="https://elorasmart.com/aviso-legal/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.legal')}</a>
-              <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.privacy')}</a>
-              <a href="https://elorasmart.com/politica-de-cookies/" target="_blank" rel="noreferrer" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.cookies')}</a>
+            <div className="flex flex-wrap gap-4 md:gap-6">
+              <Link href="/aviso-legal" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.legal')}</Link>
+              <Link href="/politica-privacidad" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.privacy')}</Link>
+              <Link href="/politica-cookies" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.cookies')}</Link>
+              <Link href="/politica-envios" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.shipping')}</Link>
             </div>
           </div>
           <button

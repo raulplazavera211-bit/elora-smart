@@ -27,6 +27,56 @@ const PROVINCIAS_ESPANA = [
 export type CartItem = { id: string; name: string; price: number; img?: string; quantity?: number };
 type CheckoutStep = "cart" | "checkout" | "payment" | "redirecting";
 type PayMethod = "card" | "bizum" | "transfer" | "cod" | "paypal";
+// ─── Países y tarifas de envío ────────────────────────────────────────────────
+export const SHIPPING_COUNTRIES = [
+  { code: "ES",    label: "España Peninsular",    cost: 0,   flag: "🇪🇸" },
+  { code: "PT",    label: "Portugal Continental", cost: 0,   flag: "🇵🇹" },
+  { code: "ES-IB", label: "Baleares",             cost: 60,  flag: "🇪🇸" },
+  { code: "FR",    label: "Francia Continental",  cost: 150, flag: "🇫🇷" },
+  { code: "IT",    label: "Italia Continental",   cost: 120, flag: "🇮🇹" },
+  { code: "DE",    label: "Alemania",             cost: 200, flag: "🇩🇪" },
+  { code: "NL",    label: "Países Bajos",         cost: 150, flag: "🇳🇱" },
+] as const;
+export function getShippingCost(code: string): number {
+  return SHIPPING_COUNTRIES.find(c => c.code === code)?.cost ?? 0;
+}
+
+/**
+ * Detecta el país a partir del código postal.
+ * Devuelve el código de país (ES, PT, ES-IB, FR, IT, DE, NL) o null si no reconoce el formato.
+ */
+export function detectCountryFromCP(cp: string): string | null {
+  const clean = cp.trim();
+  // Países Bajos: 4 dígitos + espacio opcional + 2 letras (ej: 1234 AB)
+  if (/^\d{4}\s?[A-Za-z]{2}$/.test(clean)) return "NL";
+  // Portugal: 4 dígitos + guion + 3 dígitos (ej: 1000-001)
+  if (/^\d{4}-\d{3}$/.test(clean)) return "PT";
+  // Solo dígitos — detectar por rango
+  const digits = clean.replace(/\D/g, "");
+  if (digits.length === 5) {
+    const num = parseInt(digits, 10);
+    // Baleares: 07000-07999
+    if (num >= 7000 && num <= 7999) return "ES-IB";
+    // España: 01000-52999 (sin Canarias 35000-35999 y 38000-38999, sin Ceuta 51001, sin Melilla 52001)
+    if (num >= 1000 && num <= 52999) {
+      // Excluir Canarias, Ceuta, Melilla
+      if ((num >= 35000 && num <= 35999) || (num >= 38000 && num <= 38999)) return null; // Canarias
+      if (num === 51001 || (num >= 51001 && num <= 51080)) return null; // Ceuta
+      if (num === 52001 || (num >= 52001 && num <= 52080)) return null; // Melilla
+      return "ES";
+    }
+    // Francia: 01000-99999 (pero no España)
+    if (num >= 1000 && num <= 99999) return "FR";
+  }
+  if (digits.length === 5) {
+    const num = parseInt(digits, 10);
+    // Alemania: 01067-99998
+    if (num >= 1067 && num <= 99998) return "DE";
+    // Italia: 00100-98168
+    if (num >= 100 && num <= 98168) return "IT";
+  }
+  return null;
+}
 
 // ─── Validaciones España ──────────────────────────────────────────────────────
 // Validation functions now accept a t() function for i18n
@@ -247,6 +297,7 @@ interface CheckoutFormState {
   apellidos: string;
   email: string;
   telefono: string;
+  pais: string;
   direccion: string;
   numero: string;
   piso: string;
@@ -258,6 +309,7 @@ interface CheckoutFormState {
 
 const EMPTY_FORM: CheckoutFormState = {
   nombre: "", apellidos: "", email: "", telefono: "",
+  pais: "ES",
   direccion: "", numero: "", piso: "",
   ciudad: "", provincia: "", cp: "", notas: "",
 };
@@ -482,8 +534,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     Ds_Signature: string;
   } | null>(null);
 
-  const cartTotal = cart.reduce((s, i) => s + i.price, 0);
-
+    const cartTotal = cart.reduce((s, i) => s + i.price, 0);
+  const shippingCost = getShippingCost(form.pais);
+  const orderTotal = cartTotal + shippingCost;
   const createOrder = trpc.orders.create.useMutation({
     onError: (err) => {
       toast.error(t("misc.error"));
@@ -570,12 +623,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
       form.numero.trim(),
       form.piso.trim(),
     ].filter(Boolean).join(", ");
+    const countryLabel = SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.label ?? "España";
     const fullAddress = [
       addressParts,
       form.ciudad.trim(),
       form.provincia,
       form.cp.trim(),
-      "España",
+      countryLabel,
     ].filter(Boolean).join(" · ");
 
     // Paso 1: crear pedido en la DB
@@ -588,6 +642,8 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
       shippingCity: form.ciudad.trim() || undefined,
       shippingProvince: form.provincia || undefined,
       shippingPostalCode: form.cp.trim() || undefined,
+      shippingCountry: countryLabel,
+      shippingCost,
       paymentMethod: payMethod,
       notes: form.notas.trim() || undefined,
       items: cart.map(item => ({
@@ -648,7 +704,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         noValidate
       >
         <h2 className="font-display text-2xl uppercase tracking-wide mb-2">{t("checkout.title")}</h2>
-        <p className="font-body text-xs text-foreground/50 -mt-3">{t("checkout.onlySpain")}</p>
+        <p className="font-body text-xs text-foreground/50 -mt-3">{t("checkout.selectCountryHint")}</p>
 
         <div className="grid grid-cols-2 gap-4">
           <Field label={t("checkout.name")} required error={touched.nombre ? errors.nombre : null}>
@@ -700,7 +756,64 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </Field>
         </div>
 
-        <div className="grid grid-cols-[2fr_1fr_1fr] gap-4">
+        {/* Campo CP con detección automática de país */}
+        <Field label={t("checkout.cp")} required error={touched.cp ? errors.cp : null}>
+          <div className="relative">
+            <input
+              value={form.cp}
+              onChange={e => {
+                const v = e.target.value.slice(0, 10);
+                setField("cp", v);
+                // Detectar país automáticamente
+                const detected = detectCountryFromCP(v);
+                if (detected && detected !== form.pais) {
+                  setField("pais", detected);
+                  if (detected !== "ES" && detected !== "ES-IB") {
+                    setField("provincia", "");
+                  }
+                }
+                // Para España/Baleares: autocompletar municipio cuando CP tiene 5 dígitos
+                if ((detected === "ES" || detected === "ES-IB") && v.replace(/\D/g,"").length === 5) {
+                  setCpLookupQuery(v.replace(/\D/g,""));
+                }
+              }}
+              onBlur={() => markTouched("cp")}
+              className={inputClass("cp")}
+              placeholder="28001, 1000-001, 75001…"
+              autoComplete="postal-code"
+            />
+            {/* Indicador de país detectado */}
+            {form.pais && (() => {
+              const country = SHIPPING_COUNTRIES.find(c => c.code === form.pais);
+              return country ? (
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-base" title={country.label}>
+                  {country.flag}
+                </div>
+              ) : null;
+            })()}
+          </div>
+        </Field>
+        {/* Banner coste de envío — solo se muestra cuando el CP es reconocido */}
+        {form.cp.length >= 4 && (
+          <div className={`flex items-center gap-3 px-4 py-3 border ${
+            detectCountryFromCP(form.cp)
+              ? shippingCost === 0
+                ? "border-green-500/30 bg-green-500/5 text-green-600"
+                : "border-amber-500/30 bg-amber-500/5 text-amber-700"
+              : "border-border/30 bg-muted/30 text-muted-foreground"
+          }`}>
+            <Truck className="w-4 h-4 shrink-0" />
+            <span className="font-body text-xs">
+              {detectCountryFromCP(form.cp)
+                ? shippingCost === 0
+                  ? `${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.flag ?? ""} ${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.label ?? ""} — ${t("checkout.shippingFree")}`
+                  : `${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.flag ?? ""} ${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.label ?? ""} — ${t("checkout.shippingCost")} ${shippingCost.toLocaleString("es-ES")} €`
+                : t("checkout.selectCountryHint")
+              }
+            </span>
+          </div>
+        )}
+        <div className="grid grid-cols-[2fr_1fr] gap-4">
           <Field label={t("checkout.street")} required error={touched.direccion ? errors.direccion : null}>
             <input
               value={form.direccion}
@@ -730,80 +843,94 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </Field>
         </div>
 
+        {/* Campos ciudad / región / CP — adaptativos según país */}
         <div className="grid grid-cols-[2fr_2fr_1fr] gap-4">
+          {/* Ciudad */}
           <Field label={t("checkout.city")} required error={touched.ciudad ? errors.ciudad : null}>
-            <div className="relative">
+            {(form.pais === "ES" || form.pais === "ES-IB") ? (
+              <div className="relative">
+                <input
+                  value={form.ciudad}
+                  onChange={e => {
+                    setField("ciudad", e.target.value);
+                    if (e.target.value.length >= 3) {
+                      setMunicipioQuery(e.target.value);
+                      setShowMunicipioSuggestions(true);
+                    } else {
+                      setShowMunicipioSuggestions(false);
+                    }
+                  }}
+                  onBlur={() => { markTouched("ciudad"); setTimeout(() => setShowMunicipioSuggestions(false), 200); }}
+                  onFocus={() => { if (form.ciudad.length >= 3) setShowMunicipioSuggestions(true); }}
+                  className={inputClass("ciudad")}
+                  placeholder={t("checkout.cityPlaceholder")}
+                  autoComplete="off"
+                />
+                {showMunicipioSuggestions && municipioSuggestions && municipioSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-50 bg-background border border-border shadow-lg max-h-48 overflow-y-auto">
+                    {municipioSuggestions.map((s, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onMouseDown={() => {
+                          setField("ciudad", s.municipio);
+                          setField("provincia", s.provincia);
+                          setField("cp", s.cp);
+                          setCpLookupQuery(s.cp);
+                          setShowMunicipioSuggestions(false);
+                          setErrors(e => ({ ...e, ciudad: undefined, provincia: undefined, cp: undefined }));
+                        }}
+                        className="w-full text-left px-4 py-2.5 font-body text-sm hover:bg-foreground/5 transition-colors flex items-center justify-between gap-4"
+                      >
+                        <span className="font-medium">{s.municipio}</span>
+                        <span className="text-foreground/40 text-xs shrink-0">{s.provincia} · {s.cp}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
               <input
                 value={form.ciudad}
-                onChange={e => {
-                  setField("ciudad", e.target.value);
-                  if (e.target.value.length >= 3) {
-                    setMunicipioQuery(e.target.value);
-                    setShowMunicipioSuggestions(true);
-                  } else {
-                    setShowMunicipioSuggestions(false);
-                  }
-                }}
-                onBlur={() => { markTouched("ciudad"); setTimeout(() => setShowMunicipioSuggestions(false), 200); }}
-                onFocus={() => { if (form.ciudad.length >= 3) setShowMunicipioSuggestions(true); }}
+                onChange={e => setField("ciudad", e.target.value)}
+                onBlur={() => markTouched("ciudad")}
                 className={inputClass("ciudad")}
                 placeholder={t("checkout.cityPlaceholder")}
-                autoComplete="off"
+                autoComplete="address-level2"
               />
-              {showMunicipioSuggestions && municipioSuggestions && municipioSuggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 z-50 bg-background border border-border shadow-lg max-h-48 overflow-y-auto">
-                  {municipioSuggestions.map((s, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onMouseDown={() => {
-                        setField("ciudad", s.municipio);
-                        setField("provincia", s.provincia);
-                        setField("cp", s.cp);
-                        setCpLookupQuery(s.cp);
-                        setShowMunicipioSuggestions(false);
-                        setErrors(e => ({ ...e, ciudad: undefined, provincia: undefined, cp: undefined }));
-                      }}
-                      className="w-full text-left px-4 py-2.5 font-body text-sm hover:bg-foreground/5 transition-colors flex items-center justify-between gap-4"
-                    >
-                      <span className="font-medium">{s.municipio}</span>
-                      <span className="text-foreground/40 text-xs shrink-0">{s.provincia} · {s.cp}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            )}
           </Field>
-          <Field label={t("checkout.province")} required error={touched.provincia ? errors.provincia : null}>
-            <div className="relative">
-              <select
+          {/* Provincia / Región */}
+          <Field
+            label={form.pais === "ES" || form.pais === "ES-IB" ? t("checkout.province") : t("checkout.region")}
+            required={form.pais === "ES" || form.pais === "ES-IB"}
+            error={touched.provincia ? errors.provincia : null}
+          >
+            {(form.pais === "ES" || form.pais === "ES-IB") ? (
+              <div className="relative">
+                <select
+                  value={form.provincia}
+                  onChange={e => { setField("provincia", e.target.value); markTouched("provincia"); }}
+                  onBlur={() => markTouched("provincia")}
+                  className={selectClass("provincia")}
+                >
+                  <option value="">{t("checkout.selectProvince")}</option>
+                  {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40">▾</div>
+              </div>
+            ) : (
+              <input
                 value={form.provincia}
-                onChange={e => { setField("provincia", e.target.value); markTouched("provincia"); }}
+                onChange={e => setField("provincia", e.target.value)}
                 onBlur={() => markTouched("provincia")}
-                className={selectClass("provincia")}
-              >
-                <option value="">{t("checkout.selectProvince")}</option>
-                {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
-              </select>
-              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40">▾</div>
-            </div>
+                className={inputClass("provincia")}
+                placeholder={t("checkout.regionPlaceholder")}
+                autoComplete="address-level1"
+              />
+            )}
           </Field>
-          <Field label={t("checkout.cp")} required error={touched.cp ? errors.cp : null}>
-            <input
-              value={form.cp}
-              onChange={e => {
-                const v = e.target.value.replace(/\D/g, "").slice(0, 5);
-                setField("cp", v);
-                if (v.length === 5) setCpLookupQuery(v);
-              }}
-              onBlur={() => markTouched("cp")}
-              className={inputClass("cp")}
-              placeholder={t("checkout.cpPlaceholder")}
-              inputMode="numeric"
-              maxLength={5}
-              autoComplete="postal-code"
-            />
-          </Field>
+          {/* CP ya se captura arriba con detección automática de país */}
         </div>
 
         <Field label={t("checkout.notes")} error={null}>
@@ -851,12 +978,25 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               <span className="font-display text-sm">{item.price.toLocaleString("es-ES")} €</span>
             </div>
           ))}
-          <div className="border-t border-border pt-3 flex justify-between items-baseline">
-            <span className="font-body text-xs uppercase tracking-widest text-foreground/50">{t("cart.totalVat")}</span>
-            <span className="font-display text-2xl">{cartTotal.toLocaleString("es-ES")} €</span>
+                    <div className="border-t border-border pt-3 flex flex-col gap-2">
+            {shippingCost > 0 && (
+              <div className="flex justify-between items-baseline">
+                <span className="font-body text-xs text-foreground/50">{t("checkout.subtotal")}</span>
+                <span className="font-display text-sm">{cartTotal.toLocaleString("es-ES")} €</span>
+              </div>
+            )}
+            <div className="flex justify-between items-baseline">
+              <span className="font-body text-xs text-foreground/50">{t("checkout.shippingLabel")}</span>
+              <span className={`font-body text-sm font-semibold ${shippingCost === 0 ? "text-green-600" : "text-amber-700"}`}>
+                {shippingCost === 0 ? t("checkout.freeShipping") : `${shippingCost.toLocaleString("es-ES")} €`}
+              </span>
+            </div>
+            <div className="flex justify-between items-baseline border-t border-border pt-2 mt-1">
+              <span className="font-body text-xs uppercase tracking-widest text-foreground/50">{t("cart.totalVat")}</span>
+              <span className="font-display text-2xl">{orderTotal.toLocaleString("es-ES")} €</span>
+            </div>
           </div>
         </div>
-
                 {/* Selector de método */}
         <div className="flex flex-col gap-3">
           <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">{t("checkout.paymentMethodSelect")}</p>
@@ -1342,7 +1482,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   <motion.button onClick={() => setCheckoutStep("checkout")} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.01 } : {}} whileTap={cart.length > 0 ? { scale: 0.98 } : {}} className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 32px rgba(214,122,0,0.4)" : undefined }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ShoppingBag className="w-5 h-5 relative z-10" />
-                    <span className="relative z-10">{cart.length > 0 ? `${t("cart.continue")} · ${cartTotal.toLocaleString("es-ES")} €` : t("cart.addProducts")}</span>
+                    <span className="relative z-10">{cart.length > 0 ? `${t("cart.continue")} · ${orderTotal.toLocaleString("es-ES")} €` : t("cart.addProducts")}</span>
                     <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-5 h-5" /></motion.span>
                   </motion.button>
                 ) : checkoutStep === "checkout" ? (
@@ -1359,7 +1499,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                       <>
                         <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                         {payMethod === "bizum" ? <Smartphone className="w-5 h-5 relative z-10 text-[#00B259]" /> : <CreditCard className="w-5 h-5 relative z-10" />}
-                        <span className="relative z-10">{t("cart.payWith")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")} · {cartTotal.toLocaleString("es-ES")} €</span>
+                        <span className="relative z-10">{t("cart.payWith")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")} · {orderTotal.toLocaleString("es-ES")} €</span>
                       </>
                     )}
                   </motion.button>
@@ -1476,14 +1616,14 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 {checkoutStep === "cart" && cart.length > 0 && (
                   <div className="flex justify-between items-baseline mb-1">
                     <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">{t("cart.total")}</span>
-                    <span className="font-display text-2xl">{cartTotal.toLocaleString("es-ES")} €</span>
+                    <span className="font-display text-2xl">{orderTotal.toLocaleString("es-ES")} €</span>
                   </div>
                 )}
                 {checkoutStep === "cart" ? (
                   <motion.button onClick={() => { if (cart.length > 0) setShowShippingPopup(true); }} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.02 } : {}} whileTap={cart.length > 0 ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ShoppingBag className="w-4 h-4 relative z-10" />
-                    <span className="relative z-10">{cart.length > 0 ? `${t("cart.buy")} · ${cartTotal.toLocaleString("es-ES")} €` : t("cart.addProducts")}</span>
+                    <span className="relative z-10">{cart.length > 0 ? `${t("cart.buy")} · ${orderTotal.toLocaleString("es-ES")} €` : t("cart.addProducts")}</span>
                     <motion.span className="relative z-10 flex items-center" animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}><ArrowRight className="w-4 h-4" /></motion.span>
                   </motion.button>
                 ) : checkoutStep === "checkout" ? (
@@ -1500,7 +1640,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                       <>
                         <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                         {payMethod === "bizum" ? <Smartphone className="w-4 h-4 relative z-10 text-[#00B259]" /> : <CreditCard className="w-4 h-4 relative z-10" />}
-                        <span className="relative z-10">{t("cart.payWith")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")} · {cartTotal.toLocaleString("es-ES")} €</span>
+                        <span className="relative z-10">{t("cart.payWith")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")} · {orderTotal.toLocaleString("es-ES")} €</span>
                       </>
                     )}
                   </motion.button>

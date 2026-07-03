@@ -19,6 +19,11 @@ import AdminPopups from "./pages/admin/AdminPopups";
 import AdminExperiencia from "./pages/admin/AdminExperiencia";
 import PagoOk from "./pages/PagoOk";
 import PagoKo from "./pages/PagoKo";
+import AvisoLegal from "./pages/AvisoLegal";
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
+import PoliticaCookies from "./pages/PoliticaCookies";
+import PoliticaEnvios from "./pages/PoliticaEnvios";
+import { CookieBanner } from "./components/CookieBanner";
 import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
 import { WhatsAppButton } from "./components/WhatsAppButton";
@@ -289,11 +294,16 @@ function AppRouter() {
         <Route path="/coleccion" component={Coleccion} />
         <Route path="/pago/ok" component={PagoOk} />
         <Route path="/pago/ko" component={PagoKo} />
+        <Route path="/aviso-legal" component={AvisoLegal} />
+        <Route path="/politica-privacidad" component={PoliticaPrivacidad} />
+        <Route path="/politica-cookies" component={PoliticaCookies} />
+        <Route path="/politica-envios" component={PoliticaEnvios} />
         <Route component={NotFound} />
       </Switch>
       <ChatBot />
       <PromoPopup />
       <WhatsAppButton />
+      <CookieBanner />
     </>
   );
 }
