@@ -78,22 +78,23 @@ export function detectCountryFromCP(cp: string): string | null {
   return null;
 }
 
-// ─── Validaciones España ──────────────────────────────────────────────────────
+// ─── Validaciones internacionales ────────────────────────────────────────────
 // Validation functions now accept a t() function for i18n
 function validateCP(cp: string, t: (k: string) => string): string | null {
   const clean = cp.trim();
   if (!clean) return t("checkout.cpRequired");
-  if (!/^\d{5}$/.test(clean)) return t("checkout.cpInvalid");
-  const num = parseInt(clean, 10);
-  if (num < 1000 || num > 52999) return t("checkout.cpNotSpain");
+  // Aceptar cualquier formato reconocido por detectCountryFromCP
+  const detected = detectCountryFromCP(clean);
+  if (!detected) return t("checkout.cpInvalid");
   return null;
 }
 
 function validateTelefono(tel: string, t: (k: string) => string): string | null {
   const clean = tel.trim().replace(/\s/g, "").replace(/-/g, "");
   if (!clean) return t("checkout.phoneRequired");
-  const stripped = clean.replace(/^(\+34|0034)/, "");
-  if (!/^[679]\d{8}$/.test(stripped)) {
+  // Aceptar teléfonos internacionales: +XX... o número local de al menos 7 dígitos
+  const stripped = clean.replace(/^\+\d{1,3}/, "").replace(/^00\d{1,3}/, "");
+  if (stripped.length < 7 || !/^\d+$/.test(stripped)) {
     return t("checkout.phoneInvalid");
   }
   return null;
@@ -122,8 +123,9 @@ function validateCiudad(val: string, t: (k: string) => string): string | null {
   return null;
 }
 
-function validateProvincia(val: string, t: (k: string) => string): string | null {
-  if (!val) return t("checkout.provinceRequired");
+function validateProvincia(val: string, t: (k: string) => string, pais?: string): string | null {
+  // Solo obligatoria para España peninsular y Baleares
+  if ((pais === "ES" || pais === "ES-IB") && !val) return t("checkout.provinceRequired");
   return null;
 }
 
@@ -316,18 +318,18 @@ const EMPTY_FORM: CheckoutFormState = {
 
 // ─── Widget de cálculo de envío gratis ─────────────────────────────────────────
 function ShippingWidget({
-  city, setCity, prov, setProv, cp, setCp,
+  city, setCity, cp, setCp,
   cpError, checked, showFree, onCheck, compact = false,
+  shippingCostResult,
 }: {
   city: string; setCity: (v: string) => void;
-  prov: string; setProv: (v: string) => void;
   cp: string; setCp: (v: string) => void;
   cpError: string | null; checked: boolean; showFree: boolean;
   onCheck: () => void; compact?: boolean;
+  shippingCostResult?: { cost: number; country: typeof SHIPPING_COUNTRIES[number] } | null;
 }) {
   const { t } = useTranslation();
   const inputCls = `bg-transparent border border-border px-3 py-2.5 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors w-full`;
-  const selectCls = `bg-background border border-border px-3 py-2.5 font-body text-sm text-foreground focus:outline-none focus:border-foreground transition-colors w-full appearance-none cursor-pointer`;
 
   return (
     <div className={`border border-border ${compact ? "p-4" : "p-5"} flex flex-col gap-3 relative overflow-hidden`}>
@@ -405,30 +407,37 @@ function ShippingWidget({
       </div>
 
       {/* Campos */}
-      <div className={`grid ${compact ? "grid-cols-1 gap-2" : "grid-cols-[2fr_2fr_1fr] gap-3"}`}>
+      <div className={`grid ${compact ? "grid-cols-1 gap-2" : "grid-cols-[2fr_1fr] gap-3"}`}>
         <input
           value={city}
           onChange={e => setCity(e.target.value)}
           className={inputCls}
           placeholder={t("cart.localityField")}
         />
-        <div className="relative">
-          <select value={prov} onChange={e => setProv(e.target.value)} className={selectCls}>
-            <option value="">{t("cart.provinceField")}</option>
-            {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
-          </select>
-          <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-foreground/40 text-xs">▾</div>
-        </div>
         <input
           value={cp}
-          onChange={e => { setCp(e.target.value.replace(/\D/g, "").slice(0, 5)); }}
+          onChange={e => { setCp(e.target.value.slice(0, 10)); }}
           className={`${inputCls} ${cpError ? "border-red-400" : ""}`}
           placeholder={t("cart.cpField")}
-          inputMode="numeric"
-          maxLength={5}
+          autoComplete="postal-code"
+          maxLength={10}
         />
       </div>
       {cpError && <p className="font-body text-[10px] text-red-400 flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{cpError}</p>}
+      {/* Resultado del cálculo de envío */}
+      {shippingCostResult && (
+        <div className={`flex items-center gap-2 px-3 py-2 border text-xs font-body ${
+          shippingCostResult.cost === 0
+            ? "border-green-500/30 bg-green-500/5 text-green-600"
+            : "border-amber-500/30 bg-amber-500/5 text-amber-700"
+        }`}>
+          <span className="text-base">{shippingCostResult.country.flag}</span>
+          <span className="font-medium">{shippingCostResult.country.label}</span>
+          <span className="ml-auto font-semibold">
+            {shippingCostResult.cost === 0 ? t("cart.shippingCostFree") : `${shippingCostResult.cost.toLocaleString("es-ES")} €`}
+          </span>
+        </div>
+      )}
 
       <motion.button
         type="button"
@@ -494,36 +503,52 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     if (payMethod === "transfer" && !transferEnabled && cardEnabled) setPayMethod("card");
   }, [cardEnabled, bizumEnabled, transferEnabled, cashOnDeliveryEnabled, paypalEnabled, payMethod]);
 
-  // ─── Estado widget envío gratis ──────────────────────────────────────────
-    const [shippingCity, setShippingCity] = useState("");
-  const [shippingProv, setShippingProv] = useState("");
+  // ─── Estado widget envío (internacional) ────────────────────────────────
+  const [shippingCity, setShippingCity] = useState("");
   const [shippingCp, setShippingCp] = useState("");
   const [shippingChecked, setShippingChecked] = useState(false);
   const [showFreeShipping, setShowFreeShipping] = useState(false);
   const [shippingCpError, setShippingCpError] = useState<string | null>(null);
+  const [shippingCostResult, setShippingCostResult] = useState<{ cost: number; country: typeof SHIPPING_COUNTRIES[number] } | null>(null);
   // Popup de envío (solo móvil)
   const [showShippingPopup, setShowShippingPopup] = useState(false);
+
   function checkShipping() {
-    const cpErr = validateCP(shippingCp, t);
     if (!shippingCity.trim()) { toast.error(t("checkout.cityRequired")); return; }
-    if (!shippingProv) { toast.error(t("checkout.provinceRequired")); return; }
+    const cpErr = validateCP(shippingCp, t);
     if (cpErr) { setShippingCpError(cpErr); return; }
     setShippingCpError(null);
+    const countryCode = detectCountryFromCP(shippingCp);
+    const countryInfo = SHIPPING_COUNTRIES.find(c => c.code === countryCode);
+    if (!countryInfo) {
+      setShippingCpError(t("checkout.cpNotSpain"));
+      return;
+    }
+    const cost = countryInfo.cost;
+    setShippingCostResult({ cost, country: countryInfo });
     setShippingChecked(true);
-    setShowFreeShipping(true);
+    setShowFreeShipping(cost === 0);
     // Pre-rellenar el formulario con los datos ya introducidos
     setForm(f => ({
       ...f,
       ciudad: shippingCity,
-      provincia: shippingProv,
       cp: shippingCp,
+      pais: countryCode ?? f.pais,
     }));
-    // Tras 2s de animación, cerrar popup e ir al checkout
-    setTimeout(() => {
-      setShowFreeShipping(false);
-      setShowShippingPopup(false);
-      setCheckoutStep("checkout");
-    }, 2200);
+    // Si es gratis, mostrar animación y luego ir al checkout
+    if (cost === 0) {
+      setTimeout(() => {
+        setShowFreeShipping(false);
+        setShowShippingPopup(false);
+        setCheckoutStep("checkout");
+      }, 2200);
+    } else {
+      // Si tiene coste, mostrar el precio y dejar que el usuario decida
+      setTimeout(() => {
+        setShowShippingPopup(false);
+        setCheckoutStep("checkout");
+      }, 2000);
+    }
   }
 
   const redsysFormRef = useRef<HTMLFormElement>(null);
@@ -584,7 +609,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     const ciudadErr = validateCiudad(form.ciudad, t);
     if (ciudadErr) newErrors.ciudad = ciudadErr;
 
-    const provErr = validateProvincia(form.provincia, t);
+    const provErr = validateProvincia(form.provincia, t, form.pais);
     if (provErr) newErrors.provincia = provErr;
 
     const cpErr = validateCP(form.cp, t);
@@ -1074,39 +1099,97 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         className="px-8 py-6 flex flex-col gap-4"
         noValidate
       >
-        <p className="font-body text-[10px] text-foreground/40">Solo enviamos a España. Todos los campos marcados con * son obligatorios.</p>
+        <p className="font-body text-[10px] text-foreground/40">{t("checkout.onlySpainShort")}</p>
 
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Nombre" required error={touched.nombre ? errors.nombre : null}>
-            <input value={form.nombre} onChange={e => setField("nombre", e.target.value)} onBlur={() => markTouched("nombre")} className={inputClassSm("nombre")} placeholder="Nombre" autoComplete="given-name" />
+          <Field label={t("checkout.name")} required error={touched.nombre ? errors.nombre : null}>
+            <input value={form.nombre} onChange={e => setField("nombre", e.target.value)} onBlur={() => markTouched("nombre")} className={inputClassSm("nombre")} placeholder={t("checkout.namePlaceholder")} autoComplete="given-name" />
           </Field>
-          <Field label="Apellidos" required error={touched.apellidos ? errors.apellidos : null}>
-            <input value={form.apellidos} onChange={e => setField("apellidos", e.target.value)} onBlur={() => markTouched("apellidos")} className={inputClassSm("apellidos")} placeholder="Apellidos" autoComplete="family-name" />
+          <Field label={t("checkout.surnames")} required error={touched.apellidos ? errors.apellidos : null}>
+            <input value={form.apellidos} onChange={e => setField("apellidos", e.target.value)} onBlur={() => markTouched("apellidos")} className={inputClassSm("apellidos")} placeholder={t("checkout.surnamesPlaceholder")} autoComplete="family-name" />
           </Field>
         </div>
 
-        <Field label="Email" required error={touched.email ? errors.email : null}>
+        <Field label={t("checkout.email")} required error={touched.email ? errors.email : null}>
           <input type="email" value={form.email} onChange={e => setField("email", e.target.value)} onBlur={() => markTouched("email")} className={inputClassSm("email")} placeholder="tu@email.com" autoComplete="email" inputMode="email" />
         </Field>
 
-        <Field label="Teléfono" required error={touched.telefono ? errors.telefono : null}>
+        <Field label={t("checkout.phone")} required error={touched.telefono ? errors.telefono : null}>
           <input type="tel" value={form.telefono} onChange={e => setField("telefono", e.target.value)} onBlur={() => markTouched("telefono")} className={inputClassSm("telefono")} placeholder="600 123 456" autoComplete="tel" inputMode="tel" />
         </Field>
 
-        <Field label="Calle / Avenida" required error={touched.direccion ? errors.direccion : null}>
-          <input value={form.direccion} onChange={e => setField("direccion", e.target.value)} onBlur={() => markTouched("direccion")} className={inputClassSm("direccion")} placeholder="Calle Mayor" autoComplete="address-line1" />
+        <Field label={t("checkout.street")} required error={touched.direccion ? errors.direccion : null}>
+          <input value={form.direccion} onChange={e => setField("direccion", e.target.value)} onBlur={() => markTouched("direccion")} className={inputClassSm("direccion")} placeholder={t("checkout.streetPlaceholder")} autoComplete="address-line1" />
         </Field>
 
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Número" error={null}>
-            <input value={form.numero} onChange={e => setField("numero", e.target.value)} className={inputClassSm("numero")} placeholder="12" />
+          <Field label={t("checkout.number")} error={null}>
+            <input value={form.numero} onChange={e => setField("numero", e.target.value)} className={inputClassSm("numero")} placeholder={t("checkout.numberPlaceholder")} />
           </Field>
-          <Field label="Piso / Puerta" error={null}>
-            <input value={form.piso} onChange={e => setField("piso", e.target.value)} className={inputClassSm("piso")} placeholder="3ºA" />
+          <Field label={t("checkout.floor")} error={null}>
+            <input value={form.piso} onChange={e => setField("piso", e.target.value)} className={inputClassSm("piso")} placeholder={t("checkout.floorPlaceholder")} />
           </Field>
         </div>
 
-        <Field label="Ciudad / Localidad" required error={touched.ciudad ? errors.ciudad : null}>
+        {/* CP con detección automática de país */}
+        <Field label={t("checkout.cp")} required error={touched.cp ? errors.cp : null}>
+          <div className="relative">
+            <input
+              value={form.cp}
+              onChange={e => {
+                const v = e.target.value.slice(0, 10);
+                setField("cp", v);
+                // Detectar país automáticamente
+                const detected = detectCountryFromCP(v);
+                if (detected && detected !== form.pais) {
+                  setField("pais", detected);
+                  if (detected !== "ES" && detected !== "ES-IB") {
+                    setField("provincia", "");
+                  }
+                }
+                // Para España/Baleares: autocompletar municipio cuando CP tiene 5 dígitos
+                if ((detected === "ES" || detected === "ES-IB") && v.replace(/\D/g,"").length === 5) {
+                  setCpLookupQuery(v.replace(/\D/g,""));
+                }
+              }}
+              onBlur={() => markTouched("cp")}
+              className={inputClassSm("cp")}
+              placeholder="28001, 1000-001, 75001…"
+              autoComplete="postal-code"
+              maxLength={10}
+            />
+            {form.pais && (() => {
+              const country = SHIPPING_COUNTRIES.find(c => c.code === form.pais);
+              return country ? (
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-base" title={country.label}>
+                  {country.flag}
+                </div>
+              ) : null;
+            })()}
+          </div>
+        </Field>
+        {/* Banner coste de envío */}
+        {form.cp.length >= 4 && (
+          <div className={`flex items-center gap-2 px-3 py-2 border text-xs font-body ${
+            detectCountryFromCP(form.cp)
+              ? shippingCost === 0
+                ? "border-green-500/30 bg-green-500/5 text-green-600"
+                : "border-amber-500/30 bg-amber-500/5 text-amber-700"
+              : "border-border/30 bg-muted/30 text-muted-foreground"
+          }`}>
+            <Truck className="w-3.5 h-3.5 shrink-0" />
+            <span>
+              {detectCountryFromCP(form.cp)
+                ? shippingCost === 0
+                  ? `${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.flag ?? ""} ${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.label ?? ""} — ${t("checkout.shippingFree")}`
+                  : `${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.flag ?? ""} ${SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.label ?? ""} — ${t("checkout.shippingCost")} ${shippingCost.toLocaleString("es-ES")} €`
+                : t("checkout.selectCountryHint")
+              }
+            </span>
+          </div>
+        )}
+
+        <Field label={t("checkout.city")} required error={touched.ciudad ? errors.ciudad : null}>
           <div className="relative">
             <input
               value={form.ciudad}
@@ -1122,7 +1205,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               onBlur={() => { markTouched("ciudad"); setTimeout(() => setShowMunicipioSuggestions(false), 200); }}
               onFocus={() => { if (form.ciudad.length >= 3) setShowMunicipioSuggestions(true); }}
               className={inputClassSm("ciudad")}
-              placeholder="Madrid"
+              placeholder={t("checkout.cityPlaceholder")}
               autoComplete="off"
             />
             {showMunicipioSuggestions && municipioSuggestions && municipioSuggestions.length > 0 && (
@@ -1150,33 +1233,31 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </div>
         </Field>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Provincia" required error={touched.provincia ? errors.provincia : null}>
+        {/* Provincia / Región */}
+        <Field
+          label={form.pais === "ES" || form.pais === "ES-IB" ? t("checkout.province") : t("checkout.region")}
+          required={form.pais === "ES" || form.pais === "ES-IB"}
+          error={touched.provincia ? errors.provincia : null}
+        >
+          {(form.pais === "ES" || form.pais === "ES-IB") ? (
             <div className="relative">
               <select value={form.provincia} onChange={e => { setField("provincia", e.target.value); markTouched("provincia"); }} onBlur={() => markTouched("provincia")} className={selectClassSm("provincia")}>
-                <option value="">Selecciona...</option>
+                <option value="">{t("checkout.selectProvince")}</option>
                 {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
               <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-foreground/40 text-xs">▾</div>
             </div>
-          </Field>
-          <Field label="Código Postal" required error={touched.cp ? errors.cp : null}>
+          ) : (
             <input
-              value={form.cp}
-              onChange={e => {
-                const v = e.target.value.replace(/\D/g, "").slice(0, 5);
-                setField("cp", v);
-                if (v.length === 5) setCpLookupQuery(v);
-              }}
-              onBlur={() => markTouched("cp")}
-              className={inputClassSm("cp")}
-              placeholder="28001"
-              inputMode="numeric"
-              maxLength={5}
-              autoComplete="postal-code"
+              value={form.provincia}
+              onChange={e => setField("provincia", e.target.value)}
+              onBlur={() => markTouched("provincia")}
+              className={inputClassSm("provincia")}
+              placeholder={t("checkout.regionPlaceholder")}
+              autoComplete="address-level1"
             />
-          </Field>
-        </div>
+          )}
+        </Field>
 
         <Field label="Notas adicionales" error={null}>
           <textarea rows={2} value={form.notas} onChange={e => setField("notas", e.target.value)} className={`${inputClassSm("notas")} resize-none`} placeholder="Instrucciones de entrega..." />
@@ -1462,12 +1543,12 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                       <div className="mt-8">
                         <ShippingWidget
                           city={shippingCity} setCity={setShippingCity}
-                          prov={shippingProv} setProv={setShippingProv}
                           cp={shippingCp} setCp={setShippingCp}
                           cpError={shippingCpError}
                           checked={shippingChecked}
                           showFree={showFreeShipping}
                           onCheck={checkShipping}
+                          shippingCostResult={shippingCostResult}
                         />
                       </div>
                     </div>
@@ -1756,21 +1837,14 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                         onChange={(e) => setShippingCity(e.target.value)}
                         className="bg-transparent border border-border px-3 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors"
                       />
-                      <select
-                        value={shippingProv}
-                        onChange={(e) => setShippingProv(e.target.value)}
-                        className="bg-background border border-border px-3 py-3 font-body text-sm text-foreground focus:outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
-                      >
-                        <option value="">{t("cart.provinceField")}</option>
-                        {PROVINCIAS_ESPANA.map(p => <option key={p} value={p}>{p}</option>)}
-                      </select>
                       <div className="flex flex-col gap-1">
                         <input
                           type="text"
                           placeholder={t("cart.cpPlaceholder")}
                           value={shippingCp}
-                          onChange={(e) => { setShippingCp(e.target.value); setShippingCpError(null); }}
-                          maxLength={5}
+                          onChange={(e) => { setShippingCp(e.target.value.slice(0, 10)); setShippingCpError(null); }}
+                          autoComplete="postal-code"
+                          maxLength={10}
                           className="bg-transparent border border-border px-3 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-foreground transition-colors"
                         />
                         {shippingCpError && (
@@ -1779,6 +1853,20 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                           </p>
                         )}
                       </div>
+                      {/* Resultado del cálculo de envío */}
+                      {shippingCostResult && (
+                        <div className={`flex items-center gap-2 px-3 py-2.5 border text-xs font-body ${
+                          shippingCostResult.cost === 0
+                            ? "border-green-500/30 bg-green-500/5 text-green-600"
+                            : "border-amber-500/30 bg-amber-500/5 text-amber-700"
+                        }`}>
+                          <span className="text-base">{shippingCostResult.country.flag}</span>
+                          <span className="font-medium">{shippingCostResult.country.label}</span>
+                          <span className="ml-auto font-semibold">
+                            {shippingCostResult.cost === 0 ? t("cart.shippingCostFree") : `${shippingCostResult.cost.toLocaleString("es-ES")} €`}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <button
                       onClick={checkShipping}
