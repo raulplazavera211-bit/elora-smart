@@ -222,6 +222,7 @@ const fr = {
     provinceRequired: "Sélectionnez une province",
     region: "Région / Département",
     regionPlaceholder: "Région ou département",
+    country: "Pays de livraison",
     selectCountryHint: "Entrez votre code postal pour détecter le pays",
     shippingLabel: "Livraison",
     shippingFree: "Gratuite",

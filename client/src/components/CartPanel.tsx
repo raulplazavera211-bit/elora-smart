@@ -43,38 +43,68 @@ export function getShippingCost(code: string): number {
 
 /**
  * Detecta el país a partir del código postal.
- * Devuelve el código de país (ES, PT, ES-IB, FR, IT, DE, NL) o null si no reconoce el formato.
+ * El usuario elige el país introduciendo el CP en el formato nativo:
+ *   - España:        5 dígitos numéricos (01000-52999, excl. Canarias/Ceuta/Melilla)
+ *   - Baleares:      07000-07999
+ *   - Portugal:      XXXX-XXX  (ej: 1000-001)
+ *   - Países Bajos:  DDDD LL   (ej: 1234 AB)
+ *   - Francia:       5 dígitos comenzando por 0-9 pero el usuario debe prefijarlo con "FR:"
+ *                    → Para evitar ambigüedad con España, FR se detecta por rango 01000-99999
+ *                      SOLO cuando el número está fuera del rango español (>52999) o el usuario
+ *                      usa el prefijo "FR:XXXXX".
+ *   - Alemania:      5 dígitos, prefijo "DE:" o rango 01067-99998 fuera del rango español.
+ *   - Italia:        5 dígitos, prefijo "IT:" o rango 00100-98168 fuera del rango español.
+ *
+ * Para evitar ambigüedad entre ES/FR/DE/IT (todos usan 5 dígitos), la detección sigue este orden:
+ *   1. Formatos inequívocos (PT, NL, prefijos)
+ *   2. Baleares (07xxx)
+ *   3. España (01000-52999, excl. islas)
+ *   4. Francia (53000-99999 o prefijo FR:)
+ *   5. Alemania / Italia: solo con prefijo DE: / IT:
  */
 export function detectCountryFromCP(cp: string): string | null {
   const clean = cp.trim();
+
+  // Prefijos explícitos: FR:75001, DE:10115, IT:00100
+  if (/^FR:/i.test(clean)) {
+    const digits = clean.slice(3).replace(/\D/g, "");
+    if (digits.length === 5) return "FR";
+  }
+  if (/^DE:/i.test(clean)) {
+    const digits = clean.slice(3).replace(/\D/g, "");
+    if (digits.length === 5) return "DE";
+  }
+  if (/^IT:/i.test(clean)) {
+    const digits = clean.slice(3).replace(/\D/g, "");
+    if (digits.length === 5) return "IT";
+  }
+
   // Países Bajos: 4 dígitos + espacio opcional + 2 letras (ej: 1234 AB)
   if (/^\d{4}\s?[A-Za-z]{2}$/.test(clean)) return "NL";
+
   // Portugal: 4 dígitos + guion + 3 dígitos (ej: 1000-001)
   if (/^\d{4}-\d{3}$/.test(clean)) return "PT";
+
   // Solo dígitos — detectar por rango
   const digits = clean.replace(/\D/g, "");
   if (digits.length === 5) {
     const num = parseInt(digits, 10);
+
     // Baleares: 07000-07999
     if (num >= 7000 && num <= 7999) return "ES-IB";
-    // España: 01000-52999 (sin Canarias 35000-35999 y 38000-38999, sin Ceuta 51001, sin Melilla 52001)
+
+    // España peninsular: 01000-52999 (excluir Canarias, Ceuta, Melilla)
     if (num >= 1000 && num <= 52999) {
-      // Excluir Canarias, Ceuta, Melilla
       if ((num >= 35000 && num <= 35999) || (num >= 38000 && num <= 38999)) return null; // Canarias
-      if (num === 51001 || (num >= 51001 && num <= 51080)) return null; // Ceuta
-      if (num === 52001 || (num >= 52001 && num <= 52080)) return null; // Melilla
+      if (num >= 51001 && num <= 51080) return null; // Ceuta
+      if (num >= 52001 && num <= 52080) return null; // Melilla
       return "ES";
     }
-    // Francia: 01000-99999 (pero no España)
-    if (num >= 1000 && num <= 99999) return "FR";
+
+    // Francia: 53000-99999 (rango inequívoco, fuera de España)
+    if (num >= 53000 && num <= 99999) return "FR";
   }
-  if (digits.length === 5) {
-    const num = parseInt(digits, 10);
-    // Alemania: 01067-99998
-    if (num >= 1067 && num <= 99998) return "DE";
-    // Italia: 00100-98168
-    if (num >= 100 && num <= 98168) return "IT";
-  }
+
   return null;
 }
 
@@ -781,6 +811,29 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           </Field>
         </div>
 
+        {/* Selector de país */}
+        <Field label={t("checkout.country")} required error={null}>
+          <div className="relative">
+            <select
+              value={form.pais}
+              onChange={e => {
+                const newPais = e.target.value;
+                setField("pais", newPais);
+                if (newPais !== "ES" && newPais !== "ES-IB") {
+                  setField("provincia", "");
+                }
+                setField("cp", "");
+              }}
+              className={selectClass("pais")}
+            >
+              {SHIPPING_COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40">▾</div>
+          </div>
+        </Field>
+
         {/* Campo CP con detección automática de país */}
         <Field label={t("checkout.cp")} required error={touched.cp ? errors.cp : null}>
           <div className="relative">
@@ -1099,8 +1152,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         className="px-8 py-6 flex flex-col gap-4"
         noValidate
       >
-        <p className="font-body text-[10px] text-foreground/40">{t("checkout.onlySpainShort")}</p>
-
         <div className="grid grid-cols-2 gap-3">
           <Field label={t("checkout.name")} required error={touched.nombre ? errors.nombre : null}>
             <input value={form.nombre} onChange={e => setField("nombre", e.target.value)} onBlur={() => markTouched("nombre")} className={inputClassSm("nombre")} placeholder={t("checkout.namePlaceholder")} autoComplete="given-name" />
@@ -1130,6 +1181,29 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
             <input value={form.piso} onChange={e => setField("piso", e.target.value)} className={inputClassSm("piso")} placeholder={t("checkout.floorPlaceholder")} />
           </Field>
         </div>
+
+        {/* Selector de país */}
+        <Field label={t("checkout.country")} required error={null}>
+          <div className="relative">
+            <select
+              value={form.pais}
+              onChange={e => {
+                const newPais = e.target.value;
+                setField("pais", newPais);
+                if (newPais !== "ES" && newPais !== "ES-IB") {
+                  setField("provincia", "");
+                }
+                setField("cp", "");
+              }}
+              className={selectClassSm("pais")}
+            >
+              {SHIPPING_COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>{c.flag} {c.label}</option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-foreground/40 text-xs">▾</div>
+          </div>
+        </Field>
 
         {/* CP con detección automática de país */}
         <Field label={t("checkout.cp")} required error={touched.cp ? errors.cp : null}>

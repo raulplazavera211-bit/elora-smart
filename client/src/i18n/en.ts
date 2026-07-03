@@ -222,6 +222,7 @@ const en = {
     provinceRequired: "Select a province",
     region: "Region / State",
     regionPlaceholder: "Region or state",
+    country: "Shipping country",
     selectCountryHint: "Enter your postcode to detect the country",
     shippingLabel: "Shipping",
     shippingFree: "Free",

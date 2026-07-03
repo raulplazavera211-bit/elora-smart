@@ -231,6 +231,7 @@ const es = {
     provinceRequired: "Selecciona una provincia",
     region: "Región / Estado",
     regionPlaceholder: "Región o estado",
+    country: "País de envío",
     selectCountryHint: "Introduce tu código postal para detectar el país",
     shippingLabel: "Envío",
     shippingFree: "Gratis",
