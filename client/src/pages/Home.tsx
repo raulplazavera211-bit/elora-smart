@@ -1237,17 +1237,17 @@ function ClubEloraSection() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">{t('clubSection.fieldName')}</label>
+                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">{t('clubSection.nameLabel')}</label>
                   <input
                     type="text"
                     value={form.nombre}
                     onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))}
-                    placeholder={t('clubSection.placeholderName')}
+                    placeholder={t('clubSection.namePlaceholder')}
                     className="w-full bg-white/5 border border-white/15 rounded-sm px-4 py-3 font-body text-sm text-white placeholder-white/25 focus:outline-none focus:border-amber-400/60 transition-colors duration-300"
                   />
                 </div>
                 <div>
-                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">{t('clubSection.fieldEmail')}</label>
+                  <label className="font-body text-[10px] uppercase tracking-[0.3em] text-white/40 block mb-2">{t('clubSection.emailLabel')}</label>
                   <input
                     type="email"
                     required
