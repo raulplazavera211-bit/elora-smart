@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -135,6 +136,7 @@ export default function AdminCupones() {
   };
 
   return (
+    <AdminLayout title="Cupones">
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -345,5 +347,6 @@ export default function AdminCupones() {
         </DialogContent>
       </Dialog>
     </div>
+    </AdminLayout>
   );
 }
