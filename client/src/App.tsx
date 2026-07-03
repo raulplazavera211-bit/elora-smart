@@ -26,7 +26,6 @@ import PoliticaEnvios from "./pages/PoliticaEnvios";
 import { CookieBanner } from "./components/CookieBanner";
 import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
-import { WhatsAppButton } from "./components/WhatsAppButton";
 import { useEffect, useRef, useState } from "react";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
@@ -302,7 +301,6 @@ function AppRouter() {
       </Switch>
       <ChatBot />
       <PromoPopup />
-      <WhatsAppButton />
       <CookieBanner />
     </>
   );
