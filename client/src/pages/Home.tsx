@@ -1545,6 +1545,16 @@ export default function Home() {
     sectionRefs.current[index] = el;
   };
 
+  // Bloquear scroll del body mientras Home está montado (el scroll es interno por secciones)
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
+
   return (
     <>
       {isLoading && <Loader onComplete={() => setIsLoading(false)} />}

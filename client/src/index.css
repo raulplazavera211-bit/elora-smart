@@ -87,9 +87,8 @@
   }
 
   #root {
-    height: 100dvh;
     width: 100%;
-    overflow: hidden;
+    min-height: 100dvh;
   }
 }
 
