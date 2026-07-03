@@ -1284,7 +1284,7 @@ function ClubEloraSection() {
                 className="w-full py-4 font-display text-sm uppercase tracking-[0.3em] transition-all duration-300 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ background: form.acepto && !signupMutation.isPending ? "linear-gradient(135deg, #F5A45B, #e8923a)" : "rgba(255,255,255,0.08)", color: form.acepto && !signupMutation.isPending ? "#001F3F" : "rgba(255,255,255,0.3)" }}
               >
-                {signupMutation.isPending ? t('clubSection.sending') : t('clubSection.ctaJoin')}
+                {signupMutation.isPending ? t('clubSection.joining') : t('clubSection.joinBtn')}
               </button>
             </form>
           )}
