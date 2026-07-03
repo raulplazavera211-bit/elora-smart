@@ -340,15 +340,16 @@ const es = {
 
   // ── Promo Popup ──────────────────────────────────────────────────────────────
   promo: {
-    badge: "Oferta de lanzamiento",
-    title: "Kit Instalación",
-    titleHighlight: "Gratis",
-    body: "Con cada Elora adquirida este mes, te regalamos el kit de instalación completo (valorado en 180 €).",
+    badge: "🎁 REGALO EXCLUSIVO JUNIO",
+    title: "Llévate GRATIS nuestro kit",
+    titleHighlight: "ECO-CARE",
+    subtitle: "valorado en 65€",
+    body: "Con la compra de cualquier inodoro inteligente ELORA SMART",
     items: {
-      hose: "Manguera de conexión premium",
-      valve: "Válvula de corte de latón",
-      seat: "Adaptador de asiento universal",
-      guide: "Guía de instalación paso a paso",
+      hose: "Mini-cepillos de mantenimiento",
+      valve: "Esponja Konjac anti-rayaduras",
+      seat: "Gamuza eco de bambú antibacteriana",
+      guide: "Limpiador ecológico para cerámica",
     },
     cta: "Ver la colección",
     dismiss: "No, gracias",

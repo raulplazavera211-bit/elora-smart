@@ -326,19 +326,20 @@ const fr = {
   },
 
   promo: {
-    badge: "Offre de lancement",
-    title: "Kit d'installation",
-    titleHighlight: "Offert",
-    body: "Pour chaque Elora achetée ce mois-ci, nous vous offrons le kit d'installation complet (valeur 180 €).",
+    badge: "🎁 CADEAU EXCLUSIF JUIN",
+    title: "Recevez GRATUITEMENT notre kit",
+    titleHighlight: "ECO-CARE",
+    subtitle: "valorisé à €65",
+    body: "Avec l'achat de n'importe quel WC intelligent ELORA SMART",
     items: {
-      hose: "Tuyau de connexion premium",
-      valve: "Vanne d'arrêt en laiton",
-      seat: "Adaptateur de siège universel",
-      guide: "Guide d'installation étape par étape",
+      hose: "Mini-brosses d'entretien",
+      valve: "Éponge Konjac anti-rayures",
+      seat: "Tissu bambou écologique antibactérien",
+      guide: "Nettoyant écologique pour céramique",
     },
     cta: "Voir la collection",
     dismiss: "Non, merci",
-    limited: "Offre valable jusqu'à épuisement des stocks",
+    limited: "Offre valide jusqu'à épuisement des stocks",
   },
 
   club: {

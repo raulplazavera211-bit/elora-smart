@@ -105,15 +105,12 @@ export default function PromoPopup() {
                       </span>
                     </h2>
                     <h3 className="font-display text-base uppercase tracking-wider text-stone-700 mb-2">
-                      {t('promo.body').split('.')[0]}
+                      {t('promo.subtitle')}
                     </h3>
-                    <div className="inline-flex items-center gap-2 bg-amber-50 rounded-full px-3 py-1 mb-3">
-                      <span className="font-body text-xs text-stone-400 line-through">65€</span>
-                      <span className="font-body text-xs font-semibold" style={{ color: "#c9a96e" }}>
-                        valorado en 65€
-                      </span>
-                    </div>
                     <p className="font-body text-sm text-stone-500 leading-relaxed mb-4">
+                      {t('promo.body')}
+                    </p>
+                    <p className="font-body text-xs text-stone-400 mb-4">
                       {t('promo.limited')}
                     </p>
                   </motion.div>

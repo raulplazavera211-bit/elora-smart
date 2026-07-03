@@ -326,19 +326,20 @@ const pt = {
   },
 
   promo: {
-    badge: "Oferta de lançamento",
-    title: "Kit de Instalação",
-    titleHighlight: "Grátis",
-    body: "Com cada Elora adquirida este mês, oferecemos o kit de instalação completo (avaliado em 180 €).",
+    badge: "🎁 PRESENTE EXCLUSIVO JUNHO",
+    title: "Leve GRÁTIS nosso kit",
+    titleHighlight: "ECO-CARE",
+    subtitle: "avaliado em €65",
+    body: "Com a compra de qualquer vaso sanitário inteligente ELORA SMART",
     items: {
-      hose: "Mangueira de ligação premium",
-      valve: "Válvula de corte em latão",
-      seat: "Adaptador de assento universal",
-      guide: "Guia de instalação passo a passo",
+      hose: "Mini-escovas de manutenção",
+      valve: "Esponja Konjac anti-arranhões",
+      seat: "Pano de bambu eco antibacteriano",
+      guide: "Limpador ecológico para cerâmica",
     },
     cta: "Ver a coleção",
     dismiss: "Não, obrigado",
-    limited: "Oferta válida até esgotar o stock",
+    limited: "Oferta válida enquanto houver estoque",
   },
 
   club: {
