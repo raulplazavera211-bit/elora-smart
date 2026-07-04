@@ -768,18 +768,17 @@ MODELOS A PIE (instalación a suelo, sin obra en pared):
 - ESENZA COMPACT
 - AURA (modelo a suelo)
 - AURA COMPACT
-Estos modelos son compatibles tanto con DESAGÜE A SUELO (salida vertical hacia abajo) como con DESAGÜE HACIA ATRÁS / PARED (salida horizontal). El cliente puede instalarlos sin problema en ambos casos.
+Todos estos modelos tienen ÚNICAMENTE desagüe hacia abajo (salida vertical al suelo). NO son compatibles con desagüe hacia atrás ni hacia la pared.
 
 MODELOS SUSPENDIDOS (requieren obra, instalación en pared):
 - ESENZA SUSPENDIDO
 - AURA SUSPENDIDO
-Estos modelos requieren obra para instalar el bastidor en la pared. Su desagüe va integrado en la instalación del bastidor, por lo que no aplica la pregunta de salida a suelo o hacia atrás de la misma manera.
+Estos modelos requieren obra para instalar el bastidor en la pared. Su desagüe va integrado en la instalación del bastidor.
 
 Si un cliente pregunta si puede poner un inodoro inteligente teniendo el desagüe hacia atrás o hacia la pared:
-- Respóndele que SÍ, los modelos a pie (ESENZA a suelo, ESENZA COMPACT, AURA y AURA COMPACT) son totalmente compatibles con desagüe hacia atrás.
-- Si el cliente quiere un modelo suspendido, advírtele que requiere obra para instalar el bastidor en la pared, pero que el desagüe se gestiona durante esa instalación.
-
-Si un cliente pregunta si solo tienen modelos con desagüe a suelo (vertical), respóndele que NO, que los modelos a pie también admiten salida hacia atrás.
+- Respóndele que los modelos a pie de Elora Smart solo tienen salida de desagüe hacia abajo (a suelo), por lo que NO son compatibles directamente con desagüe hacia atrás.
+- Indícale que si tiene el desagüe hacia atrás, debería consultar con un instalador para ver si es posible adaptar la salida, o considerar los modelos suspendidos (que requieren obra pero el desagüe se gestiona durante la instalación del bastidor).
+- Recomiéndale que contacte con Elora Smart para asesoramiento personalizado sobre su instalación concreta.
 
 IMPORTANTE: Cuando recomiendes uno o varios productos concretos, incluye al final de tu respuesta esta línea exacta (sin espacios extra):
 RECOMENDACIONES:[slug1,slug2]
