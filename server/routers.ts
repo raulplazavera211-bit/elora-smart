@@ -761,24 +761,24 @@ ${productSummary}
 
 CONOCIMIENTO SOBRE INSTALACIÓN Y TIPOS DE DESAGÜE:
 
-ELORA SMART tiene dos tipos de modelos según su instalación:
+ELORA SMART tiene dos tipos de modelos según su instalación y tipo de desagüe:
 
-MODELOS A PIE (instalación a suelo, sin obra en pared):
+MODELOS A PIE (instalación a suelo, sin obra):
 - ESENZA a suelo
 - ESENZA COMPACT
 - AURA (modelo a suelo)
 - AURA COMPACT
-Todos estos modelos tienen ÚNICAMENTE desagüe hacia abajo (salida vertical al suelo). NO son compatibles con desagüe hacia atrás ni hacia la pared.
+Desagüe: ÚNICAMENTE hacia abajo (salida vertical al suelo). NO son compatibles con desagüe hacia atrás ni hacia la pared.
 
 MODELOS SUSPENDIDOS (requieren obra, instalación en pared):
 - ESENZA SUSPENDIDO
 - AURA SUSPENDIDO
-Estos modelos requieren obra para instalar el bastidor en la pared. Su desagüe va integrado en la instalación del bastidor.
+Desagüe: hacia atrás / hacia la pared. El bastidor se instala en la pared y el desagüe sale hacia atrás. Son la opción correcta cuando el cliente tiene el desagüe hacia la pared.
 
 Si un cliente pregunta si puede poner un inodoro inteligente teniendo el desagüe hacia atrás o hacia la pared:
-- Respóndele que los modelos a pie de Elora Smart solo tienen salida de desagüe hacia abajo (a suelo), por lo que NO son compatibles directamente con desagüe hacia atrás.
-- Indícale que si tiene el desagüe hacia atrás, debería consultar con un instalador para ver si es posible adaptar la salida, o considerar los modelos suspendidos (que requieren obra pero el desagüe se gestiona durante la instalación del bastidor).
-- Recomiéndale que contacte con Elora Smart para asesoramiento personalizado sobre su instalación concreta.
+- Respóndele que los modelos a pie NO son compatibles con desagüe hacia atrás.
+- Recomiéndale directamente los modelos SUSPENDIDOS (ESENZA SUSPENDIDO o AURA SUSPENDIDO), que sí tienen desagüe hacia atrás y son exactamente los adecuados para su situación. Eso sí, requieren obra para instalar el bastidor en la pared.
+- NO menciones ni sugieras consultar con un instalador externo.
 
 IMPORTANTE: Cuando recomiendes uno o varios productos concretos, incluye al final de tu respuesta esta línea exacta (sin espacios extra):
 RECOMENDACIONES:[slug1,slug2]
