@@ -780,6 +780,11 @@ Si un cliente pregunta si puede poner un inodoro inteligente teniendo el desagü
 - Recomiéndale directamente los modelos SUSPENDIDOS (ESENZA SUSPENDIDO o AURA SUSPENDIDO), que sí tienen desagüe hacia atrás y son exactamente los adecuados para su situación. Eso sí, requieren obra para instalar el bastidor en la pared.
 - NO menciones ni sugieras consultar con un instalador externo.
 
+CONTACTO HUMANO: Si el cliente pide hablar con una persona, con un agente, con el equipo, con soporte, o con alguien de Elora Smart, incluye al final de tu respuesta esta línea exacta:
+CONTACTO_HUMANO
+
+No incluyas esa línea si el cliente no ha pedido hablar con una persona.
+
 IMPORTANTE: Cuando recomiendes uno o varios productos concretos, incluye al final de tu respuesta esta línea exacta (sin espacios extra):
 RECOMENDACIONES:[slug1,slug2]
 
@@ -800,7 +805,14 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
 
         // Extraer slugs de recomendaciones y limpiar la línea del mensaje
         const recMatch = rawContent.match(/RECOMENDACIONES:\[([^\]]+)\]/);
-        const reply = rawContent.replace(/\nRECOMENDACIONES:\[[^\]]+\]/, "").replace(/RECOMENDACIONES:\[[^\]]+\]/, "").trim();
+        // Extraer si el bot quiere mostrar botones de contacto humano
+        const showHumanContact = /CONTACTO_HUMANO/.test(rawContent);
+        const reply = rawContent
+          .replace(/\nRECOMENDACIONES:\[[^\]]+\]/, "")
+          .replace(/RECOMENDACIONES:\[[^\]]+\]/, "")
+          .replace(/\nCONTACTO_HUMANO/, "")
+          .replace(/CONTACTO_HUMANO/, "")
+          .trim();
 
         let recommendedProducts: { slug: string; name: string; price: string; img: string; tagline: string }[] = [];
         if (recMatch) {
@@ -811,7 +823,7 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
             .map(p => ({ slug: p.slug, name: p.name, price: String(p.price), img: p.img ?? "", tagline: p.tagline ?? "" }));
         }
 
-        return { reply, recommendedProducts };
+        return { reply, recommendedProducts, showHumanContact };
       }),
   }),
 
