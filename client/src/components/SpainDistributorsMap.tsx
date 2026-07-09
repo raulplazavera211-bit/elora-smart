@@ -62,6 +62,10 @@ export default function SpainDistributorsMap() {
   const [searchResult, setSearchResult] = useState<{ nearest: Distributor; km: number; cpCity: string } | null>(null);
   const [searchError, setSearchError] = useState("");
   const [svgPaths, setSvgPaths] = useState<{ region: string; d: string }[]>([]);
+  // Zoom animado: viewBox del SVG
+  const [viewBox, setViewBox] = useState(`0 0 ${VW} ${VH}`);
+  const viewBoxRef = useRef(`0 0 ${VW} ${VH}`);
+  const animFrameRef = useRef<number | null>(null);
 
   // Cargar SVG real de España
   useEffect(() => {
@@ -113,12 +117,41 @@ export default function SpainDistributorsMap() {
       for (const d of candidates) { const km = haversineKm(userLat, userLon, d.lat, d.lon); if (km < minKm) { minKm = km; nearest = d; } }
       setSearchResult({ nearest, km: Math.round(minKm), cpCity });
       setSelected(nearest.id);
+      // Zoom animado al distribuidor más cercano
+      const targetPos = gpsToSvg(nearest.lat, nearest.lon);
+      const zoomW = 280, zoomH = 200;
+      const targetVB = `${targetPos.x - zoomW / 2} ${targetPos.y - zoomH / 2} ${zoomW} ${zoomH}`;
+      animateViewBox(viewBoxRef.current, targetVB, 900);
     } catch { setSearchError("No encontramos ese código postal. Inténtalo de nuevo."); }
     finally { setSearching(false); }
   }
 
   const activeId = hovered ?? selected;
   const activeD = activeId ? DISTRIBUTORS.find(d => d.id === activeId) : null;
+
+  // Función de zoom animado con lerp
+  function animateViewBox(from: string, to: string, duration: number) {
+    const parseVB = (s: string) => s.split(' ').map(Number);
+    const [fx, fy, fw, fh] = parseVB(from);
+    const [tx, ty, tw, th] = parseVB(to);
+    const start = performance.now();
+    const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    function step(now: number) {
+      const t = Math.min((now - start) / duration, 1);
+      const e = ease(t);
+      const vb = `${fx + (tx - fx) * e} ${fy + (ty - fy) * e} ${fw + (tw - fw) * e} ${fh + (th - fh) * e}`;
+      viewBoxRef.current = vb;
+      setViewBox(vb);
+      if (t < 1) animFrameRef.current = requestAnimationFrame(step);
+    }
+    animFrameRef.current = requestAnimationFrame(step);
+  }
+
+  // Reset zoom al limpiar búsqueda
+  function resetZoom() {
+    animateViewBox(viewBoxRef.current, `0 0 ${VW} ${VH}`, 700);
+  }
 
   // Región activa para resaltar en el mapa
   const activeRegion = activeD?.region;
@@ -177,7 +210,7 @@ export default function SpainDistributorsMap() {
               </div>
               <input
                 type="text" inputMode="numeric" maxLength={5} value={cp}
-                onChange={e => { setCp(e.target.value.replace(/\D/g, "")); setSearchError(""); setSearchResult(null); }}
+                onChange={e => { setCp(e.target.value.replace(/\D/g, "")); setSearchError(""); setSearchResult(null); resetZoom(); }}
                 placeholder="Introduce tu código postal"
                 className="w-full pl-10 pr-4 py-3.5 bg-card border border-border text-foreground font-body text-sm placeholder:text-foreground/30 outline-none focus:border-accent-deep transition-colors duration-200"
                 style={{ borderRadius: "2px" }}
@@ -208,9 +241,9 @@ export default function SpainDistributorsMap() {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
 
           {/* SVG Mapa real de España */}
-          <div className="w-full lg:w-[58%]"
+          <div className="w-full lg:w-[60%]"
             style={{ opacity: visible ? 1 : 0, animation: visible ? "dist-fade-up 1s cubic-bezier(0.23,1,0.32,1) 0.3s both" : "none" }}>
-            <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-auto" style={{ maxHeight: "500px" }}>
+            <svg viewBox={viewBox} className="w-full h-auto" style={{ maxHeight: "580px", transition: "none" }}>
               <defs>
                 <filter id="dotGlow2">
                   <feGaussianBlur stdDeviation="3" result="b"/>
