@@ -2021,7 +2021,7 @@ export default function Home() {
           <img
             src={prod.img}
             alt={prod.name}
-            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 p-4"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                           <span className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-foreground text-background font-body text-[9px] uppercase tracking-[0.25em] px-2 py-1">

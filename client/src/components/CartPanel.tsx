@@ -1599,7 +1599,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                           {cart.map((item, idx) => (
                             <motion.li key={`${item.id}-${idx}`} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.3 }} className="flex items-center gap-6 border-b border-border pb-6">
                               <div className="w-24 h-24 shrink-0 overflow-hidden border border-border bg-[#F8F8F8]">
-<img src={item.img} alt={item.name} className="w-full h-full object-contain p-1" />
+<img src={item.img} alt={item.name} className="w-full h-full object-cover" />
                                 </div>
                               <div className="flex-1 min-w-0">
                                 <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-1">{item.id}</p>
@@ -1723,7 +1723,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                       <ul className="flex flex-col gap-4">
                         {cart.map((item, idx) => (
                           <motion.li key={`mob-${item.id}-${idx}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="flex items-center gap-4 border-b border-border pb-4">
-                            <div className="w-16 h-16 shrink-0 overflow-hidden border border-border"><img src={item.img} alt={item.name} className="w-full h-full object-contain p-1" /></div>
+                            <div className="w-16 h-16 shrink-0 overflow-hidden border border-border"><img src={item.img} alt={item.name} className="w-full h-full object-cover" /></div>
                             <div className="flex-1 min-w-0">
                               <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-0.5">{item.id}</p>
                               <p className="font-display text-sm uppercase tracking-wide leading-snug">{item.name}</p>
