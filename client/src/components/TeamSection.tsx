@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const PHOTOS = [
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m1-3NRdKwH8BiRuSz58zowsUU.webp",
+  "/manus-storage/eloy-ramos_3f029d38.jpeg",
   "/manus-storage/marta-rama_50558d7f.jpeg",
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m3-2pafZmtLHgvxqQ4JdZGe4P.webp",
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m4-ev5Uf3wMMPUdyQYu2hnKgj.webp",
@@ -12,14 +12,14 @@ const PHOTOS = [
 ];
 
 const TEAM = [
-  { name: "Eloy Ramos",          role: "Director de Producto",          photo: PHOTOS[0] },
-  { name: "Marta Rama",          role: "Directora de Marketing",        photo: PHOTOS[1] },
-  { name: "Alejandro Rodriguez", role: "Expansión Comercial",           photo: PHOTOS[2] },
-  { name: "Rubén Beiroa",        role: "Ingeniería y Desarrollo",       photo: PHOTOS[3] },
-  { name: "César Juncal",        role: "Soporte Técnico",               photo: PHOTOS[4] },
-  { name: "Jesús Fernandez",     role: "Servicio Técnico Nacional",     photo: PHOTOS[5] },
-  { name: "Uxia Tarrío",         role: "Ventas Península Ibérica",      photo: PHOTOS[6] },
-  { name: "Raul Plaza",          role: "Ventas Sur de España",          photo: PHOTOS[7] },
+  { name: "Eloy Ramos",          role: "Director de Producto",          photo: PHOTOS[0], hasPhoto: true },
+  { name: "Marta Rama",          role: "Directora de Marketing",        photo: PHOTOS[1], hasPhoto: true },
+  { name: "Alejandro Rodriguez", role: "Expansión Comercial",           photo: PHOTOS[2], hasPhoto: false },
+  { name: "Rubén Beiroa",        role: "Ingeniería y Desarrollo",       photo: PHOTOS[3], hasPhoto: false },
+  { name: "César Juncal",        role: "Soporte Técnico",               photo: PHOTOS[4], hasPhoto: false },
+  { name: "Jesús Fernandez",     role: "Servicio Técnico Nacional",     photo: PHOTOS[5], hasPhoto: false },
+  { name: "Uxia Tarrío",         role: "Ventas Península Ibérica",      photo: PHOTOS[6], hasPhoto: false },
+  { name: "Raul Plaza",          role: "Ventas Sur de España",          photo: PHOTOS[7], hasPhoto: false },
 ];
 
 export default function TeamSection() {
@@ -151,8 +151,8 @@ export default function TeamSection() {
                     }}
                   />
 
-                  {/* Blur overlay "Próximamente" */}
-                  <div
+                  {/* Blur overlay "Próximamente" — solo si no tiene foto real */}
+                  {!m.hasPhoto && <div
                     className="team-blur-overlay absolute inset-0 flex flex-col items-center justify-center gap-2"
                     style={{
                       backdropFilter: "blur(8px)",
@@ -190,7 +190,7 @@ export default function TeamSection() {
                     >
                       Próximamente
                     </span>
-                  </div>
+                  </div>}
                 </div>
 
                 {/* Info */}
