@@ -12,6 +12,7 @@ import { trpc } from "@/lib/trpc";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { CartPanel } from "@/components/CartPanel";
 import { useCart } from "@/contexts/CartContext";
+import { PremiumCareModal } from "@/components/PremiumCareModal";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -24,6 +25,40 @@ export default function Coleccion() {
   const [displayProducts, setDisplayProducts] = useState<Product[]>(() => getLocalizedProducts('es') as Product[]);
 
   const { cart, isCartOpen, addToCart, removeFromCart, openCart, closeCart, totalItems } = useCart();
+
+  // Estado para el modal de upsell ELORA PREMIUM CARE
+  const [premiumModalOpen, setPremiumModalOpen] = useState(false);
+  const [pendingProduct, setPendingProduct] = useState<{ id: string; name: string; price: number; img: string } | null>(null);
+
+  const handleAddToCart = (item: { id: string; name: string; price: number; img: string }) => {
+    const isEsenza = item.id?.toLowerCase().includes('esenza') || item.name?.toLowerCase().includes('esenza');
+    if (isEsenza) {
+      setPendingProduct(item);
+      setPremiumModalOpen(true);
+    } else {
+      addToCart(item);
+      openCart();
+    }
+  };
+
+  const handlePremiumAccept = () => {
+    if (pendingProduct) {
+      addToCart(pendingProduct);
+      addToCart({ id: 'premium-care', name: 'ELORA PREMIUM CARE', price: 249, img: '' });
+    }
+    setPremiumModalOpen(false);
+    setPendingProduct(null);
+    openCart();
+  };
+
+  const handlePremiumDecline = () => {
+    if (pendingProduct) {
+      addToCart(pendingProduct);
+    }
+    setPremiumModalOpen(false);
+    setPendingProduct(null);
+    openCart();
+  };
 
   // Cargar productos desde la BD para que los cambios del admin se reflejen
   const productsQuery = trpc.products.getAll.useQuery();
@@ -199,7 +234,7 @@ export default function Coleccion() {
           <ProductDetail
             product={selectedProduct}
             onBack={() => setSelectedProduct(null)}
-            onAdd={(item) => { addToCart({ id: item.id, name: item.name, price: item.price, img: item.img }); openCart(); }}
+            onAdd={(item) => handleAddToCart({ id: item.id, name: item.name, price: item.price, img: item.img })}
           />
         ) : (
           <>
@@ -297,7 +332,7 @@ export default function Coleccion() {
                         </div>
                         <div className="flex gap-2">
                           <button
-                            onClick={() => { addToCart({ id: prod.id, name: prod.name, price: prod.price, img: prod.img }); openCart(); }}
+                            onClick={() => handleAddToCart({ id: prod.id, name: prod.name, price: prod.price, img: prod.img })}
                             className="flex-1 bg-foreground text-background font-body text-[10px] uppercase tracking-[0.25em] py-3 flex items-center justify-center gap-2 hover:bg-accent-deep transition-colors active:scale-[0.97]"
                           >
                             <ShoppingBag className="w-3.5 h-3.5" />
@@ -363,6 +398,14 @@ export default function Coleccion() {
         onClose={closeCart}
         cart={cart}
         onRemove={removeFromCart}
+      />
+
+      {/* ── UPSELL PREMIUM CARE ─────────── */}
+      <PremiumCareModal
+        isOpen={premiumModalOpen}
+        productName={pendingProduct?.name ?? 'ESENZA'}
+        onAccept={handlePremiumAccept}
+        onDecline={handlePremiumDecline}
       />
     </div>
   );
