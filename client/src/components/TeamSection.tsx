@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 const PHOTOS = [
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m1-3NRdKwH8BiRuSz58zowsUU.webp",
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m2-V2nxMUpmGiciBeF2Bt5tBc.webp",
+  "/manus-storage/marta-rama_50558d7f.jpeg",
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m3-2pafZmtLHgvxqQ4JdZGe4P.webp",
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m4-ev5Uf3wMMPUdyQYu2hnKgj.webp",
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/team_m5-GXVFsaGGpa662S8fB2ZBPs.webp",
