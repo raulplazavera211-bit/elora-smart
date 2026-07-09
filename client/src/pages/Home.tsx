@@ -2237,6 +2237,25 @@ export default function Home() {
               <TeamSection />
 
               {/* ── CLUB ELORA ────────────────────────────────────────────────── */}
+              {/* ── DIVISOR DISTRIBUIDORES ──────────────────────────────────── */}
+              <div style={{ background: "#001F3F", overflow: "hidden", padding: "18px 0" }}>
+                <style>{`
+                  @keyframes marquee-dist { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+                  @media (prefers-reduced-motion: reduce) { .marquee-dist-inner { animation: none !important; } }
+                `}</style>
+                <div className="marquee-dist-inner" style={{ display: "flex", whiteSpace: "nowrap", animation: "marquee-dist 30s linear infinite" }}>
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center" }}>
+                      {["ENCUENTRA TU DISTRIBUIDOR", "RED OFICIAL", "14 PUNTOS DE VENTA", "ATENCIÓN PERSONALIZADA", "INSTALACIÓN CERTIFICADA", "COBERTURA NACIONAL", "EXPERTOS ELORA", "CERCA DE TI"].map((txt, j) => (
+                        <span key={j} style={{ display: "inline-flex", alignItems: "center" }}>
+                          <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: "13px", fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: "#ffffff", padding: "0 28px" }}>{txt}</span>
+                          <span style={{ color: "#E87A3D", fontSize: "8px" }}>✦</span>
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
               <SpainDistributorsMap />
 
               <ClubEloraSection />
