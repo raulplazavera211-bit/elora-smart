@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { X, Shield, Cpu, Phone, Star, CheckCircle2, Zap } from "lucide-react";
+import { useEffect } from "react";
 
 interface PremiumCareModalProps {
   isOpen: boolean;
@@ -16,13 +17,21 @@ const PREMIUM_BENEFITS = [
 ];
 
 export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: PremiumCareModalProps) {
+  // Cerrar con tecla Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onDecline(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isOpen, onDecline]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay */}
+          {/* Overlay — clic fuera cierra */}
           <motion.div
-            className="fixed inset-0 z-[9998] bg-black/70"
+            className="fixed inset-0 z-[9998] bg-black/70 cursor-pointer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -31,10 +40,14 @@ export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: P
             style={{ backdropFilter: "blur(6px)" }}
           />
 
-          {/* Centrado con scroll por si la pantalla es pequeña */}
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+          {/* Contenedor centrado */}
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            style={{ pointerEvents: "none" }}
+          >
             <motion.div
-              className="relative w-full max-w-lg bg-background border border-border overflow-hidden my-auto"
+              className="relative w-full max-w-lg bg-background border border-border overflow-hidden"
+              style={{ pointerEvents: "auto" }}
               initial={{ opacity: 0, scale: 0.95, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 16 }}
@@ -49,14 +62,17 @@ export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: P
                   <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-white -translate-x-8 translate-y-8" />
                 </div>
 
+                {/* Botón cerrar — visible y con área táctil grande */}
                 <button
                   onClick={onDecline}
-                  className="absolute top-4 right-4 text-black/40 hover:text-black/70 transition-colors z-10 w-8 h-8 flex items-center justify-center"
+                  aria-label="Cerrar"
+                  className="absolute top-3 right-3 z-20 w-10 h-10 flex items-center justify-center bg-black/25 hover:bg-black/45 active:scale-95 transition-all"
+                  style={{ borderRadius: 0 }}
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </button>
 
-                <div className="relative z-10">
+                <div className="relative z-10 pr-10">
                   <div className="flex items-center gap-2 mb-2">
                     <Star className="w-3.5 h-3.5 text-black/60 fill-black/40" />
                     <span className="font-body text-[9px] uppercase tracking-[0.3em] text-black/60">
@@ -110,8 +126,9 @@ export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: P
                 </button>
                 <button
                   onClick={onDecline}
-                  className="w-full font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40 hover:text-foreground/70 transition-colors py-2"
+                  className="w-full flex items-center justify-center gap-1.5 font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40 hover:text-foreground/70 transition-colors py-2"
                 >
+                  <X className="w-3 h-3" />
                   Continuar con garantía estándar (3 años)
                 </button>
               </div>
