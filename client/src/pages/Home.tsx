@@ -2091,7 +2091,7 @@ export default function Home() {
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40">
-                      ESENZA · ESENZA Compact · ESENZA Suspendido · AURA Compact · AURA Suspendido · AURA
+                      ESENZA · ESENZA Compact · ESENZA Suspendido · AURA · AURA Compact · AURA Suspendido
                     </p>
                   </div>
 
