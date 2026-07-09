@@ -2183,6 +2183,49 @@ export default function Home() {
               {/* ── RESEÑAS ────────────────────────────────────────────────── */}
               <ReviewsSection />
 
+              {/* ── DIVISOR MARQUEE ────────────────────────────────────────── */}
+              <div className="relative overflow-hidden bg-foreground py-5 select-none" style={{transform: 'skewY(-1.5deg)', margin: '0 -2px'}}>
+                <div className="absolute inset-0 bg-foreground" />
+                <div
+                  className="flex whitespace-nowrap"
+                  style={{
+                    animation: 'marquee-team 22s linear infinite',
+                    willChange: 'transform',
+                  }}
+                >
+                  {[...Array(3)].map((_, i) => (
+                    <span key={i} className="flex items-center shrink-0">
+                      {[
+                        "INNOVACIÓN",
+                        "CONFORT JAPONÉS",
+                        "DISEÑO SIN OBRA",
+                        "TECNOLOGÍA PREMIUM",
+                        "EQUIPO ELORA",
+                        "PASIÓN POR EL DETALLE",
+                        "CALIDAD CERTIFICADA",
+                        "ATENCIÓN PERSONAL",
+                      ].map((phrase, j) => (
+                        <span key={j} className="flex items-center">
+                          <span className="font-display text-background text-sm md:text-base tracking-[0.3em] uppercase px-6 font-bold">
+                            {phrase}
+                          </span>
+                          <span className="text-accent-deep text-xl font-bold px-2" aria-hidden>✦</span>
+                        </span>
+                      ))}
+                    </span>
+                  ))}
+                </div>
+                <style>{`
+                  @keyframes marquee-team {
+                    0%   { transform: translateX(0); }
+                    100% { transform: translateX(-33.333%); }
+                  }
+                  @media (prefers-reduced-motion: reduce) {
+                    .marquee-team-inner { animation: none !important; }
+                  }
+                `}</style>
+              </div>
+
               {/* ── EQUIPO ─────────────────────────────────────────────────────── */}
               <TeamSection />
 
