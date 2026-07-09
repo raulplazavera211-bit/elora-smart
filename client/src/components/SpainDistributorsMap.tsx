@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 // ViewBox del SVG real: 0 0 960 700
 // Límites geográficos usados en la proyección: lon [-18.2, 4.4], lat [27.6, 43.8]
 const VW = 960, VH = 700;
+// ViewBox por defecto con zoom: recorta márgenes para que España ocupe más pantalla
+const DEFAULT_VB = "30 20 900 640";
 const LON_MIN = -18.2, LON_MAX = 4.4;
 const LAT_MIN = 27.6, LAT_MAX = 43.8;
 
@@ -63,8 +65,8 @@ export default function SpainDistributorsMap() {
   const [searchError, setSearchError] = useState("");
   const [svgPaths, setSvgPaths] = useState<{ region: string; d: string }[]>([]);
   // Zoom animado: viewBox del SVG
-  const [viewBox, setViewBox] = useState(`0 0 ${VW} ${VH}`);
-  const viewBoxRef = useRef(`0 0 ${VW} ${VH}`);
+  const [viewBox, setViewBox] = useState(DEFAULT_VB);
+  const viewBoxRef = useRef(DEFAULT_VB);
   const animFrameRef = useRef<number | null>(null);
 
   // Cargar SVG real de España
@@ -150,7 +152,7 @@ export default function SpainDistributorsMap() {
 
   // Reset zoom al limpiar búsqueda
   function resetZoom() {
-    animateViewBox(viewBoxRef.current, `0 0 ${VW} ${VH}`, 700);
+    animateViewBox(viewBoxRef.current, DEFAULT_VB, 700);
   }
 
   // Región activa para resaltar en el mapa
