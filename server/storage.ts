@@ -81,7 +81,8 @@ export async function storageGetSignedUrl(relKey: string): Promise<string> {
   const key = normalizeKey(relKey);
 
   const getUrl = new URL("v1/storage/presign/get", forgeUrl + "/");
-  getUrl.searchParams.set("path", key);
+  // Encode the key properly to handle spaces and special characters
+  getUrl.searchParams.set("path", encodeURIComponent(key));
 
   const resp = await fetch(getUrl, {
     headers: { Authorization: `Bearer ${forgeKey}` },

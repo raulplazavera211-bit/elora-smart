@@ -11,9 +11,13 @@ const FROM_EMAIL = "Elora Smart <pedidos@elorasmart.online>";
 export type OrderEmailData = {
   to: string;
   customerName: string;
+  customerPhone?: string;
+  customerEmail?: string;
   orderNumber: string;
-  items: { name: string; quantity: number; price: number }[];
+  items: { name: string; quantity: number; price: number; img?: string }[];
   total: number;
+  shippingCost?: number;
+  shippingCountry?: string;
   shippingAddress: {
     street: string;
     city: string;
@@ -21,6 +25,10 @@ export type OrderEmailData = {
     postalCode: string;
   };
   paymentMethod: string;
+  notes?: string;
+  couponCode?: string;
+  discountAmount?: number;
+  authCode?: string;
 };
 
 function getPaymentMethodLabel(method: string): string {
@@ -35,166 +43,181 @@ function getPaymentMethodLabel(method: string): string {
 }
 
 function buildOrderConfirmationHtml(data: OrderEmailData): string {
+  const subtotal = data.items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const shippingCost = data.shippingCost ?? 0;
+  const discount = data.discountAmount ?? 0;
+
+  const paymentInstructions: Record<string, string> = {
+    transfer: `<div style="background-color:#fffbf0;border:1px solid #f0e0a0;padding:20px 24px;margin-top:20px;">
+      <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#b8860b;">Instrucciones de pago — Transferencia bancaria</p>
+      <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#2a2a2a;line-height:1.8;">
+        Realiza una transferencia por el importe exacto de <strong>${data.total.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</strong> indicando en el concepto tu número de pedido <strong>#${data.orderNumber}</strong>.<br/><br/>
+        Banco: <strong>Banco Santander</strong><br/>
+        Titular: <strong>ELORA SMART SL</strong><br/>
+        IBAN: <strong>ES00 0000 0000 0000 0000 0000</strong>
+      </p>
+    </div>`,
+    cod: `<div style="background-color:#f0fff4;border:1px solid #a0e0b0;padding:20px 24px;margin-top:20px;">
+      <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#2e7d32;">Pago contra reembolso</p>
+      <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#2a2a2a;line-height:1.8;">
+        Pagarás <strong>${data.total.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</strong> en efectivo al transportista en el momento de la entrega. Ten preparado el importe exacto.
+      </p>
+    </div>`,
+  };
+
+  const paymentBlock = paymentInstructions[data.paymentMethod] ?? "";
+
   const itemsRows = data.items
     .map(
       (item) => `
       <tr>
-        <td style="padding: 12px 0; border-bottom: 1px solid #e8e0d4; font-family: Georgia, serif; font-size: 14px; color: #2a2a2a;">
-          ${item.name}
+        <td style="padding:14px 0;border-bottom:1px solid #e8e0d4;vertical-align:middle;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            ${item.img ? `<img src="${item.img}" alt="${item.name}" width="48" height="48" style="width:48px;height:48px;object-fit:cover;border:1px solid #e8e0d4;border-radius:2px;flex-shrink:0;" />` : ""}
+            <span style="font-family:Arial,sans-serif;font-size:14px;color:#2a2a2a;">${item.name}</span>
+          </div>
         </td>
-        <td style="padding: 12px 0; border-bottom: 1px solid #e8e0d4; font-family: Georgia, serif; font-size: 14px; color: #2a2a2a; text-align: center;">
-          ${item.quantity}
-        </td>
-        <td style="padding: 12px 0; border-bottom: 1px solid #e8e0d4; font-family: Georgia, serif; font-size: 14px; color: #2a2a2a; text-align: right;">
-          ${(item.price * item.quantity).toLocaleString("es-ES", { minimumFractionDigits: 2 })} €
-        </td>
+        <td style="padding:14px 0;border-bottom:1px solid #e8e0d4;font-family:Arial,sans-serif;font-size:14px;color:#2a2a2a;text-align:center;vertical-align:middle;">${item.quantity}</td>
+        <td style="padding:14px 0;border-bottom:1px solid #e8e0d4;font-family:Georgia,serif;font-size:14px;color:#2a2a2a;text-align:right;vertical-align:middle;white-space:nowrap;">${(item.price * item.quantity).toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</td>
       </tr>
     `
     )
     .join("");
 
-  return `
-<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Confirmación de pedido — Elora Smart</title>
+  <title>Confirmación de pedido #${data.orderNumber} — Elora Smart</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f5f0e8; font-family: Arial, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f0e8; padding: 40px 20px;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border: 1px solid #e8e0d4;">
+<body style="margin:0;padding:0;background-color:#f5f0e8;font-family:'Helvetica Neue',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0e8;padding:40px 16px;">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border:1px solid #e8e0d4;">
 
-          <!-- HEADER -->
-          <tr>
-            <td style="background-color: #0a0a0a; padding: 32px 40px; text-align: center;">
-              <img src="${LOGO_URL}" alt="Elora Smart" width="140" style="display: block; margin: 0 auto; filter: brightness(0) invert(1);" />
-              <p style="margin: 16px 0 0; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #c9a96e;">
-                Inodoros Inteligentes
-              </p>
-            </td>
-          </tr>
+      <!-- HEADER -->
+      <tr>
+        <td style="background-color:#0a0a0a;padding:32px 40px;text-align:center;">
+          <img src="${LOGO_URL}" alt="Elora Smart" width="130" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
+          <p style="margin:14px 0 0;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;">Inodoros Inteligentes</p>
+        </td>
+      </tr>
+      <!-- GOLD STRIP -->
+      <tr><td style="background-color:#c9a96e;height:3px;"></td></tr>
 
-          <!-- HERO TEXT -->
-          <tr>
-            <td style="padding: 40px 40px 24px; text-align: center; border-bottom: 1px solid #e8e0d4;">
-              <p style="margin: 0 0 8px; font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #c9a96e;">
-                Pedido confirmado
-              </p>
-              <h1 style="margin: 0 0 16px; font-family: Georgia, serif; font-size: 28px; font-weight: normal; color: #0a0a0a; letter-spacing: 2px; text-transform: uppercase;">
-                ¡Gracias, ${data.customerName}!
-              </h1>
-              <p style="margin: 0; font-family: Arial, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
-                Tu pedido <strong style="color: #0a0a0a;">#${data.orderNumber}</strong> ha sido recibido correctamente.<br />
-                Gracias por ser parte de Elora — te contactaremos pronto para coordinar la entrega.
-              </p>
-            </td>
-          </tr>
+      <!-- HERO -->
+      <tr>
+        <td style="padding:40px 40px 28px;text-align:center;border-bottom:1px solid #e8e0d4;">
+          <p style="margin:0 0 8px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;">✅ Pedido confirmado</p>
+          <h1 style="margin:0 0 12px;font-family:Georgia,serif;font-size:28px;font-weight:normal;color:#0a0a0a;letter-spacing:2px;text-transform:uppercase;">¡Gracias, ${data.customerName}!</h1>
+          <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">
+            Tu pedido <strong style="color:#0a0a0a;font-size:17px;">#${data.orderNumber}</strong> ha sido recibido correctamente.<br />
+            Nos pondremos en contacto contigo pronto para coordinar la entrega.
+          </p>
+          <div style="display:inline-block;background-color:#f5f0e8;border:1px solid #e8e0d4;padding:10px 24px;">
+            <span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#999;">Fecha del pedido</span>
+            <span style="display:block;font-family:Georgia,serif;font-size:15px;color:#0a0a0a;margin-top:4px;">${new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" })}</span>
+          </div>
+        </td>
+      </tr>
 
-          <!-- RESUMEN DEL PEDIDO -->
-          <tr>
-            <td style="padding: 32px 40px;">
-              <p style="margin: 0 0 20px; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #999;">
-                Resumen del pedido
-              </p>
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <thead>
-                  <tr>
-                    <th style="font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #999; font-weight: normal; text-align: left; padding-bottom: 10px; border-bottom: 2px solid #0a0a0a;">Producto</th>
-                    <th style="font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #999; font-weight: normal; text-align: center; padding-bottom: 10px; border-bottom: 2px solid #0a0a0a;">Ud.</th>
-                    <th style="font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #999; font-weight: normal; text-align: right; padding-bottom: 10px; border-bottom: 2px solid #0a0a0a;">Importe</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${itemsRows}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colspan="2" style="padding: 16px 0 0; font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #999;">
-                      Total con IVA
-                    </td>
-                    <td style="padding: 16px 0 0; font-family: Georgia, serif; font-size: 22px; color: #0a0a0a; text-align: right;">
-                      ${data.total.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="3" style="padding: 4px 0 0; font-family: Arial, sans-serif; font-size: 11px; color: #27ae60; text-align: right;">
-                      ✓ Envío gratis incluido
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </td>
-          </tr>
+      <!-- PRODUCTOS -->
+      <tr>
+        <td style="padding:32px 40px 0;">
+          <p style="margin:0 0 16px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#999;">Productos del pedido</p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <thead>
+              <tr style="border-bottom:2px solid #0a0a0a;">
+                <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#999;font-weight:normal;text-align:left;padding-bottom:10px;">Producto</th>
+                <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#999;font-weight:normal;text-align:center;padding-bottom:10px;">Ud.</th>
+                <th style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#999;font-weight:normal;text-align:right;padding-bottom:10px;">Importe</th>
+              </tr>
+            </thead>
+            <tbody>${itemsRows}</tbody>
+            <tfoot>
+              ${discount > 0 ? `<tr><td colspan="2" style="padding:10px 0 0;font-size:12px;color:#27ae60;">Descuento (${data.couponCode ?? "cupón"})</td><td style="padding:10px 0 0;font-size:12px;color:#27ae60;text-align:right;">−${discount.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</td></tr>` : ""}
+              <tr><td colspan="2" style="padding:10px 0 0;font-size:11px;color:#999;letter-spacing:1px;">Envío</td><td style="padding:10px 0 0;font-size:13px;color:${shippingCost === 0 ? "#27ae60" : "#0a0a0a"};text-align:right;">${shippingCost === 0 ? "Gratis ✔" : shippingCost.toLocaleString("es-ES", { minimumFractionDigits: 2 }) + " €"}</td></tr>
+              <tr style="border-top:2px solid #0a0a0a;"><td colspan="2" style="padding:14px 0 0;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#999;">Total con IVA</td><td style="padding:14px 0 0;font-family:Georgia,serif;font-size:24px;color:#0a0a0a;text-align:right;">${data.total.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</td></tr>
+            </tfoot>
+          </table>
+        </td>
+      </tr>
 
-          <!-- DIRECCIÓN + PAGO -->
-          <tr>
-            <td style="padding: 0 40px 32px;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td width="50%" style="padding-right: 16px; vertical-align: top;">
-                    <div style="background-color: #f5f0e8; padding: 20px; border: 1px solid #e8e0d4;">
-                      <p style="margin: 0 0 10px; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #999;">Dirección de envío</p>
-                      <p style="margin: 0; font-family: Arial, sans-serif; font-size: 13px; color: #2a2a2a; line-height: 1.7;">
-                        ${data.shippingAddress.street}<br />
-                        ${data.shippingAddress.postalCode} ${data.shippingAddress.city}<br />
-                        ${data.shippingAddress.province}
-                      </p>
-                    </div>
-                  </td>
-                  <td width="50%" style="padding-left: 16px; vertical-align: top;">
-                    <div style="background-color: #f5f0e8; padding: 20px; border: 1px solid #e8e0d4;">
-                      <p style="margin: 0 0 10px; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #999;">Método de pago</p>
-                      <p style="margin: 0; font-family: Arial, sans-serif; font-size: 13px; color: #2a2a2a; line-height: 1.7;">
-                        ${getPaymentMethodLabel(data.paymentMethod)}
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+      <!-- DIRECCIÓN + PAGO -->
+      <tr>
+        <td style="padding:28px 40px;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="50%" style="padding-right:12px;vertical-align:top;">
+                <div style="background-color:#f5f0e8;padding:18px;border:1px solid #e8e0d4;">
+                  <p style="margin:0 0 8px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#999;">Dirección de envío</p>
+                  <p style="margin:0;font-size:13px;color:#2a2a2a;line-height:1.8;">
+                    ${data.shippingAddress.street}<br />
+                    ${data.shippingAddress.postalCode} ${data.shippingAddress.city}<br />
+                    ${data.shippingAddress.province}${data.shippingCountry && data.shippingCountry !== "ES" ? `<br />${data.shippingCountry}` : ""}
+                  </p>
+                </div>
+              </td>
+              <td width="50%" style="padding-left:12px;vertical-align:top;">
+                <div style="background-color:#f5f0e8;padding:18px;border:1px solid #e8e0d4;">
+                  <p style="margin:0 0 8px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#999;">Método de pago</p>
+                  <p style="margin:0;font-size:13px;color:#2a2a2a;line-height:1.8;font-weight:600;">${getPaymentMethodLabel(data.paymentMethod)}</p>
+                  ${data.authCode ? `<p style="margin:6px 0 0;font-size:11px;color:#27ae60;">Cód. autorización: ${data.authCode}</p>` : ""}
+                </div>
+              </td>
+            </tr>
+          </table>
+          ${paymentBlock}
+          ${data.notes ? `<div style="margin-top:16px;background-color:#fffef0;border:1px solid #e8e0a0;padding:16px 18px;"><p style="margin:0 0 6px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#999;">Notas del pedido</p><p style="margin:0;font-size:13px;color:#2a2a2a;line-height:1.7;">${data.notes}</p></div>` : ""}
+        </td>
+      </tr>
 
-          <!-- WHATSAPP CTA -->
-          <tr>
-            <td style="padding: 0 40px 40px; text-align: center;">
-              <div style="border-top: 1px solid #e8e0d4; padding-top: 32px;">
-                <p style="margin: 0 0 20px; font-family: Arial, sans-serif; font-size: 14px; color: #555; line-height: 1.6;">
-                  ¿Tienes alguna pregunta sobre tu pedido?<br />
-                  Estamos en Galicia y te atendemos personalmente.
-                </p>
-                <a href="${WHATSAPP_URL}"
-                   style="display: inline-block; background-color: #25d366; color: #ffffff; font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; padding: 14px 32px; font-weight: bold;">
-                  💬 Contactar por WhatsApp
-                </a>
-              </div>
-            </td>
-          </tr>
+      <!-- GARANTIA REMINDER -->
+      <tr>
+        <td style="padding:0 40px 28px;">
+          <div style="background-color:#0a0a0a;padding:20px 24px;text-align:center;">
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;">Tu protección Elora</p>
+            <p style="margin:0;font-size:13px;color:#e0e0e0;line-height:1.7;">10 años de garantía en cerámica &nbsp;·&nbsp; Servicio técnico en español &nbsp;·&nbsp; Repuestos garantizados 10 años</p>
+          </div>
+        </td>
+      </tr>
 
-          <!-- FOOTER -->
-          <tr>
-            <td style="background-color: #0a0a0a; padding: 28px 40px; text-align: center;">
-              <p style="margin: 0 0 8px; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #c9a96e;">
-                Elora Smart
-              </p>
-              <p style="margin: 0 0 4px; font-family: Arial, sans-serif; font-size: 11px; color: #666;">
-                info@elorasmart.com · +34 614 451 901
-              </p>
-              <p style="margin: 0; font-family: Arial, sans-serif; font-size: 11px; color: #444;">
-                Galicia, España
-              </p>
-            </td>
-          </tr>
+      <!-- CTA -->
+      <tr>
+        <td style="padding:0 40px 40px;text-align:center;border-top:1px solid #e8e0d4;padding-top:32px;">
+          <p style="margin:0 0 20px;font-size:14px;color:#555;line-height:1.7;">¿Tienes alguna pregunta sobre tu pedido?<br />Estamos en Galicia y te atendemos personalmente.</p>
+          <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+            <tr>
+              <td style="padding-right:8px;">
+                <a href="${WHATSAPP_URL}" style="display:inline-block;background-color:#25d366;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 24px;">💬 WhatsApp</a>
+              </td>
+              <td style="padding-left:8px;">
+                <a href="mailto:info@elorasmart.com" style="display:inline-block;background-color:#0a0a0a;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 24px;">✉ Email</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
 
-        </table>
-      </td>
-    </tr>
-  </table>
+      <!-- FOOTER -->
+      <tr>
+        <td style="background-color:#0a0a0a;padding:24px 40px;text-align:center;">
+          <p style="margin:0 0 6px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;">Elora Smart</p>
+          <p style="margin:0 0 4px;font-size:11px;color:#666;">info@elorasmart.com &nbsp;·&nbsp; +34 614 451 901</p>
+          <p style="margin:0 0 8px;font-size:11px;color:#444;">ELORA SMART SL &nbsp;·&nbsp; B23990492 &nbsp;·&nbsp; Galicia, España</p>
+          <p style="margin:0;font-size:10px;color:#333;">
+            <a href="https://elorasmart.online/politica-privacidad" style="color:#555;text-decoration:none;">Política de privacidad</a> &nbsp;·&nbsp;
+            <a href="https://elorasmart.online/terminos-condiciones" style="color:#555;text-decoration:none;">Términos y condiciones</a>
+          </p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
 </body>
-</html>
-  `;
+</html>`;
 }
 
 export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<boolean> {
