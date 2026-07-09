@@ -463,3 +463,170 @@ export async function sendFichaTecnicaEmail(data: FichaTecnicaEmailData): Promis
     return false;
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CATÁLOGO PRIVADO — Notificación al propietario vía Resend
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type CatalogRequestEmailData = {
+  nombre: string;
+  email: string;
+  telefono?: string | null;
+  mensaje?: string | null;
+  idiomaCatalogo: "es" | "en" | "fr" | "pt";
+};
+
+const CATALOG_PDF_URLS: Record<string, string> = {
+  es: "https://elorasmart.online/manus-storage/catalogo-es_1e20b742.pdf",
+  en: "https://elorasmart.online/manus-storage/catalogo-en_8e026862.pdf",
+  fr: "https://elorasmart.online/manus-storage/catalogo-fr_ebd56ebd.pdf",
+  pt: "https://elorasmart.online/manus-storage/catalogo-pt_e0ff7e89.pdf",
+};
+
+const CATALOG_LANG_LABELS: Record<string, string> = {
+  es: "Español 🇪🇸",
+  en: "English 🇬🇧",
+  fr: "Français 🇫🇷",
+  pt: "Português 🇵🇹",
+};
+
+const CATALOG_LANG_FLAGS: Record<string, string> = {
+  es: "🇪🇸",
+  en: "🇬🇧",
+  fr: "🇫🇷",
+  pt: "🇵🇹",
+};
+
+function buildCatalogRequestHtml(data: CatalogRequestEmailData): string {
+  const pdfUrl = CATALOG_PDF_URLS[data.idiomaCatalogo];
+  const langLabel = CATALOG_LANG_LABELS[data.idiomaCatalogo];
+  const langFlag = CATALOG_LANG_FLAGS[data.idiomaCatalogo];
+  const waLink = data.telefono
+    ? `https://wa.me/${data.telefono.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hola ${data.nombre}, te escribo desde Elora Smart en respuesta a tu solicitud de catálogo.`)}`
+    : null;
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitud de catálogo — Elora Smart</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0d0d0d;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0d0d0d;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#111111;border:1px solid #1e1e1e;">
+        <!-- HEADER -->
+        <tr>
+          <td style="background-color:#0a0a0a;padding:32px 40px;text-align:center;border-bottom:2px solid #c9a96e;">
+            <img src="https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png" alt="Elora Smart" width="120" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
+            <p style="margin:12px 0 0;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;">Inodoros Inteligentes</p>
+          </td>
+        </tr>
+        <!-- HERO -->
+        <tr>
+          <td style="padding:36px 40px 24px;text-align:center;border-bottom:1px solid #1e1e1e;">
+            <p style="margin:0 0 6px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;">📬 Nueva solicitud</p>
+            <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;font-weight:normal;color:#f0f0f0;letter-spacing:2px;text-transform:uppercase;line-height:1.2;">Catálogo Privado</h1>
+            <p style="margin:10px 0 0;font-size:13px;color:#888888;letter-spacing:1px;">
+              Solicitado en <strong style="color:#c9a96e;">${langFlag} ${langLabel}</strong>
+            </p>
+          </td>
+        </tr>
+        <!-- DATOS -->
+        <tr>
+          <td style="padding:28px 40px;">
+            <p style="margin:0 0 18px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#666666;">Datos del contacto</p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:12px 0;border-bottom:1px solid #1e1e1e;">
+                  <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#666666;">Nombre</span><br />
+                  <span style="font-size:16px;color:#f0f0f0;font-family:Georgia,serif;">${data.nombre}</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;border-bottom:1px solid #1e1e1e;">
+                  <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#666666;">Email</span><br />
+                  <a href="mailto:${data.email}" style="font-size:15px;color:#c9a96e;text-decoration:none;">${data.email}</a>
+                </td>
+              </tr>
+              ${data.telefono ? `<tr>
+                <td style="padding:12px 0;border-bottom:1px solid #1e1e1e;">
+                  <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#666666;">Teléfono</span><br />
+                  <a href="tel:${data.telefono}" style="font-size:15px;color:#f0f0f0;text-decoration:none;">${data.telefono}</a>
+                </td>
+              </tr>` : ""}
+              <tr>
+                <td style="padding:12px 0;border-bottom:1px solid #1e1e1e;">
+                  <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#666666;">Idioma catálogo</span><br />
+                  <span style="font-size:18px;line-height:1.4;">${langFlag}</span>
+                  <span style="font-size:15px;color:#c9a96e;margin-left:6px;">${langLabel}</span>
+                </td>
+              </tr>
+              ${data.mensaje ? `<tr>
+                <td style="padding:12px 0;border-bottom:1px solid #1e1e1e;">
+                  <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#666666;">Mensaje</span><br />
+                  <p style="margin:6px 0 0;font-size:14px;color:#cccccc;line-height:1.6;white-space:pre-wrap;">${data.mensaje}</p>
+                </td>
+              </tr>` : ""}
+            </table>
+          </td>
+        </tr>
+        <!-- CTA PDF -->
+        <tr>
+          <td style="padding:8px 40px 28px;text-align:center;">
+            <p style="margin:0 0 14px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#666666;">Catálogo solicitado</p>
+            <a href="${pdfUrl}" style="display:inline-block;background-color:#c9a96e;color:#0a0a0a;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 36px;margin-bottom:10px;">
+              📄 &nbsp; Abrir catálogo ${langFlag}
+            </a>
+            <p style="margin:10px 0 0;font-size:11px;color:#555555;word-break:break-all;">${pdfUrl}</p>
+          </td>
+        </tr>
+        <!-- ACCIONES -->
+        <tr>
+          <td style="padding:0 40px 32px;text-align:center;border-top:1px solid #1e1e1e;">
+            <p style="margin:20px 0 14px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#666666;">Responder al contacto</p>
+            <a href="mailto:${data.email}?subject=Cat%C3%A1logo%20Elora%20Smart"
+               style="display:inline-block;background-color:#0a0a0a;border:1px solid #c9a96e;color:#c9a96e;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:12px 28px;margin:4px;">
+              ✉ &nbsp; Responder por email
+            </a>
+            ${waLink ? `<a href="${waLink}" style="display:inline-block;background-color:#25d366;color:#ffffff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:12px 28px;margin:4px;">
+              💬 &nbsp; WhatsApp
+            </a>` : ""}
+          </td>
+        </tr>
+        <!-- FOOTER -->
+        <tr>
+          <td style="background-color:#0a0a0a;padding:20px 40px;text-align:center;border-top:1px solid #1e1e1e;">
+            <p style="margin:0;font-size:10px;color:#444444;letter-spacing:1px;">Elora Smart · info@elorasmart.com · +34 614 451 901</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+export async function sendCatalogRequestEmail(data: CatalogRequestEmailData): Promise<boolean> {
+  try {
+    const langLabel = CATALOG_LANG_LABELS[data.idiomaCatalogo];
+    const langFlag = CATALOG_LANG_FLAGS[data.idiomaCatalogo];
+    const { error } = await resend.emails.send({
+      from: "Elora Smart <pedidos@elorasmart.online>",
+      to: "info@elorasmart.com",
+      replyTo: data.email,
+      subject: `📬 Catálogo ${langFlag} ${langLabel} — ${data.nombre}`,
+      html: buildCatalogRequestHtml(data),
+    });
+    if (error) {
+      console.error("[Email] Error enviando notificación de catálogo:", error);
+      return false;
+    }
+    console.log(`[Email] Notificación catálogo enviada para ${data.nombre} (${data.idiomaCatalogo})`);
+    return true;
+  } catch (err) {
+    console.error("[Email] Excepción enviando notificación de catálogo:", err);
+    return false;
+  }
+}
