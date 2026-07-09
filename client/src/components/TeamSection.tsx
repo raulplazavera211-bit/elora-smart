@@ -18,7 +18,7 @@ const TEAM = [
   { name: "Rubén Beiroa",        role: "Ingeniería y Desarrollo",       photo: PHOTOS[3], hasPhoto: false, pos: "center top" },
   { name: "César Juncal",        role: "Soporte Técnico",               photo: PHOTOS[4], hasPhoto: false, pos: "center top" },
   { name: "Jesús Fernandez",     role: "Servicio Técnico Nacional",     photo: "/manus-storage/jesus-fernandez_a072d10a.jpeg", hasPhoto: true,  pos: "center top" },
-  { name: "Uxia Tarrío",         role: "Ventas Península Ibérica",      photo: PHOTOS[6], hasPhoto: false, pos: "center top" },
+  { name: "Uxia Tarrío",         role: "Ventas Península Ibérica",      photo: "/manus-storage/uxia-tarrio_afefbff2.jpeg", hasPhoto: true,  pos: "center top" },
   { name: "Raul Plaza",          role: "Ventas Sur de España",          photo: PHOTOS[7], hasPhoto: false, pos: "center top" },
 ];
 
