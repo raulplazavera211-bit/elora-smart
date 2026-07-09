@@ -16,6 +16,7 @@ import { useLocation } from "wouter";
 import { getLocalizedFeatured, getLocalizedProducts } from "@/lib/products";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import TeamSection from "@/components/TeamSection";
+import { CatalogDownloadButton } from "@/components/CatalogDownloadButton";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { CartPanel } from "@/components/CartPanel";
 import { PremiumCareModal } from "@/components/PremiumCareModal";
@@ -1467,6 +1468,21 @@ export default function Home() {
   const [addedId, setAddedId] = useState<string | null>(null);
   const { cart, isCartOpen, addToCart: addToCartCtx, removeFromCart, openCart, closeCart, totalItems } = useCart();
   const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
+  const [catalogLang, setCatalogLang] = useState<"es" | "en" | "fr" | "pt">(() => {
+    const l = i18n.language;
+    if (l.startsWith("en")) return "en";
+    if (l.startsWith("fr")) return "fr";
+    if (l.startsWith("pt")) return "pt";
+    return "es";
+  });
+  // Sincronizar con el idioma activo de la app
+  useEffect(() => {
+    const l = i18n.language;
+    if (l.startsWith("en")) setCatalogLang("en");
+    else if (l.startsWith("fr")) setCatalogLang("fr");
+    else if (l.startsWith("pt")) setCatalogLang("pt");
+    else setCatalogLang("es");
+  }, [i18n.language]);
   const [contactSent, setContactSent] = useState(false);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
   useEffect(() => {
@@ -1546,6 +1562,7 @@ export default function Home() {
       telefono: contactForm.telefono || undefined,
       email: contactForm.email,
       mensaje: contactForm.mensaje || undefined,
+      idiomaCatalogo: catalogLang,
     });
   };
 
@@ -2190,6 +2207,15 @@ export default function Home() {
                     <p className="font-body text-sm text-foreground/70 leading-relaxed mb-10 max-w-sm relative z-10">
                       {t('contacto.body')}
                     </p>
+                    {/* Botón descarga catálogo multiidioma */}
+                    <div className="mb-8 relative z-10">
+                      <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40 mb-3 flex items-center gap-2">
+                        <span className="w-4 h-px bg-accent-deep/50" />
+                        Catálogo general 2026
+                      </p>
+                      <CatalogDownloadButton />
+                    </div>
+
                     <div className="flex flex-col gap-4 relative z-10">
                       <a href="tel:+34614451901" className="flex items-center gap-3 font-body text-sm text-foreground/70 hover:text-accent-deep transition-colors">
                         <Phone className="w-4 h-4 text-accent-deep" />
@@ -2319,6 +2345,37 @@ export default function Home() {
                             className="border border-border bg-transparent font-body text-sm text-foreground p-3 outline-none focus:border-accent-deep transition-colors placeholder:text-foreground/30 resize-none"
                             placeholder={t('contacto.form.messagePlaceholder')}
                           />
+                        </div>
+
+                        {/* Selector de idioma del catálogo */}
+                        <div className="flex flex-col gap-2">
+                          <label className="font-body text-[10px] uppercase tracking-widest text-foreground/50">
+                            {i18n.language.startsWith("en") ? "Catalogue language" :
+                             i18n.language.startsWith("fr") ? "Langue du catalogue" :
+                             i18n.language.startsWith("pt") ? "Idioma do catálogo" :
+                             "Idioma del catálogo"}
+                          </label>
+                          <div className="grid grid-cols-4 gap-2">
+                            {(["es", "en", "fr", "pt"] as const).map((lang) => {
+                              const flags: Record<string, string> = { es: "🇪🇸", en: "🇬🇧", fr: "🇫🇷", pt: "🇵🇹" };
+                              const labels: Record<string, string> = { es: "ESP", en: "ENG", fr: "FRA", pt: "POR" };
+                              return (
+                                <button
+                                  key={lang}
+                                  type="button"
+                                  onClick={() => setCatalogLang(lang)}
+                                  className={`flex flex-col items-center gap-1 py-2.5 border transition-all duration-150 font-body text-[10px] uppercase tracking-wider ${
+                                    catalogLang === lang
+                                      ? "border-accent-deep text-accent-deep bg-accent-deep/5"
+                                      : "border-border text-foreground/50 hover:border-foreground/40 hover:text-foreground/70"
+                                  }`}
+                                >
+                                  <span className="text-lg leading-none">{flags[lang]}</span>
+                                  <span>{labels[lang]}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
 
                         <button

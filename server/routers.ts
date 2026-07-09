@@ -168,17 +168,41 @@ export const appRouter = router({
         telefono: z.string().max(64).optional(),
         email: z.string().email().max(320),
         mensaje: z.string().max(5000).optional(),
+        idiomaCatalogo: z.enum(["es", "en", "fr", "pt"]).optional(),
       }))
       .mutation(async ({ input }) => {
+        const CATALOG_URLS: Record<string, string> = {
+          es: "https://elorasmart.online/manus-storage/catalogo-es_1e20b742.pdf",
+          en: "https://elorasmart.online/manus-storage/catalogo-en_8e026862.pdf",
+          fr: "https://elorasmart.online/manus-storage/catalogo-fr_ebd56ebd.pdf",
+          pt: "https://elorasmart.online/manus-storage/catalogo-pt_e0ff7e89.pdf",
+        };
+        const LANG_LABELS: Record<string, string> = {
+          es: "Español 🇪🇸",
+          en: "English 🇬🇧",
+          fr: "Français 🇫🇷",
+          pt: "Português 🇵🇹",
+        };
         const id = await insertContactSubmission({
           nombre: input.nombre,
           telefono: input.telefono ?? null,
           email: input.email,
           mensaje: input.mensaje ?? null,
+          idiomaCatalogo: input.idiomaCatalogo ?? null,
         });
+        const langLabel = input.idiomaCatalogo ? LANG_LABELS[input.idiomaCatalogo] : null;
+        const catalogUrl = input.idiomaCatalogo ? CATALOG_URLS[input.idiomaCatalogo] : null;
+        const contentLines = [
+          `Nombre: ${input.nombre}`,
+          `Email: ${input.email}`,
+          input.telefono ? `Teléfono: ${input.telefono}` : null,
+          langLabel ? `Idioma catálogo: ${langLabel}` : null,
+          catalogUrl ? `Enlace catálogo: ${catalogUrl}` : null,
+          input.mensaje ? `Mensaje:\n${input.mensaje}` : null,
+        ].filter(Boolean) as string[];
         notifyOwner({
-          title: `📬 Nuevo contacto: ${input.nombre}`,
-          content: [`Nombre: ${input.nombre}`, `Email: ${input.email}`, input.telefono ? `Teléfono: ${input.telefono}` : null, input.mensaje ? `Mensaje:\n${input.mensaje}` : null].filter(Boolean).join("\n"),
+          title: `📬 Nuevo contacto: ${input.nombre}${langLabel ? ` (${langLabel})` : ""}`,
+          content: contentLines.join("\n"),
         }).catch(() => {});
         return { success: true, id };
       }),

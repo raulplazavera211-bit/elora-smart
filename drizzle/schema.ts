@@ -35,6 +35,8 @@ export const contactSubmissions = mysqlTable("contact_submissions", {
   telefono: varchar("telefono", { length: 64 }),
   email: varchar("email", { length: 320 }).notNull(),
   mensaje: text("mensaje"),
+  /** Idioma del catálogo solicitado: es | en | fr | pt */
+  idiomaCatalogo: varchar("idioma_catalogo", { length: 8 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

@@ -1,0 +1,1 @@
+ALTER TABLE `contact_submissions` ADD `idioma_catalogo` varchar(8);
