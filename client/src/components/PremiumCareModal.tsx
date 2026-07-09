@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { X, Shield, Wrench, Phone, Star, CheckCircle2, Zap } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { X, Shield, Cpu, Phone, Star, CheckCircle2, Zap } from "lucide-react";
 
 interface PremiumCareModalProps {
   isOpen: boolean;
@@ -10,15 +9,13 @@ interface PremiumCareModalProps {
 }
 
 const PREMIUM_BENEFITS = [
-  { icon: Shield, label: "Garantía extendida 5 años", sub: "Cobertura total de piezas y mano de obra" },
-  { icon: Wrench, label: "Instalación profesional incluida", sub: "Técnico certificado en tu domicilio" },
-  { icon: Phone, label: "Soporte prioritario 24/7", sub: "Línea directa sin esperas" },
-  { icon: Zap, label: "Revisión anual gratuita", sub: "Mantenimiento preventivo cada año" },
+  { icon: Shield, label: "Garantía extendida 5 años", sub: "De 3 a 5 años de cobertura total" },
+  { icon: Cpu, label: "Componentes electrónicos", sub: "Tarjeta de control, sensores y motores" },
+  { icon: Zap, label: "Sistema de lavado y secado", sub: "Boquillas, turbina y calefacción" },
+  { icon: Phone, label: "Soporte prioritario", sub: "Atención directa sin esperas" },
 ];
 
 export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: PremiumCareModalProps) {
-  const { t } = useTranslation();
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -68,14 +65,14 @@ export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: P
                   <div className="flex items-center gap-2 mb-3">
                     <Star className="w-4 h-4 text-black/60 fill-black/40" />
                     <span className="font-body text-[10px] uppercase tracking-[0.3em] text-black/60">
-                      Servicio Premium
+                      Garantía Premium
                     </span>
                   </div>
                   <h2 className="font-display text-2xl sm:text-3xl uppercase tracking-wide text-black leading-tight mb-1">
                     ELORA PREMIUM CARE
                   </h2>
                   <p className="font-body text-sm text-black/70 leading-snug">
-                    Protege tu {productName} con tranquilidad total
+                    Amplía la garantía de tu {productName} de 3 a 5 años
                   </p>
                 </div>
 
@@ -90,7 +87,7 @@ export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: P
               {/* Beneficios */}
               <div className="px-6 py-5">
                 <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-4 flex items-center gap-2">
-                  <span className="w-4 h-[1px] bg-foreground/20" /> Incluye
+                  <span className="w-4 h-[1px] bg-foreground/20" /> Cobertura total en
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {PREMIUM_BENEFITS.map(({ icon: Icon, label, sub }) => (
@@ -120,7 +117,7 @@ export function PremiumCareModal({ isOpen, productName, onAccept, onDecline }: P
                   onClick={onDecline}
                   className="w-full font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40 hover:text-foreground/70 transition-colors py-2"
                 >
-                  Continuar sin Premium Care
+                  Continuar con garantía estándar (3 años)
                 </button>
               </div>
             </motion.div>
