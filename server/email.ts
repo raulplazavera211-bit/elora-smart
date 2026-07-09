@@ -2,7 +2,8 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2024/11/elora-logo.png";
+const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+const LOGO_URL_DARK = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 const WHATSAPP_NUMBER = "34614451901";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2C%20tengo%20una%20consulta%20sobre%20mi%20pedido`;
 const FROM_EMAIL = "Elora Smart <pedidos@elorasmart.online>";
@@ -238,81 +239,89 @@ function buildFichaTecnicaHtml(data: FichaTecnicaEmailData): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ficha Técnica ${data.productName} — Elora Smart</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-container { width: 100% !important; }
+      .email-body { padding: 28px 24px !important; }
+      .email-header { padding: 28px 24px !important; }
+      .email-footer { padding: 20px 24px !important; }
+      .btn-row td { display: block !important; padding: 0 0 12px 0 !important; text-align: center !important; }
+      h1.product-title { font-size: 22px !important; letter-spacing: 2px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background-color:#0d0d0d;font-family:'Helvetica Neue',Arial,sans-serif;">
+<body style="margin:0;padding:0;background-color:#f4f1ec;font-family:'Helvetica Neue',Arial,sans-serif;">
 
-  <!-- Wrapper -->
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0d0d0d;padding:48px 20px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f1ec;padding:40px 16px;">
     <tr><td align="center">
 
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#111111;border:1px solid #222222;">
+      <table class="email-container" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:4px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.08);">
 
         <!-- ══ HEADER ══ -->
         <tr>
-          <td style="background-color:#0a0a0a;padding:36px 48px 28px;text-align:center;border-bottom:1px solid #1e1e1e;">
-            <img src="${LOGO_URL}" alt="Elora Smart" width="130" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
+          <td class="email-header" style="background-color:#0a0a0a;padding:36px 48px 28px;text-align:center;">
+            <img src="${LOGO_URL}" alt="Elora Smart" width="130" height="auto" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
             <p style="margin:14px 0 0;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Inodoros Inteligentes Japoneses</p>
           </td>
         </tr>
 
+        <!-- ══ GOLDEN STRIP ══ -->
+        <tr><td style="background-color:#c9a96e;height:3px;"></td></tr>
+
         <!-- ══ EYEBROW + TITLE ══ -->
         <tr>
-          <td style="padding:44px 48px 0;text-align:center;">
-            <p style="margin:0 0 12px;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Ficha Técnica</p>
-            <h1 style="margin:0 0 6px;font-size:28px;font-weight:300;letter-spacing:4px;text-transform:uppercase;color:#ffffff;font-family:Georgia,serif;">${data.productName}</h1>
-            <div style="width:40px;height:1px;background-color:#c9a96e;margin:18px auto 0;"></div>
+          <td class="email-body" style="padding:44px 48px 0;text-align:center;background-color:#ffffff;">
+            <p style="margin:0 0 10px;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Ficha Técnica</p>
+            <h1 class="product-title" style="margin:0 0 6px;font-size:26px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:#0a0a0a;font-family:Georgia,serif;">${data.productName}</h1>
+            <div style="width:40px;height:2px;background-color:#c9a96e;margin:16px auto 0;"></div>
           </td>
         </tr>
 
         <!-- ══ GREETING ══ -->
         <tr>
-          <td style="padding:32px 48px 0;text-align:center;">
-            <p style="margin:0;font-size:16px;color:#e0e0e0;line-height:1.7;font-family:'Helvetica Neue',Arial,sans-serif;">
-              Hola, <strong style="color:#ffffff;font-weight:600;">${data.nombre}</strong>.
+          <td class="email-body" style="padding:28px 48px 0;text-align:center;background-color:#ffffff;">
+            <p style="margin:0;font-size:17px;color:#0a0a0a;line-height:1.6;font-family:'Helvetica Neue',Arial,sans-serif;">
+              Hola, <strong style="color:#0a0a0a;font-weight:700;">${data.nombre}</strong> 👋
             </p>
-            <p style="margin:12px 0 0;font-size:14px;color:#999999;line-height:1.8;font-family:'Helvetica Neue',Arial,sans-serif;">
-              Aquí tienes la ficha técnica del <strong style="color:#c9a96e;">${data.productName}</strong> que solicitaste.<br />
-              Pulsa el botón para descargarla. Si ya comenzó la descarga automática,<br />este correo te servirá como referencia.
+            <p style="margin:12px 0 0;font-size:14px;color:#666666;line-height:1.8;font-family:'Helvetica Neue',Arial,sans-serif;">
+              Aquí tienes la ficha técnica del <strong style="color:#0a0a0a;">${data.productName}</strong> que solicitaste.
+              Pulsa el botón para descargarla. Si ya comenzó la descarga automática, este correo te servirá como referencia.
             </p>
           </td>
         </tr>
 
         <!-- ══ CTA DOWNLOAD ══ -->
         <tr>
-          <td style="padding:40px 48px;text-align:center;">
+          <td class="email-body" style="padding:36px 48px;text-align:center;background-color:#ffffff;">
             <a href="${data.pdfUrl}" target="_blank"
-               style="display:inline-block;background-color:#c9a96e;color:#0a0a0a;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;padding:18px 48px;">
+               style="display:inline-block;background-color:#0a0a0a;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;padding:18px 44px;border-radius:2px;">
               ↓ &nbsp; Descargar Ficha Técnica
             </a>
-            <p style="margin:16px 0 0;font-size:11px;color:#555555;font-family:'Helvetica Neue',Arial,sans-serif;">
-              Si el botón no funciona, copia este enlace en tu navegador:<br />
-              <a href="${data.pdfUrl}" style="color:#c9a96e;word-break:break-all;text-decoration:none;">${data.pdfUrl}</a>
-            </p>
           </td>
         </tr>
 
         <!-- ══ DIVIDER ══ -->
-        <tr><td style="padding:0 48px;"><div style="height:1px;background-color:#1e1e1e;"></div></td></tr>
+        <tr><td style="padding:0 48px;"><div style="height:1px;background-color:#eeebe5;"></div></td></tr>
 
         <!-- ══ CONTACT BLOCK ══ -->
         <tr>
-          <td style="padding:36px 48px;text-align:center;">
+          <td class="email-body" style="padding:36px 48px;text-align:center;background-color:#ffffff;">
             <p style="margin:0 0 6px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">¿Tienes alguna duda?</p>
-            <p style="margin:0 0 24px;font-size:14px;color:#999999;line-height:1.7;font-family:'Helvetica Neue',Arial,sans-serif;">
-              Responde directamente a este correo o contáctanos por WhatsApp.<br />
+            <p style="margin:0 0 24px;font-size:14px;color:#666666;line-height:1.7;font-family:'Helvetica Neue',Arial,sans-serif;">
+              Responde a este correo o contáctanos directamente.<br />
               Estamos en España y te atendemos en persona.
             </p>
-            <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+            <table class="btn-row" cellpadding="0" cellspacing="0" style="margin:0 auto;">
               <tr>
-                <td style="padding-right:12px;">
+                <td style="padding-right:10px;">
                   <a href="mailto:info@elorasmart.com"
-                     style="display:inline-block;background-color:#1a1a1a;border:1px solid #2a2a2a;color:#e0e0e0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 28px;">
-                    ✉ &nbsp; Escribir un email
+                     style="display:inline-block;background-color:#ffffff;border:1px solid #cccccc;color:#333333;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:13px 24px;border-radius:2px;">
+                    ✉ &nbsp; Email
                   </a>
                 </td>
-                <td>
+                <td style="padding-left:10px;">
                   <a href="${waUrl}"
-                     style="display:inline-block;background-color:#25d366;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 28px;">
+                     style="display:inline-block;background-color:#25d366;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:13px 24px;border-radius:2px;">
                     💬 &nbsp; WhatsApp
                   </a>
                 </td>
@@ -321,17 +330,20 @@ function buildFichaTecnicaHtml(data: FichaTecnicaEmailData): string {
           </td>
         </tr>
 
+        <!-- ══ GOLDEN STRIP BOTTOM ══ -->
+        <tr><td style="background-color:#c9a96e;height:3px;"></td></tr>
+
         <!-- ══ FOOTER ══ -->
         <tr>
-          <td style="background-color:#0a0a0a;padding:28px 48px;text-align:center;border-top:1px solid #1e1e1e;">
-            <img src="${LOGO_URL}" alt="Elora Smart" width="80" style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.6;" />
+          <td class="email-footer" style="background-color:#0a0a0a;padding:28px 48px;text-align:center;">
+            <img src="${LOGO_URL}" alt="Elora Smart" width="90" height="auto" style="display:block;margin:0 auto 14px;filter:brightness(0) invert(1);opacity:0.7;" />
             <p style="margin:0 0 6px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Elora Smart</p>
-            <p style="margin:0 0 4px;font-size:11px;color:#555555;font-family:'Helvetica Neue',Arial,sans-serif;">
-              <a href="mailto:info@elorasmart.com" style="color:#555555;text-decoration:none;">info@elorasmart.com</a>
+            <p style="margin:0 0 4px;font-size:11px;color:#666666;font-family:'Helvetica Neue',Arial,sans-serif;">
+              <a href="mailto:info@elorasmart.com" style="color:#888888;text-decoration:none;">info@elorasmart.com</a>
               &nbsp;·&nbsp;
-              <a href="tel:+34614451901" style="color:#555555;text-decoration:none;">+34 614 451 901</a>
+              <a href="tel:+34614451901" style="color:#888888;text-decoration:none;">+34 614 45 19 01</a>
             </p>
-            <p style="margin:8px 0 0;font-size:10px;color:#333333;font-family:'Helvetica Neue',Arial,sans-serif;">España · elorasmart.online</p>
+            <p style="margin:8px 0 0;font-size:10px;color:#444444;font-family:'Helvetica Neue',Arial,sans-serif;">España · <a href="https://elorasmart.online" style="color:#555555;text-decoration:none;">elorasmart.online</a></p>
           </td>
         </tr>
 

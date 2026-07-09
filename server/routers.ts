@@ -79,7 +79,7 @@ import {
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 import { sendOrderConfirmationEmail, sendFichaTecnicaEmail } from "./email";
-import { storagePut } from "./storage";
+import { storagePut, storageGetSignedUrl } from "./storage";
 
 export const appRouter = router({
   system: systemRouter,
@@ -1080,16 +1080,27 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
         const ficha = FICHA_MAP[input.productId];
         if (!ficha) throw new TRPCError({ code: "NOT_FOUND", message: "Ficha técnica no disponible para este producto" });
 
-        // Build absolute PDF URL
-        const baseUrl = input.origin ?? "https://elorasmart.online";
-        const pdfAbsoluteUrl = `${baseUrl}${ficha.url}`;
+        // Extract the storage key from the /manus-storage/ path
+        const storageKey = ficha.url.replace(/^\/manus-storage\//, "");
 
-        // Send email with PDF link
+        // Get a pre-signed S3 URL (publicly accessible, no auth required)
+        let signedUrl: string;
+        try {
+          signedUrl = await storageGetSignedUrl(storageKey);
+        } catch (err) {
+          console.error("[FichaTecnica] Error getting signed URL:", err);
+          // Fallback to absolute URL via proxy
+          const baseUrl = input.origin ?? "https://elorasmart.online";
+          signedUrl = `${baseUrl}${ficha.url}`;
+        }
+
+        // Send email with pre-signed PDF link
         sendFichaTecnicaEmail({
           to: input.email,
           nombre: input.nombre,
+          telefono: input.telefono,
           productName: ficha.productName,
-          pdfUrl: pdfAbsoluteUrl,
+          pdfUrl: signedUrl,
           pdfFileName: ficha.fileName,
         }).catch(() => {});
 
@@ -1099,7 +1110,7 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
           content: [`Nombre: ${input.nombre}`, `Email: ${input.email}`, input.telefono ? `Teléfono: ${input.telefono}` : null, `Producto: ${ficha.productName}`].filter(Boolean).join("\n"),
         }).catch(() => {});
 
-        return { success: true, pdfUrl: ficha.url, fileName: ficha.fileName };
+        return { success: true, pdfUrl: signedUrl, fileName: ficha.fileName };
       }),
   }),
 });
