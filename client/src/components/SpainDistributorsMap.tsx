@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 // Límites geográficos usados en la proyección: lon [-18.2, 4.4], lat [27.6, 43.8]
 const VW = 960, VH = 700;
 // ViewBox por defecto con zoom: recorta márgenes para que España ocupe más pantalla
-const DEFAULT_VB = "30 20 900 640";
+const DEFAULT_VB = "60 80 840 560";
 const LON_MIN = -18.2, LON_MAX = 4.4;
 const LAT_MIN = 27.6, LAT_MAX = 43.8;
 
