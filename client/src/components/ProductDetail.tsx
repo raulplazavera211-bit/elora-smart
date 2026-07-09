@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
 import {
   ArrowLeft, ShoppingBag, Truck, Wrench, Shield,
-  Sparkles, Droplets, Thermometer, Wind, Zap, Check
+  Sparkles, Droplets, Thermometer, Wind, Zap, Check, X, ChevronLeft, ChevronRight
 } from "lucide-react";
+import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 export type ProductSpec = { label: string; value: string };
@@ -39,7 +40,61 @@ const PITCH_ICONS = [Sparkles, Droplets, Thermometer, Wind, Zap, Shield];
 
 export function ProductDetail({ product, onBack, onAdd }: Props) {
   const { t } = useTranslation();
+  const allImages = [product.img, ...product.gallery].filter(Boolean);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const openLightbox = useCallback((index: number) => setLightboxIndex(index), []);
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  const prevImage = useCallback(() => setLightboxIndex(i => i !== null ? (i - 1 + allImages.length) % allImages.length : null), [allImages.length]);
+  const nextImage = useCallback(() => setLightboxIndex(i => i !== null ? (i + 1) % allImages.length : null), [allImages.length]);
+
   return (
+    <>
+    {/* LIGHTBOX */}
+    {lightboxIndex !== null && (
+      <div
+        className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center"
+        onClick={closeLightbox}
+        style={{ backdropFilter: 'blur(4px)' }}
+      >
+        {/* Botón cerrar */}
+        <button
+          onClick={closeLightbox}
+          className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors z-10"
+        >
+          <X className="w-8 h-8" />
+        </button>
+        {/* Botón anterior */}
+        {allImages.length > 1 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); prevImage(); }}
+            className="absolute left-4 text-white/80 hover:text-white transition-colors z-10 p-2"
+          >
+            <ChevronLeft className="w-10 h-10" />
+          </button>
+        )}
+        {/* Imagen ampliada */}
+        <img
+          src={allImages[lightboxIndex]}
+          alt={product.name}
+          className="max-w-[90vw] max-h-[90vh] object-contain"
+          onClick={(e) => e.stopPropagation()}
+        />
+        {/* Botón siguiente */}
+        {allImages.length > 1 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); nextImage(); }}
+            className="absolute right-4 text-white/80 hover:text-white transition-colors z-10 p-2"
+          >
+            <ChevronRight className="w-10 h-10" />
+          </button>
+        )}
+        {/* Contador */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 font-body text-xs tracking-widest">
+          {lightboxIndex + 1} / {allImages.length}
+        </div>
+      </div>
+    )}
     <motion.div
       className="min-h-full bg-background"
       initial={{ opacity: 0, y: 24 }}
@@ -60,7 +115,10 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
             {/* Imagen */}
-            <div className="bg-background border border-border overflow-hidden aspect-square relative">
+            <div
+              className="bg-background border border-border overflow-hidden aspect-square relative cursor-zoom-in"
+              onClick={() => openLightbox(0)}
+            >
               <img
                 src={product.img}
                 alt={product.name}
@@ -184,8 +242,12 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
               <span className="w-5 h-[1px] bg-accent-deep" /> {t('product.gallery')}
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-            {product.gallery.map((g) => (
-              <div key={g} className="aspect-square bg-muted border border-border overflow-hidden">
+            {product.gallery.map((g, idx) => (
+              <div
+                key={g}
+                className="aspect-square bg-muted border border-border overflow-hidden cursor-zoom-in hover:opacity-90 transition-opacity"
+                onClick={() => openLightbox(idx + 1)}
+              >
                 <img src={g} alt={product.name} className="w-full h-full object-cover" />
               </div>
             ))}
@@ -361,5 +423,6 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
         </div>
       </section>
     </motion.div>
+    </>
   );
 }
