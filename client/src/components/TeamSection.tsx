@@ -13,7 +13,7 @@ const PHOTOS = [
 
 const TEAM = [
   { name: "Eloy Ramos",          role: "Director de Producto",          photo: PHOTOS[0], hasPhoto: true,  pos: "center top" },
-  { name: "Marta Rama",          role: "Directora de Marketing",        photo: PHOTOS[1], hasPhoto: true,  pos: "center 30%" },
+  { name: "Marta Rama",          role: "Directora de Marketing",        photo: PHOTOS[1], hasPhoto: true,  pos: "center 45%" },
   { name: "Alejandro Rodriguez", role: "Expansión Comercial",           photo: PHOTOS[2], hasPhoto: false, pos: "center top" },
   { name: "Rubén Beiroa",        role: "Ingeniería y Desarrollo",       photo: PHOTOS[3], hasPhoto: false, pos: "center top" },
   { name: "César Juncal",        role: "Soporte Técnico",               photo: PHOTOS[4], hasPhoto: false, pos: "center top" },
