@@ -489,7 +489,7 @@ const es: ProductsLocaleMap = {
   },
   "AURA": {
     name: "Inodoro inteligente AURA",
-    tagline: "Nuestra experiencia más completa: tecnología, confort y diseño en equilibrio.",
+    tagline: "La experiencia ELORA más completa.",
     description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
     longDescription: "AURA a suelo es el inodoro inteligente japonés premium de ELORA SMART, diseñado para quienes buscan el máximo confort sin cambiar a una instalación suspendida. Integra tecnología avanzada, higiene con agua, secado rápido, automatización, control por voz y funciones premium en un formato confortable, estable y elegante para baños modernos. Incluye 10 años de garantía en la cerámica y 5 años en la tecnología.",
     badges: ["Best seller", "Gama premium"],
@@ -1021,7 +1021,7 @@ const en: ProductsLocaleMap = {
   },
   "AURA": {
     name: "AURA Japanese Toilet",
-    tagline: "The complete AURA experience.",
+    tagline: "The most complete ELORA experience.",
     description: "The most complete smart toilet by ELORA SMART. Available in 3 display colours: Grey & Black, White & Grey.",
     longDescription: "AURA floor-standing is the premium Japanese smart toilet by ELORA SMART, designed for those seeking maximum comfort without switching to a wall-hung installation. It integrates advanced technology, water hygiene, fast drying, automation, voice control and premium features in a comfortable, stable and elegant format for modern bathrooms. Includes a 10-year ceramic warranty and 5 years on the technology.",
     badges: ["Best seller", "Premium range"],
@@ -1553,7 +1553,7 @@ const pt: ProductsLocaleMap = {
   },
   "AURA": {
     name: "Sanita japonesa AURA",
-    tagline: "A experiência AURA completa.",
+    tagline: "A experiência ELORA mais completa.",
     description: "A sanita inteligente mais completa da ELORA SMART. Disponível em 3 cores de display: Cinzento e Preto, Branco e Cinzento.",
     longDescription: "AURA de chão é a sanita inteligente japonesa premium da ELORA SMART, concebida para quem procura o máximo conforto sem mudar para uma instalação suspensa. Integra tecnologia avançada, higiene com água, secagem rápida, automação, controlo por voz e funções premium num formato confortável, estável e elegante para casas de banho modernas. Inclui 10 anos de garantia na cerâmica e 5 anos na tecnologia.",
     badges: ["Best seller", "Gama premium"],
@@ -2085,7 +2085,7 @@ const fr: ProductsLocaleMap = {
   },
   "AURA": {
     name: "Toilette japonaise AURA",
-    tagline: "L'expérience AURA complète.",
+    tagline: "L'expérience ELORA la plus complète.",
     description: "La toilette intelligente la plus complète d'ELORA SMART. Disponible en 3 couleurs d'affichage : Gris et Noir, Blanc et Gris.",
     longDescription: "AURA au sol est la toilette japonaise intelligente premium d'ELORA SMART, conçue pour ceux qui recherchent le maximum de confort sans passer à une installation suspendue. Elle intègre technologie avancée, hygiène à l'eau, séchage rapide, automatisation, contrôle vocal et fonctions premium dans un format confortable, stable et élégant pour les salles de bain modernes. Inclut 10 ans de garantie sur la céramique et 5 ans sur la technologie.",
     badges: ["Best seller", "Gamme premium"],
@@ -2617,7 +2617,7 @@ const it: ProductsLocaleMap = {
   },
   "AURA": {
     name: "WC giapponese AURA",
-    tagline: "L'esperienza AURA completa.",
+    tagline: "L'esperienza ELORA più completa.",
     description: "Il WC intelligente più completo di ELORA SMART. Disponibile in 3 colori di display: Grigio e Nero, Bianco e Grigio.",
     longDescription: "AURA a pavimento è il WC intelligente giapponese premium di ELORA SMART, progettato per chi cerca il massimo comfort senza passare a un'installazione sospesa. Integra tecnologia avanzata, igiene con acqua, asciugatura rapida, automazione, controllo vocale e funzioni premium in un formato confortevole, stabile ed elegante per bagni moderni. Include 10 anni di garanzia sulla ceramica e 5 anni sulla tecnologia.",
     badges: ["Best seller", "Gamma premium"],
