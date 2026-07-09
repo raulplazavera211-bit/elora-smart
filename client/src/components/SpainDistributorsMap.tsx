@@ -250,7 +250,7 @@ export default function SpainDistributorsMap() {
             <div style={{ position: "absolute", bottom: 0, left: 0, width: "20px", height: "20px", borderBottom: "2px solid #E87A3D", borderLeft: "2px solid #E87A3D" }} />
 
             <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: "10px", letterSpacing: "0.35em", textTransform: "uppercase", color: "#E87A3D", marginBottom: "12px" }}>¿Quieres vender Elora?</p>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "26px", fontWeight: 700, color: "#fff", lineHeight: 1.1, marginBottom: "12px", textTransform: "uppercase" }}>Sé<br/>distribuidor</h3>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "26px", fontWeight: 700, color: "#E87A3D", lineHeight: 1.1, marginBottom: "12px", textTransform: "uppercase" }}>Sé<br/>distribuidor</h3>
             <p style={{ fontFamily: "sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginBottom: "24px" }}>Únete a nuestra red oficial y ofrece los inodoros inteligentes más avanzados del mercado.</p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
