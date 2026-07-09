@@ -16,6 +16,7 @@ import { useLocation } from "wouter";
 import { getLocalizedFeatured, getLocalizedProducts } from "@/lib/products";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import TeamSection from "@/components/TeamSection";
+import SpainDistributorsMap from "@/components/SpainDistributorsMap";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { CartPanel } from "@/components/CartPanel";
 import { PremiumCareModal } from "@/components/PremiumCareModal";
@@ -2236,6 +2237,8 @@ export default function Home() {
               <TeamSection />
 
               {/* ── CLUB ELORA ────────────────────────────────────────────────── */}
+              <SpainDistributorsMap />
+
               <ClubEloraSection />
 
               {/* ── CAPÍTULO 5: CONTACTO ────────────────────────────────────── */}
