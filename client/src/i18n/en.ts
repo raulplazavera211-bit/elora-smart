@@ -391,8 +391,8 @@ const en = {
       { number: "04", eyebrow: "Complete hygiene with water", title: "Rear, feminine and mobile wash", subtitle: "adjustable temperature and pressure", body: "Instant hot water. Self-cleaning nozzle in stainless steel. Three customisable wash modes. The hygiene that paper can never provide.", tag: "Triple wash system" },
       { number: "05", eyebrow: "Super-Typhoon drying", title: "In less than 30 seconds", subtitle: "adjustable temperature and speed", body: "A high-performance air jet dries completely in less than 30 seconds. 5 speeds, 4 temperatures. The reality of a paper-free toilet.", tag: "Paper-free" },
       { number: "06", eyebrow: "Hygienic foam shield", title: "Prevents splashing", subtitle: "and blocks odours", body: "Before each use, the toilet creates a foam barrier in the water. Prevents splashing, neutralises odours and keeps the ceramic cleaner.", tag: "Foam shield" },
-      { number: "07", eyebrow: "Total control", title: "Remote control", subtitle: "to save your preferences", body: "Remote control with memory for 2 users. Saves your temperature settings, wash modes and drying. Fully personalised, always ready.", tag: "2 user profiles" },
-      { number: "08", eyebrow: "UV sterilising lamp", title: "Disinfects completely", subtitle: "with ultraviolet UV", body: "The UV lamp eliminates bacteria and germs automatically. Ambient deodorisation included. The cleanest bathroom, always.", tag: "AURA range" },
+      { number: "07", eyebrow: "UV sterilising lamp", title: "Disinfects completely", subtitle: "with ultraviolet UV", body: "The UV lamp eliminates bacteria and germs automatically. Ambient deodorisation included. The cleanest bathroom, always.", tag: "ELORA EXPERIENCE" },
+      { number: "08", eyebrow: "Total control", title: "Remote control", subtitle: "to save your preferences", body: "Remote control with memory for 2 users. Saves your temperature settings, wash modes and drying. Fully personalised, always ready.", tag: "2 user profiles" },
     ],
   },
 
