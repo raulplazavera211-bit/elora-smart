@@ -61,11 +61,11 @@ const es: ProductsLocaleMap = {
       "Funcionamiento silencioso ≤59 dB",
     ],
     technical: [
-      { group: "Lavado & bidé", specs: [
+      { group: "Lavado e higiene", specs: [
         { label: "Modos de lavado", value: "Posterior · Femenino · Móvil" },
         { label: "Temperatura del agua", value: "Natural · 33°C · 37°C · 39°C" },
         { label: "Boquilla", value: "Acero inoxidable autolimpiante" },
-        { label: "Asiento", value: "Antibacteriano CLIMADAPT" },
+        { label: "Higienización", value: "Luz UV esterilizadora" },
       ]},
       { group: "Confort & secado", specs: [
         { label: "Asiento calefactado", value: "Natural · 33°C · 37°C · 39°C" },
@@ -73,11 +73,12 @@ const es: ProductsLocaleMap = {
         { label: "Tiempo de secado", value: "< 30 segundos" },
         { label: "Cierre", value: "Amortiguado (soft close)" },
       ]},
-      { group: "Automatización", specs: [
+      { group: "Automatización & control", specs: [
         { label: "Apertura/cierre", value: "Automático por sensor" },
         { label: "Sensor de pie", value: "Sí" },
         { label: "Detección de postura", value: "Pie / Sentado" },
         { label: "Descarga automática", value: "Al levantarse" },
+        { label: "Control remoto", value: "Español (o inglés) · Memoria 2 usuarios" },
       ]},
       { group: "Agua & sistema", specs: [
         { label: "Tanque integrado", value: "5 litros" },
@@ -88,15 +89,19 @@ const es: ProductsLocaleMap = {
       ]},
     ],
     dimensions: [
-      { label: "Instalación", value: "A suelo (estándar)" },
-      { label: "Tanque", value: "5 litros integrado" },
+      { label: "Largo", value: "68 cm" },
+      { label: "Ancho", value: "39 cm" },
+      { label: "Alto asiento", value: "43 cm" },
+      { label: "Instalación", value: "A suelo" },
+      { label: "Salida", value: "Vertical 21 cm" },
+      { label: "Tanque", value: "Integrado 5 – 2,5 litros (modo ECO)" },
       { label: "Nivel sonoro", value: "≤59 dB" },
       { label: "Diseño", value: "Rimless" },
     ],
     inTheBox: [
       "Inodoro inteligente ESENZA",
-      "Mando a distancia en español",
-      "Rueda lateral multifunción",
+      "Mando a distancia en Español (elegible inglés)",
+      "Filtro de agua",
       "Manual de instalación y uso",
       "Kit de instalación",
     ],
@@ -506,11 +511,11 @@ const en: ProductsLocaleMap = {
       "Silent operation ≤59 dB",
     ],
     technical: [
-      { group: "Washing & bidet", specs: [
+      { group: "Washing & hygiene", specs: [
         { label: "Wash modes", value: "Rear · Feminine · Mobile" },
         { label: "Water temperature", value: "Natural · 33°C · 37°C · 39°C" },
         { label: "Nozzle", value: "Self-cleaning stainless steel" },
-        { label: "Seat", value: "CLIMADAPT antibacterial" },
+        { label: "Sanitisation", value: "UV sterilising light" },
       ]},
       { group: "Comfort & drying", specs: [
         { label: "Heated seat", value: "Natural · 33°C · 37°C · 39°C" },
@@ -518,11 +523,12 @@ const en: ProductsLocaleMap = {
         { label: "Drying time", value: "< 30 seconds" },
         { label: "Lid", value: "Soft close" },
       ]},
-      { group: "Automation", specs: [
+      { group: "Automation & control", specs: [
         { label: "Opening/closing", value: "Automatic by sensor" },
         { label: "Foot sensor", value: "Yes" },
         { label: "Posture detection", value: "Standing / Seated" },
         { label: "Auto flush", value: "On standing up" },
+        { label: "Remote control", value: "Spanish (or English) · 2-user memory" },
       ]},
       { group: "Water & system", specs: [
         { label: "Integrated tank", value: "5 litres" },
@@ -533,15 +539,19 @@ const en: ProductsLocaleMap = {
       ]},
     ],
     dimensions: [
-      { label: "Installation", value: "Floor-standing (standard)" },
-      { label: "Tank", value: "5 litres integrated" },
+      { label: "Length", value: "68 cm" },
+      { label: "Width", value: "39 cm" },
+      { label: "Seat height", value: "43 cm" },
+      { label: "Installation", value: "Floor-standing" },
+      { label: "Outlet", value: "Vertical 21 cm" },
+      { label: "Tank", value: "Integrated 5 – 2.5 litres (ECO mode)" },
       { label: "Noise level", value: "≤59 dB" },
       { label: "Design", value: "Rimless" },
     ],
     inTheBox: [
       "ESENZA Smart Toilet",
-      "Remote control",
-      "Multi-function side wheel",
+      "Remote control in Spanish (English available)",
+      "Water filter",
       "Installation and user manual",
       "Installation kit",
     ],
@@ -951,11 +961,11 @@ const pt: ProductsLocaleMap = {
       "Funcionamento silencioso ≤59 dB",
     ],
     technical: [
-      { group: "Lavagem & bidé", specs: [
+      { group: "Lavagem e higiene", specs: [
         { label: "Modos de lavagem", value: "Posterior · Feminino · Móvel" },
         { label: "Temperatura da água", value: "Natural · 33°C · 37°C · 39°C" },
         { label: "Bocal", value: "Aço inoxidável autolimpante" },
-        { label: "Assento", value: "Antibacteriano CLIMADAPT" },
+        { label: "Higienização", value: "Luz UV esterilizadora" },
       ]},
       { group: "Conforto & secagem", specs: [
         { label: "Assento aquecido", value: "Natural · 33°C · 37°C · 39°C" },
@@ -963,11 +973,12 @@ const pt: ProductsLocaleMap = {
         { label: "Tempo de secagem", value: "< 30 segundos" },
         { label: "Tampa", value: "Amortecida (soft close)" },
       ]},
-      { group: "Automatização", specs: [
+      { group: "Automatização & controlo", specs: [
         { label: "Abertura/fecho", value: "Automático por sensor" },
         { label: "Sensor de pé", value: "Sim" },
         { label: "Deteção de postura", value: "Em pé / Sentado" },
         { label: "Descarga automática", value: "Ao levantar" },
+        { label: "Comando à distância", value: "Português/Espanhol (ou inglês) · Memória 2 utilizadores" },
       ]},
       { group: "Água & sistema", specs: [
         { label: "Depósito integrado", value: "5 litros" },
@@ -978,15 +989,19 @@ const pt: ProductsLocaleMap = {
       ]},
     ],
     dimensions: [
-      { label: "Instalação", value: "De chão (padrão)" },
-      { label: "Depósito", value: "5 litros integrado" },
+      { label: "Comprimento", value: "68 cm" },
+      { label: "Largura", value: "39 cm" },
+      { label: "Altura assento", value: "43 cm" },
+      { label: "Instalação", value: "De chão" },
+      { label: "Saída", value: "Vertical 21 cm" },
+      { label: "Depósito", value: "Integrado 5 – 2,5 litros (modo ECO)" },
       { label: "Nível sonoro", value: "≤59 dB" },
       { label: "Design", value: "Rimless" },
     ],
     inTheBox: [
       "Sanita inteligente ESENZA",
-      "Comando à distância",
-      "Roda lateral multifunções",
+      "Comando à distância em Português/Espanhol (inglês disponível)",
+      "Filtro de água",
       "Manual de instalação e utilização",
       "Kit de instalação",
     ],
@@ -1396,11 +1411,11 @@ const fr: ProductsLocaleMap = {
       "Fonctionnement silencieux ≤59 dB",
     ],
     technical: [
-      { group: "Lavage & bidet", specs: [
+      { group: "Lavage & hygiène", specs: [
         { label: "Modes de lavage", value: "Postérieur · Féminin · Mobile" },
         { label: "Température de l'eau", value: "Natural · 33°C · 37°C · 39°C" },
         { label: "Buse", value: "Acier inoxydable autonettoyant" },
-        { label: "Siège", value: "Antibactérien CLIMADAPT" },
+        { label: "Hygiénisation", value: "Lumière UV stérilisante" },
       ]},
       { group: "Confort & séchage", specs: [
         { label: "Siège chauffant", value: "Natural · 33°C · 37°C · 39°C" },
@@ -1408,11 +1423,12 @@ const fr: ProductsLocaleMap = {
         { label: "Temps de séchage", value: "< 30 secondes" },
         { label: "Abattant", value: "Fermeture amortie" },
       ]},
-      { group: "Automatisation", specs: [
+      { group: "Automatisation & contrôle", specs: [
         { label: "Ouverture/fermeture", value: "Automatique par capteur" },
         { label: "Capteur de pied", value: "Oui" },
         { label: "Détection de posture", value: "Debout / Assis" },
         { label: "Chasse automatique", value: "En se levant" },
+        { label: "Télécommande", value: "Espagnol (ou anglais) · Mémoire 2 utilisateurs" },
       ]},
       { group: "Eau & système", specs: [
         { label: "Réservoir intégré", value: "5 litres" },
@@ -1423,15 +1439,19 @@ const fr: ProductsLocaleMap = {
       ]},
     ],
     dimensions: [
-      { label: "Installation", value: "Au sol (standard)" },
-      { label: "Réservoir", value: "5 litres intégré" },
+      { label: "Longueur", value: "68 cm" },
+      { label: "Largeur", value: "39 cm" },
+      { label: "Hauteur siège", value: "43 cm" },
+      { label: "Installation", value: "Au sol" },
+      { label: "Sortie", value: "Verticale 21 cm" },
+      { label: "Réservoir", value: "Intégré 5 – 2,5 litres (mode ECO)" },
       { label: "Niveau sonore", value: "≤59 dB" },
       { label: "Design", value: "Rimless" },
     ],
     inTheBox: [
       "Toilette intelligente ESENZA",
-      "Télécommande",
-      "Molette latérale multifonction",
+      "Télécommande en espagnol (anglais disponible)",
+      "Filtre à eau",
       "Manuel d'installation et d'utilisation",
       "Kit d'installation",
     ],
@@ -1841,11 +1861,11 @@ const it: ProductsLocaleMap = {
       "Funzionamento silenzioso ≤59 dB",
     ],
     technical: [
-      { group: "Lavaggio & bidet", specs: [
+      { group: "Lavaggio & igiene", specs: [
         { label: "Modalità di lavaggio", value: "Posteriore · Femminile · Mobile" },
         { label: "Temperatura dell'acqua", value: "Natural · 33°C · 37°C · 39°C" },
         { label: "Ugello", value: "Acciaio inossidabile autopulente" },
-        { label: "Sedile", value: "Antibatterico CLIMADAPT" },
+        { label: "Igienizzazione", value: "Luce UV sterilizzante" },
       ]},
       { group: "Comfort & asciugatura", specs: [
         { label: "Sedile riscaldato", value: "Natural · 33°C · 37°C · 39°C" },
@@ -1853,11 +1873,12 @@ const it: ProductsLocaleMap = {
         { label: "Tempo di asciugatura", value: "< 30 secondi" },
         { label: "Coperchio", value: "Chiusura ammortizzata" },
       ]},
-      { group: "Automazione", specs: [
+      { group: "Automazione & controllo", specs: [
         { label: "Apertura/chiusura", value: "Automatica tramite sensore" },
         { label: "Sensore del piede", value: "Sì" },
         { label: "Rilevamento postura", value: "In piedi / Seduto" },
         { label: "Scarico automatico", value: "Alzandosi" },
+        { label: "Telecomando", value: "Spagnolo (o inglese) · Memoria 2 utenti" },
       ]},
       { group: "Acqua & sistema", specs: [
         { label: "Serbatoio integrato", value: "5 litri" },
@@ -1868,15 +1889,19 @@ const it: ProductsLocaleMap = {
       ]},
     ],
     dimensions: [
-      { label: "Installazione", value: "A pavimento (standard)" },
-      { label: "Serbatoio", value: "5 litri integrato" },
+      { label: "Lunghezza", value: "68 cm" },
+      { label: "Larghezza", value: "39 cm" },
+      { label: "Altezza sedile", value: "43 cm" },
+      { label: "Installazione", value: "A pavimento" },
+      { label: "Scarico", value: "Verticale 21 cm" },
+      { label: "Serbatoio", value: "Integrato 5 – 2,5 litri (modalità ECO)" },
       { label: "Livello sonoro", value: "≤59 dB" },
       { label: "Design", value: "Rimless" },
     ],
     inTheBox: [
       "WC intelligente ESENZA",
-      "Telecomando",
-      "Rotella laterale multifunzione",
+      "Telecomando in spagnolo (inglese disponibile)",
+      "Filtro dell'acqua",
       "Manuale di installazione e uso",
       "Kit di installazione",
     ],
