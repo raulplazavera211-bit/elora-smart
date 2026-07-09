@@ -78,7 +78,7 @@ import {
   reorderExperienceSlides,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
-import { sendOrderConfirmationEmail } from "./email";
+import { sendOrderConfirmationEmail, sendFichaTecnicaEmail } from "./email";
 import { storagePut } from "./storage";
 
 export const appRouter = router({
@@ -1030,6 +1030,76 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
         const key = `experience/${Date.now()}-${input.filename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
         const { url } = await storagePut(key, buffer, input.mimeType);
         return { url, key };
+      }),
+  }),
+
+  // ─── FICHA TÉCNICA ────────────────────────────────────────────────────────────
+  fichaTecnica: router({
+    request: publicProcedure
+      .input(z.object({
+        productId: z.string().min(1),
+        nombre: z.string().min(1).max(255),
+        email: z.string().email().max(320),
+        telefono: z.string().max(64).optional(),
+        origin: z.string().url().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const FICHA_MAP: Record<string, { url: string; fileName: string; productName: string }> = {
+          "ESENZA": {
+            url: "/manus-storage/Ficha ELORA ESENZA BL-200_3a32d4c7.pdf",
+            fileName: "Ficha-Tecnica-ELORA-ESENZA.pdf",
+            productName: "Inodoro Inteligente ESENZA",
+          },
+          "ESENZA-COMPACT": {
+            url: "/manus-storage/Ficha ELORA ESENZA COMPACT BL_bafe0e38.pdf",
+            fileName: "Ficha-Tecnica-ELORA-ESENZA-Compact.pdf",
+            productName: "Inodoro Inteligente ESENZA Compact",
+          },
+          "ESENZA-SUSPENDIDO": {
+            url: "/manus-storage/Ficha ELORA ESENZA SUSPENDIDO BL_2103867b.pdf",
+            fileName: "Ficha-Tecnica-ELORA-ESENZA-Suspendido.pdf",
+            productName: "Inodoro Inteligente ESENZA Suspendido",
+          },
+          "AURA": {
+            url: "/manus-storage/Ficha ELORA AURA BL -200_7f7f941e.pdf",
+            fileName: "Ficha-Tecnica-ELORA-AURA.pdf",
+            productName: "Inodoro Inteligente AURA",
+          },
+          "AURA-COMPACT": {
+            url: "/manus-storage/Ficha ELORA AURA COMPACT_6684783e.pdf",
+            fileName: "Ficha-Tecnica-ELORA-AURA-Compact.pdf",
+            productName: "Inodoro Inteligente AURA Compact",
+          },
+          "AURA-SUSPENDIDO": {
+            url: "/manus-storage/Ficha ELORA AURA SUSPENDIDO_ece451e8.pdf",
+            fileName: "Ficha-Tecnica-ELORA-AURA-Suspendido.pdf",
+            productName: "Inodoro Inteligente AURA Suspendido",
+          },
+        };
+
+        const ficha = FICHA_MAP[input.productId];
+        if (!ficha) throw new TRPCError({ code: "NOT_FOUND", message: "Ficha técnica no disponible para este producto" });
+
+        // Build absolute PDF URL
+        const baseUrl = input.origin ?? "https://elorasmart.online";
+        const pdfAbsoluteUrl = `${baseUrl}${ficha.url}`;
+
+        // Send email with PDF link
+        sendFichaTecnicaEmail({
+          to: input.email,
+          nombre: input.nombre,
+          productName: ficha.productName,
+          pdfUrl: pdfAbsoluteUrl,
+          pdfFileName: ficha.fileName,
+        }).catch(() => {});
+
+        // Notify owner
+        notifyOwner({
+          title: `📄 Solicitud ficha técnica: ${ficha.productName}`,
+          content: [`Nombre: ${input.nombre}`, `Email: ${input.email}`, input.telefono ? `Teléfono: ${input.telefono}` : null, `Producto: ${ficha.productName}`].filter(Boolean).join("\n"),
+        }).catch(() => {});
+
+        return { success: true, pdfUrl: ficha.url, fileName: ficha.fileName };
       }),
   }),
 });

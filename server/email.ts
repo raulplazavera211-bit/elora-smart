@@ -217,3 +217,131 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<
     return false;
   }
 }
+
+// ─── FICHA TÉCNICA ────────────────────────────────────────────────────────────
+
+export type FichaTecnicaEmailData = {
+  to: string;
+  nombre: string;
+  productName: string;
+  pdfUrl: string;
+  pdfFileName: string;
+};
+
+function buildFichaTecnicaHtml(data: FichaTecnicaEmailData): string {
+  return `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha Técnica — ${data.productName}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f0e8; font-family: Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f0e8; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border: 1px solid #e8e0d4;">
+
+          <!-- HEADER -->
+          <tr>
+            <td style="background-color: #0a0a0a; padding: 32px 40px; text-align: center;">
+              <img src="${LOGO_URL}" alt="Elora Smart" width="140" style="display: block; margin: 0 auto; filter: brightness(0) invert(1);" />
+              <p style="margin: 16px 0 0; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #c9a96e;">
+                Inodoros Inteligentes
+              </p>
+            </td>
+          </tr>
+
+          <!-- HERO TEXT -->
+          <tr>
+            <td style="padding: 40px 40px 24px; text-align: center; border-bottom: 1px solid #e8e0d4;">
+              <p style="margin: 0 0 8px; font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #c9a96e;">
+                Ficha Técnica
+              </p>
+              <h1 style="margin: 0 0 16px; font-family: Georgia, serif; font-size: 26px; font-weight: normal; color: #0a0a0a; letter-spacing: 2px; text-transform: uppercase;">
+                ${data.productName}
+              </h1>
+              <p style="margin: 0; font-family: Arial, sans-serif; font-size: 15px; color: #555; line-height: 1.6;">
+                Hola, <strong style="color: #0a0a0a;">${data.nombre}</strong>.<br />
+                Adjuntamos la ficha técnica del <strong>${data.productName}</strong> que solicitaste.<br />
+                También puedes descargarla directamente desde el botón de abajo.
+              </p>
+            </td>
+          </tr>
+
+          <!-- DOWNLOAD BUTTON -->
+          <tr>
+            <td style="padding: 40px 40px; text-align: center;">
+              <a href="${data.pdfUrl}"
+                 style="display: inline-block; background-color: #c9a96e; color: #0a0a0a; font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; padding: 16px 40px; font-weight: bold;">
+                ↓ Descargar Ficha Técnica
+              </a>
+              <p style="margin: 20px 0 0; font-family: Arial, sans-serif; font-size: 12px; color: #999;">
+                Si el botón no funciona, copia y pega este enlace en tu navegador:<br />
+                <a href="${data.pdfUrl}" style="color: #c9a96e; word-break: break-all;">${data.pdfUrl}</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- CONTACT CTA -->
+          <tr>
+            <td style="padding: 0 40px 40px; text-align: center;">
+              <div style="border-top: 1px solid #e8e0d4; padding-top: 32px;">
+                <p style="margin: 0 0 20px; font-family: Arial, sans-serif; font-size: 14px; color: #555; line-height: 1.6;">
+                  ¿Tienes alguna pregunta sobre el producto?<br />
+                  Nuestro equipo está disponible para ayudarte.
+                </p>
+                <a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2C%20tengo%20una%20consulta%20sobre%20el%20${encodeURIComponent(data.productName)}"
+                   style="display: inline-block; background-color: #25d366; color: #ffffff; font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; padding: 14px 32px; font-weight: bold;">
+                  💬 Contactar por WhatsApp
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color: #0a0a0a; padding: 28px 40px; text-align: center;">
+              <p style="margin: 0 0 8px; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #c9a96e;">
+                Elora Smart
+              </p>
+              <p style="margin: 0 0 4px; font-family: Arial, sans-serif; font-size: 11px; color: #666;">
+                info@elorasmart.com · +34 614 451 901
+              </p>
+              <p style="margin: 0; font-family: Arial, sans-serif; font-size: 11px; color: #444;">
+                España
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}
+
+export async function sendFichaTecnicaEmail(data: FichaTecnicaEmailData): Promise<boolean> {
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: data.to,
+      subject: `📄 Ficha Técnica ${data.productName} — Elora Smart`,
+      html: buildFichaTecnicaHtml(data),
+    });
+
+    if (error) {
+      console.error("[Email] Error enviando ficha técnica:", error);
+      return false;
+    }
+
+    console.log(`[Email] Ficha técnica enviada a ${data.to} para ${data.productName}`);
+    return true;
+  } catch (err) {
+    console.error("[Email] Excepción enviando ficha técnica:", err);
+    return false;
+  }
+}

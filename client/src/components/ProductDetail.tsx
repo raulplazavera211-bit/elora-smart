@@ -1,10 +1,11 @@
 import { motion } from "motion/react";
 import {
   ArrowLeft, ShoppingBag, Truck, Wrench, Shield,
-  Sparkles, Droplets, Thermometer, Wind, Zap, Check, X, ChevronLeft, ChevronRight
+  Sparkles, Droplets, Thermometer, Wind, Zap, Check, X, ChevronLeft, ChevronRight, FileText
 } from "lucide-react";
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { FichaTecnicaModal } from "@/components/FichaTecnicaModal";
 
 export type ProductSpec = { label: string; value: string };
 
@@ -42,6 +43,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
   const { t } = useTranslation();
   const allImages = [product.img, ...product.gallery].filter(Boolean);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [fichaModalOpen, setFichaModalOpen] = useState(false);
 
   const openLightbox = useCallback((index: number) => setLightboxIndex(index), []);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -190,6 +192,15 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                   {t('product.viewCollection')}
                 </button>
               </div>
+
+              {/* Ficha Técnica */}
+              <button
+                onClick={() => setFichaModalOpen(true)}
+                className="w-full inline-flex items-center justify-center gap-2 border border-border/50 font-body text-[10px] uppercase tracking-[0.3em] py-3 text-foreground/60 hover:border-accent hover:text-accent transition-colors"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                {t('product.downloadDatasheet', 'Descargar Ficha Técnica')}
+              </button>
 
               {/* Garantías — 1 col en móvil, 3 en sm+ */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 pt-4 mt-1 border-t border-border">
@@ -448,6 +459,14 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
         </div>
       </section>
     </motion.div>
+
+    {/* Modal Ficha Técnica */}
+    <FichaTecnicaModal
+      open={fichaModalOpen}
+      onClose={() => setFichaModalOpen(false)}
+      productId={product.id}
+      productName={product.name}
+    />
     </>
   );
 }
