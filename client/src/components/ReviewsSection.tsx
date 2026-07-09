@@ -77,14 +77,14 @@ export function ReviewsSection() {
 
       {/* Carrusel infinito fila 1 → izquierda */}
       <div className="relative">
-        <div className="flex gap-5 w-max" style={{ animation: "marquee-left 40s linear infinite" }}>
+        <div className="flex gap-5 w-max" style={{ animation: "marquee-left 80s linear infinite" }}>
           {doubled.map((r, i) => <ReviewCard key={i} r={r} idx={i % reviews.length} />)}
         </div>
       </div>
 
       {/* Carrusel infinito fila 2 → derecha */}
       <div className="relative mt-5">
-        <div className="flex gap-5 w-max" style={{ animation: "marquee-right 50s linear infinite" }}>
+        <div className="flex gap-5 w-max" style={{ animation: "marquee-right 100s linear infinite" }}>
           {[...doubled].reverse().map((r, i) => <ReviewCard key={i} r={r} idx={(reviews.length - 1 - (i % reviews.length))} />)}
         </div>
       </div>
