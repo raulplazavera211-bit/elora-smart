@@ -11,7 +11,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { storageGetSignedUrl } from "../storage";
 
-// Mapeo de producto → clave de storage
+// Mapeo de producto → clave de storage (sin prefijo /manus-storage/)
 const FICHA_MAP: Record<string, { key: string; fileName: string }> = {
   "ESENZA": { key: "Ficha ELORA ESENZA BL-200_3a32d4c7.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA.pdf" },
   "ESENZA-COMPACT": { key: "Ficha ELORA ESENZA COMPACT BL_bafe0e38.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA-Compact.pdf" },
