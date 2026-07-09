@@ -194,11 +194,11 @@ export default function TeamSection() {
                 </div>
 
                 {/* Info */}
-                <div className="px-3 py-3 bg-background border-t border-border">
-                  <p className="font-display text-[13px] uppercase tracking-wide text-foreground leading-tight truncate">
+                <div className="px-3 py-4 bg-background border-t border-border">
+                  <p className="font-display text-[15px] md:text-[17px] uppercase tracking-wide text-foreground leading-tight truncate">
                     {m.name}
                   </p>
-                  <p className="font-body text-[10px] uppercase tracking-[0.1em] text-accent-deep/80 mt-0.5 leading-tight truncate">
+                  <p className="font-body text-[11px] md:text-[12px] uppercase tracking-[0.1em] text-accent-deep/80 mt-1 leading-tight truncate">
                     {m.role}
                   </p>
                 </div>
