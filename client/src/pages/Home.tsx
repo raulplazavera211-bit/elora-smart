@@ -16,7 +16,6 @@ import { useLocation } from "wouter";
 import { getLocalizedFeatured, getLocalizedProducts } from "@/lib/products";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import TeamSection from "@/components/TeamSection";
-import { CatalogDownloadButton } from "@/components/CatalogDownloadButton";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { CartPanel } from "@/components/CartPanel";
 import { PremiumCareModal } from "@/components/PremiumCareModal";
@@ -2213,7 +2212,6 @@ export default function Home() {
                         <span className="w-4 h-px bg-accent-deep/50" />
                         Catálogo general 2026
                       </p>
-                      <CatalogDownloadButton />
                     </div>
 
                     <div className="flex flex-col gap-4 relative z-10">
