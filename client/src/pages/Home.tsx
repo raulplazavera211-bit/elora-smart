@@ -1782,7 +1782,7 @@ export default function Home() {
                     className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover"
                     style={{ transform: "translate(-50%, -50%)", pointerEvents: "none" }}
                   >
-                    <source src="/manus-storage/elora-hero-drone-trimmed_8ab79e91.mp4" type="video/mp4" />
+                    <source src="/manus-storage/elora-hero-v2_6bab4cdb.mp4" type="video/mp4" />
                   </video>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/20" />
