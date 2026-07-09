@@ -128,9 +128,9 @@ const es: ProductsLocaleMap = {
     longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA en un formato más estilizado.",
     badges: ["Tamaño reducido", "Pegado a la pared"],
     highlights: [
+      { label: "Instalación", value: "Sin obra" },
       { label: "Formato", value: "Fondo reducido" },
-      { label: "Instalación", value: "Back-to-wall" },
-      { label: "Garantía", value: "10 años" },
+      { label: "Diseño", value: "Pegado a la pared" },
     ],
     pitch: [
       { title: "Diseñado para baños pequeños", body: "Formato compacto de fondo reducido. Cabe donde otros no llegan sin sacrificar ninguna función esencial." },
@@ -580,9 +580,9 @@ const en: ProductsLocaleMap = {
     longDescription: "ESENZA COMPACT is the compact smart toilet by ELORA SMART, designed to save space in small bathrooms, renovations and new builds. Its shorter design, fully flush against the wall, optimises every centimetre while maintaining the essential ESENZA functions in a more streamlined format.",
     badges: ["Compact", "Back-to-wall"],
     highlights: [
+      { label: "Installation", value: "No building work" },
       { label: "Format", value: "Reduced depth" },
-      { label: "Installation", value: "Back-to-wall" },
-      { label: "Warranty", value: "10 years" },
+      { label: "Design", value: "Flush against wall" },
     ],
     pitch: [
       { title: "Designed for small bathrooms", body: "Compact reduced-depth format. Fits where others cannot without sacrificing any essential function." },
@@ -1032,9 +1032,9 @@ const pt: ProductsLocaleMap = {
     longDescription: "ESENZA COMPACT é a sanita inteligente compacta da ELORA SMART, pensada para ganhar espaço em casas de banho pequenas. O seu design mais curto e totalmente encostado à parede otimiza cada centímetro, mantendo as funções essenciais do ESENZA.",
     badges: ["Compact", "Back-to-wall"],
     highlights: [
+      { label: "Instalação", value: "Sem obras" },
       { label: "Formato", value: "Profundidade reduzida" },
-      { label: "Instalação", value: "Back-to-wall" },
-      { label: "Garantia", value: "10 anos" },
+      { label: "Design", value: "Encostado à parede" },
     ],
     pitch: [
       { title: "Desenhado para casas de banho pequenas", body: "Formato compacto de profundidade reduzida. Cabe onde outros não chegam sem sacrificar nenhuma função essencial." },
@@ -1484,9 +1484,9 @@ const fr: ProductsLocaleMap = {
     longDescription: "ESENZA COMPACT est la toilette intelligente compacte d'ELORA SMART, conçue pour gagner de l'espace dans les petites salles de bain. Son design plus court et totalement adossé au mur optimise chaque centimètre tout en maintenant les fonctions essentielles de l'ESENZA.",
     badges: ["Compact", "Back-to-wall"],
     highlights: [
+      { label: "Installation", value: "Sans travaux" },
       { label: "Format", value: "Profondeur réduite" },
-      { label: "Installation", value: "Back-to-wall" },
-      { label: "Garantie", value: "10 ans" },
+      { label: "Design", value: "Adossé au mur" },
     ],
     pitch: [
       { title: "Conçue pour les petites salles de bain", body: "Format compact à profondeur réduite. S'adapte là où d'autres ne peuvent pas sans sacrifier aucune fonction essentielle." },
@@ -1936,9 +1936,9 @@ const it: ProductsLocaleMap = {
     longDescription: "ESENZA COMPACT è il WC intelligente compatto di ELORA SMART, pensato per guadagnare spazio nei bagni piccoli. Il suo design più corto e totalmente adossato alla parete ottimizza ogni centimetro mantenendo le funzioni essenziali dell'ESENZA.",
     badges: ["Compact", "Back-to-wall"],
     highlights: [
+      { label: "Installazione", value: "Senza lavori" },
       { label: "Formato", value: "Profondità ridotta" },
-      { label: "Installazione", value: "Back-to-wall" },
-      { label: "Garanzia", value: "10 anni" },
+      { label: "Design", value: "Adossato alla parete" },
     ],
     pitch: [
       { title: "Progettato per bagni piccoli", body: "Formato compatto a profondità ridotta. Si adatta dove altri non arrivano senza sacrificare nessuna funzione essenziale." },
