@@ -1456,7 +1456,7 @@ export default function Home() {
           img: fromDb.img || fallback.img,
           gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
           price: fromDb.price ? (typeof fromDb.price === 'number' ? fromDb.price : parseFloat(fromDb.price)) : fallback.price,
-          originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : null,
+          originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : fallback.originalPrice ?? null,
         };
       });
       setHomeProducts(merged as any);
