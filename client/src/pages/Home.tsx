@@ -1279,8 +1279,8 @@ function ClubEloraSection() {
                   )}
                 </div>
                 <span className="font-body text-xs text-white/40 leading-relaxed">
-                  {t('clubSection.acceptPrefix')}{" "}
-                  <a href="https://elorasmart.com/politica-de-privacidad/" target="_blank" rel="noopener noreferrer" className="text-amber-400/70 hover:text-amber-400 underline underline-offset-2 transition-colors">
+                  {t('clubSection.privacyText')}{" "}
+                  <a href="/politica-privacidad" className="text-amber-400/70 hover:text-amber-400 underline underline-offset-2 transition-colors">
                     {t('clubSection.privacyLink')}
                   </a>
                 </span>
