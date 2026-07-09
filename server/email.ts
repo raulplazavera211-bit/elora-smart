@@ -630,3 +630,184 @@ export async function sendCatalogRequestEmail(data: CatalogRequestEmailData): Pr
     return false;
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CATÁLOGO PRIVADO — Email al CLIENTE con descarga + contacto
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CATALOG_CLIENT_COPY: Record<string, {
+  subject: string; greeting: string; intro: string; downloadBtn: string;
+  contactTitle: string; contactBody: string; waBtn: string; phoneBtn: string;
+  footerNote: string;
+}> = {
+  es: {
+    subject: "Tu catálogo Elora Smart está listo",
+    greeting: "Hola",
+    intro: "Gracias por tu interés en Elora Smart. Aquí tienes el catálogo que solicitaste. Puedes descargarlo con el botón de abajo.",
+    downloadBtn: "Descargar catálogo",
+    contactTitle: "¿Tienes alguna pregunta?",
+    contactBody: "Estamos en Galicia y te atendemos personalmente. Escríbenos o llámanos cuando quieras.",
+    waBtn: "WhatsApp",
+    phoneBtn: "Llamar",
+    footerNote: "Elora Smart · Inodoros Inteligentes · Galicia, España",
+  },
+  en: {
+    subject: "Your Elora Smart catalogue is ready",
+    greeting: "Hello",
+    intro: "Thank you for your interest in Elora Smart. Here is the catalogue you requested. Download it using the button below.",
+    downloadBtn: "Download catalogue",
+    contactTitle: "Any questions?",
+    contactBody: "We are based in Galicia, Spain, and happy to assist you personally. Write or call us anytime.",
+    waBtn: "WhatsApp",
+    phoneBtn: "Call us",
+    footerNote: "Elora Smart · Smart Toilets · Galicia, Spain",
+  },
+  fr: {
+    subject: "Votre catalogue Elora Smart est prêt",
+    greeting: "Bonjour",
+    intro: "Merci pour votre intérêt pour Elora Smart. Voici le catalogue que vous avez demandé. Téléchargez-le en cliquant sur le bouton ci-dessous.",
+    downloadBtn: "Télécharger le catalogue",
+    contactTitle: "Des questions ?",
+    contactBody: "Nous sommes en Galice, Espagne, et nous vous accompagnons personnellement. Écrivez-nous ou appelez-nous quand vous voulez.",
+    waBtn: "WhatsApp",
+    phoneBtn: "Appeler",
+    footerNote: "Elora Smart · Toilettes Intelligentes · Galice, Espagne",
+  },
+  pt: {
+    subject: "O seu catálogo Elora Smart está pronto",
+    greeting: "Olá",
+    intro: "Obrigado pelo seu interesse na Elora Smart. Aqui está o catálogo que solicitou. Faça o download com o botão abaixo.",
+    downloadBtn: "Descarregar catálogo",
+    contactTitle: "Tem alguma dúvida?",
+    contactBody: "Estamos na Galiza, Espanha, e atendemos pessoalmente. Escreva-nos ou ligue quando quiser.",
+    waBtn: "WhatsApp",
+    phoneBtn: "Ligar",
+    footerNote: "Elora Smart · Sanitas Inteligentes · Galiza, Espanha",
+  },
+};
+
+function buildCatalogClientHtml(data: CatalogRequestEmailData): string {
+  const pdfUrl = CATALOG_PDF_URLS[data.idiomaCatalogo];
+  const copy = CATALOG_CLIENT_COPY[data.idiomaCatalogo];
+  const waText = encodeURIComponent(
+    data.idiomaCatalogo === "en" ? "Hello, I have a question about Elora Smart." :
+    data.idiomaCatalogo === "fr" ? "Bonjour, j'ai une question sur Elora Smart." :
+    data.idiomaCatalogo === "pt" ? "Olá, tenho uma dúvida sobre a Elora Smart." :
+    "Hola, tengo una consulta sobre Elora Smart."
+  );
+  const waUrl = `https://wa.me/34614451901?text=${waText}`;
+
+  return `<!DOCTYPE html>
+<html lang="${data.idiomaCatalogo}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${copy.subject}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f1ec;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f1ec;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:2px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.07);">
+
+        <!-- HEADER -->
+        <tr>
+          <td style="background-color:#0a0a0a;padding:36px 48px 28px;text-align:center;">
+            <img src="https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png" alt="Elora Smart" width="130" height="auto" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
+            <p style="margin:14px 0 0;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Inodoros Inteligentes</p>
+          </td>
+        </tr>
+        <!-- GOLD STRIP -->
+        <tr><td style="background-color:#c9a96e;height:3px;"></td></tr>
+
+        <!-- GREETING -->
+        <tr>
+          <td style="padding:44px 48px 0;text-align:center;background-color:#ffffff;">
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Elora Smart</p>
+            <h1 style="margin:0 0 6px;font-size:26px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:#0a0a0a;font-family:Georgia,serif;">${copy.greeting}, ${data.nombre}</h1>
+            <div style="width:40px;height:2px;background-color:#c9a96e;margin:16px auto 0;"></div>
+          </td>
+        </tr>
+
+        <!-- INTRO TEXT -->
+        <tr>
+          <td style="padding:28px 48px 0;text-align:center;background-color:#ffffff;">
+            <p style="margin:0;font-size:15px;color:#555555;line-height:1.8;font-family:'Helvetica Neue',Arial,sans-serif;">${copy.intro}</p>
+          </td>
+        </tr>
+
+        <!-- DOWNLOAD BUTTON -->
+        <tr>
+          <td style="padding:36px 48px 32px;text-align:center;background-color:#ffffff;">
+            <a href="${pdfUrl}" target="_blank"
+               style="display:inline-block;background-color:#c9a96e;color:#0a0a0a;font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;padding:18px 48px;border-radius:2px;">
+              ↓ &nbsp; ${copy.downloadBtn}
+            </a>
+          </td>
+        </tr>
+
+        <!-- DIVIDER -->
+        <tr><td style="padding:0 48px;"><div style="height:1px;background-color:#eeebe5;"></div></td></tr>
+
+        <!-- CONTACT BLOCK -->
+        <tr>
+          <td style="padding:36px 48px;text-align:center;background-color:#ffffff;">
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">${copy.contactTitle}</p>
+            <p style="margin:0 0 28px;font-size:14px;color:#666666;line-height:1.8;font-family:'Helvetica Neue',Arial,sans-serif;">${copy.contactBody}</p>
+            <!-- BUTTONS ROW -->
+            <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+              <tr>
+                <td style="padding-right:8px;">
+                  <a href="${waUrl}" target="_blank"
+                     style="display:inline-block;background-color:#25d366;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 28px;border-radius:2px;white-space:nowrap;">
+                    💬 &nbsp; ${copy.waBtn}
+                  </a>
+                </td>
+                <td style="padding-left:8px;">
+                  <a href="tel:+34614451901"
+                     style="display:inline-block;background-color:#ffffff;border:2px solid #0a0a0a;color:#0a0a0a;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:12px 28px;border-radius:2px;white-space:nowrap;">
+                    📞 &nbsp; ${copy.phoneBtn}
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:20px 0 0;font-size:12px;color:#999999;font-family:'Helvetica Neue',Arial,sans-serif;">+34 614 451 901 &nbsp;·&nbsp; info@elorasmart.com</p>
+          </td>
+        </tr>
+
+        <!-- FOOTER -->
+        <tr>
+          <td style="background-color:#0a0a0a;padding:24px 40px;text-align:center;">
+            <p style="margin:0 0 6px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Elora Smart</p>
+            <p style="margin:0;font-size:11px;color:#555555;font-family:'Helvetica Neue',Arial,sans-serif;">${copy.footerNote}</p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+export async function sendCatalogClientEmail(data: CatalogRequestEmailData): Promise<boolean> {
+  const copy = CATALOG_CLIENT_COPY[data.idiomaCatalogo];
+  const langFlag = CATALOG_LANG_FLAGS[data.idiomaCatalogo];
+  try {
+    const { error } = await resend.emails.send({
+      from: "Elora Smart <pedidos@elorasmart.online>",
+      to: data.email,
+      replyTo: "info@elorasmart.com",
+      subject: `${langFlag} ${copy.subject}`,
+      html: buildCatalogClientHtml(data),
+    });
+    if (error) {
+      console.error("[Email] Error enviando catálogo al cliente:", error);
+      return false;
+    }
+    console.log(`[Email] Catálogo enviado al cliente ${data.email} (${data.idiomaCatalogo})`);
+    return true;
+  } catch (err) {
+    console.error("[Email] Excepción enviando catálogo al cliente:", err);
+    return false;
+  }
+}

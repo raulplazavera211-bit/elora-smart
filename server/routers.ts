@@ -25,7 +25,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
 import bcrypt from "bcryptjs";
-import { sendCatalogRequestEmail } from "./email";
+import { sendCatalogRequestEmail, sendCatalogClientEmail } from "./email";
 import { insertContactSubmission,
   insertClubEloraSignup,
   getContactSubmissions,
@@ -204,15 +204,19 @@ export const appRouter = router({
           title: `📬 Nuevo contacto: ${input.nombre}${langLabel ? ` (${langLabel})` : ""}`,
           content: contentLines.join("\n"),
         }).catch(() => {});
-        // Enviar email HTML premium vía Resend
+        // Enviar emails HTML premium vía Resend
         if (input.idiomaCatalogo) {
-          sendCatalogRequestEmail({
+          const emailData = {
             nombre: input.nombre,
             email: input.email,
             telefono: input.telefono ?? null,
             mensaje: input.mensaje ?? null,
             idiomaCatalogo: input.idiomaCatalogo,
-          }).catch(() => {});
+          };
+          // Notificación al propietario
+          sendCatalogRequestEmail(emailData).catch(() => {});
+          // Email al cliente con descarga + contacto
+          sendCatalogClientEmail(emailData).catch(() => {});
         }
         return { success: true, id };
       }),
