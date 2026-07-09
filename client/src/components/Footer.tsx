@@ -78,9 +78,9 @@ export function Footer() {
             </div>
             <div className="flex flex-col gap-3">
               <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">{t('footer.company')}</h4>
-              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('product.installation')}</a>
-              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('product.warranty')}</a>
-              <a href="https://elorasmart.com/contacto/" target="_blank" rel="noreferrer" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('nav.contacto')}</a>
+              <Link href="/garantias" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('product.installation')}</Link>
+              <Link href="/garantias" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('product.warranty')}</Link>
+              <Link href="/#contacto" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">{t('nav.contacto')}</Link>
             </div>
             <div className="flex flex-col gap-3 col-span-2 md:col-span-1">
               <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">Social</h4>
@@ -110,6 +110,8 @@ export function Footer() {
               <Link href="/politica-privacidad" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.privacy')}</Link>
               <Link href="/politica-cookies" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.cookies')}</Link>
               <Link href="/politica-envios" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.shipping')}</Link>
+              <Link href="/garantias" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">Garantías</Link>
+              <Link href="/terminos-condiciones" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">T&amp;C</Link>
             </div>
           </div>
           <button

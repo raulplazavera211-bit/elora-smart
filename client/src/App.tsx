@@ -23,6 +23,8 @@ import AvisoLegal from "./pages/AvisoLegal";
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 import PoliticaCookies from "./pages/PoliticaCookies";
 import PoliticaEnvios from "./pages/PoliticaEnvios";
+import Garantias from "./pages/Garantias";
+import TerminosCondiciones from "./pages/TerminosCondiciones";
 import { CookieBanner } from "./components/CookieBanner";
 import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
@@ -297,6 +299,8 @@ function AppRouter() {
         <Route path="/politica-privacidad" component={PoliticaPrivacidad} />
         <Route path="/politica-cookies" component={PoliticaCookies} />
         <Route path="/politica-envios" component={PoliticaEnvios} />
+        <Route path="/garantias" component={Garantias} />
+        <Route path="/terminos-condiciones" component={TerminosCondiciones} />
         <Route component={NotFound} />
       </Switch>
       <ChatBot />
