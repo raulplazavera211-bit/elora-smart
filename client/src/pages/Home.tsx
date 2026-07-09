@@ -17,6 +17,7 @@ import { getLocalizedFeatured, getLocalizedProducts } from "@/lib/products";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { CartPanel } from "@/components/CartPanel";
+import { PremiumCareModal } from "@/components/PremiumCareModal";
 import { useCart } from "@/contexts/CartContext";
 import { LanguageSwitcher, LanguageDetectionBanner } from "@/components/LanguageSwitcher";
 
@@ -1475,10 +1476,44 @@ export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
+  // Estado para el modal de upsell ELORA PREMIUM CARE
+  const [premiumModalOpen, setPremiumModalOpen] = useState(false);
+  const [pendingProduct, setPendingProduct] = useState<{ id: string; name: string; price: number; img: string } | null>(null);
+
   const addToCart = (item: { id: string; name: string; price: number; img?: string }) => {
-    addToCartCtx(item);
-    setAddedId(item.id);
-    setTimeout(() => setAddedId(null), 1200);
+    const isEsenza = item.id?.toLowerCase().includes('esenza') || item.name?.toLowerCase().includes('esenza');
+    if (isEsenza) {
+      setPendingProduct({ id: item.id, name: item.name, price: item.price, img: item.img || '' });
+      setPremiumModalOpen(true);
+    } else {
+      addToCartCtx(item);
+      setAddedId(item.id);
+      setTimeout(() => setAddedId(null), 1200);
+      openCart();
+    }
+  };
+
+  const handlePremiumAccept = () => {
+    if (pendingProduct) {
+      addToCartCtx(pendingProduct);
+      addToCartCtx({ id: 'premium-care', name: 'ELORA PREMIUM CARE', price: 249, img: '' });
+      setAddedId(pendingProduct.id);
+      setTimeout(() => setAddedId(null), 1200);
+    }
+    setPremiumModalOpen(false);
+    setPendingProduct(null);
+    openCart();
+  };
+
+  const handlePremiumDecline = () => {
+    if (pendingProduct) {
+      addToCartCtx(pendingProduct);
+      setAddedId(pendingProduct.id);
+      setTimeout(() => setAddedId(null), 1200);
+    }
+    setPremiumModalOpen(false);
+    setPendingProduct(null);
+    openCart();
   };
 
   const scrollToSection = (idx: number) => {
@@ -1674,6 +1709,14 @@ export default function Home() {
 
         <LanguageDetectionBanner />
 
+        {/* ── PREMIUM CARE MODAL ─────────────────────────────────────────── */}
+        <PremiumCareModal
+          isOpen={premiumModalOpen}
+          productName={pendingProduct?.name ?? ''}
+          onAccept={handlePremiumAccept}
+          onDecline={handlePremiumDecline}
+        />
+
         {/* ── CART PANEL ────────────────────────────────────────────────────── */}
         <CartPanel
           isOpen={isCartOpen}
@@ -1694,7 +1737,7 @@ export default function Home() {
               <ProductDetail
                 product={selectedProduct}
                 onBack={() => setSelectedProduct(null)}
-                onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); openCart(); }}
+                onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); }}
               />
             </div>
           ) : (
