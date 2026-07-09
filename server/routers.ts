@@ -1080,27 +1080,27 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
         const ficha = FICHA_MAP[input.productId];
         if (!ficha) throw new TRPCError({ code: "NOT_FOUND", message: "Ficha técnica no disponible para este producto" });
 
-        // Extract the storage key from the /manus-storage/ path
-        const storageKey = ficha.url.replace(/^\/manus-storage\//, "");
+        // Build a permanent download URL that generates a fresh signed URL on each click
+        const baseUrl = (input.origin ?? "https://elorasmart.online").replace(/\/+$/, "");
+        const permanentDownloadUrl = `${baseUrl}/api/download-ficha/${input.productId}`;
 
-        // Get a pre-signed S3 URL (publicly accessible, no auth required)
+        // Also generate a fresh signed URL for the immediate browser download
         let signedUrl: string;
         try {
+          const storageKey = ficha.url.replace(/^\/manus-storage\//, "");
           signedUrl = await storageGetSignedUrl(storageKey);
         } catch (err) {
           console.error("[FichaTecnica] Error getting signed URL:", err);
-          // Fallback to absolute URL via proxy
-          const baseUrl = input.origin ?? "https://elorasmart.online";
-          signedUrl = `${baseUrl}${ficha.url}`;
+          signedUrl = permanentDownloadUrl;
         }
 
-        // Send email with pre-signed PDF link
+        // Send email with PERMANENT download URL (never expires)
         sendFichaTecnicaEmail({
           to: input.email,
           nombre: input.nombre,
           telefono: input.telefono,
           productName: ficha.productName,
-          pdfUrl: signedUrl,
+          pdfUrl: permanentDownloadUrl,
           pdfFileName: ficha.fileName,
         }).catch(() => {});
 
@@ -1110,6 +1110,7 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
           content: [`Nombre: ${input.nombre}`, `Email: ${input.email}`, input.telefono ? `Teléfono: ${input.telefono}` : null, `Producto: ${ficha.productName}`].filter(Boolean).join("\n"),
         }).catch(() => {});
 
+        // Return the fresh signed URL for immediate browser download
         return { success: true, pdfUrl: signedUrl, fileName: ficha.fileName };
       }),
   }),
