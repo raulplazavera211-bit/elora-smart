@@ -937,10 +937,10 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
                   initial={{ opacity: 0, scale: 0.92, y: 30 }}
                   animate={activeStep === idx ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.92, y: -30 }}
                   transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                  className="absolute inset-4"
+                  className="absolute inset-8"
                 >
                   <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden flex items-center justify-center">
-                    <img src={s.image} alt={s.title} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={s.image} alt={s.title} className="w-full h-full object-contain p-4" loading="lazy" />
                   </div>
                   <span className="absolute bottom-4 right-6 font-display text-[8rem] leading-none text-background/5 select-none pointer-events-none">{s.number}</span>
                 </motion.div>
