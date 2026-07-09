@@ -415,7 +415,7 @@ const es = {
   // ── Manifiesto features ──────────────────────────────────────────────────────
   manifestoFeats: [
     { title: "Higiene Real", body: "El bidé integrado con agua templada limpia con una eficacia que el papel nunca alcanza. Más cuidado, menos irritación, cero residuos." },
-    { title: "Salud Diaria", body: "Asiento con calefacción, secado por aire y filtro de carbón activo. Un gesto cotidiano que protege la piel sensible y mejora el bienestar." },
+    { title: "Bienestar Diario", body: "Asiento calefactado, secado con aire templado y materiales antibacterianos para cuidar la piel sensible. Una experiencia cómoda, suave y delicada." },
     { title: "Lujo Silencioso", body: "Tapa de cierre asistido, luz nocturna ambiental y modos personalizados. El confort de un hotel cinco estrellas, cada mañana, en casa." },
   ],
 
