@@ -604,9 +604,10 @@ export const ALL_PRODUCTS: Product[] = [
   },
 ];
 
-// Los 6 productos en la home ordenados: ESENZA, ESENZA COMPACT, ESENZA SUSPENDIDO, AURA, AURA COMPACT, AURA SUSPENDIDO
-const HOME_ORDER = ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO", "AURA", "AURA-COMPACT", "AURA-SUSPENDIDO"];
-export const FEATURED_PRODUCTS = HOME_ORDER.map(id => ALL_PRODUCTS.find(p => p.id === id)!).filter(Boolean);
+// Productos destacados en la home: los 3 modelos ESENZA
+export const FEATURED_PRODUCTS = ALL_PRODUCTS.filter(p =>
+  ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO"].includes(p.id)
+);
 
 // ─── Productos localizados ────────────────────────────────────────────────────
 import { getProductLocale } from "@/i18n/products";
@@ -643,7 +644,7 @@ export function getLocalizedProducts(lang: string): Product[] {
 }
 
 export function getLocalizedFeatured(lang: string): Product[] {
-  const HOME_ORDER = ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO", "AURA", "AURA-COMPACT", "AURA-SUSPENDIDO"];
-  const localized = getLocalizedProducts(lang);
-  return HOME_ORDER.map(id => localized.find(p => p.id === id)!).filter(Boolean);
+  return getLocalizedProducts(lang).filter(p =>
+    ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO"].includes(p.id)
+  );
 }
