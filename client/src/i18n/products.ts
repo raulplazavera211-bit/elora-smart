@@ -113,7 +113,7 @@ const es: ProductsLocaleMap = {
     ],
     warrantyDetails: "10 años de garantía en la cerámica · 3 años en la tecnología (ampliable a 5 años con ELORA Premium Care por 249€). Servicio técnico en español. Repuestos oficiales garantizados 10 años.",
     faqs: [
-      { q: "¿Necesito obra para instalar el ESENZA?", a: "No. Sustituye a tu inodoro actual con las mismas conexiones. Solo necesitas un enchufe cerca." },
+      { q: "¿Necesito obra para instalar el ESENZA?", a: "No. Sustituye a tu inodoro actual con las mismas conexiones. Solo necesitas un enchufe cerca. Eso sí, es recomendable revisar la salida de desagüe antes de la instalación para asegurarse de que es compatible." },
       { q: "¿En qué se diferencia ESENZA de AURA?", a: "ESENZA tiene todas las funciones esenciales a un precio más contenido. AURA añade espuma anti-salpicaduras, luz UV, aromaterapia y control por voz." },
       { q: "¿Funciona con baja presión de agua?", a: "Sí. El tanque integrado de 5 litros garantiza un funcionamiento fiable incluso en edificios antiguos o con baja presión." },
       { q: "¿Hace ruido por la noche?", a: "No. El funcionamiento es silencioso, por debajo de 59 dB — hasta 21 dB más silencioso que muchos inodoros convencionales." },
@@ -563,7 +563,7 @@ const en: ProductsLocaleMap = {
     ],
     warrantyDetails: "10-year ceramic warranty · 3 years on technology (extendable to 5 years with ELORA Premium Care for €249). Technical service in Spanish. Official spare parts guaranteed 10 years.",
     faqs: [
-      { q: "Do I need construction work to install the ESENZA?", a: "No. It replaces your current toilet with the same connections. You only need a nearby power outlet." },
+      { q: "Do I need construction work to install the ESENZA?", a: "No. It replaces your current toilet with the same connections. You only need a nearby power outlet. We do recommend checking the drain outlet before installation to ensure compatibility." },
       { q: "What is the difference between ESENZA and AURA?", a: "ESENZA has all the essential functions at a more affordable price. AURA adds foam splash shield, UV light, aromatherapy and voice control." },
       { q: "Does it work with low water pressure?", a: "Yes. The integrated 5-litre tank ensures reliable operation even in older buildings or with low pressure." },
       { q: "Is it noisy at night?", a: "No. Operation is silent, below 59 dB — up to 21 dB quieter than many conventional toilets." },
@@ -1013,7 +1013,7 @@ const pt: ProductsLocaleMap = {
     ],
     warrantyDetails: "10 anos de garantia na cerâmica · 3 anos na tecnologia (extensível a 5 anos com ELORA Premium Care por 249€). Serviço técnico disponível. Peças de reposição oficiais garantidas 10 anos.",
     faqs: [
-      { q: "Preciso de obras para instalar o ESENZA?", a: "Não. Substitui a sua sanita atual com as mesmas ligações. Só precisa de uma tomada próxima." },
+      { q: "Preciso de obras para instalar o ESENZA?", a: "Não. Substitui a sua sanita atual com as mesmas ligações. Só precisa de uma tomada próxima. Recomendamos verificar a saída do esgoto antes da instalação para garantir a compatibilidade." },
       { q: "Qual a diferença entre ESENZA e AURA?", a: "O ESENZA tem todas as funções essenciais a um preço mais acessível. O AURA acrescenta escudo de espuma, luz UV, aromaterapia e controlo por voz." },
       { q: "Funciona com baixa pressão de água?", a: "Sim. O depósito integrado de 5 litros garante um funcionamento fiável mesmo em edifícios antigos." },
       { q: "Faz barulho à noite?", a: "Não. O funcionamento é silencioso, abaixo de 59 dB." },
@@ -1463,7 +1463,7 @@ const fr: ProductsLocaleMap = {
     ],
     warrantyDetails: "10 ans de garantie sur la céramique · 3 ans sur la technologie (extensible à 5 ans avec ELORA Premium Care pour 249€). Service technique disponible. Pièces de rechange officielles garanties 10 ans.",
     faqs: [
-      { q: "Ai-je besoin de travaux pour installer l'ESENZA ?", a: "Non. Il remplace votre toilette actuelle avec les mêmes connexions. Vous avez seulement besoin d'une prise à proximité." },
+      { q: "Ai-je besoin de travaux pour installer l'ESENZA ?", a: "Non. Il remplace votre toilette actuelle avec les mêmes connexions. Vous avez seulement besoin d'une prise à proximité. Nous recommandons de vérifier la sortie d'évacuation avant l'installation pour s'assurer de la compatibilité." },
       { q: "Quelle est la différence entre ESENZA et AURA ?", a: "L'ESENZA a toutes les fonctions essentielles à un prix plus abordable. L'AURA ajoute le bouclier anti-éclaboussures, la lumière UV, l'aromathérapie et le contrôle vocal." },
       { q: "Fonctionne-t-il avec une faible pression d'eau ?", a: "Oui. Le réservoir intégré de 5 litres garantit un fonctionnement fiable même dans les anciens bâtiments." },
       { q: "Est-il bruyant la nuit ?", a: "Non. Le fonctionnement est silencieux, en dessous de 59 dB." },
@@ -1913,7 +1913,7 @@ const it: ProductsLocaleMap = {
     ],
     warrantyDetails: "10 anni di garanzia sulla ceramica · 3 anni sulla tecnologia (estendibile a 5 anni con ELORA Premium Care per 249€). Servizio tecnico disponibile. Ricambi ufficiali garantiti 10 anni.",
     faqs: [
-      { q: "Ho bisogno di lavori per installare l'ESENZA?", a: "No. Sostituisce il tuo WC attuale con le stesse connessioni. Hai solo bisogno di una presa vicina." },
+      { q: "Ho bisogno di lavori per installare l'ESENZA?", a: "No. Sostituisce il tuo WC attuale con le stesse connessioni. Hai solo bisogno di una presa vicina. Ti consigliamo di verificare lo scarico prima dell'installazione per assicurarti della compatibilità." },
       { q: "Qual è la differenza tra ESENZA e AURA?", a: "L'ESENZA ha tutte le funzioni essenziali a un prezzo più contenuto. L'AURA aggiunge lo scudo anti-schizzi, la luce UV, l'aromaterapia e il controllo vocale." },
       { q: "Funziona con bassa pressione dell'acqua?", a: "Sì. Il serbatoio integrato da 5 litri garantisce un funzionamento affidabile anche negli edifici più vecchi." },
       { q: "È rumoroso di notte?", a: "No. Il funzionamento è silenzioso, sotto i 59 dB." },
