@@ -1893,11 +1893,11 @@ export default function Home() {
                       </div>
 
                       {/* Imagen producto */}
-                      <div className="relative flex-1 min-h-[160px] md:min-h-[120px] overflow-hidden bg-muted">
+                      <div className="relative flex-1 min-h-[220px] md:min-h-[180px] overflow-hidden bg-muted">
                         <img
                           src="https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg"
                           alt="AURA Suspendido"
-                          className="absolute inset-0 w-full h-full object-contain object-center transition-transform duration-700 scale-90 group-hover:scale-100"
+                          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                         />
                       </div>
 
