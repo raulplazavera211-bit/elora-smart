@@ -172,6 +172,8 @@ export default function SpainDistributorsMap() {
         @keyframes ring-out2 { 0% { r:4px; opacity:0.5; } 80% { r:14px; opacity:0; } 100% { r:14px; opacity:0; } }
         @keyframes card-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes spin-slow { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        @keyframes dist-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0% 0 0); } }
+        @keyframes dist-line-grow { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); transform-origin: left; } }
         .dist-dot { transform-origin: center; animation: dot-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
         .spain-region { transition: fill 0.35s ease, opacity 0.35s ease; }
         .spain-region:hover { cursor: pointer; }
@@ -179,26 +181,53 @@ export default function SpainDistributorsMap() {
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
 
-        {/* Cabecera */}
-        <div style={{ opacity: visible ? 1 : 0, transform: visible ? "none" : "translateY(24px)", transition: "all 0.7s ease" }} className="mb-10 md:mb-14">
-          <p className="font-body text-[10px] uppercase tracking-[0.35em] text-accent-deep/70 mb-3">Red de distribución</p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h2 className="font-display text-3xl md:text-5xl uppercase tracking-wide text-foreground leading-[0.95]">
-              Encuentra tu<br />distribuidor
-            </h2>
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <p className="font-display text-4xl md:text-5xl text-accent-deep leading-none">{DISTRIBUTORS.length}</p>
-                <p className="font-body text-[9px] uppercase tracking-[0.3em] text-foreground/40 mt-1">Distribuidores</p>
-              </div>
-              <div className="w-px h-10 bg-border" />
-              <div className="text-center">
-                <p className="font-display text-4xl md:text-5xl text-foreground leading-none">7</p>
-                <p className="font-body text-[9px] uppercase tracking-[0.3em] text-foreground/40 mt-1">Comunidades</p>
-              </div>
-            </div>
+        {/* CABECERA ÉPICA */}
+        <div className="mb-12 md:mb-16">
+
+          {/* Eyebrow con líneas laterales */}
+          <div style={{ opacity: visible ? 1 : 0, transition: "opacity 0.5s ease 0.1s" }}
+            className="flex items-center gap-3 mb-7">
+            <div style={{ width: visible ? "40px" : "0px", transition: "width 0.7s cubic-bezier(0.23,1,0.32,1) 0.2s", height: "1px", background: "#E87A3D" }} />
+            <p className="font-body text-[10px] uppercase tracking-[0.4em] text-accent-deep whitespace-nowrap">Red de distribución oficial</p>
+            <div style={{ width: visible ? "40px" : "0px", transition: "width 0.7s cubic-bezier(0.23,1,0.32,1) 0.4s", height: "1px", background: "#E87A3D" }} />
           </div>
-          <div className="mt-5 h-px w-16 bg-accent-deep/40" />
+
+          {/* Título — revelado línea a línea */}
+          <div style={{ overflow: "hidden", marginBottom: "4px" }}>
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase tracking-tight text-foreground leading-[0.9]"
+              style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(70px)", transition: "opacity 0.75s cubic-bezier(0.23,1,0.32,1) 0.3s, transform 0.75s cubic-bezier(0.23,1,0.32,1) 0.3s" }}>
+              Encuentra tu
+            </h2>
+          </div>
+          <div style={{ overflow: "hidden", marginBottom: "24px" }}>
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase tracking-tight leading-[0.9]"
+              style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(70px)", transition: "opacity 0.75s cubic-bezier(0.23,1,0.32,1) 0.5s, transform 0.75s cubic-bezier(0.23,1,0.32,1) 0.5s", color: "#E87A3D" }}>
+              Distribuidor
+            </h2>
+          </div>
+
+          {/* Línea de luz */}
+          <div style={{ position: "relative", height: "2px", maxWidth: "600px", marginBottom: "32px", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, background: "rgba(232,122,61,0.12)" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 0%, #E87A3D 40%, #fff8 60%, #E87A3D 80%, transparent 100%)", transform: visible ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left", transition: "transform 1.1s cubic-bezier(0.23,1,0.32,1) 0.7s" }} />
+          </div>
+
+          {/* Contadores */}
+          <div className="flex items-center gap-8 md:gap-14">
+            {[
+              { val: DISTRIBUTORS.length, label: "Distribuidores", color: "#E87A3D", delay: "0.85s" },
+              { val: 7, label: "Comunidades", color: "inherit", delay: "1s" },
+              { val: 1, label: "País", color: "inherit", delay: "1.15s" },
+            ].map((item, i) => (
+              <>
+                {i > 0 && <div key={`sep-${i}`} style={{ width: "1px", height: "44px", background: "rgba(255,255,255,0.1)", opacity: visible ? 1 : 0, transition: `opacity 0.4s ease ${item.delay}` }} />}
+                <div key={item.label} style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.6s ease ${item.delay}, transform 0.6s cubic-bezier(0.23,1,0.32,1) ${item.delay}` }}>
+                  <p className="font-display text-5xl md:text-6xl leading-none tabular-nums" style={{ color: item.color === "inherit" ? undefined : item.color }}>{item.val}</p>
+                  <p className="font-body text-[9px] uppercase tracking-[0.35em] text-foreground/40 mt-2">{item.label}</p>
+                </div>
+              </>
+            ))}
+          </div>
         </div>
 
         {/* Buscador CP */}
