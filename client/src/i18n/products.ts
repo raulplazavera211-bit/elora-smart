@@ -224,9 +224,9 @@ const es: ProductsLocaleMap = {
     longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA.",
     badges: ["Bastidor incluido", "Altura ajustable"],
     highlights: [
-      { label: "Instalación", value: "Suspendida" },
-      { label: "Suelo", value: "Completamente libre" },
-      { label: "Garantía", value: "10 años" },
+      { label: "Instalación", value: "Bastidor incluido" },
+      { label: "Formato", value: "Altura ajustable" },
+      { label: "Diseño", value: "Suspendido" },
     ],
     pitch: [
       { title: "Diseño flotante", body: "El suelo queda completamente libre. Limpieza total sin recovecos, amplitud visual y estética minimalista." },
@@ -711,9 +711,9 @@ const en: ProductsLocaleMap = {
     longDescription: "ESENZA Wall-Hung is the floating Japanese smart toilet by ELORA SMART, designed for modern bathrooms seeking a cleaner, minimalist finish elevated from the floor. Its wall-hung installation facilitates cleaning, frees visual space and maintains all the essential ESENZA functions with a lighter, contemporary design.",
     badges: ["Wall-hung", "Rimless"],
     highlights: [
-      { label: "Installation", value: "Wall-hung" },
-      { label: "Floor", value: "Completely free" },
-      { label: "Warranty", value: "10 years" },
+      { label: "Installation", value: "Frame included" },
+      { label: "Format", value: "Adjustable height" },
+      { label: "Design", value: "Wall-hung" },
     ],
     pitch: [
       { title: "Floating design", body: "The floor is completely free. Total cleaning without nooks, visual spaciousness and minimalist aesthetic." },
@@ -1198,9 +1198,9 @@ const pt: ProductsLocaleMap = {
     longDescription: "ESENZA Suspensa é a sanita inteligente japonesa flutuante da ELORA SMART, desenhada para casas de banho modernas que procuram um acabamento mais limpo, minimalista e elevado do chão.",
     badges: ["Suspensa", "Rimless"],
     highlights: [
-      { label: "Instalação", value: "Suspensa" },
-      { label: "Chão", value: "Completamente livre" },
-      { label: "Garantia", value: "10 anos" },
+      { label: "Instalação", value: "Estrutura incluída" },
+      { label: "Formato", value: "Altura ajustável" },
+      { label: "Design", value: "Suspenso" },
     ],
     pitch: [
       { title: "Design flutuante", body: "O chão fica completamente livre. Limpeza total sem cantos, amplitude visual e estética minimalista." },
@@ -1685,9 +1685,9 @@ const fr: ProductsLocaleMap = {
     longDescription: "ESENZA Suspendue est la toilette intelligente japonaise flottante d'ELORA SMART, conçue pour les salles de bain modernes qui recherchent un finissage plus propre, minimaliste et surélevé du sol.",
     badges: ["Suspendue", "Rimless"],
     highlights: [
-      { label: "Installation", value: "Suspendue" },
-      { label: "Sol", value: "Complètement libre" },
-      { label: "Garantie", value: "10 ans" },
+      { label: "Installation", value: "Bâti-support inclus" },
+      { label: "Format", value: "Hauteur réglable" },
+      { label: "Design", value: "Suspendu" },
     ],
     pitch: [
       { title: "Design flottant", body: "Le sol est complètement libre. Nettoyage total sans recoins, amplitude visuelle et esthétique minimaliste." },
@@ -2172,9 +2172,9 @@ const it: ProductsLocaleMap = {
     longDescription: "ESENZA Sospeso è il WC intelligente giapponese sospeso di ELORA SMART, progettato per bagni moderni che cercano una finitura più pulita, minimalista ed elevata dal pavimento.",
     badges: ["Sospeso", "Rimless"],
     highlights: [
-      { label: "Installazione", value: "Sospesa" },
-      { label: "Pavimento", value: "Completamente libero" },
-      { label: "Garanzia", value: "10 anni" },
+      { label: "Installazione", value: "Telaio incluso" },
+      { label: "Formato", value: "Altezza regolabile" },
+      { label: "Design", value: "Sospeso" },
     ],
     pitch: [
       { title: "Design sospeso", body: "Il pavimento è completamente libero. Pulizia totale senza angoli, ampiezza visiva ed estetica minimalista." },
