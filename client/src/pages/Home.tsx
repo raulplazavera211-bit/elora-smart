@@ -1517,7 +1517,7 @@ export default function Home() {
   const handlePremiumAccept = () => {
     if (pendingProduct) {
       addToCartCtx(pendingProduct);
-      addToCartCtx({ id: 'premium-care', name: 'ELORA PREMIUM CARE', price: 249, img: '' });
+      addToCartCtx({ id: 'premium-care', name: 'ELORA PREMIUM CARE', price: 249, img: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/premium-care-product-KotbV6544WKMGezFLb8UJF.webp' });
       setAddedId(pendingProduct.id);
       setTimeout(() => setAddedId(null), 1200);
     }

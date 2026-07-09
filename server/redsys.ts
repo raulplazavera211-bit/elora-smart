@@ -41,8 +41,7 @@ export function getRedsysConfig() {
 let _api: ReturnType<typeof createRedsysAPI> | null = null;
 
 function getAPI() {
-  // Recrear si cambia el entorno
-  if (_api) return _api;
+  // Recrear siempre para respetar el valor actual de REDSYS_SANDBOX
   const { secretKey, isSandbox } = getRedsysConfig();
   _api = createRedsysAPI({
     secretKey,

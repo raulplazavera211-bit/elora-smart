@@ -44,7 +44,7 @@ export default function Coleccion() {
   const handlePremiumAccept = () => {
     if (pendingProduct) {
       addToCart(pendingProduct);
-      addToCart({ id: 'premium-care', name: 'ELORA PREMIUM CARE', price: 249, img: '' });
+      addToCart({ id: 'premium-care', name: 'ELORA PREMIUM CARE', price: 249, img: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663455453024/U6TuTW84Fsnjnw5Ltb3Zs4/premium-care-product-KotbV6544WKMGezFLb8UJF.webp' });
     }
     setPremiumModalOpen(false);
     setPendingProduct(null);

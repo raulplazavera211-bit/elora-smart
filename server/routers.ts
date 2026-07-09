@@ -399,6 +399,102 @@ export const appRouter = router({
           redsysOrderId: form.redsysOrderId,
         };
       }),
+
+    /**
+     * Crea una orden PayPal y devuelve el orderID para el botón del frontend.
+     */
+    createPaypalOrder: publicProcedure
+      .input(z.object({ orderId: z.number() }))
+      .mutation(async ({ input }) => {
+        const paypalClientId = process.env.VITE_PAYPAL_CLIENT_ID;
+        const paypalSecret = process.env.PAYPAL_SECRET_KEY;
+        if (!paypalClientId) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "PayPal no configurado" });
+
+        const order = await getOrderWithItems(input.orderId);
+        if (!order) throw new TRPCError({ code: "NOT_FOUND", message: "Pedido no encontrado" });
+
+        const isLive = process.env.PAYPAL_ENV === "live";
+        const baseUrl = isLive ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
+        const secret = paypalSecret || "";
+
+        // Obtener token de acceso
+        const tokenRes = await fetch(`${baseUrl}/v1/oauth2/token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Basic ${Buffer.from(`${paypalClientId}:${secret}`).toString("base64")}`,
+          },
+          body: "grant_type=client_credentials",
+        });
+        const tokenData = await tokenRes.json() as { access_token?: string };
+        if (!tokenData.access_token) {
+          // Sin secret usamos flujo client-only: devolvemos el importe para que el frontend cree la orden
+          return { clientOnly: true, amount: String(order.total) };
+        }
+
+        // Crear orden en PayPal
+        const createRes = await fetch(`${baseUrl}/v2/checkout/orders`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenData.access_token}`,
+          },
+          body: JSON.stringify({
+            intent: "CAPTURE",
+            purchase_units: [{
+              amount: { currency_code: "EUR", value: Number(order.total).toFixed(2) },
+              description: order.items.map(i => `${i.productName} x${i.quantity}`).join(", ").slice(0, 127),
+            }],
+          }),
+        });
+        const createData = await createRes.json() as { id?: string };
+        if (!createData.id) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error al crear orden PayPal" });
+
+        return { clientOnly: false, paypalOrderId: createData.id };
+      }),
+
+    /**
+     * Captura el pago PayPal tras la aprobación del usuario.
+     */
+    capturePaypalOrder: publicProcedure
+      .input(z.object({ orderId: z.number(), paypalOrderId: z.string() }))
+      .mutation(async ({ input }) => {
+        const paypalClientId = process.env.VITE_PAYPAL_CLIENT_ID;
+        const paypalSecret = process.env.PAYPAL_SECRET_KEY;
+        if (!paypalClientId || !paypalSecret) {
+          // Sin secret, confiamos en la aprobación del frontend (sandbox/demo)
+          await updateOrderStatus(input.orderId, "confirmed");
+          return { success: true };
+        }
+
+        const isLive = process.env.PAYPAL_ENV === "live";
+        const baseUrl = isLive ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
+
+        const tokenRes = await fetch(`${baseUrl}/v1/oauth2/token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Basic ${Buffer.from(`${paypalClientId}:${paypalSecret}`).toString("base64")}`,
+          },
+          body: "grant_type=client_credentials",
+        });
+        const tokenData = await tokenRes.json() as { access_token?: string };
+        if (!tokenData.access_token) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error de autenticación PayPal" });
+
+        const captureRes = await fetch(`${baseUrl}/v2/checkout/orders/${input.paypalOrderId}/capture`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenData.access_token}`,
+          },
+        });
+        const captureData = await captureRes.json() as { status?: string };
+        if (captureData.status === "COMPLETED") {
+          await updateOrderStatus(input.orderId, "confirmed");
+          return { success: true };
+        }
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "El pago PayPal no se completó" });
+      }),
   }),
 
   // ─── PAYMENTS (public) ─────────────────────────────────────────────────
