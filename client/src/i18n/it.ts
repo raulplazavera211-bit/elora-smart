@@ -444,7 +444,7 @@ const it = {
   reviews: {
     eyebrow: "Recensioni verificate su Google",
     title: "Cosa dicono i nostri clienti",
-    count: "10 recensioni",
+    count: "31 recensioni",
   },
 
   lang: {

@@ -1540,7 +1540,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               </div>
               <div className="flex items-center gap-2 mt-4">
                 <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                <p className="text-foreground/30 text-[10px]">5.0 · 10 {t("cart.reviews")}</p>
+                <p className="text-foreground/30 text-[10px]">5.0 · 31 {t("cart.reviews")}</p>
               </div>
             </div>
           </div>
@@ -1762,7 +1762,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   </div>
                   <div className="flex items-center justify-center gap-1.5 mt-2">
                     <div className="flex gap-0.5">{[1,2,3,4,5].map(s => <GoogleStarIcon key={s} />)}</div>
-                    <p className="text-gray-400 text-[10px]">5.0 · 10 {t("cart.reviewsShort")}</p>
+                    <p className="text-gray-400 text-[10px]">5.0 · 31 {t("cart.reviewsShort")}</p>
                     <GoogleLogoIcon />
                   </div>
                 </div>

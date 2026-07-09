@@ -465,7 +465,7 @@ const es = {
   reviews: {
     eyebrow: "Reseñas verificadas en Google",
     title: "Lo que dicen nuestros clientes",
-    count: "10 reseñas",
+    count: "31 reseñas",
   },
 
   // ── Selector de idioma ───────────────────────────────────────────────────────

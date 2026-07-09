@@ -444,7 +444,7 @@ const pt = {
   reviews: {
     eyebrow: "Avaliações verificadas no Google",
     title: "O que dizem os nossos clientes",
-    count: "10 avaliações",
+    count: "31 avaliações",
   },
 
   lang: {
