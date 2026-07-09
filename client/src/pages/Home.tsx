@@ -1897,7 +1897,8 @@ export default function Home() {
                         <img
                           src="https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg"
                           alt="AURA Suspendido"
-                          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          style={{ objectPosition: 'center 70%' }}
                         />
                       </div>
 
