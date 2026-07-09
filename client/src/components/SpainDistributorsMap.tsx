@@ -175,7 +175,7 @@ export default function SpainDistributorsMap() {
         .spain-region:hover { cursor: pointer; }
       `}</style>
 
-      <div className="max-w-[1280px] mx-auto px-6 md:px-12">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
 
         {/* Cabecera */}
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? "none" : "translateY(24px)", transition: "all 0.7s ease" }} className="mb-10 md:mb-14">
@@ -241,9 +241,9 @@ export default function SpainDistributorsMap() {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
 
           {/* SVG Mapa real de España */}
-          <div className="w-full lg:w-[60%]"
+          <div className="w-full lg:w-[65%]"
             style={{ opacity: visible ? 1 : 0, animation: visible ? "dist-fade-up 1s cubic-bezier(0.23,1,0.32,1) 0.3s both" : "none" }}>
-            <svg viewBox={viewBox} className="w-full h-auto" style={{ maxHeight: "580px", transition: "none" }}>
+            <svg viewBox={viewBox} className="w-full h-auto" style={{ maxHeight: "720px", transition: "none" }}>
               <defs>
                 <filter id="dotGlow2">
                   <feGaussianBlur stdDeviation="3" result="b"/>
@@ -315,7 +315,7 @@ export default function SpainDistributorsMap() {
           </div>
 
           {/* Panel lateral */}
-          <div className="w-full lg:w-[42%]"
+          <div className="w-full lg:w-[35%]"
             style={{ opacity: visible ? 1 : 0, transform: visible ? "none" : "translateX(20px)", transition: "all 0.7s ease 0.5s" }}>
 
             {/* Tarjeta distribuidor activo */}
