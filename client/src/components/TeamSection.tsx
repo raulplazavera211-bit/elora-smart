@@ -12,14 +12,14 @@ const PHOTOS = [
 ];
 
 const TEAM = [
-  { name: "Eloy Ramos",          role: "Director de Producto",          photo: PHOTOS[0], hasPhoto: true },
-  { name: "Marta Rama",          role: "Directora de Marketing",        photo: PHOTOS[1], hasPhoto: true },
-  { name: "Alejandro Rodriguez", role: "Expansión Comercial",           photo: PHOTOS[2], hasPhoto: false },
-  { name: "Rubén Beiroa",        role: "Ingeniería y Desarrollo",       photo: PHOTOS[3], hasPhoto: false },
-  { name: "César Juncal",        role: "Soporte Técnico",               photo: PHOTOS[4], hasPhoto: false },
-  { name: "Jesús Fernandez",     role: "Servicio Técnico Nacional",     photo: PHOTOS[5], hasPhoto: false },
-  { name: "Uxia Tarrío",         role: "Ventas Península Ibérica",      photo: PHOTOS[6], hasPhoto: false },
-  { name: "Raul Plaza",          role: "Ventas Sur de España",          photo: PHOTOS[7], hasPhoto: false },
+  { name: "Eloy Ramos",          role: "Director de Producto",          photo: PHOTOS[0], hasPhoto: true,  pos: "center top" },
+  { name: "Marta Rama",          role: "Directora de Marketing",        photo: PHOTOS[1], hasPhoto: true,  pos: "center 30%" },
+  { name: "Alejandro Rodriguez", role: "Expansión Comercial",           photo: PHOTOS[2], hasPhoto: false, pos: "center top" },
+  { name: "Rubén Beiroa",        role: "Ingeniería y Desarrollo",       photo: PHOTOS[3], hasPhoto: false, pos: "center top" },
+  { name: "César Juncal",        role: "Soporte Técnico",               photo: PHOTOS[4], hasPhoto: false, pos: "center top" },
+  { name: "Jesús Fernandez",     role: "Servicio Técnico Nacional",     photo: PHOTOS[5], hasPhoto: false, pos: "center top" },
+  { name: "Uxia Tarrío",         role: "Ventas Península Ibérica",      photo: PHOTOS[6], hasPhoto: false, pos: "center top" },
+  { name: "Raul Plaza",          role: "Ventas Sur de España",          photo: PHOTOS[7], hasPhoto: false, pos: "center top" },
 ];
 
 export default function TeamSection() {
@@ -137,7 +137,7 @@ export default function TeamSection() {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
-                      objectPosition: "center top",
+                      objectPosition: m.pos ?? "center top",
                       filter: "grayscale(30%)",
                       transition: "transform 0.5s cubic-bezier(0.23,1,0.32,1), filter 0.4s ease",
                     }}
