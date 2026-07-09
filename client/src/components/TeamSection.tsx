@@ -116,7 +116,7 @@ export default function TeamSection() {
             return (
               <div
                 key={m.name}
-                className="team-card-inner relative overflow-hidden border border-border cursor-default"
+                className="team-card-inner relative overflow-hidden border border-border cursor-default flex flex-col"
                 style={{
                   opacity: visible ? 1 : 0,
                   animation: visible
@@ -127,7 +127,7 @@ export default function TeamSection() {
                 }}
               >
                 {/* Foto */}
-                <div className="relative overflow-hidden" style={{ paddingBottom: "120%" }}>
+                <div className="relative overflow-hidden" style={{ paddingBottom: "100%" }}>
                   <img
                     src={m.photo}
                     alt={m.name}
@@ -194,11 +194,11 @@ export default function TeamSection() {
                 </div>
 
                 {/* Info */}
-                <div className="px-3 py-4 bg-background border-t border-border">
-                  <p className="font-display text-[15px] md:text-[17px] uppercase tracking-wide text-foreground leading-tight truncate">
+                <div className="px-2 py-3 md:px-3 md:py-4 bg-background border-t border-border">
+                  <p className="font-display text-[13px] md:text-[17px] uppercase tracking-wide text-foreground leading-tight break-words hyphens-auto">
                     {m.name}
                   </p>
-                  <p className="font-body text-[11px] md:text-[12px] uppercase tracking-[0.1em] text-accent-deep/80 mt-1 leading-tight truncate">
+                  <p className="font-body text-[10px] md:text-[12px] uppercase tracking-[0.08em] text-accent-deep/80 mt-1 leading-snug break-words hyphens-auto">
                     {m.role}
                   </p>
                 </div>
