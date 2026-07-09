@@ -16,10 +16,10 @@ const es = {
 
   // ── Hero (Capítulo 1) ────────────────────────────────────────────────────────
   hero: {
-    eyebrow: "Elegancia Neo-Corporativa",
+    eyebrow: "Esencia Atlántica",
     title1: "Mejora tu",
     title2: "calidad de vida.",
-    body: "Hay un momento del día que es solo tuyo. Ya es hora de disfrutarlo. Inodoros inteligentes que fusionan alta tecnología con la noble solidez de la piedra gallega.",
+    body: "Hay un momento del día que es solo tuyo... Ya es hora de disfrutarlo. Inodoros inteligentes que fusionan alta tecnología con el carácter del Atlántico gallego.",
     cta: "Ver la colección",
   },
 
@@ -28,7 +28,7 @@ const es = {
     eyebrow: "La Esencia · Feito en Galicia",
     title1: "Alma gallega,",
     title2: "precisión absoluta.",
-    body: "Diseñamos desde Galicia, donde la piedra y el atlántico marcan el ritmo. Cada Elora se piensa en gallego antes de viajar a tu baño.",
+    body: "Diseñamos desde Galicia, donde el Atlántico marca otra forma de entender el agua y el tiempo. Cada ELORA se piensa en gallego antes de viajar a tu baño.",
     estab: "Est. Galicia · 2024",
     trust: "Confía en",
     trustBrand: "Elora.",
