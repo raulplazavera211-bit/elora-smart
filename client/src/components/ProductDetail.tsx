@@ -194,7 +194,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
               {/* Garantías — 1 col en móvil, 3 en sm+ */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 pt-4 mt-1 border-t border-border">
                 <div className="flex items-center gap-2 font-body text-[10px] uppercase tracking-widest text-foreground/60">
-                  <Truck className="w-3.5 h-3.5 text-accent-deep shrink-0" /> {t('product.shipping')}
+                  <Truck className="w-3.5 h-3.5 text-accent-deep shrink-0" /> Envío a Europa
                 </div>
                 <div className="flex items-center gap-2 font-body text-[10px] uppercase tracking-widest text-foreground/60">
                   <Wrench className="w-3.5 h-3.5 text-accent-deep shrink-0" /> {t('product.guidedInstall')}

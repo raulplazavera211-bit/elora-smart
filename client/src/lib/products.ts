@@ -79,9 +79,9 @@ export const ALL_PRODUCTS: Product[] = [
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
-      { label: "Asiento", value: "CLIMADAPT" },
-      { label: "Secado", value: "< 30 segundos" },
-      { label: "Garantía", value: "10 años cerámica" },
+      { label: "Instalación", value: "Sin obra" },
+      { label: "Formato", value: "Confort" },
+      { label: "Diseño", value: "A suelo" },
     ],
     pitch: [
       { title: "Automatización inteligente", body: "Apertura, cierre y descarga automáticos. Sensor de pie integrado y detección de postura (pie/sentado). Todo sin tocar nada." },
