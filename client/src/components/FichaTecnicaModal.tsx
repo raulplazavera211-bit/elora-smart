@@ -24,14 +24,8 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
     onSuccess: (data) => {
       setSubmitted(true);
       setPdfUrl(data.pdfUrl);
-      // Auto-download
-      const a = document.createElement("a");
-      a.href = data.pdfUrl;
-      a.download = data.fileName;
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Abrir en nueva pestaña en lugar de descargar
+      window.open(data.pdfUrl, '_blank');
     },
   });
 
@@ -163,13 +157,12 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
             {pdfUrl && (
               <a
                 href={pdfUrl}
-                download
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-[#c9a96e] hover:bg-[#b8965d] text-[#0a0a0a] font-semibold tracking-widest uppercase text-xs py-3 px-6 transition-all duration-200 active:scale-[0.97]"
               >
                 <Download className="w-4 h-4" />
-                Volver a descargar
+                Ver PDF
               </a>
             )}
             <button
