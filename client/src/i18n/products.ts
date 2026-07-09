@@ -114,9 +114,11 @@ const es: ProductsLocaleMap = {
     warrantyDetails: "10 años de garantía en la cerámica · 3 años en la tecnología (ampliable a 5 años con ELORA Premium Care por 249€). Servicio técnico en español. Repuestos oficiales garantizados 10 años.",
     faqs: [
       { q: "¿Necesito obra para instalar el ESENZA?", a: "No. Sustituye a tu inodoro actual con las mismas conexiones. Solo necesitas un enchufe cerca. Eso sí, es recomendable revisar la salida de desagüe antes de la instalación para asegurarse de que es compatible." },
-      { q: "¿En qué se diferencia ESENZA de AURA?", a: "ESENZA tiene todas las funciones esenciales a un precio más contenido. AURA añade espuma anti-salpicaduras, luz UV, aromaterapia y control por voz." },
-      { q: "¿Funciona con baja presión de agua?", a: "Sí. El tanque integrado de 5 litros garantiza un funcionamiento fiable incluso en edificios antiguos o con baja presión." },
+      { q: "¿En qué se diferencia ESENZA de AURA?", a: "ESENZA tiene todas las funciones esenciales a un precio más contenido. AURA añade espuma anti-salpicaduras, luz infrarroja, luz UV, desodorización, aromaterapia y control por voz." },
+      { q: "¿Funciona con baja presión de agua?", a: "Sí, siempre que la instalación tenga una presión igual o superior a 0,8 bar. Su tanque integrado de 5 litros ayuda a mantener una descarga estable incluso en edificios antiguos o instalaciones con menor presión." },
       { q: "¿Hace ruido por la noche?", a: "No. El funcionamiento es silencioso, por debajo de 59 dB — hasta 21 dB más silencioso que muchos inodoros convencionales." },
+      { q: "¿Puedo seguir usando papel higiénico?", a: "Sí, por supuesto. Puedes seguir usándolo si quieres, aunque ESENZA está diseñado para que el lavado con agua templada y el secado rápido en menos de 30 segundos reduzcan al máximo la necesidad de papel." },
+      { q: "¿Qué mantenimiento necesita?", a: "Prácticamente el mismo que un inodoro convencional, con alguna revisión sencilla. La boquilla se limpia automáticamente, la cerámica rimless facilita el mantenimiento diario y, si notas menos presión de lavado, puede ser necesario limpiar el filtro de entrada de agua." },
     ],
   },
   "ESENZA-COMPACT": {
@@ -564,9 +566,11 @@ const en: ProductsLocaleMap = {
     warrantyDetails: "10-year ceramic warranty · 3 years on technology (extendable to 5 years with ELORA Premium Care for €249). Technical service in Spanish. Official spare parts guaranteed 10 years.",
     faqs: [
       { q: "Do I need construction work to install the ESENZA?", a: "No. It replaces your current toilet with the same connections. You only need a nearby power outlet. We do recommend checking the drain outlet before installation to ensure compatibility." },
-      { q: "What is the difference between ESENZA and AURA?", a: "ESENZA has all the essential functions at a more affordable price. AURA adds foam splash shield, UV light, aromatherapy and voice control." },
-      { q: "Does it work with low water pressure?", a: "Yes. The integrated 5-litre tank ensures reliable operation even in older buildings or with low pressure." },
+      { q: "What is the difference between ESENZA and AURA?", a: "ESENZA has all the essential functions at a more affordable price. AURA adds foam splash shield, infrared light, UV light, deodorisation, aromatherapy and voice control." },
+      { q: "Does it work with low water pressure?", a: "Yes, as long as the installation has a pressure of 0.8 bar or more. The integrated 5-litre tank helps maintain a stable flush even in older buildings or installations with lower pressure." },
       { q: "Is it noisy at night?", a: "No. Operation is silent, below 59 dB — up to 21 dB quieter than many conventional toilets." },
+      { q: "Can I still use toilet paper?", a: "Yes, of course. You can still use it if you wish, although ESENZA is designed so that warm water washing and fast drying in under 30 seconds reduce the need for paper to a minimum." },
+      { q: "What maintenance does it need?", a: "Practically the same as a conventional toilet, with a few simple checks. The nozzle cleans itself automatically, the rimless ceramic makes daily maintenance easy and, if you notice less wash pressure, the water inlet filter may need cleaning." },
     ],
   },
   "ESENZA-COMPACT": {
@@ -1014,9 +1018,11 @@ const pt: ProductsLocaleMap = {
     warrantyDetails: "10 anos de garantia na cerâmica · 3 anos na tecnologia (extensível a 5 anos com ELORA Premium Care por 249€). Serviço técnico disponível. Peças de reposição oficiais garantidas 10 anos.",
     faqs: [
       { q: "Preciso de obras para instalar o ESENZA?", a: "Não. Substitui a sua sanita atual com as mesmas ligações. Só precisa de uma tomada próxima. Recomendamos verificar a saída do esgoto antes da instalação para garantir a compatibilidade." },
-      { q: "Qual a diferença entre ESENZA e AURA?", a: "O ESENZA tem todas as funções essenciais a um preço mais acessível. O AURA acrescenta escudo de espuma, luz UV, aromaterapia e controlo por voz." },
-      { q: "Funciona com baixa pressão de água?", a: "Sim. O depósito integrado de 5 litros garante um funcionamento fiável mesmo em edifícios antigos." },
+      { q: "Qual a diferença entre ESENZA e AURA?", a: "O ESENZA tem todas as funções essenciais a um preço mais acessível. O AURA acrescenta escudo de espuma, luz infravermelha, luz UV, desodorização, aromaterapia e controlo por voz." },
+      { q: "Funciona com baixa pressão de água?", a: "Sim, desde que a instalação tenha uma pressão igual ou superior a 0,8 bar. O depósito integrado de 5 litros ajuda a manter uma descarga estável mesmo em edifícios antigos ou instalações com menor pressão." },
       { q: "Faz barulho à noite?", a: "Não. O funcionamento é silencioso, abaixo de 59 dB." },
+      { q: "Posso continuar a usar papel higiénico?", a: "Sim, claro. Pode continuar a usá-lo se quiser, embora o ESENZA esteja concebido para que a lavagem com água morna e a secagem rápida em menos de 30 segundos reduzam ao máximo a necessidade de papel." },
+      { q: "Que manutenção necessita?", a: "Praticamente a mesma que uma sanita convencional, com algumas verificações simples. O bocal limpa-se automaticamente, a cerâmica rimless facilita a manutenção diária e, se notar menos pressão de lavagem, pode ser necessário limpar o filtro de entrada de água." },
     ],
   },
   "ESENZA-COMPACT": {
@@ -1464,9 +1470,11 @@ const fr: ProductsLocaleMap = {
     warrantyDetails: "10 ans de garantie sur la céramique · 3 ans sur la technologie (extensible à 5 ans avec ELORA Premium Care pour 249€). Service technique disponible. Pièces de rechange officielles garanties 10 ans.",
     faqs: [
       { q: "Ai-je besoin de travaux pour installer l'ESENZA ?", a: "Non. Il remplace votre toilette actuelle avec les mêmes connexions. Vous avez seulement besoin d'une prise à proximité. Nous recommandons de vérifier la sortie d'évacuation avant l'installation pour s'assurer de la compatibilité." },
-      { q: "Quelle est la différence entre ESENZA et AURA ?", a: "L'ESENZA a toutes les fonctions essentielles à un prix plus abordable. L'AURA ajoute le bouclier anti-éclaboussures, la lumière UV, l'aromathérapie et le contrôle vocal." },
-      { q: "Fonctionne-t-il avec une faible pression d'eau ?", a: "Oui. Le réservoir intégré de 5 litres garantit un fonctionnement fiable même dans les anciens bâtiments." },
+      { q: "Quelle est la différence entre ESENZA et AURA ?", a: "L'ESENZA a toutes les fonctions essentielles à un prix plus abordable. L'AURA ajoute le bouclier anti-éclaboussures, la lumière infrarouge, la lumière UV, la désodorisation, l'aromathérapie et le contrôle vocal." },
+      { q: "Fonctionne-t-il avec une faible pression d'eau ?", a: "Oui, à condition que l'installation ait une pression égale ou supérieure à 0,8 bar. Le réservoir intégré de 5 litres aide à maintenir une chasse stable même dans les anciens bâtiments ou les installations à plus faible pression." },
       { q: "Est-il bruyant la nuit ?", a: "Non. Le fonctionnement est silencieux, en dessous de 59 dB." },
+      { q: "Puis-je continuer à utiliser du papier toilette ?", a: "Oui, bien sûr. Vous pouvez continuer à l'utiliser si vous le souhaitez, bien que l'ESENZA soit conçu pour que le lavage à l'eau tiède et le séchage rapide en moins de 30 secondes réduisent au maximum le besoin de papier." },
+      { q: "Quel entretien nécessite-t-il ?", a: "Pratiquement le même qu'une toilette conventionnelle, avec quelques vérifications simples. La buse se nettoie automatiquement, la céramique rimless facilite l'entretien quotidien et, si vous remarquez moins de pression de lavage, il peut être nécessaire de nettoyer le filtre d'entrée d'eau." },
     ],
   },
   "ESENZA-COMPACT": {
@@ -1914,9 +1922,11 @@ const it: ProductsLocaleMap = {
     warrantyDetails: "10 anni di garanzia sulla ceramica · 3 anni sulla tecnologia (estendibile a 5 anni con ELORA Premium Care per 249€). Servizio tecnico disponibile. Ricambi ufficiali garantiti 10 anni.",
     faqs: [
       { q: "Ho bisogno di lavori per installare l'ESENZA?", a: "No. Sostituisce il tuo WC attuale con le stesse connessioni. Hai solo bisogno di una presa vicina. Ti consigliamo di verificare lo scarico prima dell'installazione per assicurarti della compatibilità." },
-      { q: "Qual è la differenza tra ESENZA e AURA?", a: "L'ESENZA ha tutte le funzioni essenziali a un prezzo più contenuto. L'AURA aggiunge lo scudo anti-schizzi, la luce UV, l'aromaterapia e il controllo vocale." },
-      { q: "Funziona con bassa pressione dell'acqua?", a: "Sì. Il serbatoio integrato da 5 litri garantisce un funzionamento affidabile anche negli edifici più vecchi." },
+      { q: "Qual è la differenza tra ESENZA e AURA?", a: "L'ESENZA ha tutte le funzioni essenziali a un prezzo più contenuto. L'AURA aggiunge lo scudo anti-schizzi, la luce a infrarossi, la luce UV, la deodorizzazione, l'aromaterapia e il controllo vocale." },
+      { q: "Funziona con bassa pressione dell'acqua?", a: "Sì, purché l'impianto abbia una pressione pari o superiore a 0,8 bar. Il serbatoio integrato da 5 litri aiuta a mantenere uno scarico stabile anche negli edifici più vecchi o negli impianti con pressione inferiore." },
       { q: "È rumoroso di notte?", a: "No. Il funzionamento è silenzioso, sotto i 59 dB." },
+      { q: "Posso continuare a usare la carta igienica?", a: "Sì, certo. Puoi continuare a usarla se vuoi, anche se l'ESENZA è progettato affinché il lavaggio con acqua tiepida e l'asciugatura rapida in meno di 30 secondi riducano al minimo la necessità di carta." },
+      { q: "Che manutenzione richiede?", a: "Praticamente la stessa di un WC convenzionale, con qualche semplice controllo. L'ugello si pulisce automaticamente, la ceramica rimless facilita la manutenzione quotidiana e, se noti meno pressione di lavaggio, potrebbe essere necessario pulire il filtro di ingresso dell'acqua." },
     ],
   },
   "ESENZA-COMPACT": {
