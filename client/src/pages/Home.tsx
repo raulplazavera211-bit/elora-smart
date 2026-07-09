@@ -274,11 +274,11 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "AURA-SUSPENDIDO",
-    name: "Váter japonés AURA suspendido",
+    name: "Inodoro inteligente AURA suspendido",
     tagline: "Todo el confort AURA en diseño flotante.",
-    description: "Todo el confort del Water japonés AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
+    description: "Todo el confort del Inodoro inteligente AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
     longDescription:
-      "El váter japonés AURA suspendido ofrece todo el confort del Water japonés AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el váter suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
+      "El inodoro inteligente AURA suspendido ofrece todo el confort del Inodoro inteligente AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el inodoro suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
     img: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
     gallery: AURA_SUSP_GALLERY,
     badges: ["Suspendido", "Altura ajustable"],
@@ -349,7 +349,7 @@ const PRODUCTS: Product[] = [
       { label: "Descarga", value: "Dual (completa / ecológica)" },
     ],
     inTheBox: [
-      "Váter japonés AURA Suspendido",
+      "Inodoro inteligente AURA suspendido",
       "Módulo de instalación suspendida",
       "Mando a distancia en español",
       "Manual de instalación y uso",
@@ -564,10 +564,10 @@ const EXTRA_PRODUCTS: Product[] = [
   },
   {
     id: "AURA",
-    name: "Water japonés AURA",
+    name: "Inodoro inteligente AURA",
     tagline: "La experiencia AURA completa.",
     description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
-    longDescription: "El water japonés AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
+    longDescription: "El inodoro inteligente AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
     img: "https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg",
     gallery: AURA_GALLERY,
     badges: ["3 colores", "UV + Aromaterapia"],
