@@ -243,12 +243,12 @@ export default function Coleccion() {
                   >
                     <button
                       onClick={() => openProduct(prod)}
-                      className="relative overflow-hidden bg-muted border-b border-border h-[280px] outline-none w-full"
+                      className="relative overflow-hidden bg-muted border-b border-border aspect-square outline-none w-full"
                     >
                       <img
                         src={prod.img}
                         alt={prod.name}
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 p-4"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                       <div className="absolute top-3 left-3 flex flex-col gap-1">

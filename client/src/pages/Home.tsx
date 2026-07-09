@@ -1893,12 +1893,11 @@ export default function Home() {
                       </div>
 
                       {/* Imagen producto */}
-                      <div className="relative flex-1 min-h-[220px] md:min-h-[180px] overflow-hidden bg-muted">
+                      <div className="relative aspect-square overflow-hidden bg-muted">
                         <img
                           src="https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg"
                           alt="AURA Suspendido"
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          style={{ objectPosition: 'center 55%' }}
+                          className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 p-4"
                         />
                       </div>
 
@@ -2015,14 +2014,14 @@ export default function Home() {
                       >
                         {/* Imagen */}
                         <button
-                          onClick={() => openProduct(prod)}
-                          className="relative overflow-hidden bg-muted border-b border-border h-[260px] outline-none w-full"
-                        >
-                          <img
-                            src={prod.img}
-                            alt={prod.name}
-                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                          />
+          onClick={() => openProduct(prod)}
+          className="relative overflow-hidden bg-muted border-b border-border aspect-square outline-none w-full"
+        >
+          <img
+            src={prod.img}
+            alt={prod.name}
+            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 p-4"
+          />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                           <span className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-foreground text-background font-body text-[9px] uppercase tracking-[0.25em] px-2 py-1">
                             {t('coleccion.viewDetail')}

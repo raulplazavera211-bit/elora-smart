@@ -60,11 +60,11 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
             {/* Imagen */}
-            <div className="bg-background border border-border overflow-hidden h-[300px] sm:h-[420px] md:h-[640px] relative">
+            <div className="bg-background border border-border overflow-hidden aspect-square relative">
               <img
                 src={product.img}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain p-6"
               />
               <div className="absolute top-3 left-3 flex flex-col gap-1.5">
                 {product.badges.map((b) => (
@@ -186,7 +186,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
             {product.gallery.map((g) => (
               <div key={g} className="aspect-square bg-muted border border-border overflow-hidden">
-                <img src={g} alt={product.name} className="w-full h-full object-cover" />
+                <img src={g} alt={product.name} className="w-full h-full object-contain p-3" />
               </div>
             ))}
           </div>
