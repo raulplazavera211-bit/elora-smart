@@ -606,7 +606,7 @@ export const ALL_PRODUCTS: Product[] = [
 
 // Los 3 productos destacados para la home
 export const FEATURED_PRODUCTS = ALL_PRODUCTS.filter(p =>
-  ["ESENZA", "AURA-COMPACT", "AURA-SUSPENDIDO"].includes(p.id)
+  ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO"].includes(p.id)
 );
 
 // ─── Productos localizados ────────────────────────────────────────────────────
@@ -645,6 +645,6 @@ export function getLocalizedProducts(lang: string): Product[] {
 
 export function getLocalizedFeatured(lang: string): Product[] {
   return getLocalizedProducts(lang).filter(p =>
-    ["ESENZA", "AURA-COMPACT", "AURA-SUSPENDIDO"].includes(p.id)
+    ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO"].includes(p.id)
   );
 }
