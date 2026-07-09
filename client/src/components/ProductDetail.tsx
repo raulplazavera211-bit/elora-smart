@@ -439,7 +439,12 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
             <h2 className="font-display text-2xl sm:text-3xl md:text-5xl uppercase tracking-wide leading-[0.95] mb-3">
               {product.name}<br />{t('product.waitingForYou')}
             </h2>
-            <p className="font-display text-xl sm:text-2xl tracking-wide">{product.price.toLocaleString()} €</p>
+            <div className="flex items-baseline gap-3">
+              {product.originalPrice && (
+                <span className="font-body text-sm text-foreground/40 line-through">{product.originalPrice.toLocaleString()} €</span>
+              )}
+              <p className="font-display text-xl sm:text-2xl tracking-wide">{product.price.toLocaleString()} €</p>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <button
