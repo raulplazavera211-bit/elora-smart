@@ -242,11 +242,10 @@ export default function SpainDistributorsMap() {
               transform: visible ? "translateY(0)" : "translateY(30px)",
               transition: "opacity 0.7s ease 1.2s, transform 0.7s cubic-bezier(0.23,1,0.32,1) 1.2s",
               minWidth: "280px", maxWidth: "320px",
-              border: "1px solid rgba(232,122,61,0.3)",
-              padding: "32px 28px",
-              background: "rgba(0,0,0,0.35)",
-              position: "relative",
-              backdropFilter: "blur(4px)",
+            border: "1px solid rgba(232,122,61,0.3)",
+            padding: "32px 28px",
+            background: "transparent",
+            position: "relative",
             }}
           >
             {/* Esquinas decorativas */}
@@ -254,8 +253,8 @@ export default function SpainDistributorsMap() {
             <div style={{ position: "absolute", bottom: 0, left: 0, width: "18px", height: "18px", borderBottom: "2px solid #E87A3D", borderLeft: "2px solid #E87A3D" }} />
 
             <p className="font-body text-[10px] uppercase tracking-[0.35em] text-accent-deep mb-3">¿Quieres vender Elora?</p>
-            <h3 className="font-display text-3xl uppercase tracking-tight text-foreground leading-[0.95] mb-3">
-              Sé <span style={{ color: "#E87A3D" }}>distribui-<br/>dor</span>
+            <h3 className="font-display text-3xl uppercase tracking-tight text-foreground leading-[0.95] mb-3 whitespace-nowrap">
+              Sé <span style={{ color: "#E87A3D" }}>distribuidor</span>
             </h3>
             <p className="font-body text-[12px] text-foreground/60 leading-relaxed mb-6">
               Únete a nuestra red oficial y ofrece los inodoros inteligentes más avanzados del mercado.
