@@ -26,7 +26,7 @@ const en = {
     title1: "Galician soul,",
     title2: "absolute precision.",
     body: "We design from Galicia, where stone and the Atlantic set the rhythm. Every Elora is conceived in Galician before travelling to your bathroom.",
-    estab: "Est. Galicia · 2024",
+    estab: "EST. SPAIN - 2022",
     trust: "Trust in",
     trustBrand: "Elora.",
     trustSub: "Galician quality, for your bathroom.",
@@ -235,7 +235,7 @@ const en = {
 
   footer: {
     tagline: "Smart toilets designed in Galicia.",
-    taglineShort: "Elora Smart \u00b7 Smart toilets \u00b7 Est. Galicia 2024",
+    taglineShort: "Elora Smart \u00b7 Smart toilets \u00b7 EST. SPAIN - 2022",
     taglineOld: "Smart toilets designed in Galicia. Japanese technology with an Atlantic soul.",
     newsletter: "News and exclusive offers",
     newsletterPlaceholder: "your@email.com",

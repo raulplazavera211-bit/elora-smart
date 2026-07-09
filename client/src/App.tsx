@@ -109,7 +109,7 @@ function ComingSoon() {
             className="text-[8px] md:text-[9px] uppercase tracking-[0.5em] md:tracking-[0.6em] text-amber-400/70"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Smart · Est. Galicia 2024
+            Smart · EST. SPAIN - 2022
           </p>
         </div>
 

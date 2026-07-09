@@ -29,7 +29,7 @@ const es = {
     title1: "Alma gallega,",
     title2: "precisión absoluta.",
     body: "Diseñamos desde Galicia, donde el Atlántico marca otra forma de entender el agua y el tiempo. Cada ELORA se piensa en gallego antes de viajar a tu baño.",
-    estab: "Est. Galicia · 2024",
+    estab: "EST. SPAIN - 2022",
     trust: "Confía en",
     trustBrand: "Elora.",
     trustSub: "Calidad gallega, para tu baño.",
@@ -245,7 +245,7 @@ const es = {
   // ── Footer ───────────────────────────────────────────────────────────────────
   footer: {
     tagline: "Inodoros inteligentes diseñados en Galicia.",
-    taglineShort: "Elora Smart · Inodoros inteligentes · Est. Galicia 2024",
+    taglineShort: "Elora Smart · Inodoros inteligentes · EST. SPAIN - 2022",
     taglineOld: "Inodoros inteligentes diseñados en Galicia. Tecnología japonesa con alma atlántica.",
     newsletter: "Novedades y ofertas exclusivas",
     newsletterPlaceholder: "tu@email.com",

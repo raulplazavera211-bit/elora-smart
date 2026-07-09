@@ -1637,7 +1637,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-accent-deep" />
-                Est. Galicia · 2024
+                EST. SPAIN - 2022
               </div>
             </div>
           </div>
