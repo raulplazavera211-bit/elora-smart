@@ -744,7 +744,19 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
       }))
     : i18nSteps.map((s, i) => ({ ...s, image: EXPERIENCE_STEPS[i]?.image ?? '' }));
   const [activeStep, setActiveStep] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Precargar todas las imágenes al montar el componente
+  useEffect(() => {
+    if (STEPS.length === 0) return;
+    STEPS.forEach(s => {
+      if (!s.image) return;
+      const img = new Image();
+      img.onload = () => setLoadedImages(prev => new Set(prev).add(s.image));
+      img.src = s.image;
+    });
+  }, [STEPS.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const container = scrollContainer.current;
@@ -817,11 +829,16 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
                 transition={{ duration: 0.55, ease: [0.23, 1, 0.32, 1] }}
                 className="absolute inset-0 flex items-center justify-center"
               >
+                {/* Skeleton mientras carga */}
+                {!loadedImages.has(s.image) && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-3/4 h-3/4 rounded-lg bg-background/10 animate-pulse" />
+                  </div>
+                )}
                 <img
                   src={s.image}
                   alt={s.title}
-                  className="w-full h-full object-contain p-4"
-                  loading="lazy"
+                  className={`w-full h-full object-contain p-4 transition-opacity duration-500 ${loadedImages.has(s.image) ? 'opacity-100' : 'opacity-0'}`}
                 />
                 {/* Número de fondo */}
                 <span className="absolute bottom-1 right-3 font-display text-[5rem] leading-none text-background/5 select-none pointer-events-none">
@@ -946,8 +963,17 @@ function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObje
                   transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                   className="absolute inset-8"
                 >
-                  <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden flex items-center justify-center">
-                    <img src={s.image} alt={s.title} className="w-full h-full object-contain p-4" loading="lazy" />
+                  <div className="w-full h-full bg-background/5 border border-background/10 overflow-hidden flex items-center justify-center relative">
+                    {!loadedImages.has(s.image) && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-3/4 h-3/4 rounded-lg bg-background/10 animate-pulse" />
+                      </div>
+                    )}
+                    <img
+                      src={s.image}
+                      alt={s.title}
+                      className={`w-full h-full object-contain p-4 transition-opacity duration-500 ${loadedImages.has(s.image) ? 'opacity-100' : 'opacity-0'}`}
+                    />
                   </div>
                   <span className="absolute bottom-4 right-6 font-display text-[8rem] leading-none text-background/5 select-none pointer-events-none">{s.number}</span>
                 </motion.div>
