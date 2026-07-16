@@ -358,44 +358,62 @@ export default function SpainDistributorsMap() {
               })}
 
               {/* Puntos de distribuidores */}
-              {DISTRIBUTORS.map((d, i) => {
-                const pos = gpsToSvg(d.lat, d.lon);
-                const isActive = activeId === d.id;
-                return (
-                  <g key={d.id}
-                    className="dist-dot"
-                    style={{ animationDelay: `${0.6 + i * 0.08}s`, cursor: "pointer" }}
-                    onMouseEnter={() => setHovered(d.id)}
-                    onMouseLeave={() => setHovered(null)}
-                    onClick={() => setSelected(d.id === selected ? null : d.id)}
-                  >
-                    {/* Anillos pulsantes */}
-                    <circle cx={pos.x} cy={pos.y} r={isActive ? 7 : 5} fill="none" stroke="#E87A3D"
-                      strokeWidth={isActive ? 1.5 : 1} opacity={isActive ? 0.7 : 0.3}
-                      style={{ animation: `ring-out ${1.6 + i * 0.15}s ease-out infinite`, animationDelay: `${i * 0.2}s` }} />
-                    <circle cx={pos.x} cy={pos.y} r={isActive ? 5 : 3.5} fill="none" stroke="#E87A3D"
-                      strokeWidth="0.8" opacity={isActive ? 0.45 : 0.12}
-                      style={{ animation: `ring-out2 ${2 + i * 0.12}s ease-out infinite`, animationDelay: `${i * 0.25 + 0.3}s` }} />
-                    {/* Punto central */}
-                    <circle cx={pos.x} cy={pos.y} r={isActive ? 5.5 : 3.5}
-                      fill="#E87A3D" opacity={isActive ? 1 : 0.7}
-                      filter={isActive ? "url(#dotGlow2)" : undefined}
-                      style={{ transition: "all 0.3s ease" }} />
-                    <circle cx={pos.x} cy={pos.y} r={isActive ? 2.2 : 1.5} fill="white" opacity={0.9} />
-                    {/* Etiqueta */}
-                    <text
-                      x={pos.x + (pos.x > VW / 2 ? -9 : 9)}
-                      y={pos.y - 10}
-                      textAnchor={pos.x > VW / 2 ? "end" : "start"}
-                      fontSize="7" fontFamily="'Oswald', sans-serif" fontWeight="400" letterSpacing="1.2"
-                      fill="white" opacity={isActive ? 1 : 0.45}
-                      style={{ transition: "opacity 0.3s ease", pointerEvents: "none" }}
+              {(() => {
+                // Offsets manuales para etiquetas de distribuidores cercanos (evita solapamiento)
+                // [dx, dy, anchor] donde dx/dy son offsets adicionales a la posición base
+                const LABEL_OFFSETS: Record<number, [number, number, "start" | "end" | "middle"]> = {
+                  1:  [0,   -8,  "start"],  // Teo — arriba
+                  2:  [0,   14,  "start"],  // Boiro — abajo
+                  8:  [-9,   4,  "end"],    // Vigo — izquierda
+                  4:  [9,  -10,  "start"],  // Sant Feliu — arriba
+                  9:  [9,   12,  "start"],  // Sant Vicenç — abajo
+                  5:  [0,  -10,  "start"],  // Alcobendas — arriba
+                  6:  [0,   12,  "start"],  // Alcalá de Henares — abajo
+                  10: [-9,  -10, "end"],    // El Saucejo — arriba izq
+                  14: [-9,   12, "end"],    // Marbella — abajo izq
+                };
+                return DISTRIBUTORS.map((d, i) => {
+                  const pos = gpsToSvg(d.lat, d.lon);
+                  const isActive = activeId === d.id;
+                  const defaultDx = pos.x > VW / 2 ? -9 : 9;
+                  const defaultAnchor = pos.x > VW / 2 ? "end" : "start";
+                  const [ldx, ldy, lanchor] = LABEL_OFFSETS[d.id] ?? [defaultDx, -10, defaultAnchor as "start" | "end" | "middle"];
+                  return (
+                    <g key={d.id}
+                      className="dist-dot"
+                      style={{ animationDelay: `${0.6 + i * 0.08}s`, cursor: "pointer" }}
+                      onMouseEnter={() => setHovered(d.id)}
+                      onMouseLeave={() => setHovered(null)}
+                      onClick={() => setSelected(d.id === selected ? null : d.id)}
                     >
-                      {d.city.toUpperCase()}
-                    </text>
-                  </g>
-                );
-              })}
+                      {/* Anillos pulsantes */}
+                      <circle cx={pos.x} cy={pos.y} r={isActive ? 7 : 5} fill="none" stroke="#E87A3D"
+                        strokeWidth={isActive ? 1.5 : 1} opacity={isActive ? 0.7 : 0.3}
+                        style={{ animation: `ring-out ${1.6 + i * 0.15}s ease-out infinite`, animationDelay: `${i * 0.2}s` }} />
+                      <circle cx={pos.x} cy={pos.y} r={isActive ? 5 : 3.5} fill="none" stroke="#E87A3D"
+                        strokeWidth="0.8" opacity={isActive ? 0.45 : 0.12}
+                        style={{ animation: `ring-out2 ${2 + i * 0.12}s ease-out infinite`, animationDelay: `${i * 0.25 + 0.3}s` }} />
+                      {/* Punto central */}
+                      <circle cx={pos.x} cy={pos.y} r={isActive ? 5.5 : 3.5}
+                        fill="#E87A3D" opacity={isActive ? 1 : 0.7}
+                        filter={isActive ? "url(#dotGlow2)" : undefined}
+                        style={{ transition: "all 0.3s ease" }} />
+                      <circle cx={pos.x} cy={pos.y} r={isActive ? 2.2 : 1.5} fill="white" opacity={0.9} />
+                      {/* Etiqueta con offset ajustado para evitar solapamientos */}
+                      <text
+                        x={pos.x + ldx}
+                        y={pos.y + ldy}
+                        textAnchor={lanchor}
+                        fontSize="7" fontFamily="'Oswald', sans-serif" fontWeight="400" letterSpacing="1.2"
+                        fill="white" opacity={isActive ? 1 : 0.45}
+                        style={{ transition: "opacity 0.3s ease", pointerEvents: "none" }}
+                      >
+                        {d.city.toUpperCase()}
+                      </text>
+                    </g>
+                  );
+                });
+              })()}
             </svg>
           </div>
 
