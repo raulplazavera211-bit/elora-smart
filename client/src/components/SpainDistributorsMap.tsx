@@ -71,7 +71,7 @@ export default function SpainDistributorsMap() {
 
   // Cargar SVG real de España
   useEffect(() => {
-    fetch("/manus-storage/spain-real_4ad50a1c.svg")
+    fetch("https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/sthomrQkqbaLPewV.svg")
       .then(r => r.text())
       .then(text => {
         const parser = new DOMParser();

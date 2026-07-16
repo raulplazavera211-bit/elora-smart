@@ -8,7 +8,7 @@ import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { Lock, LogOut, Mail, Phone, RefreshCw, ShieldAlert, Users } from "lucide-react";
 
-const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
+const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/WejihdAdoNhfTwYK.png";
 
 function formatDate(date: Date | string | null | undefined): string {
   if (!date) return "—";

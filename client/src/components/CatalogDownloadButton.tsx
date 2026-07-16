@@ -3,10 +3,10 @@ import { Download, ChevronDown, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const CATALOG_LANGS = [
-  { code: "es", label: "Español",    flag: "🇪🇸", url: "/manus-storage/catalogo-es_1e20b742.pdf",  filename: "Catálogo-ELORA-2026-ES.pdf" },
-  { code: "en", label: "English",    flag: "🇬🇧", url: "/manus-storage/catalogo-en_8e026862.pdf",  filename: "Catalogue-ELORA-2026-EN.pdf" },
-  { code: "fr", label: "Français",   flag: "🇫🇷", url: "/manus-storage/catalogo-fr_ebd56ebd.pdf",  filename: "Catalogue-ELORA-2026-FR.pdf" },
-  { code: "pt", label: "Português",  flag: "🇵🇹", url: "/manus-storage/catalogo-pt_e0ff7e89.pdf",  filename: "Catálogo-ELORA-2026-PT.pdf" },
+  { code: "es", label: "Español",    flag: "🇪🇸", url: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/UFxHJyKBMxsxdLMM.pdf",  filename: "Catálogo-ELORA-2026-ES.pdf" },
+  { code: "en", label: "English",    flag: "🇬🇧", url: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lLhXrCXkRrriRIQC.pdf",  filename: "Catalogue-ELORA-2026-EN.pdf" },
+  { code: "fr", label: "Français",   flag: "🇫🇷", url: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/QsQMfxvpoXJyJWEY.pdf",  filename: "Catalogue-ELORA-2026-FR.pdf" },
+  { code: "pt", label: "Português",  flag: "🇵🇹", url: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/CWVXDtlMseoVwfLF.pdf",  filename: "Catálogo-ELORA-2026-PT.pdf" },
 ];
 
 export function CatalogDownloadButton() {
