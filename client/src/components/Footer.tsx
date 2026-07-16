@@ -16,7 +16,7 @@ const FacebookIcon = () => (
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
 
 export function Footer() {
   const { t } = useTranslation();

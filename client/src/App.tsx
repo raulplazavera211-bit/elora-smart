@@ -30,7 +30,7 @@ import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
 import { useEffect, useRef, useState } from "react";
 
-const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
 const HERO_VIDEO = "/manus-storage/elora-hero-drone-trimmed_8ab79e91.mp4";
 
 // Duración del contador: 12 horas en ms

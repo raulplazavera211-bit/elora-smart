@@ -10,7 +10,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
-const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
 
 // ─── Provincias de España ─────────────────────────────────────────────────────
 const PROVINCIAS_ESPANA = [

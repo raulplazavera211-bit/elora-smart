@@ -4,7 +4,7 @@ import { Shield, Lock, Eye, EyeOff, ArrowRight, RefreshCw, AlertCircle, CheckCir
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 
-const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
 
 // ─── CAPTCHA matemático ────────────────────────────────────────────────────────
 function generateCaptcha() {

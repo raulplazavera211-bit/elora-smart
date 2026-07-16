@@ -2,68 +2,68 @@ import type { Product } from "@/components/ProductDetail";
 
 // ─── Galerías ─────────────────────────────────────────────────────────────────
 const ESENZA_GALLERY = [
-  "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZa-12.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-9.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-10.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-7.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-8.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-2.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/ESENZA-11.webp",
+  "/manus-storage/esenza2-800x800_759c0894.jpg",
+  "/manus-storage/ESENZa-12_d6ee1106.webp",
+  "/manus-storage/ESENZA-9_0d209077.webp",
+  "/manus-storage/ESENZA-10_7acf0307.webp",
+  "/manus-storage/ESENZA-7_e866e071.webp",
+  "/manus-storage/ESENZA-8_dce78a4d.webp",
+  "/manus-storage/ESENZA-2_f12f8e70.webp",
+  "/manus-storage/ESENZA-11_ed0aab7f.webp",
 ];
 
 const AURA_COMPACT_GALLERY = [
-  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-compact-p-800x800.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-1.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-11.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-6.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-10.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-8.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-compact-3.jpg",
+  "/manus-storage/AURA-compact-p-800x800_fbe86644.jpg",
+  "/manus-storage/aura-compact-1_7543b556.jpg",
+  "/manus-storage/aura-compact-11_a212d210.jpg",
+  "/manus-storage/aura-compact-6_a3f2c15c.jpg",
+  "/manus-storage/aura-compact-10_287cc5b7.jpg",
+  "/manus-storage/aura-compact-8_1e63cc34.jpg",
+  "/manus-storage/aura-compact-3_07a38eef.jpg",
 ];
 
 const AURA_SUSP_GALLERY = [
-  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido1.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-2.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-3.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-111.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-9.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-suspendido-6.jpg",
+  "/manus-storage/AURA-suspendido-p-800x800_d9689cec.jpg",
+  "/manus-storage/aura-suspendido1_6aabbd7f.jpg",
+  "/manus-storage/aura-suspendido-2_ce860add.jpg",
+  "/manus-storage/aura-suspendido-3_8aca979d.jpg",
+  "/manus-storage/aura-suspendido-111_c50b43cf.jpg",
+  "/manus-storage/aura-suspendido-9_4a44a893.jpg",
+  "/manus-storage/aura-suspendido-6_eaa179cb.jpg",
 ];
 
 const ESENZA_COMPACT_GALLERY = [
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_5.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_1.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_2.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_10.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_9.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_8.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_6.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_7.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_11.webp",
+  "/manus-storage/batch_5_53c917c7.webp",
+  "/manus-storage/batch_1_109bf079.webp",
+  "/manus-storage/batch_2_4df211a9.webp",
+  "/manus-storage/batch_10_abcfd796.webp",
+  "/manus-storage/batch_9_62fb25c3.webp",
+  "/manus-storage/batch_8_d1e90e07.webp",
+  "/manus-storage/batch_6_8fbcdb77.webp",
+  "/manus-storage/batch_7_5d443355.webp",
+  "/manus-storage/batch_11_291c444b.webp",
 ];
 
 const ESENZA_SUSP_GALLERY = [
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_4-1.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_2-1.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_6-1.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_7-1.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_5-1.webp",
-  "https://elorasmart.com/wp-content/uploads/2025/12/batch_8-1.webp",
+  "/manus-storage/batch_4-1_78792862.webp",
+  "/manus-storage/batch_2-1_532f500d.webp",
+  "/manus-storage/batch_6-1_4bb05c49.webp",
+  "/manus-storage/batch_7-1_6d65febd.webp",
+  "/manus-storage/batch_5-1_f87ff88f.webp",
+  "/manus-storage/batch_8-1_dc449f6d.webp",
 ];
 
 const AURA_GALLERY = [
-  "https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart7-scaled.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart6.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart5.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart3.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart2.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/aura-elorasmart-scaled.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-BLANCO-2-scaled.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-BLANCO-3-scaled.jpg",
-  "https://elorasmart.com/wp-content/uploads/2025/05/AURA-BLANCO-6-scaled.jpg",
+  "/manus-storage/inodoro-aura_d094b1e7.jpg",
+  "/manus-storage/aura-elorasmart7-scaled_abd185af.jpg",
+  "/manus-storage/aura-elorasmart6_78e99a28.jpg",
+  "/manus-storage/aura-elorasmart5_57bea580.jpg",
+  "/manus-storage/aura-elorasmart3_0cc520b5.jpg",
+  "/manus-storage/aura-elorasmart2_3a56defa.jpg",
+  "/manus-storage/aura-elorasmart-scaled_c27dd2d5.jpg",
+  "/manus-storage/AURA-BLANCO-2-scaled_b64623c3.jpg",
+  "/manus-storage/AURA-BLANCO-3-scaled_9ded939e.jpg",
+  "/manus-storage/AURA-BLANCO-6-scaled_23a236c7.jpg",
 ];
 
 // ─── Catálogo completo ────────────────────────────────────────────────────────
@@ -75,7 +75,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación.",
     longDescription:
       "ESENZA a suelo es el inodoro inteligente japonés de ELORA SMART, ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación. Mantiene todas las funciones esenciales de la gama ESENZA con instalación sencilla, máxima estabilidad y un diseño de líneas limpias para baños modernos. Incluye 10 años de garantía en la cerámica y 3 años en la tecnología, ampliables a 5 años con ELORA Premium Care.",
-    img: "https://elorasmart.com/wp-content/uploads/2025/12/esenza2-800x800.jpg",
+    img: "/manus-storage/esenza2-800x800_759c0894.jpg",
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
@@ -187,7 +187,7 @@ export const ALL_PRODUCTS: Product[] = [
     tagline: "Todas las funciones en fondo reducido.",
     description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
     longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
-    img: "https://elorasmart.com/wp-content/uploads/2025/12/batch_5.webp",
+    img: "/manus-storage/batch_5_53c917c7.webp",
     gallery: ESENZA_COMPACT_GALLERY,
     badges: ["Compact", "Back-to-wall"],
     highlights: [
@@ -262,7 +262,7 @@ export const ALL_PRODUCTS: Product[] = [
     tagline: "Diseño flotante con funciones esenciales.",
     description: "El inodoro inteligente japonés flotante de ELORA SMART. Libera el suelo y aporta una estética minimalista y contemporánea.",
     longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA con un diseño más ligero y contemporáneo.",
-    img: "https://elorasmart.com/wp-content/uploads/2025/12/batch_4-1.webp",
+    img: "/manus-storage/batch_4-1_78792862.webp",
     gallery: ESENZA_SUSP_GALLERY,
     badges: ["Suspendido", "Rimless"],
     highlights: [
@@ -437,7 +437,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Todo el confort del Inodoro inteligente AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
     longDescription:
       "El inodoro inteligente AURA suspendido ofrece todo el confort del Inodoro inteligente AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el inodoro suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
-    img: "https://elorasmart.com/wp-content/uploads/2025/05/AURA-suspendido-p-800x800.jpg",
+    img: "/manus-storage/AURA-suspendido-p-800x800_d9689cec.jpg",
     gallery: AURA_SUSP_GALLERY,
     badges: ["Más vendido", "Suspendido", "Altura ajustable"],
     highlights: [
@@ -537,7 +537,7 @@ export const ALL_PRODUCTS: Product[] = [
     tagline: "La experiencia AURA completa.",
     description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
     longDescription: "El inodoro inteligente AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
-    img: "https://elorasmart.com/wp-content/uploads/2025/05/inodoro-aura.jpg",
+    img: "/manus-storage/inodoro-aura_d094b1e7.jpg",
     gallery: AURA_GALLERY,
     badges: ["3 colores", "UV + Aromaterapia"],
     highlights: [

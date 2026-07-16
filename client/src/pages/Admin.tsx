@@ -8,7 +8,7 @@ import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { Lock, LogOut, Mail, Phone, RefreshCw, ShieldAlert, Users } from "lucide-react";
 
-const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
+const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
 
 function formatDate(date: Date | string | null | undefined): string {
   if (!date) return "—";
