@@ -1,7 +1,7 @@
 import { useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
 
-const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/WejihdAdoNhfTwYK.png";
+const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
 
 export default function NotFound() {
   const [, navigate] = useLocation();
