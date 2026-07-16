@@ -2,68 +2,68 @@ import type { Product } from "@/components/ProductDetail";
 
 // ─── Galerías ─────────────────────────────────────────────────────────────────
 const ESENZA_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/YJORQYKSdRJVeZBM.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/vPtedITPfWPYeezb.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/NNBLHTXpDppxxDGJ.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/MKlicmnHOnZRMhqi.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/avmJtgxhKdizncKC.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/bUvEyjiLNnAOSYed.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lZHLnzqKmSElSsqs.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/PNywzFmYfZFmbPcq.webp",
+  "/manus-storage/esenza2-800x800_af396766.jpg",
+  "/manus-storage/ESENZa-12_b3dd228d.webp",
+  "/manus-storage/ESENZA-9_70e448e2.webp",
+  "/manus-storage/ESENZA-10_b08075fa.webp",
+  "/manus-storage/ESENZA-7_f5ab967b.webp",
+  "/manus-storage/ESENZA-8_5a6baa87.webp",
+  "/manus-storage/ESENZA-2_af433520.webp",
+  "/manus-storage/ESENZA-11_da6d1cbb.webp",
 ];
 
 const AURA_COMPACT_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/LjWEWCUzvqJXuuRu.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/iXAUaoDZNeyaNPTS.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/rFCWmhrymhBLvwqP.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/JBsYZzbpngNWBSVC.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/vAVavvfWCoJtNZEh.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/bNEYPaXoXyaLFGNM.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/VbiTKrXqrdxSjwfJ.jpg",
+  "/manus-storage/AURA-compact-p-800x800_597da236.jpg",
+  "/manus-storage/aura-compact-1_1b4aadd9.jpg",
+  "/manus-storage/aura-compact-11_0852f604.jpg",
+  "/manus-storage/aura-compact-6_2af3f2ac.jpg",
+  "/manus-storage/aura-compact-10_eff13988.jpg",
+  "/manus-storage/aura-compact-8_eceb1cbb.jpg",
+  "/manus-storage/aura-compact-3_bd7e50b6.jpg",
 ];
 
 const AURA_SUSP_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/SgQZdcVqSMnFGoTz.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TeQEaZyVzQaQlJTQ.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/IgeTlRkydwcoORaf.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/faeUlYAnSwQihrRn.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/DxYnzrawhTyZtQSn.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/EepkQWBaBDsgJVFe.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/LzhQOwqlzvDZCtdZ.jpg",
+  "/manus-storage/AURA-suspendido-p-800x800_a7fc7d94.jpg",
+  "/manus-storage/aura-suspendido1_e7c19dd4.jpg",
+  "/manus-storage/aura-suspendido-2_0c11bedb.jpg",
+  "/manus-storage/aura-suspendido-3_a85c6741.jpg",
+  "/manus-storage/aura-suspendido-111_0aba49d6.jpg",
+  "/manus-storage/aura-suspendido-9_f2122b99.jpg",
+  "/manus-storage/aura-suspendido-6_d2e510a8.jpg",
 ];
 
 const ESENZA_COMPACT_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/cnVVXAwbdzknYRlN.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/CvNdrDIGcRIKJaHW.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TsoKopFzwUcIovvI.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/yoVxuxerSvbiIzfi.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/fHxoVKmGwpgDiFaS.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/FbJVOvfrkZtoZfaM.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/NJCObVyjNHXwDTsq.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/tITINOjCnKPVNCak.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/uVnOQsckOdwvTCvf.webp",
+  "/manus-storage/batch_5_020a2fdf.webp",
+  "/manus-storage/batch_1_0e0533bb.webp",
+  "/manus-storage/batch_2_364dfa7a.webp",
+  "/manus-storage/batch_10_ecce6b89.webp",
+  "/manus-storage/batch_9_6330faaa.webp",
+  "/manus-storage/batch_8_5f0a6667.webp",
+  "/manus-storage/batch_6_1b729e7e.webp",
+  "/manus-storage/batch_7_701041f6.webp",
+  "/manus-storage/batch_11_f3b3e8bd.webp",
 ];
 
 const ESENZA_SUSP_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/RRcVghbJGKotkLhA.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/zHdyhPMFyZtCgQao.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/bboQRJvivMJPgOZF.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/vSHQzLLzCQFLIVVC.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/idJYRJFQseuTSKmo.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/PmQGcuIPwofMPzQN.webp",
+  "/manus-storage/batch_4-1_1d9b09da.webp",
+  "/manus-storage/batch_2-1_6863c7cb.webp",
+  "/manus-storage/batch_6-1_a180ebd8.webp",
+  "/manus-storage/batch_7-1_b3e43ef1.webp",
+  "/manus-storage/batch_5-1_de800e82.webp",
+  "/manus-storage/batch_8-1_89bf414b.webp",
 ];
 
 const AURA_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lFOjcchZimfNvVfo.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/jaqAtTlbriiosGqF.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/xMjxpqNdAoyECBYG.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TMwGeMCRlHnsbpoy.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/jZcrUbLivRZlMyIf.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/fEYAYhgkDdGkiIbK.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/gxBUicfBLzJdUAaV.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/dNKGWdjXJVbHkRga.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/ZezPwEmvVbsUIixj.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/xPxZOLKkUMUoVXpw.jpg",
+  "/manus-storage/inodoro-aura_4c9492ae.jpg",
+  "/manus-storage/aura-elorasmart7-scaled_9b6de14c.jpg",
+  "/manus-storage/aura-elorasmart6_394ec9d0.jpg",
+  "/manus-storage/aura-elorasmart5_4d4349ff.jpg",
+  "/manus-storage/aura-elorasmart3_3c10af0e.jpg",
+  "/manus-storage/aura-elorasmart2_26f388f7.jpg",
+  "/manus-storage/aura-elorasmart-scaled_0b6e65dc.jpg",
+  "/manus-storage/AURA-BLANCO-2-scaled_95299e91.jpg",
+  "/manus-storage/AURA-BLANCO-3-scaled_736949ee.jpg",
+  "/manus-storage/AURA-BLANCO-6-scaled_85d2c447.jpg",
 ];
 
 // ─── Catálogo completo ────────────────────────────────────────────────────────
@@ -75,7 +75,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación.",
     longDescription:
       "ESENZA a suelo es el inodoro inteligente japonés de ELORA SMART, ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación. Mantiene todas las funciones esenciales de la gama ESENZA con instalación sencilla, máxima estabilidad y un diseño de líneas limpias para baños modernos. Incluye 10 años de garantía en la cerámica y 3 años en la tecnología, ampliables a 5 años con ELORA Premium Care.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/YJORQYKSdRJVeZBM.jpg",
+    img: "/manus-storage/esenza2-800x800_af396766.jpg",
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
@@ -187,7 +187,7 @@ export const ALL_PRODUCTS: Product[] = [
     tagline: "Todas las funciones en fondo reducido.",
     description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
     longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/cnVVXAwbdzknYRlN.webp",
+    img: "/manus-storage/batch_5_020a2fdf.webp",
     gallery: ESENZA_COMPACT_GALLERY,
     badges: ["Compact", "Back-to-wall"],
     highlights: [
@@ -262,7 +262,7 @@ export const ALL_PRODUCTS: Product[] = [
     tagline: "Diseño flotante con funciones esenciales.",
     description: "El inodoro inteligente japonés flotante de ELORA SMART. Libera el suelo y aporta una estética minimalista y contemporánea.",
     longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA con un diseño más ligero y contemporáneo.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/RRcVghbJGKotkLhA.webp",
+    img: "/manus-storage/batch_4-1_1d9b09da.webp",
     gallery: ESENZA_SUSP_GALLERY,
     badges: ["Suspendido", "Rimless"],
     highlights: [
@@ -340,7 +340,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Combina tecnología y diseño compacto: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización y control por voz.",
     longDescription:
       "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas como: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio. Ideal para baños con poco espacio o lugares donde quieres ganar amplitud.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TPiDsmHDJCgpcyYv.webp",
+    img: "/manus-storage/inodoro_lujo_v2_81e05275.webp",
     gallery: AURA_COMPACT_GALLERY,
     badges: ["ClimAdapt", "UV · Voz"],
     highlights: [
@@ -437,7 +437,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Todo el confort del Inodoro inteligente AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
     longDescription:
       "El inodoro inteligente AURA suspendido ofrece todo el confort del Inodoro inteligente AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el inodoro suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/SgQZdcVqSMnFGoTz.jpg",
+    img: "/manus-storage/AURA-suspendido-p-800x800_a7fc7d94.jpg",
     gallery: AURA_SUSP_GALLERY,
     badges: ["Más vendido", "Suspendido", "Altura ajustable"],
     highlights: [
@@ -537,7 +537,7 @@ export const ALL_PRODUCTS: Product[] = [
     tagline: "La experiencia AURA completa.",
     description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
     longDescription: "El inodoro inteligente AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lFOjcchZimfNvVfo.jpg",
+    img: "/manus-storage/inodoro-aura_4c9492ae.jpg",
     gallery: AURA_GALLERY,
     badges: ["3 colores", "UV + Aromaterapia"],
     highlights: [

@@ -24,45 +24,45 @@ import { useCart } from "@/contexts/CartContext";
 import { LanguageSwitcher, LanguageDetectionBanner } from "@/components/LanguageSwitcher";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
-const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/dblRBEeHiPMGvIeb.png";
-const HERO_IMAGE = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/YJORQYKSdRJVeZBM.jpg";
+const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const HERO_IMAGE = "/manus-storage/esenza2-800x800_af396766.jpg";
 
 const PRODUCT_IMAGES: Record<string, string> = {
-  "ESENZA": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/YJORQYKSdRJVeZBM.jpg",
-  "AURA-COMPACT": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TPiDsmHDJCgpcyYv.webp",
-  "AURA-SUSPENDIDO": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/SgQZdcVqSMnFGoTz.jpg",
+  "ESENZA": "/manus-storage/esenza2-800x800_af396766.jpg",
+  "AURA-COMPACT": "/manus-storage/inodoro_lujo_v2_81e05275.webp",
+  "AURA-SUSPENDIDO": "/manus-storage/AURA-suspendido-p-800x800_a7fc7d94.jpg",
 };
 // SECTIONS se genera dinámicamente con i18n dentro del componente
 
 const ESENZA_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/YJORQYKSdRJVeZBM.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/vPtedITPfWPYeezb.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/NNBLHTXpDppxxDGJ.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/MKlicmnHOnZRMhqi.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/avmJtgxhKdizncKC.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/bUvEyjiLNnAOSYed.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lZHLnzqKmSElSsqs.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/PNywzFmYfZFmbPcq.webp",
+  "/manus-storage/esenza2-800x800_af396766.jpg",
+  "/manus-storage/ESENZa-12_b3dd228d.webp",
+  "/manus-storage/ESENZA-9_70e448e2.webp",
+  "/manus-storage/ESENZA-10_b08075fa.webp",
+  "/manus-storage/ESENZA-7_f5ab967b.webp",
+  "/manus-storage/ESENZA-8_5a6baa87.webp",
+  "/manus-storage/ESENZA-2_af433520.webp",
+  "/manus-storage/ESENZA-11_da6d1cbb.webp",
 ];
 
 const AURA_COMPACT_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/LjWEWCUzvqJXuuRu.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/iXAUaoDZNeyaNPTS.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/rFCWmhrymhBLvwqP.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/JBsYZzbpngNWBSVC.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/vAVavvfWCoJtNZEh.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/bNEYPaXoXyaLFGNM.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/VbiTKrXqrdxSjwfJ.jpg",
+  "/manus-storage/AURA-compact-p-800x800_597da236.jpg",
+  "/manus-storage/aura-compact-1_1b4aadd9.jpg",
+  "/manus-storage/aura-compact-11_0852f604.jpg",
+  "/manus-storage/aura-compact-6_2af3f2ac.jpg",
+  "/manus-storage/aura-compact-10_eff13988.jpg",
+  "/manus-storage/aura-compact-8_eceb1cbb.jpg",
+  "/manus-storage/aura-compact-3_bd7e50b6.jpg",
 ];
 
 const AURA_SUSP_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/SgQZdcVqSMnFGoTz.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TeQEaZyVzQaQlJTQ.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/IgeTlRkydwcoORaf.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/faeUlYAnSwQihrRn.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/DxYnzrawhTyZtQSn.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/EepkQWBaBDsgJVFe.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/LzhQOwqlzvDZCtdZ.jpg",
+  "/manus-storage/AURA-suspendido-p-800x800_a7fc7d94.jpg",
+  "/manus-storage/aura-suspendido1_e7c19dd4.jpg",
+  "/manus-storage/aura-suspendido-2_0c11bedb.jpg",
+  "/manus-storage/aura-suspendido-3_a85c6741.jpg",
+  "/manus-storage/aura-suspendido-111_0aba49d6.jpg",
+  "/manus-storage/aura-suspendido-9_f2122b99.jpg",
+  "/manus-storage/aura-suspendido-6_d2e510a8.jpg",
 ];
 
 // ─── Datos de productos ────────────────────────────────────────────────────────
@@ -74,7 +74,7 @@ const PRODUCTS: Product[] = [
     description: "Ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación.",
     longDescription:
       "ESENZA a suelo es el inodoro inteligente japonés de ELORA SMART, ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación. Mantiene todas las funciones esenciales de la gama ESENZA con instalación sencilla, máxima estabilidad y un diseño de líneas limpias para baños modernos. Incluye 10 años de garantía en la cerámica y 3 años en la tecnología, ampliables a 5 años con ELORA Premium Care.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/YJORQYKSdRJVeZBM.jpg",
+    img: "/manus-storage/esenza2-800x800_af396766.jpg",
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
@@ -187,7 +187,7 @@ const PRODUCTS: Product[] = [
     description: "Combina tecnología y diseño compacto: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización y control por voz.",
     longDescription:
       "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas como: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio. Ideal para baños con poco espacio o lugares donde quieres ganar amplitud.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TPiDsmHDJCgpcyYv.webp",
+    img: "/manus-storage/inodoro_lujo_v2_81e05275.webp",
     gallery: AURA_COMPACT_GALLERY,
     badges: ["ClimAdapt", "UV · Voz"],
     highlights: [
@@ -284,7 +284,7 @@ const PRODUCTS: Product[] = [
     description: "Todo el confort del Inodoro inteligente AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
     longDescription:
       "El inodoro inteligente AURA suspendido ofrece todo el confort del Inodoro inteligente AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el inodoro suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/SgQZdcVqSMnFGoTz.jpg",
+    img: "/manus-storage/AURA-suspendido-p-800x800_a7fc7d94.jpg",
     gallery: AURA_SUSP_GALLERY,
     badges: ["Suspendido", "Altura ajustable"],
     highlights: [
@@ -382,37 +382,37 @@ const PRODUCTS: Product[] = [
 ];
 // ─── Galerías productos nuevos ───────────────────────────────────────────────
 const ESENZA_COMPACT_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/cnVVXAwbdzknYRlN.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/CvNdrDIGcRIKJaHW.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TsoKopFzwUcIovvI.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/yoVxuxerSvbiIzfi.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/fHxoVKmGwpgDiFaS.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/FbJVOvfrkZtoZfaM.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/NJCObVyjNHXwDTsq.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/tITINOjCnKPVNCak.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/uVnOQsckOdwvTCvf.webp",
+  "/manus-storage/batch_5_020a2fdf.webp",
+  "/manus-storage/batch_1_0e0533bb.webp",
+  "/manus-storage/batch_2_364dfa7a.webp",
+  "/manus-storage/batch_10_ecce6b89.webp",
+  "/manus-storage/batch_9_6330faaa.webp",
+  "/manus-storage/batch_8_5f0a6667.webp",
+  "/manus-storage/batch_6_1b729e7e.webp",
+  "/manus-storage/batch_7_701041f6.webp",
+  "/manus-storage/batch_11_f3b3e8bd.webp",
 ];
 
 const ESENZA_SUSP_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/RRcVghbJGKotkLhA.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/zHdyhPMFyZtCgQao.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/bboQRJvivMJPgOZF.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/vSHQzLLzCQFLIVVC.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/idJYRJFQseuTSKmo.webp",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/PmQGcuIPwofMPzQN.webp",
+  "/manus-storage/batch_4-1_1d9b09da.webp",
+  "/manus-storage/batch_2-1_6863c7cb.webp",
+  "/manus-storage/batch_6-1_a180ebd8.webp",
+  "/manus-storage/batch_7-1_b3e43ef1.webp",
+  "/manus-storage/batch_5-1_de800e82.webp",
+  "/manus-storage/batch_8-1_89bf414b.webp",
 ];
 
 const AURA_GALLERY = [
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lFOjcchZimfNvVfo.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/jaqAtTlbriiosGqF.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/xMjxpqNdAoyECBYG.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TMwGeMCRlHnsbpoy.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/jZcrUbLivRZlMyIf.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/fEYAYhgkDdGkiIbK.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/gxBUicfBLzJdUAaV.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/dNKGWdjXJVbHkRga.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/ZezPwEmvVbsUIixj.jpg",
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/xPxZOLKkUMUoVXpw.jpg",
+  "/manus-storage/inodoro-aura_4c9492ae.jpg",
+  "/manus-storage/aura-elorasmart7-scaled_9b6de14c.jpg",
+  "/manus-storage/aura-elorasmart6_394ec9d0.jpg",
+  "/manus-storage/aura-elorasmart5_4d4349ff.jpg",
+  "/manus-storage/aura-elorasmart3_3c10af0e.jpg",
+  "/manus-storage/aura-elorasmart2_26f388f7.jpg",
+  "/manus-storage/aura-elorasmart-scaled_0b6e65dc.jpg",
+  "/manus-storage/AURA-BLANCO-2-scaled_95299e91.jpg",
+  "/manus-storage/AURA-BLANCO-3-scaled_736949ee.jpg",
+  "/manus-storage/AURA-BLANCO-6-scaled_85d2c447.jpg",
 ];
 
 // ─── Productos nuevos ─────────────────────────────────────────────────────────
@@ -423,7 +423,7 @@ const EXTRA_PRODUCTS: Product[] = [
     tagline: "Todas las funciones en fondo reducido.",
     description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
     longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/cnVVXAwbdzknYRlN.webp",
+    img: "/manus-storage/batch_5_020a2fdf.webp",
     gallery: ESENZA_COMPACT_GALLERY,
     badges: ["Compact", "Back-to-wall"],
     highlights: [
@@ -498,7 +498,7 @@ const EXTRA_PRODUCTS: Product[] = [
     tagline: "Diseño flotante con funciones esenciales.",
     description: "El inodoro inteligente japonés flotante de ELORA SMART. Libera el suelo y aporta una estética minimalista y contemporánea.",
     longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA con un diseño más ligero y contemporáneo.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/RRcVghbJGKotkLhA.webp",
+    img: "/manus-storage/batch_4-1_1d9b09da.webp",
     gallery: ESENZA_SUSP_GALLERY,
     badges: ["Suspendido", "Rimless"],
     highlights: [
@@ -575,7 +575,7 @@ const EXTRA_PRODUCTS: Product[] = [
     tagline: "La experiencia AURA completa.",
     description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
     longDescription: "El inodoro inteligente AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
-    img: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lFOjcchZimfNvVfo.jpg",
+    img: "/manus-storage/inodoro-aura_4c9492ae.jpg",
     gallery: AURA_GALLERY,
     badges: ["3 colores", "UV + Aromaterapia"],
     highlights: [
@@ -717,14 +717,14 @@ function EsenciaCarousel() {
 
 // ─── ExperienceSection ─────────────────────────────────────────────────────────────────
 const EXPERIENCE_STEPS = [
-  { number: "01", eyebrow: "En el instante en que te acercas", title: "La tapa se levanta automáticamente", subtitle: "para ti", body: "Un sensor detecta tu presencia y levanta la tapa antes de que llegues. Sin tocar nada. Sin esfuerzo. El inodoro ya sabe que estás ahí.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/CimSRjKqDIQAyjRt.png", tag: "Sensor de presencia" },
-  { number: "02", eyebrow: "De pie o sentado", title: "Detecta tu postura", subtitle: "y lo resuelve al instante", body: "Reconoce si estás de pie o sentado y ajusta el comportamiento: apertura de asiento, tipo de descarga y cierre de tapa. Más comodidad, menos gestos.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TwWWjqIbYDlKaoaF.png", tag: "Detección de postura" },
-  { number: "03", eyebrow: "Asiento CLIMADAPT", title: "Calefacción integrada", subtitle: "ajustable en 4 temperaturas", body: "El asiento se adapta automáticamente a la temperatura ambiente. Natural, 33°C, 37°C o 39°C. Nunca más el contacto frío de la cerámica al amanecer.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/xckWmPcRMafjnpTd.png", tag: "CLIMADAPT" },
-  { number: "04", eyebrow: "Higiene completa con agua", title: "Lavado posterior, femenino y móvil", subtitle: "temperatura y presión ajustables", body: "Agua caliente instantánea. Boquilla autolimpiable en acero inoxidable. Tres modos de lavado personalizables. La higiene que el papel nunca puede dar.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/GRfMmdvNuCoBEfff.webp", tag: "Sistema de lavado triple" },
-  { number: "05", eyebrow: "Secado Súper-Tifón", title: "En menos de 30 segundos", subtitle: "temperatura y velocidad ajustables", body: "Un chorro de aire de alto rendimiento seca completamente en menos de 30 segundos. 5 velocidades, 4 temperaturas. La realidad de un inodoro sin papel.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/ZNjiBErFQFSiRGfA.png", tag: "Sin papel" },
-  { number: "06", eyebrow: "Escudo de espuma higiénica", title: "Previene las salpicaduras", subtitle: "y bloquea olores", body: "Antes de cada uso, el inodoro crea una barrera de espuma en el agua. Evita salpicaduras, neutraliza olores y mantiene la cerámica más limpia.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/uXJjbvAgbCioQiiw.png", tag: "Escudo de espuma" },
-  { number: "07", eyebrow: "Lámpara esterilizadora UV", title: "Desinfecta por completo", subtitle: "con UV ultravioleta", body: "La lámpara UV elimina bacterias y gérmenes de forma automática. Desodorización del ambiente incluida. El baño más limpio, siempre.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/UzXtuGZbSSJTyRsl.png", tag: "EXPERIENCIA ELORA" },
-  { number: "08", eyebrow: "Control total", title: "Mando a distancia", subtitle: "para guardar tus preferencias", body: "Mando en español con memoria para 2 usuarios. Guarda tus ajustes de temperatura, modos de lavado y secado. Todo personalizado, siempre listo.", image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/blUuhEHdYYAMnQTs.jpg", tag: "2 perfiles de usuario" },
+  { number: "01", eyebrow: "En el instante en que te acercas", title: "La tapa se levanta automáticamente", subtitle: "para ti", body: "Un sensor detecta tu presencia y levanta la tapa antes de que llegues. Sin tocar nada. Sin esfuerzo. El inodoro ya sabe que estás ahí.", image: "/manus-storage/Aperturaautomatica_555f812b.png", tag: "Sensor de presencia" },
+  { number: "02", eyebrow: "De pie o sentado", title: "Detecta tu postura", subtitle: "y lo resuelve al instante", body: "Reconoce si estás de pie o sentado y ajusta el comportamiento: apertura de asiento, tipo de descarga y cierre de tapa. Más comodidad, menos gestos.", image: "/manus-storage/SENSORPIE_a9f97c13.png", tag: "Detección de postura" },
+  { number: "03", eyebrow: "Asiento CLIMADAPT", title: "Calefacción integrada", subtitle: "ajustable en 4 temperaturas", body: "El asiento se adapta automáticamente a la temperatura ambiente. Natural, 33°C, 37°C o 39°C. Nunca más el contacto frío de la cerámica al amanecer.", image: "/manus-storage/Asientocalefactado_f16d6e10.png", tag: "CLIMADAPT" },
+  { number: "04", eyebrow: "Higiene completa con agua", title: "Lavado posterior, femenino y móvil", subtitle: "temperatura y presión ajustables", body: "Agua caliente instantánea. Boquilla autolimpiable en acero inoxidable. Tres modos de lavado personalizables. La higiene que el papel nunca puede dar.", image: "/manus-storage/ESENZA-4_92c5e372.webp", tag: "Sistema de lavado triple" },
+  { number: "05", eyebrow: "Secado Súper-Tifón", title: "En menos de 30 segundos", subtitle: "temperatura y velocidad ajustables", body: "Un chorro de aire de alto rendimiento seca completamente en menos de 30 segundos. 5 velocidades, 4 temperaturas. La realidad de un inodoro sin papel.", image: "/manus-storage/secadorapido_421f533e.png", tag: "Sin papel" },
+  { number: "06", eyebrow: "Escudo de espuma higiénica", title: "Previene las salpicaduras", subtitle: "y bloquea olores", body: "Antes de cada uso, el inodoro crea una barrera de espuma en el agua. Evita salpicaduras, neutraliza olores y mantiene la cerámica más limpia.", image: "/manus-storage/Antisalpicadura_12ac85ca.png", tag: "Escudo de espuma" },
+  { number: "07", eyebrow: "Lámpara esterilizadora UV", title: "Desinfecta por completo", subtitle: "con UV ultravioleta", body: "La lámpara UV elimina bacterias y gérmenes de forma automática. Desodorización del ambiente incluida. El baño más limpio, siempre.", image: "/manus-storage/LuzUV_3a879322.png", tag: "EXPERIENCIA ELORA" },
+  { number: "08", eyebrow: "Control total", title: "Mando a distancia", subtitle: "para guardar tus preferencias", body: "Mando en español con memoria para 2 usuarios. Guarda tus ajustes de temperatura, modos de lavado y secado. Todo personalizado, siempre listo.", image: "/manus-storage/mando-a-distancia-1024x825_71bee985.jpg", tag: "2 perfiles de usuario" },
 ];
 
 function ExperienceSection({ scrollContainer }: { scrollContainer: React.RefObject<HTMLDivElement | null> }) {
@@ -1215,7 +1215,7 @@ function ClubEloraSection() {
       className="relative w-full overflow-hidden"
       style={{ background: "linear-gradient(135deg, #001220 0%, #001F3F 40%, #0a2a4a 70%, #001220 100%)" }}
     >
-      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/lFOjcchZimfNvVfo.jpg')", backgroundSize: "cover", backgroundPosition: "center", filter: "grayscale(100%)" }} />
+      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "url('/manus-storage/inodoro-aura_4c9492ae.jpg')", backgroundSize: "cover", backgroundPosition: "center", filter: "grayscale(100%)" }} />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-10" style={{ background: "radial-gradient(ellipse, #F5A45B 0%, transparent 70%)" }} />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full opacity-5" style={{ background: "radial-gradient(ellipse, #F5A45B 0%, transparent 70%)" }} />
 
@@ -1400,7 +1400,7 @@ function EsenciaVideoCard() {
     >
       <video
         ref={videoRef}
-        src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/TyaBSIDUBXSCWJma.mp4"
+        src="/manus-storage/elora-video-cantera_76a26abd.mp4"
         playsInline
         muted
         loop
@@ -1808,7 +1808,7 @@ export default function Home() {
                     className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover"
                     style={{ transform: "translate(-50%, -50%)", pointerEvents: "none" }}
                   >
-                    <source src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/SSdcuBNkmntXehyW.mp4" type="video/mp4" />
+                    <source src="/manus-storage/elora-hero-v2_6ed9cd9a.mp4" type="video/mp4" />
                   </video>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/20" />
@@ -1884,7 +1884,7 @@ export default function Home() {
                     className="md:col-span-8 relative overflow-hidden border border-border min-h-[260px] md:min-h-[140px] group bg-black"
                   >
                     <img
-                      src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/RHVYELVSdcRDDBlR.webp"
+                      src="/manus-storage/eloraerquipo_36af1ed8.webp"
                       alt="Equipo Elora Smart"
                       className="absolute inset-0 w-full h-full object-cover opacity-100"
                       style={{objectPosition: '100% 30%', transform: 'translateX(15%) scale(1.25)', transition: 'transform 2.5s ease-out'}}
@@ -1986,7 +1986,7 @@ export default function Home() {
                       {/* Imagen producto */}
                       <div className="relative overflow-hidden bg-muted min-h-[220px] md:min-h-[180px]">
                         <img
-                          src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/SgQZdcVqSMnFGoTz.jpg"
+                          src="/manus-storage/AURA-suspendido-p-800x800_a7fc7d94.jpg"
                           alt="AURA Suspendido"
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           style={{ objectPosition: 'center 55%' }}
@@ -2354,7 +2354,7 @@ export default function Home() {
                           const markerEl = document.createElement("div");
                           markerEl.style.cssText = `width:44px;height:44px;border-radius:50%;background:#fff;border:3px solid #d97706;box-shadow:0 4px 16px rgba(217,119,6,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;`;
                           const img = document.createElement("img");
-                          img.src = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/dblRBEeHiPMGvIeb.png";
+                          img.src = "/manus-storage/elora_200_daf8d186.png";
                           img.style.cssText = "width:32px;height:32px;object-fit:contain;";
                           markerEl.appendChild(img);
                           new window.google.maps.marker.AdvancedMarkerElement({ map, position: { lat: 42.862, lng: -8.6474 }, content: markerEl });
@@ -2516,7 +2516,7 @@ export default function Home() {
                             overflow: hidden; cursor: pointer;
                           `;
                           const img = document.createElement("img");
-                          img.src = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/dblRBEeHiPMGvIeb.png";
+                          img.src = "/manus-storage/elora_200_daf8d186.png";
                           img.style.cssText = "width: 36px; height: 36px; object-fit: contain;";
                           markerEl.appendChild(img);
                           new window.google.maps.marker.AdvancedMarkerElement({

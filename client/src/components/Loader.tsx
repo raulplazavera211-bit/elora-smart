@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/dblRBEeHiPMGvIeb.png";
+const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
 
 export function Loader({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState<'enter' | 'loading' | 'exit'>('enter');
