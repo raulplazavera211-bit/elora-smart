@@ -8,6 +8,7 @@ import { useRef, useState, useEffect } from "react";
 import { REVIEWS, AVATAR_COLORS } from "@/lib/reviews";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 const LOGO_URL = "https://elorasmart.com/wp-content/uploads/2025/05/elora_200.png";
 
@@ -608,6 +609,12 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     },
   });
 
+  const createPaypalOrder = trpc.orders.createPaypalOrder.useMutation();
+  const capturePaypalOrder = trpc.orders.capturePaypalOrder.useMutation();
+  const [{ isPending: paypalLoading }] = usePayPalScriptReducer();
+  // orderId pendiente para PayPal (se crea antes de abrir el popup PayPal)
+  const [pendingOrderId, setPendingOrderId] = useState<number | null>(null);
+
   function setField<K extends keyof CheckoutFormState>(key: K, value: string) {
     setForm(f => ({ ...f, [key]: value }));
     // Limpiar error al editar
@@ -1133,6 +1140,38 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               <BizumIcon size="lg" />
             </button>
           )}
+          {/* PayPal */}
+          {paypalEnabled && (
+            <button
+              type="button"
+              onClick={() => setPayMethod("paypal")}
+              className={`flex items-center gap-4 border p-4 transition-all duration-200 text-left outline-none ${
+                payMethod === "paypal"
+                  ? "border-[#003087] bg-[#003087]/5"
+                  : "border-border hover:border-[#003087]/40"
+              }`}
+            >
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                payMethod === "paypal" ? "border-[#003087]" : "border-border"
+              }`}>
+                {payMethod === "paypal" && <div className="w-2.5 h-2.5 rounded-full bg-[#003087]" />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="font-body text-sm font-medium text-[#003087]">PayPal</span>
+                </div>
+                <p className="font-body text-xs text-foreground/40">Paga de forma segura con tu cuenta PayPal</p>
+              </div>
+              <svg viewBox="0 0 101 32" className="h-5 w-auto" aria-label="PayPal">
+                <path fill="#003087" d="M12.237 2.8H5.996C5.55 2.8 5.17 3.12 5.1 3.56L2.6 19.8c-.05.33.2.63.54.63h3.16c.45 0 .83-.32.9-.77l.67-4.26c.07-.44.45-.77.9-.77h2.04c4.24 0 6.69-2.05 7.33-6.12.29-1.78.01-3.17-.82-4.15-.91-1.07-2.52-1.56-4.1-1.56zm.74 6.03c-.35 2.3-2.11 2.3-3.81 2.3h-.97l.68-4.3c.04-.27.28-.47.55-.47h.44c1.16 0 2.25 0 2.82.66.34.39.44.97.29 1.81z"/>
+                <path fill="#003087" d="M35.435 8.73h-3.17c-.28 0-.51.2-.55.47l-.14.9-.22-.32c-.69-1-2.22-1.33-3.75-1.33-3.51 0-6.51 2.66-7.09 6.39-.3 1.86.13 3.64 1.18 4.88.97 1.14 2.35 1.61 3.99 1.61 2.83 0 4.4-1.82 4.4-1.82l-.14.89c-.05.33.2.63.54.63h2.85c.45 0 .83-.32.9-.77l1.71-10.82c.05-.33-.2-.63-.55-.63zm-4.41 6.19c-.3 1.82-1.73 3.04-3.57 3.04-.92 0-1.65-.3-2.12-.85-.47-.56-.65-1.35-.5-2.23.28-1.8 1.73-3.06 3.54-3.06.9 0 1.63.3 2.11.86.49.57.68 1.36.54 2.24z"/>
+                <path fill="#003087" d="M55.233 8.73h-3.18c-.31 0-.6.15-.78.41l-4.51 6.64-1.91-6.38c-.12-.4-.49-.67-.91-.67h-3.12c-.38 0-.64.37-.52.73l3.6 10.56-3.39 4.78c-.26.37 0 .88.44.88h3.17c.31 0 .6-.15.78-.4l10.88-15.7c.26-.37 0-.88-.44-.88z"/>
+                <path fill="#009cde" d="M66.034 2.8h-6.24c-.45 0-.83.32-.9.77l-2.5 15.86c-.05.33.2.63.54.63h3.39c.31 0 .58-.23.63-.54l.71-4.49c.07-.44.45-.77.9-.77h2.04c4.24 0 6.69-2.05 7.33-6.12.29-1.78.01-3.17-.82-4.15-.91-1.07-2.52-1.56-4.08-1.56zm.74 6.03c-.35 2.3-2.11 2.3-3.81 2.3h-.96l.68-4.3c.04-.27.28-.47.55-.47h.44c1.16 0 2.25 0 2.82.66.34.39.44.97.28 1.81z"/>
+                <path fill="#009cde" d="M89.23 8.73h-3.17c-.28 0-.51.2-.55.47l-.14.9-.22-.32c-.69-1-2.22-1.33-3.75-1.33-3.51 0-6.51 2.66-7.09 6.39-.3 1.86.13 3.64 1.18 4.88.97 1.14 2.35 1.61 3.99 1.61 2.83 0 4.4-1.82 4.4-1.82l-.14.89c-.05.33.2.63.54.63h2.85c.45 0 .83-.32.9-.77l1.71-10.82c.05-.33-.2-.63-.55-.63zm-4.41 6.19c-.3 1.82-1.73 3.04-3.57 3.04-.92 0-1.65-.3-2.12-.85-.47-.56-.65-1.35-.5-2.23.28-1.8 1.73-3.06 3.54-3.06.9 0 1.63.3 2.11.86.49.57.68 1.36.54 2.24z"/>
+                <path fill="#009cde" d="M95.428 3.2l-2.54 16.16c-.05.33.2.63.54.63h2.73c.45 0 .83-.32.9-.77l2.5-15.86c.05-.33-.2-.63-.54-.63h-3.05c-.27 0-.5.2-.54.47z"/>
+              </svg>
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 text-foreground/30 border border-border/50 p-3">
@@ -1395,6 +1434,22 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               <BizumIcon size="md" />
             </button>
           )}
+          {/* PayPal móvil */}
+          {paypalEnabled && (
+            <button type="button" onClick={() => setPayMethod("paypal")} className={`flex items-center gap-3 border p-3.5 transition-all duration-200 text-left outline-none ${payMethod === "paypal" ? "border-[#003087] bg-[#003087]/5" : "border-border"}`}>
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${payMethod === "paypal" ? "border-[#003087]" : "border-border"}`}>
+                {payMethod === "paypal" && <div className="w-2 h-2 rounded-full bg-[#003087]" />}
+              </div>
+              <div className="flex-1">
+                <span className="font-body text-sm font-medium text-[#003087]">PayPal</span>
+                <p className="font-body text-[10px] text-foreground/40">Paga con tu cuenta PayPal</p>
+              </div>
+              <svg viewBox="0 0 101 32" className="h-4 w-auto" aria-label="PayPal">
+                <path fill="#003087" d="M12.237 2.8H5.996C5.55 2.8 5.17 3.12 5.1 3.56L2.6 19.8c-.05.33.2.63.54.63h3.16c.45 0 .83-.32.9-.77l.67-4.26c.07-.44.45-.77.9-.77h2.04c4.24 0 6.69-2.05 7.33-6.12.29-1.78.01-3.17-.82-4.15-.91-1.07-2.52-1.56-4.1-1.56zm.74 6.03c-.35 2.3-2.11 2.3-3.81 2.3h-.97l.68-4.3c.04-.27.28-.47.55-.47h.44c1.16 0 2.25 0 2.82.66.34.39.44.97.29 1.81z"/>
+                <path fill="#009cde" d="M66.034 2.8h-6.24c-.45 0-.83.32-.9.77l-2.5 15.86c-.05.33.2.63.54.63h3.39c.31 0 .58-.23.63-.54l.71-4.49c.07-.44.45-.77.9-.77h2.04c4.24 0 6.69-2.05 7.33-6.12.29-1.78.01-3.17-.82-4.15-.91-1.07-2.52-1.56-4.08-1.56zm.74 6.03c-.35 2.3-2.11 2.3-3.81 2.3h-.96l.68-4.3c.04-.27.28-.47.55-.47h.44c1.16 0 2.25 0 2.82.66.34.39.44.97.28 1.81z"/>
+              </svg>
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 text-foreground/30">
@@ -1646,6 +1701,64 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <ArrowRight className="w-5 h-5 relative z-10" />
                     <span className="relative z-10">{t("cart.continueTo")}</span>
                   </motion.button>
+                ) : payMethod === "paypal" ? (
+                  <div className="flex flex-col gap-2">
+                    {paypalLoading ? (
+                      <div className="flex items-center justify-center py-4 gap-2 text-foreground/50">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="font-body text-xs">Cargando PayPal...</span>
+                      </div>
+                    ) : (
+                      <PayPalButtons
+                        style={{ layout: "vertical", color: "blue", shape: "rect", label: "paypal", height: 48 }}
+                        disabled={isSubmitting}
+                        createOrder={async () => {
+                          const fullName = `${form.nombre.trim()} ${form.apellidos.trim()}`;
+                          const addressParts = [form.direccion.trim(), form.numero.trim(), form.piso.trim()].filter(Boolean).join(", ");
+                          const countryLabel = SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.label ?? "España";
+                          const fullAddress = [addressParts, form.ciudad.trim(), form.provincia, form.cp.trim(), countryLabel].filter(Boolean).join(" · ");
+                          const orderResult = await createOrder.mutateAsync({
+                            customerName: fullName,
+                            customerEmail: form.email.trim(),
+                            customerPhone: form.telefono.trim() || undefined,
+                            address: fullAddress || undefined,
+                            shippingAddress: addressParts || undefined,
+                            shippingCity: form.ciudad.trim() || undefined,
+                            shippingProvince: form.provincia || undefined,
+                            shippingPostalCode: form.cp.trim() || undefined,
+                            shippingCountry: countryLabel,
+                            shippingCost,
+                            paymentMethod: "paypal",
+                            notes: form.notas.trim() || undefined,
+                            items: cart.map(item => ({ productName: item.name, productImg: item.img || undefined, unitPrice: item.price, quantity: 1 })),
+                          });
+                          if (!orderResult?.orderId) throw new Error("No se pudo crear el pedido");
+                          setPendingOrderId(orderResult.orderId);
+                          const paypalResult = await createPaypalOrder.mutateAsync({ orderId: orderResult.orderId });
+                          if (paypalResult.clientOnly) {
+                            // modo demo: devolver un ID ficticio
+                            return `DEMO-${orderResult.orderId}`;
+                          }
+                          return paypalResult.paypalOrderId!;
+                        }}
+                        onApprove={async (data) => {
+                          if (!pendingOrderId) return;
+                          await capturePaypalOrder.mutateAsync({ orderId: pendingOrderId, paypalOrderId: data.orderID });
+                          onClearCart?.();
+                          toast.success("¡Pago con PayPal completado! Recibirás un email de confirmación.");
+                          setCheckoutStep("cart");
+                          onClose?.();
+                        }}
+                        onError={(err) => {
+                          console.error("[PayPal] Error:", err);
+                          toast.error("Error al procesar el pago con PayPal. Inténtalo de nuevo.");
+                        }}
+                        onCancel={() => {
+                          toast.info("Pago con PayPal cancelado.");
+                        }}
+                      />
+                    )}
+                  </div>
                 ) : (
                   <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.01 } : {}} whileTap={!isSubmitting ? { scale: 0.98 } : {}} className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: "0 4px 32px rgba(214,122,0,0.4)" }}>
                     {isSubmitting ? (
@@ -1787,6 +1900,59 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <ArrowRight className="w-4 h-4 relative z-10" />
                     <span className="relative z-10">{t("cart.continueTo")}</span>
                   </motion.button>
+                ) : payMethod === "paypal" ? (
+                  <div className="flex flex-col gap-2">
+                    {paypalLoading ? (
+                      <div className="flex items-center justify-center py-3 gap-2 text-foreground/50">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="font-body text-xs">Cargando PayPal...</span>
+                      </div>
+                    ) : (
+                      <PayPalButtons
+                        style={{ layout: "vertical", color: "blue", shape: "rect", label: "paypal", height: 44 }}
+                        disabled={isSubmitting}
+                        createOrder={async () => {
+                          const fullName = `${form.nombre.trim()} ${form.apellidos.trim()}`;
+                          const addressParts = [form.direccion.trim(), form.numero.trim(), form.piso.trim()].filter(Boolean).join(", ");
+                          const countryLabel = SHIPPING_COUNTRIES.find(c => c.code === form.pais)?.label ?? "España";
+                          const fullAddress = [addressParts, form.ciudad.trim(), form.provincia, form.cp.trim(), countryLabel].filter(Boolean).join(" · ");
+                          const orderResult = await createOrder.mutateAsync({
+                            customerName: fullName,
+                            customerEmail: form.email.trim(),
+                            customerPhone: form.telefono.trim() || undefined,
+                            address: fullAddress || undefined,
+                            shippingAddress: addressParts || undefined,
+                            shippingCity: form.ciudad.trim() || undefined,
+                            shippingProvince: form.provincia || undefined,
+                            shippingPostalCode: form.cp.trim() || undefined,
+                            shippingCountry: countryLabel,
+                            shippingCost,
+                            paymentMethod: "paypal",
+                            notes: form.notas.trim() || undefined,
+                            items: cart.map(item => ({ productName: item.name, productImg: item.img || undefined, unitPrice: item.price, quantity: 1 })),
+                          });
+                          if (!orderResult?.orderId) throw new Error("No se pudo crear el pedido");
+                          setPendingOrderId(orderResult.orderId);
+                          const paypalResult = await createPaypalOrder.mutateAsync({ orderId: orderResult.orderId });
+                          if (paypalResult.clientOnly) return `DEMO-${orderResult.orderId}`;
+                          return paypalResult.paypalOrderId!;
+                        }}
+                        onApprove={async (data) => {
+                          if (!pendingOrderId) return;
+                          await capturePaypalOrder.mutateAsync({ orderId: pendingOrderId, paypalOrderId: data.orderID });
+                          onClearCart?.();
+                          toast.success("¡Pago con PayPal completado! Recibirás un email de confirmación.");
+                          setCheckoutStep("cart");
+                          onClose?.();
+                        }}
+                        onError={(err) => {
+                          console.error("[PayPal] Error:", err);
+                          toast.error("Error al procesar el pago con PayPal. Inténtalo de nuevo.");
+                        }}
+                        onCancel={() => { toast.info("Pago con PayPal cancelado."); }}
+                      />
+                    )}
+                  </div>
                 ) : (
                   <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.02 } : {}} whileTap={!isSubmitting ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: "0 4px 24px rgba(214,122,0,0.35)" }}>
                     {isSubmitting ? (

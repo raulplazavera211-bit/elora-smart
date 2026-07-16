@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
@@ -54,12 +55,23 @@ const trpcClient = trpc.createClient({
   ],
 });
 
+const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID || "";
+
 createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <App />
-      </CartProvider>
+      <PayPalScriptProvider
+        options={{
+          clientId: PAYPAL_CLIENT_ID,
+          currency: "EUR",
+          intent: "capture",
+          locale: "es_ES",
+        }}
+      >
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </PayPalScriptProvider>
     </QueryClientProvider>
   </trpc.Provider>
 );
