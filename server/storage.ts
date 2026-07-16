@@ -81,8 +81,8 @@ export async function storageGetSignedUrl(relKey: string): Promise<string> {
   const key = normalizeKey(relKey);
 
   const getUrl = new URL("v1/storage/presign/get", forgeUrl + "/");
-  // Encode the key properly to handle spaces and special characters
-  getUrl.searchParams.set("path", encodeURIComponent(key));
+  // Pass the key directly - URLSearchParams handles encoding internally
+  getUrl.searchParams.set("path", key);
 
   const resp = await fetch(getUrl, {
     headers: { Authorization: `Bearer ${forgeKey}` },
@@ -94,5 +94,6 @@ export async function storageGetSignedUrl(relKey: string): Promise<string> {
   }
 
   const { url } = (await resp.json()) as { url: string };
-  return url;
+  // Ensure spaces in the URL path are encoded as %20 for CloudFront compatibility
+  return url.replace(/ /g, '%20');
 }

@@ -13,12 +13,12 @@ import { storageGetSignedUrl } from "../storage";
 
 // Mapeo de producto → clave de storage (sin prefijo /manus-storage/)
 const FICHA_MAP: Record<string, { key: string; fileName: string }> = {
-  "ESENZA": { key: "Ficha ELORA ESENZA BL-200_3a32d4c7.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA.pdf" },
-  "ESENZA-COMPACT": { key: "Ficha ELORA ESENZA COMPACT BL_bafe0e38.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA-Compact.pdf" },
-  "ESENZA-SUSPENDIDO": { key: "Ficha ELORA ESENZA SUSPENDIDO BL_2103867b.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA-Suspendido.pdf" },
-  "AURA": { key: "Ficha ELORA AURA BL -200_7f7f941e.pdf", fileName: "Ficha-Tecnica-ELORA-AURA.pdf" },
-  "AURA-COMPACT": { key: "Ficha ELORA AURA COMPACT_6684783e.pdf", fileName: "Ficha-Tecnica-ELORA-AURA-Compact.pdf" },
-  "AURA-SUSPENDIDO": { key: "Ficha ELORA AURA SUSPENDIDO_ece451e8.pdf", fileName: "Ficha-Tecnica-ELORA-AURA-Suspendido.pdf" },
+  "ESENZA": { key: "Ficha-ELORA-ESENZA-BL200_e0eb0386.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA.pdf" },
+  "ESENZA-COMPACT": { key: "Ficha-ELORA-ESENZA-COMPACT-BL_8388860b.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA-Compact.pdf" },
+  "ESENZA-SUSPENDIDO": { key: "Ficha-ELORA-ESENZA-SUSPENDIDO-BL_59147055.pdf", fileName: "Ficha-Tecnica-ELORA-ESENZA-Suspendido.pdf" },
+  "AURA": { key: "Ficha-ELORA-AURA-BL200_11c3b008.pdf", fileName: "Ficha-Tecnica-ELORA-AURA.pdf" },
+  "AURA-COMPACT": { key: "Ficha-ELORA-AURA-COMPACT_4e9b8f67.pdf", fileName: "Ficha-Tecnica-ELORA-AURA-Compact.pdf" },
+  "AURA-SUSPENDIDO": { key: "Ficha-ELORA-AURA-SUSPENDIDO_fbc02eb7.pdf", fileName: "Ficha-Tecnica-ELORA-AURA-Suspendido.pdf" },
 };
 
 function isPortAvailable(port: number): Promise<boolean> {

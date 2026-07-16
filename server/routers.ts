@@ -1180,32 +1180,32 @@ Si no recomiendas ningún producto concreto, no incluyas esa línea. Si el clien
       .mutation(async ({ input }) => {
         const FICHA_MAP: Record<string, { url: string; fileName: string; productName: string }> = {
           "ESENZA": {
-            url: "/manus-storage/Ficha ELORA ESENZA BL-200_3a32d4c7.pdf",
+            url: "/manus-storage/Ficha-ELORA-ESENZA-BL200_e0eb0386.pdf",
             fileName: "Ficha-Tecnica-ELORA-ESENZA.pdf",
             productName: "Inodoro Inteligente ESENZA",
           },
           "ESENZA-COMPACT": {
-            url: "/manus-storage/Ficha ELORA ESENZA COMPACT BL_bafe0e38.pdf",
+            url: "/manus-storage/Ficha-ELORA-ESENZA-COMPACT-BL_8388860b.pdf",
             fileName: "Ficha-Tecnica-ELORA-ESENZA-Compact.pdf",
             productName: "Inodoro Inteligente ESENZA Compact",
           },
           "ESENZA-SUSPENDIDO": {
-            url: "/manus-storage/Ficha ELORA ESENZA SUSPENDIDO BL_2103867b.pdf",
+            url: "/manus-storage/Ficha-ELORA-ESENZA-SUSPENDIDO-BL_59147055.pdf",
             fileName: "Ficha-Tecnica-ELORA-ESENZA-Suspendido.pdf",
             productName: "Inodoro Inteligente ESENZA Suspendido",
           },
           "AURA": {
-            url: "/manus-storage/Ficha ELORA AURA BL -200_7f7f941e.pdf",
+            url: "/manus-storage/Ficha-ELORA-AURA-BL200_11c3b008.pdf",
             fileName: "Ficha-Tecnica-ELORA-AURA.pdf",
             productName: "Inodoro Inteligente AURA",
           },
           "AURA-COMPACT": {
-            url: "/manus-storage/Ficha ELORA AURA COMPACT_6684783e.pdf",
+            url: "/manus-storage/Ficha-ELORA-AURA-COMPACT_4e9b8f67.pdf",
             fileName: "Ficha-Tecnica-ELORA-AURA-Compact.pdf",
             productName: "Inodoro Inteligente AURA Compact",
           },
           "AURA-SUSPENDIDO": {
-            url: "/manus-storage/Ficha ELORA AURA SUSPENDIDO_ece451e8.pdf",
+            url: "/manus-storage/Ficha-ELORA-AURA-SUSPENDIDO_fbc02eb7.pdf",
             fileName: "Ficha-Tecnica-ELORA-AURA-Suspendido.pdf",
             productName: "Inodoro Inteligente AURA Suspendido",
           },
