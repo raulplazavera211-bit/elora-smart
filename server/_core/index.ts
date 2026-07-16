@@ -60,8 +60,18 @@ async function startServer() {
     }
     try {
       const signedUrl = await storageGetSignedUrl(ficha.key);
-      // Redirigir directamente a la URL pre-firmada de S3
-      res.redirect(302, signedUrl);
+      // Hacer proxy del PDF para forzar descarga (evita Access Denied en S3 y permite Content-Disposition)
+      const pdfResp = await fetch(signedUrl);
+      if (!pdfResp.ok) {
+        res.status(502).send("Error al obtener el PDF");
+        return;
+      }
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `attachment; filename="${ficha.fileName}"`);
+      res.setHeader("Cache-Control", "no-store");
+      // Stream the PDF directly to the client
+      const buffer = await pdfResp.arrayBuffer();
+      res.end(Buffer.from(buffer));
     } catch (err) {
       console.error("[download-ficha] Error:", err);
       res.status(500).send("Error al generar el enlace de descarga");

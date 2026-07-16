@@ -23,11 +23,16 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
   const mutation = trpc.fichaTecnica.request.useMutation({
     onSuccess: (_data) => {
       setSubmitted(true);
-      // Usar la URL del servidor proxy para evitar problemas de Access Denied en S3
+      // Usar la URL del servidor proxy - el servidor envía Content-Disposition: attachment
       const proxyUrl = `${window.location.origin}/api/download-ficha/${productId}`;
       setPdfUrl(proxyUrl);
-      // Abrir en nueva pestaña
-      window.open(proxyUrl, '_blank');
+      // Forzar descarga creando un enlace temporal
+      const a = document.createElement('a');
+      a.href = proxyUrl;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     },
   });
 
@@ -159,12 +164,11 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
             {pdfUrl && (
               <a
                 href={`${window.location.origin}/api/download-ficha/${productId}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                download
                 className="inline-flex items-center gap-2 bg-[#c9a96e] hover:bg-[#b8965d] text-[#0a0a0a] font-semibold tracking-widest uppercase text-xs py-3 px-6 transition-all duration-200 active:scale-[0.97]"
               >
                 <Download className="w-4 h-4" />
-                Ver PDF
+                Descargar PDF
               </a>
             )}
             <button
