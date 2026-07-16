@@ -30,8 +30,8 @@ import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
 import { useEffect, useRef, useState } from "react";
 
-const LOGO_URL = "/manus-storage/elora_200_6f84beaa.png";
-const HERO_VIDEO = "/manus-storage/elora-hero-drone-trimmed_8ab79e91.mp4";
+const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/dblRBEeHiPMGvIeb.png";
+const HERO_VIDEO = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663455453024/FIGvtIbOMHjAFdCY.mp4";
 
 // Duración del contador: 12 horas en ms
 const COUNTDOWN_DURATION_MS = 12 * 60 * 60 * 1000;
