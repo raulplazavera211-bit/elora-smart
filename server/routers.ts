@@ -327,7 +327,8 @@ export const appRouter = router({
 
         // Enviar email de confirmación para métodos de pago manuales
         // (tarjeta/Bizum van por Redsys y reciben el email desde el webhook IPN)
-        const manualMethods = ["transfer", "cod", "paypal"];
+        // PayPal NO se incluye aquí: el email se envía en capturePaypalOrder tras confirmar el pago
+        const manualMethods = ["transfer", "cod"];
         if (input.paymentMethod && manualMethods.includes(input.paymentMethod)) {
           sendOrderConfirmationEmail({
             to: input.customerEmail,
@@ -491,6 +492,32 @@ export const appRouter = router({
         const captureData = await captureRes.json() as { status?: string };
         if (captureData.status === "COMPLETED") {
           await updateOrderStatus(input.orderId, "confirmed");
+          // Enviar email de confirmación al cliente tras pago PayPal confirmado
+          const confirmedOrder = await getOrderWithItems(input.orderId);
+          if (confirmedOrder) {
+            sendOrderConfirmationEmail({
+              to: confirmedOrder.customerEmail,
+              customerName: confirmedOrder.customerName,
+              orderNumber: String(confirmedOrder.id),
+              items: confirmedOrder.items.map(i => ({
+                name: i.productName,
+                quantity: i.quantity,
+                price: Number(i.unitPrice),
+              })),
+              total: Number(confirmedOrder.total),
+              shippingAddress: {
+                street: confirmedOrder.shippingAddress ?? confirmedOrder.address ?? "",
+                city: confirmedOrder.shippingCity ?? "",
+                province: confirmedOrder.shippingProvince ?? "",
+                postalCode: confirmedOrder.shippingPostalCode ?? "",
+              },
+              paymentMethod: "paypal",
+            }).catch(() => {});
+            notifyOwner({
+              title: `✅ Pago PayPal confirmado — Pedido #${confirmedOrder.id} — ${Number(confirmedOrder.total).toLocaleString('es-ES')}€`,
+              content: `Cliente: ${confirmedOrder.customerName}\nEmail: ${confirmedOrder.customerEmail}\nTotal: ${Number(confirmedOrder.total).toLocaleString('es-ES')}€`,
+            }).catch(() => {});
+          }
           return { success: true };
         }
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "El pago PayPal no se completó" });
