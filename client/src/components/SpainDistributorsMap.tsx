@@ -74,7 +74,7 @@ export default function SpainDistributorsMap() {
 
   // Cargar SVG real de España
   useEffect(() => {
-    fetch("/manus-storage/iberia-complete_3c02e364.svg")
+    fetch("/manus-storage/iberia-complete_3c02e364.svg?v=3")
       .then(r => r.text())
       .then(text => {
         const parser = new DOMParser();
