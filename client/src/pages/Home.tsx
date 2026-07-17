@@ -30,7 +30,7 @@ const HERO_IMAGE = "/manus-storage/esenza2-800x800_af396766.jpg";
 const PRODUCT_IMAGES: Record<string, string> = {
   "ESENZA": "/manus-storage/esenza2-800x800_af396766.jpg",
   "AURA-COMPACT": "/manus-storage/inodoro_lujo_v2_81e05275.webp",
-  "AURA-SUSPENDIDO": "/manus-storage/aura-suspendido-main_3a34f0aa.jpg",
+  "AURA-SUSPENDIDO": "/manus-storage/aura-suspendido-real_d998384b.jpg",
 };
 // SECTIONS se genera dinámicamente con i18n dentro del componente
 
@@ -56,7 +56,7 @@ const AURA_COMPACT_GALLERY = [
 ];
 
 const AURA_SUSP_GALLERY = [
-  "/manus-storage/aura-suspendido-main_3a34f0aa.jpg",
+  "/manus-storage/aura-suspendido-real_d998384b.jpg",
   "/manus-storage/aura-suspendido1_e7c19dd4.jpg",
   "/manus-storage/aura-suspendido-2_0c11bedb.jpg",
   "/manus-storage/aura-suspendido-3_a85c6741.jpg",
@@ -284,7 +284,7 @@ const PRODUCTS: Product[] = [
     description: "Todo el confort del Inodoro inteligente AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
     longDescription:
       "El inodoro inteligente AURA suspendido ofrece todo el confort del Inodoro inteligente AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el inodoro suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
-    img: "/manus-storage/aura-suspendido-main_3a34f0aa.jpg",
+    img: "/manus-storage/aura-suspendido-real_d998384b.jpg",
     gallery: AURA_SUSP_GALLERY,
     badges: ["Suspendido", "Altura ajustable"],
     highlights: [
@@ -1986,7 +1986,7 @@ export default function Home() {
                       {/* Imagen producto */}
                       <div className="relative overflow-hidden bg-muted min-h-[220px] md:min-h-[180px]">
                         <img
-                          src="/manus-storage/aura-suspendido-main_3a34f0aa.jpg"
+                          src="/manus-storage/aura-suspendido-real_d998384b.jpg"
                           alt="AURA Suspendido"
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           style={{ objectPosition: 'center 55%' }}
