@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
-const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_COLOR_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
+// Logo blanco para fondos oscuros (hero y footer)
+const LOGO_WHITE_URL = "/manus-storage/elora_200_daf8d186.png";
 
 // Imagen de fondo del hero (foto de producto Elora Smart)
 const HERO_BG_URL = "/manus-storage/AURA-compact-p-800x800_597da236.jpg";
@@ -309,7 +311,7 @@ export default function EventoParaguay() {
 
         /* ── FOOTER ── */
         .ep-footer { background: var(--navy); padding: 52px 24px 36px; text-align: center; }
-        .ep-footer-logo img { height: 32px; width: auto; filter: brightness(0) invert(1); margin-bottom: 14px; }
+        .ep-footer-logo img { height: 32px; width: auto; margin-bottom: 14px; filter: brightness(0) invert(1); }
         .ep-footer-divider { width: 36px; height: 2px; background: var(--mustard); margin: 16px auto; }
         .ep-footer-tagline {
           font-size: 9px; font-weight: 600; letter-spacing: .22em;
@@ -336,7 +338,7 @@ export default function EventoParaguay() {
         {/* HEADER */}
         <header className="ep-header">
           <a className="ep-logo" href="https://elorasmart.online">
-            <img src={LOGO_URL} alt="Elora Smart" />
+            <img src={LOGO_COLOR_URL} alt="Elora Smart" />
           </a>
           <span className="ep-header-badge">Evento Exclusivo · Paraguay</span>
         </header>
@@ -346,7 +348,7 @@ export default function EventoParaguay() {
           <div className="ep-hero-bg" />
           <div className="ep-hero-content">
             <div className="ep-hero-logo">
-              <img src={LOGO_URL} alt="Elora Smart" />
+              <img src={LOGO_WHITE_URL} alt="Elora Smart" />
             </div>
             <p className="ep-hero-eyebrow">Presentación Exclusiva · Paraguay 2026</p>
             <h1>
@@ -529,7 +531,7 @@ export default function EventoParaguay() {
         {/* FOOTER */}
         <footer className="ep-footer">
           <div className="ep-footer-logo">
-            <img src={LOGO_URL} alt="Elora Smart" />
+            <img src={LOGO_WHITE_URL} alt="Elora Smart" />
           </div>
           <div className="ep-footer-divider" />
           <p className="ep-footer-tagline">Smart Toilets · Diseño Premium · Tecnología Japonesa</p>
