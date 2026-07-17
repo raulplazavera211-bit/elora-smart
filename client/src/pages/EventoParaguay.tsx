@@ -452,10 +452,7 @@ export default function EventoParaguay() {
           <section className="ep-hero" id="ep-evento">
             <div className="ep-hero-bg" />
             <div className="ep-hero-content">
-              <div className="ep-hero-logo">
-                <img src={LOGO_URL} alt="Elora Smart" />
-              </div>
-              <p className="ep-hero-eyebrow">Presentación Exclusiva · Paraguay 2026</p>
+                          <p className="ep-hero-eyebrow">Presentación Exclusiva · Paraguay 2026</p>
               <h1>
                 El Futuro del Baño
                 <span>Ha Llegado a Paraguay</span>
