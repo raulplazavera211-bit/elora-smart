@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Footer } from "@/components/Footer";
 
 const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
-const HERO_BG_URL = "/manus-storage/AURA-compact-p-800x800_597da236.jpg";
+const HERO_BG_URL = "/manus-storage/hero_paraguay_bg_efff84ad.jpg";
 
 const EP_SECTIONS = [
   { label: "El Evento", id: "ep-evento" },
@@ -197,7 +197,7 @@ export default function EventoParaguay() {
           }
           .ep-hero-content { position: relative; z-index: 1; max-width: 760px; width: 100%; }
           .ep-hero-logo { margin-bottom: 28px; }
-          .ep-hero-logo img { height: 44px; width: auto; background: rgba(255,255,255,0.92); padding: 8px 18px; border-radius: 4px; }
+          .ep-hero-logo img { height: 64px; width: auto; filter: brightness(0) invert(1); display: block; margin: 0 auto; }
           .ep-hero-eyebrow {
             font-size: 9px; font-weight: 600; letter-spacing: .28em; text-transform: uppercase;
             color: var(--mustard-light); margin-bottom: 18px;
