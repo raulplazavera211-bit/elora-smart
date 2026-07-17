@@ -457,8 +457,8 @@ export default function EventoParaguay() {
                           <p className="ep-hero-eyebrow">Evento Exclusivo · Asunción, Paraguay · Agosto 2026</p>
               <h1>
                 La nueva generación del
-                <span>baño inteligente</span>
-                llega a Paraguay
+                baño inteligente
+                <span>llega a Paraguay</span>
               </h1>
               <div className="ep-hero-divider" />
               <p className="ep-hero-sub">
