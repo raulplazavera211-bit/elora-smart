@@ -424,7 +424,8 @@ export default function EventoParaguay() {
 
           /* ── FOOTER ── */
           .ep-footer { background: var(--navy); padding: 52px 24px 36px; text-align: center; }
-          .ep-footer-logo img { height: 32px; width: auto; margin-bottom: 14px; background: rgba(255,255,255,0.92); padding: 6px 14px; border-radius: 4px; }
+          .ep-footer-logo { text-align: center; margin-bottom: 14px; }
+          .ep-footer-logo img { height: 48px; width: auto; filter: brightness(0) invert(1); display: block; margin: 0 auto; }
           .ep-footer-divider { width: 36px; height: 2px; background: var(--mustard); margin: 16px auto; }
           .ep-footer-tagline {
             font-size: 9px; font-weight: 600; letter-spacing: .22em;
