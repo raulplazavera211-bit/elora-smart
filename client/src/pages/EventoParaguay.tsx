@@ -454,6 +454,9 @@ export default function EventoParaguay() {
           <section className="ep-hero" id="ep-evento">
             <div className="ep-hero-bg" />
             <div className="ep-hero-content">
+              <div className="ep-hero-logo">
+                <img src={LOGO_URL} alt="Elora Smart" style={{height:'52px',width:'auto',filter:'brightness(0) invert(1)',display:'block',margin:'0 auto 20px'}} />
+              </div>
                           <p className="ep-hero-eyebrow">Evento Exclusivo · Asunción, Paraguay · Agosto 2026</p>
               <h1>
                 La nueva generación del
