@@ -453,18 +453,18 @@ export default function EventoParaguay() {
           <section className="ep-hero" id="ep-evento">
             <div className="ep-hero-bg" />
             <div className="ep-hero-content">
-                          <p className="ep-hero-eyebrow">Presentación Exclusiva · Paraguay 2026</p>
+                          <p className="ep-hero-eyebrow">Evento Exclusivo · Asunción, Paraguay · Agosto 2026</p>
               <h1>
-                El Futuro del Baño
-                <span>Ha Llegado a Paraguay</span>
+                La nueva generación del
+                <span>baño inteligente</span>
+                llega a Paraguay
               </h1>
               <div className="ep-hero-divider" />
               <p className="ep-hero-sub">
-                Smart Toilets · Diseño Premium · Tecnología Japonesa<br />
-                Arquitectos · Diseñadores · Desarrolladores Inmobiliarios
+                Arquitectos · Interioristas · Desarrolladores · Profesionales del Sector
               </p>
               <p className="ep-hero-intro">
-                Le invitamos a una presentación privada donde descubrirá en vivo la tecnología de inodoros inteligentes ELORA SMART, referencia en el mercado europeo de baños de alta gama.
+                Le invitamos a descubrir una nueva forma de entender el espacio de baño, donde la tecnología, el diseño y el bienestar se integran para crear experiencias únicas.
               </p>
             </div>
           </section>
@@ -485,7 +485,8 @@ export default function EventoParaguay() {
               <span className="ep-event-pill-icon">📍</span>
               <span className="ep-event-pill-label">Lugar</span>
               <span className="ep-event-pill-value">Terraza Hotel TRYP by Wyndham</span>
-              <span className="ep-event-pill-sub">Av. Gral. José de San Martín 836, Asunción, Paraguay</span>
+              <span className="ep-event-pill-sub">Av. Gral. José de San Martín 836</span>
+              <span className="ep-event-pill-sub">Asunción, Paraguay</span>
               <a
                 className="ep-maps-link"
                 href="https://maps.google.com/?q=Hotel+TRYP+by+Wyndham+Asuncion+Paraguay"
@@ -495,12 +496,7 @@ export default function EventoParaguay() {
                 📍 Ver en Google Maps
               </a>
             </div>
-            <div className="ep-event-pill">
-              <span className="ep-event-pill-icon">🎟</span>
-              <span className="ep-event-pill-label">Acceso</span>
-              <span className="ep-event-pill-value">Solo con invitación</span>
-              <span className="ep-event-pill-sub">Registro previo obligatorio</span>
-            </div>
+
           </div>
 
           {/* PROGRAMME */}
