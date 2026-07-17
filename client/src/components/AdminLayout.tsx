@@ -24,7 +24,7 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
-const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },

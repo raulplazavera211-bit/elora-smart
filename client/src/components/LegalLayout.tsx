@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Footer } from "./Footer";
 import { useEffect, useRef, useState } from "react";
 
-const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 
 interface LegalLayoutProps {
   title: string;

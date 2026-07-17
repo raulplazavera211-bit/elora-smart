@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 
-const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 
 export default function PagoOk() {
   const { t } = useTranslation();

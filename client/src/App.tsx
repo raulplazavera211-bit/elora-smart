@@ -31,7 +31,7 @@ import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
 import { useEffect, useRef, useState } from "react";
 
-const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 const HERO_VIDEO = "/manus-storage/elora-hero-drone-trimmed_856e430c.mp4";
 
 // Duración del contador: 12 horas en ms

@@ -14,7 +14,7 @@ import { CartPanel } from "@/components/CartPanel";
 import { useCart } from "@/contexts/CartContext";
 import { PremiumCareModal } from "@/components/PremiumCareModal";
 
-const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 
 export default function Coleccion() {
   const { t, i18n } = useTranslation();

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 const LOGO_COLOR_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 // Logo blanco para fondos oscuros (hero y footer)
-const LOGO_WHITE_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_WHITE_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 
 // Imagen de fondo del hero (foto de producto Elora Smart)
 const HERO_BG_URL = "/manus-storage/AURA-compact-p-800x800_597da236.jpg";
@@ -311,7 +311,7 @@ export default function EventoParaguay() {
 
         /* ── FOOTER ── */
         .ep-footer { background: var(--navy); padding: 52px 24px 36px; text-align: center; }
-        .ep-footer-logo img { height: 32px; width: auto; margin-bottom: 14px; filter: brightness(0) invert(1); }
+        .ep-footer-logo img { height: 32px; width: auto; margin-bottom: 14px; background: rgba(255,255,255,0.92); padding: 6px 14px; border-radius: 4px; }
         .ep-footer-divider { width: 36px; height: 2px; background: var(--mustard); margin: 16px auto; }
         .ep-footer-tagline {
           font-size: 9px; font-weight: 600; letter-spacing: .22em;
@@ -430,7 +430,7 @@ export default function EventoParaguay() {
         </section>
 
         {/* SOBRE ELORA SMART */}
-        <section className="ep-section">
+        <section className="ep-section" id="ep-sobre">
           <div className="ep-section-inner">
             <p className="ep-section-eyebrow">01 · Sobre Elora Smart</p>
             <h2>Tecnología que Transforma Espacios</h2>
@@ -448,7 +448,7 @@ export default function EventoParaguay() {
         </section>
 
         {/* EXPERIENCIA */}
-        <section className="ep-section ep-section-alt">
+        <section className="ep-section ep-section-alt" id="ep-experiencia">
           <div className="ep-section-inner">
             <p className="ep-section-eyebrow">02 · Experiencia en Vivo</p>
             <h2>Experiencia ELORA SMART</h2>
@@ -469,7 +469,7 @@ export default function EventoParaguay() {
         </section>
 
         {/* INSPIRACION */}
-        <section className="ep-section">
+        <section className="ep-section" id="ep-proyectos">
           <div className="ep-section-inner">
             <p className="ep-section-eyebrow">03 · Inspiración</p>
             <h2>Proyectos de Alto Nivel</h2>
@@ -480,7 +480,7 @@ export default function EventoParaguay() {
         </section>
 
         {/* NETWORKING */}
-        <section className="ep-section ep-section-alt">
+        <section className="ep-section ep-section-alt" id="ep-networking">
           <div className="ep-section-inner">
             <p className="ep-section-eyebrow">04 · Al Finalizar</p>
             <h2>Networking &amp; Cocktail</h2>
@@ -505,7 +505,7 @@ export default function EventoParaguay() {
         </section>
 
         {/* FORMULARIO */}
-        <section className="ep-form-section" id="confirmar">
+        <section className="ep-form-section" id="ep-registro">
           <div className="ep-form-inner">
             <div className="ep-form-card">
               <p className="ep-section-eyebrow">Confirmación de Asistencia</p>

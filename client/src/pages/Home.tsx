@@ -24,7 +24,7 @@ import { useCart } from "@/contexts/CartContext";
 import { LanguageSwitcher, LanguageDetectionBanner } from "@/components/LanguageSwitcher";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
-const LOGO_URL = "/manus-storage/elora_200_daf8d186.png";
+const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 const HERO_IMAGE = "/manus-storage/esenza2-800x800_af396766.jpg";
 
 const PRODUCT_IMAGES: Record<string, string> = {
@@ -2354,7 +2354,7 @@ export default function Home() {
                           const markerEl = document.createElement("div");
                           markerEl.style.cssText = `width:44px;height:44px;border-radius:50%;background:#fff;border:3px solid #d97706;box-shadow:0 4px 16px rgba(217,119,6,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;`;
                           const img = document.createElement("img");
-                          img.src = "/manus-storage/elora_200_daf8d186.png";
+                          img.src = "/manus-storage/elora_logo_color_2329eaab.webp";
                           img.style.cssText = "width:32px;height:32px;object-fit:contain;";
                           markerEl.appendChild(img);
                           new window.google.maps.marker.AdvancedMarkerElement({ map, position: { lat: 42.862, lng: -8.6474 }, content: markerEl });
@@ -2516,7 +2516,7 @@ export default function Home() {
                             overflow: hidden; cursor: pointer;
                           `;
                           const img = document.createElement("img");
-                          img.src = "/manus-storage/elora_200_daf8d186.png";
+                          img.src = "/manus-storage/elora_logo_color_2329eaab.webp";
                           img.style.cssText = "width: 36px; height: 36px; object-fit: contain;";
                           markerEl.appendChild(img);
                           new window.google.maps.marker.AdvancedMarkerElement({

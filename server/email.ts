@@ -2,8 +2,8 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const LOGO_URL = "https://elorasmart-u6tutw84.manus.space/manus-storage/elora_200_daf8d186.png";
-const LOGO_URL_DARK = "https://elorasmart-u6tutw84.manus.space/manus-storage/elora_200_daf8d186.png";
+const LOGO_URL = "https://elorasmart-u6tutw84.manus.space/manus-storage/elora_logo_color_2329eaab.webp";
+const LOGO_URL_DARK = "https://elorasmart-u6tutw84.manus.space/manus-storage/elora_logo_color_2329eaab.webp";
 const WHATSAPP_NUMBER = "34614451901";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2C%20tengo%20una%20consulta%20sobre%20mi%20pedido`;
 const FROM_EMAIL = "Elora Smart <pedidos@elorasmart.online>";
@@ -542,7 +542,7 @@ function buildCatalogRequestHtml(data: CatalogRequestEmailData): string {
         <!-- HEADER -->
         <tr>
           <td style="background-color:#0a0a0a;padding:32px 40px;text-align:center;border-bottom:2px solid #c9a96e;">
-            <img src="https://elorasmart-u6tutw84.manus.space/manus-storage/elora_200_daf8d186.png" alt="Elora Smart" width="120" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
+            <img src="https://elorasmart-u6tutw84.manus.space/manus-storage/elora_logo_color_2329eaab.webp" alt="Elora Smart" width="120" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
             <p style="margin:12px 0 0;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;">Inodoros Inteligentes</p>
           </td>
         </tr>
@@ -735,7 +735,7 @@ function buildCatalogClientHtml(data: CatalogRequestEmailData): string {
         <!-- HEADER -->
         <tr>
           <td style="background-color:#0a0a0a;padding:36px 48px 28px;text-align:center;">
-            <img src="https://elorasmart-u6tutw84.manus.space/manus-storage/elora_200_daf8d186.png" alt="Elora Smart" width="130" height="auto" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
+            <img src="https://elorasmart-u6tutw84.manus.space/manus-storage/elora_logo_color_2329eaab.webp" alt="Elora Smart" width="130" height="auto" style="display:block;margin:0 auto;filter:brightness(0) invert(1);" />
             <p style="margin:14px 0 0;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#c9a96e;font-family:'Helvetica Neue',Arial,sans-serif;">Inodoros Inteligentes</p>
           </td>
         </tr>
