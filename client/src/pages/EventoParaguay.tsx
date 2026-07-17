@@ -453,18 +453,19 @@ export default function EventoParaguay() {
           <section className="ep-hero" id="ep-evento">
             <div className="ep-hero-bg" />
             <div className="ep-hero-content">
-                          <p className="ep-hero-eyebrow">Presentación Exclusiva · Paraguay 2026</p>
+                          <p className="ep-hero-eyebrow">Solo por invitación</p>
+              <p className="ep-hero-sub">Evento Exclusivo · Asunción, Paraguay · Agosto 2026</p>
               <h1>
-                El Futuro del Baño
-                <span>Ha Llegado a Paraguay</span>
+                La nueva generación del
+                <span>baño inteligente</span>
+                <span>llega a Paraguay</span>
               </h1>
               <div className="ep-hero-divider" />
-              <p className="ep-hero-sub">
-                Smart Toilets · Diseño Premium · Tecnología Japonesa<br />
-                Arquitectos · Diseñadores · Desarrolladores Inmobiliarios
-              </p>
               <p className="ep-hero-intro">
-                Le invitamos a una presentación privada donde descubrirá en vivo la tecnología de inodoros inteligentes ELORA SMART, referencia en el mercado europeo de baños de alta gama.
+                Arquitectos · Interioristas · Desarrolladores · Profesionales del Sector
+              </p>
+              <p className="ep-hero-body">
+                Le invitamos a descubrir una nueva forma de entender el espacio de baño, donde la tecnología, el diseño y el bienestar se integran para crear experiencias únicas.
               </p>
             </div>
           </section>
@@ -474,27 +475,25 @@ export default function EventoParaguay() {
             <div className="ep-event-pill">
               <span className="ep-event-pill-icon">📅</span>
               <span className="ep-event-pill-label">Fecha</span>
-              <span className="ep-event-pill-value">Jueves, 7 de agosto</span>
-              <span className="ep-event-pill-sub">2026</span>
+              <span className="ep-event-pill-value">Miércoles 12 de Agosto 2026</span>
             </div>
             <div className="ep-event-pill">
               <span className="ep-event-pill-icon">🕕</span>
               <span className="ep-event-pill-label">Hora</span>
-              <span className="ep-event-pill-value">18:30 h</span>
-              <span className="ep-event-pill-sub">Puntual · Aforo limitado</span>
+              <span className="ep-event-pill-value">18:00 horas</span>
             </div>
             <div className="ep-event-pill">
               <span className="ep-event-pill-icon">📍</span>
               <span className="ep-event-pill-label">Lugar</span>
-              <span className="ep-event-pill-value">Asunción, Paraguay</span>
-              <span className="ep-event-pill-sub">Dirección confirmada al registrarse</span>
+              <span className="ep-event-pill-value">Terraza Hotel TRYP by Wyndham</span>
+              <span className="ep-event-pill-sub">Av. Gral. José de San Martín 836, Asunción, Paraguay</span>
               <a
                 className="ep-maps-link"
-                href="https://maps.google.com"
+                href="https://maps.google.com/?q=Hotel+TRYP+by+Wyndham+Asuncion+Paraguay"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                📍 Ver en Maps
+                📍 Ver en Google Maps
               </a>
             </div>
             <div className="ep-event-pill">
@@ -508,25 +507,25 @@ export default function EventoParaguay() {
           {/* PROGRAMME */}
           <section className="ep-programme">
             <div className="ep-programme-inner">
-              <p className="ep-section-eyebrow">Programa del Evento</p>
-              <h2>Una noche de innovación</h2>
-              <p className="ep-programme-sub">Cuatro momentos diseñados para inspirar y conectar</p>
+              <p className="ep-section-eyebrow">Agenda</p>
+              <h2>Programa del Evento</h2>
+              <p className="ep-programme-sub">Un encuentro diseñado para profesionales que buscan diferenciarse con soluciones de alto nivel.</p>
               <div className="ep-prog-steps">
                 <div className="ep-prog-step">
                   <div className="ep-prog-number">01</div>
-                  <div className="ep-prog-title">Bienvenida &amp; Presentación de la Marca</div>
+                  <div className="ep-prog-title">Descubra el futuro del baño</div>
                 </div>
                 <div className="ep-prog-step">
                   <div className="ep-prog-number">02</div>
-                  <div className="ep-prog-title">Demostración en Vivo de Tecnología</div>
+                  <div className="ep-prog-title">Experiencia ELORA SMART</div>
                 </div>
                 <div className="ep-prog-step">
                   <div className="ep-prog-number">03</div>
-                  <div className="ep-prog-title">Casos de Éxito &amp; Proyectos de Alto Nivel</div>
+                  <div className="ep-prog-title">Inspiración para proyectos de alto nivel</div>
                 </div>
                 <div className="ep-prog-step">
                   <div className="ep-prog-number">04</div>
-                  <div className="ep-prog-title">Networking &amp; Cocktail Exclusivo</div>
+                  <div className="ep-prog-title">Networking &amp; Cocktail</div>
                 </div>
               </div>
             </div>
@@ -535,17 +534,20 @@ export default function EventoParaguay() {
           {/* SOBRE ELORA SMART */}
           <section className="ep-section" id="ep-sobre">
             <div className="ep-section-inner">
-              <p className="ep-section-eyebrow">01 · Sobre Elora Smart</p>
-              <h2>Tecnología que Transforma Espacios</h2>
+              <p className="ep-section-eyebrow">01 · Sobre el Evento</p>
+              <h2>Descubra el futuro del baño</h2>
               <p className="ep-section-body">
-                ELORA SMART es la marca española de referencia en inodoros inteligentes de alta gama. Combinamos tecnología japonesa de última generación con diseño europeo de vanguardia para ofrecer una experiencia de baño sin precedentes.
+                ELORA SMART presenta oficialmente en Paraguay su innovadora línea de smart toilets — una solución premium que redefine los estándares de confort, higiene y sofisticación en proyectos residenciales, hoteleros y corporativos de alto nivel.
+              </p>
+              <p className="ep-section-body">
+                Durante este encuentro exclusivo podrá conocer de primera mano las últimas tendencias internacionales en baños inteligentes y experimentar las funcionalidades que están transformando los espacios más exigentes del mundo.
               </p>
               <ul className="ep-features-vertical">
-                <li><span className="ep-feat-check">✓</span>Tecnología japonesa certificada</li>
-                <li><span className="ep-feat-check">✓</span>Diseño europeo de vanguardia</li>
-                <li><span className="ep-feat-check">✓</span>10 años de garantía</li>
-                <li><span className="ep-feat-check">✓</span>Instalación y servicio técnico incluidos</li>
-                <li><span className="ep-feat-check">✓</span>Presencia en más de 12 países</li>
+                <li><span className="ep-feat-check">✓</span>Tecnología inteligente integrada</li>
+                <li><span className="ep-feat-check">✓</span>Diseño contemporáneo y minimalista</li>
+                <li><span className="ep-feat-check">✓</span>Máxima higiene y confort personal</li>
+                <li><span className="ep-feat-check">✓</span>Eficiencia y sostenibilidad</li>
+                <li><span className="ep-feat-check">✓</span>Soluciones para proyectos residenciales y hoteleros premium</li>
               </ul>
             </div>
           </section>
@@ -560,14 +562,14 @@ export default function EventoParaguay() {
               </p>
               <div className="ep-func-grid">
                 {[
-                  "Asiento calefactado inteligente",
-                  "Bidé integrado con agua templada",
-                  "Secado de aire regulable",
-                  "Apertura y cierre automático",
-                  "Desodorizador activo",
-                  "Iluminación nocturna LED",
-                  "Control por mando y app",
-                  "Ahorro de agua certificado",
+                  "Sistema de lavado inteligente",
+                  "Secado integrado",
+                  "Asiento calefactado ajustable",
+                  "Control remoto intuitivo",
+                  "Tecnología de ahorro de agua",
+                  "Apertura y cierre automático silencioso",
+                  "Diseño elegante y minimalista",
+                  "Soluciones para proyectos premium",
                 ].map((f) => (
                   <div className="ep-func-card" key={f}>
                     <div className="ep-func-accent" />
