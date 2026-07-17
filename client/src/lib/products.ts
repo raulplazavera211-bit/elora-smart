@@ -23,7 +23,7 @@ const AURA_COMPACT_GALLERY = [
 ];
 
 const AURA_SUSP_GALLERY = [
-  "/manus-storage/aura-suspendido-real_d998384b.jpg",
+  "/manus-storage/aura-suspendido-nuevo_7276f016.png",
   "/manus-storage/aura-suspendido1_e7c19dd4.jpg",
   "/manus-storage/aura-suspendido-2_0c11bedb.jpg",
   "/manus-storage/aura-suspendido-3_a85c6741.jpg",
@@ -437,7 +437,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Todo el confort del Inodoro inteligente AURA en un diseño flotante. Estética moderna y minimalista, suelo totalmente libre, altura ajustable en la instalación.",
     longDescription:
       "El inodoro inteligente AURA suspendido ofrece todo el confort del Inodoro inteligente AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el inodoro suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
-    img: "/manus-storage/aura-suspendido-real_d998384b.jpg",
+    img: "/manus-storage/aura-suspendido-nuevo_7276f016.png",
     gallery: AURA_SUSP_GALLERY,
     badges: ["Más vendido", "Suspendido", "Altura ajustable"],
     highlights: [
