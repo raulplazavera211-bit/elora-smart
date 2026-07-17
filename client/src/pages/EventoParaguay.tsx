@@ -453,19 +453,18 @@ export default function EventoParaguay() {
           <section className="ep-hero" id="ep-evento">
             <div className="ep-hero-bg" />
             <div className="ep-hero-content">
-                          <p className="ep-hero-eyebrow">Solo por invitación</p>
-              <p className="ep-hero-sub">Evento Exclusivo · Asunción, Paraguay · Agosto 2026</p>
+                          <p className="ep-hero-eyebrow">Presentación Exclusiva · Paraguay 2026</p>
               <h1>
-                La nueva generación del
-                <span>baño inteligente</span>
-                <span>llega a Paraguay</span>
+                El Futuro del Baño
+                <span>Ha Llegado a Paraguay</span>
               </h1>
               <div className="ep-hero-divider" />
-              <p className="ep-hero-intro">
-                Arquitectos · Interioristas · Desarrolladores · Profesionales del Sector
+              <p className="ep-hero-sub">
+                Smart Toilets · Diseño Premium · Tecnología Japonesa<br />
+                Arquitectos · Diseñadores · Desarrolladores Inmobiliarios
               </p>
-              <p className="ep-hero-body">
-                Le invitamos a descubrir una nueva forma de entender el espacio de baño, donde la tecnología, el diseño y el bienestar se integran para crear experiencias únicas.
+              <p className="ep-hero-intro">
+                Le invitamos a una presentación privada donde descubrirá en vivo la tecnología de inodoros inteligentes ELORA SMART, referencia en el mercado europeo de baños de alta gama.
               </p>
             </div>
           </section>
