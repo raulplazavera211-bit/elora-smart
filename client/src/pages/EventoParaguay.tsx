@@ -5,29 +5,33 @@ import { Menu, X, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { CartPanel } from "@/components/CartPanel";
 import { useTranslation } from "react-i18next";
-import { Footer } from "@/components/Footer";
 
 const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 const HERO_BG_URL = "/manus-storage/hero_paraguay_bg_efff84ad.jpg";
 
-const EP_SECTIONS = [
-  { label: "El Evento", id: "ep-evento" },
-  { label: "Sobre Elora", id: "ep-sobre" },
-  { label: "Experiencia", id: "ep-experiencia" },
-  { label: "Proyectos", id: "ep-proyectos" },
-  { label: "Networking", id: "ep-networking" },
-  { label: "Registrarse", id: "ep-registro" },
-];
-
 export default function EventoParaguay() {
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart, isCartOpen, openCart, closeCart, totalItems, removeFromCart } = useCart();
 
+  // Forzar re-render al cambiar idioma
+  const [, forceUpdate] = useState(0);
   useEffect(() => {
-    document.title = "elora smart — Evento Exclusivo Paraguay";
-  }, []);
+    const handler = () => forceUpdate(n => n + 1);
+    i18n.on("languageChanged", handler);
+    return () => i18n.off("languageChanged", handler);
+  }, [i18n]);
+
+  useEffect(() => {
+    document.title = t("eventoParaguay.pageTitle");
+  }, [t, i18n.language]);
+
+  const ep = t("eventoParaguay", { returnObjects: true }) as Record<string, unknown>;
+  const navSections = (ep.navSections as Array<{ label: string; id: string }>) ?? [];
+  const progSteps = (ep.progSteps as Array<{ number: string; title: string }>) ?? [];
+  const s01Features = (ep.s01Features as string[]) ?? [];
+  const s02Funcs = (ep.s02Funcs as string[]) ?? [];
 
   const scrollTo = (id: string) => {
     setIsMenuOpen(false);
@@ -49,12 +53,14 @@ export default function EventoParaguay() {
             <LanguageSwitcher />
           </div>
           <p className="mt-4 font-body text-[9px] uppercase tracking-[0.22em] text-foreground/50 border border-foreground/20 px-3 py-2 text-center">
-            Evento Exclusivo · Paraguay
+            {t("eventoParaguay.sidebarBadge")}
           </p>
         </div>
         <nav className="flex flex-col gap-5 w-full px-10 flex-1">
-          <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">Programa</p>
-          {EP_SECTIONS.map((item, idx) => (
+          <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">
+            {t("eventoParaguay.sidebarPrograma")}
+          </p>
+          {navSections.map((item, idx) => (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
@@ -128,8 +134,10 @@ export default function EventoParaguay() {
           </button>
         </div>
         <nav className="flex flex-col gap-7 pb-16">
-          <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">Programa del Evento</p>
-          {EP_SECTIONS.map((item, idx) => (
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">
+            {t("eventoParaguay.mobileMenuTitle")}
+          </p>
+          {navSections.map((item, idx) => (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
@@ -189,7 +197,7 @@ export default function EventoParaguay() {
           .ep-hero-bg {
             position: absolute; inset: 0;
             background-image: url('${HERO_BG_URL}');
-            background-size: cover; background-position: center 30%; z-index: 0;
+            background-size: cover; background-position: center center; z-index: 0;
           }
           .ep-hero-bg::after {
             content: ''; position: absolute; inset: 0;
@@ -327,7 +335,7 @@ export default function EventoParaguay() {
           .ep-features-vertical { list-style: none; margin-top: 32px; max-width: 480px; }
           .ep-features-vertical li {
             display: flex; align-items: center; gap: 14px;
-            padding: 12px 0; border-bottom: 1px solid #E0DDD8;
+            padding: 12px 0; border-bottom: 1px solid #E8E5E0;
             font-size: clamp(12px,1.8vw,13px); font-weight: 500; color: var(--ink);
           }
           .ep-features-vertical li:last-child { border-bottom: none; }
@@ -454,18 +462,17 @@ export default function EventoParaguay() {
               <div className="ep-hero-logo">
                 <img src={LOGO_URL} alt="Elora Smart" style={{height:'44px',width:'auto',filter:'brightness(0) invert(1)',display:'block',margin:'0 auto 20px'}} />
               </div>
-                          <p className="ep-hero-eyebrow">Evento Exclusivo · Asunción, Paraguay · Agosto 2026</p>
+              <p className="ep-hero-eyebrow">{t("eventoParaguay.heroEyebrow")}</p>
               <h1>
-                La nueva generación del
-                baño inteligente
-                <span>llega a Paraguay</span>
+                {t("eventoParaguay.heroTitle1")}
+                <span>{t("eventoParaguay.heroTitle2")}</span>
               </h1>
               <div className="ep-hero-divider" />
               <p className="ep-hero-sub">
-                Arquitectos · Interioristas · Desarrolladores · Profesionales del Sector
+                {t("eventoParaguay.heroSub")}
               </p>
               <p className="ep-hero-intro">
-                Le invitamos a descubrir una nueva forma de entender el espacio de baño, donde la tecnología, el diseño y el bienestar se integran para crear experiencias únicas.
+                {t("eventoParaguay.heroIntro")}
               </p>
             </div>
           </section>
@@ -474,55 +481,44 @@ export default function EventoParaguay() {
           <div className="ep-event-bar">
             <div className="ep-event-pill">
               <span className="ep-event-pill-icon">📅</span>
-              <span className="ep-event-pill-label">Fecha</span>
-              <span className="ep-event-pill-value">Miércoles 12 de Agosto 2026</span>
+              <span className="ep-event-pill-label">{t("eventoParaguay.barDateLabel")}</span>
+              <span className="ep-event-pill-value">{t("eventoParaguay.barDateValue")}</span>
             </div>
             <div className="ep-event-pill">
               <span className="ep-event-pill-icon">🕕</span>
-              <span className="ep-event-pill-label">Hora</span>
-              <span className="ep-event-pill-value">18:00 horas</span>
+              <span className="ep-event-pill-label">{t("eventoParaguay.barTimeLabel")}</span>
+              <span className="ep-event-pill-value">{t("eventoParaguay.barTimeValue")}</span>
             </div>
             <div className="ep-event-pill">
               <span className="ep-event-pill-icon">📍</span>
-              <span className="ep-event-pill-label">Lugar</span>
-              <span className="ep-event-pill-value">Terraza Hotel TRYP by Wyndham</span>
-              <span className="ep-event-pill-sub">Av. Gral. José de San Martín 836</span>
-              <span className="ep-event-pill-sub">Asunción, Paraguay</span>
+              <span className="ep-event-pill-label">{t("eventoParaguay.barPlaceLabel")}</span>
+              <span className="ep-event-pill-value">{t("eventoParaguay.barPlaceValue")}</span>
+              <span className="ep-event-pill-sub">{t("eventoParaguay.barPlaceAddr1")}</span>
+              <span className="ep-event-pill-sub">{t("eventoParaguay.barPlaceAddr2")}</span>
               <a
                 className="ep-maps-link"
                 href="https://maps.google.com/?q=Hotel+TRYP+by+Wyndham+Asuncion+Paraguay"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                📍 Ver en Google Maps
+                {t("eventoParaguay.barMapsLink")}
               </a>
             </div>
-
           </div>
 
           {/* PROGRAMME */}
           <section className="ep-programme">
             <div className="ep-programme-inner">
-              <p className="ep-section-eyebrow">Agenda</p>
-              <h2>Programa del Evento</h2>
-              <p className="ep-programme-sub">Un encuentro diseñado para profesionales que buscan diferenciarse con soluciones de alto nivel.</p>
+              <p className="ep-section-eyebrow">{t("eventoParaguay.progEyebrow")}</p>
+              <h2>{t("eventoParaguay.progTitle")}</h2>
+              <p className="ep-programme-sub">{t("eventoParaguay.progSub")}</p>
               <div className="ep-prog-steps">
-                <div className="ep-prog-step">
-                  <div className="ep-prog-number">01</div>
-                  <div className="ep-prog-title">Descubra el futuro del baño</div>
-                </div>
-                <div className="ep-prog-step">
-                  <div className="ep-prog-number">02</div>
-                  <div className="ep-prog-title">Experiencia ELORA SMART</div>
-                </div>
-                <div className="ep-prog-step">
-                  <div className="ep-prog-number">03</div>
-                  <div className="ep-prog-title">Inspiración para proyectos de alto nivel</div>
-                </div>
-                <div className="ep-prog-step">
-                  <div className="ep-prog-number">04</div>
-                  <div className="ep-prog-title">Networking &amp; Cocktail</div>
-                </div>
+                {progSteps.map((step) => (
+                  <div className="ep-prog-step" key={step.number}>
+                    <div className="ep-prog-number">{step.number}</div>
+                    <div className="ep-prog-title">{step.title}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
@@ -530,20 +526,14 @@ export default function EventoParaguay() {
           {/* SOBRE ELORA SMART */}
           <section className="ep-section" id="ep-sobre">
             <div className="ep-section-inner">
-              <p className="ep-section-eyebrow">01 · Sobre el Evento</p>
-              <h2>Descubra el futuro del baño</h2>
-              <p className="ep-section-body">
-                ELORA SMART presenta oficialmente en Paraguay su innovadora línea de smart toilets — una solución premium que redefine los estándares de confort, higiene y sofisticación en proyectos residenciales, hoteleros y corporativos de alto nivel.
-              </p>
-              <p className="ep-section-body">
-                Durante este encuentro exclusivo podrá conocer de primera mano las últimas tendencias internacionales en baños inteligentes y experimentar las funcionalidades que están transformando los espacios más exigentes del mundo.
-              </p>
+              <p className="ep-section-eyebrow">{t("eventoParaguay.s01Eyebrow")}</p>
+              <h2>{t("eventoParaguay.s01Title")}</h2>
+              <p className="ep-section-body">{t("eventoParaguay.s01Body1")}</p>
+              <p className="ep-section-body" style={{marginTop: '16px'}}>{t("eventoParaguay.s01Body2")}</p>
               <ul className="ep-features-vertical">
-                <li><span className="ep-feat-check">✓</span>Tecnología inteligente integrada</li>
-                <li><span className="ep-feat-check">✓</span>Diseño contemporáneo y minimalista</li>
-                <li><span className="ep-feat-check">✓</span>Máxima higiene y confort personal</li>
-                <li><span className="ep-feat-check">✓</span>Eficiencia y sostenibilidad</li>
-                <li><span className="ep-feat-check">✓</span>Soluciones para proyectos residenciales y hoteleros premium</li>
+                {s01Features.map((f) => (
+                  <li key={f}><span className="ep-feat-check">✓</span>{f}</li>
+                ))}
               </ul>
             </div>
           </section>
@@ -551,22 +541,11 @@ export default function EventoParaguay() {
           {/* EXPERIENCIA */}
           <section className="ep-section ep-section-alt" id="ep-experiencia">
             <div className="ep-section-inner">
-              <p className="ep-section-eyebrow">02 · Experiencia en Vivo</p>
-              <h2>Experiencia ELORA SMART</h2>
-              <p className="ep-section-body">
-                Conozca en vivo las principales funcionalidades de nuestros smart toilets y compruebe por qué están transformando los espacios más exigentes del mundo.
-              </p>
+              <p className="ep-section-eyebrow">{t("eventoParaguay.s02Eyebrow")}</p>
+              <h2>{t("eventoParaguay.s02Title")}</h2>
+              <p className="ep-section-body">{t("eventoParaguay.s02Body")}</p>
               <div className="ep-func-grid">
-                {[
-                  "Sistema de lavado inteligente",
-                  "Secado integrado",
-                  "Asiento calefactado ajustable",
-                  "Control remoto intuitivo",
-                  "Tecnología de ahorro de agua",
-                  "Apertura y cierre automático silencioso",
-                  "Diseño elegante y minimalista",
-                  "Soluciones para proyectos premium",
-                ].map((f) => (
+                {s02Funcs.map((f) => (
                   <div className="ep-func-card" key={f}>
                     <div className="ep-func-accent" />
                     <div className="ep-func-title">{f}</div>
@@ -579,23 +558,22 @@ export default function EventoParaguay() {
           {/* INSPIRACION */}
           <section className="ep-section" id="ep-proyectos">
             <div className="ep-section-inner">
-              <p className="ep-section-eyebrow">03 · Inspiración</p>
-              <h2>Proyectos de Alto Nivel</h2>
-              <p className="ep-section-body">
-                Explore cómo ELORA SMART puede aportar valor diferencial a proyectos de vivienda premium, desarrollos inmobiliarios, hoteles boutique, clínicas privadas y espacios corporativos de nueva generación.
-              </p>
+              <p className="ep-section-eyebrow">{t("eventoParaguay.s03Eyebrow")}</p>
+              <h2>{t("eventoParaguay.s03Title")}</h2>
+              <p className="ep-section-body">{t("eventoParaguay.s03Body")}</p>
             </div>
           </section>
 
           {/* NETWORKING */}
           <section className="ep-section ep-section-alt" id="ep-networking">
             <div className="ep-section-inner">
-              <p className="ep-section-eyebrow">04 · Al Finalizar</p>
-              <h2>Networking &amp; Cocktail</h2>
-              <p className="ep-section-body">
-                Al finalizar la presentación compartiremos un espacio exclusivo de networking donde podrá intercambiar ideas con arquitectos, diseñadores, desarrolladores y líderes del sector.<br /><br />
-                Una oportunidad para generar nuevas conexiones profesionales y descubrir las posibilidades que ofrece la tecnología aplicada al diseño de interiores.
-              </p>
+              <p className="ep-section-eyebrow">{t("eventoParaguay.s04Eyebrow")}</p>
+              <h2>{t("eventoParaguay.s04Title")}</h2>
+              {t("eventoParaguay.s04Body").split("\n\n").map((para, i) => (
+                <p className="ep-section-body" key={i} style={i > 0 ? {marginTop: '16px'} : {}}>
+                  {para}
+                </p>
+              ))}
             </div>
           </section>
 
@@ -603,11 +581,11 @@ export default function EventoParaguay() {
           <section className="ep-sorteo-section">
             <div className="ep-sorteo-inner">
               <div className="ep-sorteo-box">
-                <span className="ep-sorteo-tag">✦ Exclusivo para Asistentes ✦</span>
+                <span className="ep-sorteo-tag">{t("eventoParaguay.sorteoTag")}</span>
                 <div className="ep-sorteo-emoji">🎁</div>
-                <h3>Sorteo de un Smart Toilet de Alta Gama</h3>
-                <p>Entre todos los asistentes sortearemos un inodoro inteligente ELORA SMART de alta gama. Solo podrán participar quienes estén presentes en la sala el día del evento.</p>
-                <span className="ep-sorteo-value">Valorado en 2.000 USD · Solo presencial</span>
+                <h3>{t("eventoParaguay.sorteoTitle")}</h3>
+                <p>{t("eventoParaguay.sorteoBody")}</p>
+                <span className="ep-sorteo-value">{t("eventoParaguay.sorteoValue")}</span>
               </div>
             </div>
           </section>
@@ -616,10 +594,10 @@ export default function EventoParaguay() {
           <section className="ep-form-section" id="ep-registro">
             <div className="ep-form-inner">
               <div className="ep-form-card">
-                <p className="ep-section-eyebrow">Confirmación de Asistencia</p>
-                <h2>Reserve su plaza</h2>
-                <p>Aforo limitado para garantizar una experiencia personalizada y exclusiva.</p>
-                <span className="ep-form-deadline">⏳ Fecha límite: viernes 31 de julio de 2026</span>
+                <p className="ep-section-eyebrow">{t("eventoParaguay.formEyebrow")}</p>
+                <h2>{t("eventoParaguay.formTitle")}</h2>
+                <p>{t("eventoParaguay.formBody")}</p>
+                <span className="ep-form-deadline">{t("eventoParaguay.formDeadline")}</span>
                 <iframe
                   src="https://airtable.com/embed/appj9bAkqM61tklod/pagDek5WGBtvLU2CT/form"
                   frameBorder={0}
@@ -629,8 +607,8 @@ export default function EventoParaguay() {
                   title="Formulario de registro"
                 />
                 <p className="ep-form-note">
-                  Sus datos se usarán exclusivamente para la gestión de este evento.<br />
-                  paraguay@elorasmart.com · WhatsApp +34 614 451 901
+                  {t("eventoParaguay.formNote")}<br />
+                  {t("eventoParaguay.formContact")}
                 </p>
               </div>
             </div>
@@ -642,14 +620,14 @@ export default function EventoParaguay() {
               <img src={LOGO_URL} alt="Elora Smart" />
             </div>
             <div className="ep-footer-divider" />
-            <p className="ep-footer-tagline">Innovación que transforma la experiencia del baño</p>
+            <p className="ep-footer-tagline">{t("eventoParaguay.footerTagline")}</p>
             <p className="ep-footer-contact">
-              paraguay@elorasmart.com &nbsp;·&nbsp; +34 614 451 901
+              {t("eventoParaguay.footerContact")}
             </p>
             <div className="ep-footer-legal">
-              ELORA SMART EAS &nbsp;·&nbsp; RUC 801720842<br />
-              Av. Defensores del Chaco 613 c/ Saturio Ríos<br />
-              San Lorenzo 111423 · Departamento Central · Paraguay
+              {t("eventoParaguay.footerLegal1")}<br />
+              {t("eventoParaguay.footerLegal2")}<br />
+              {t("eventoParaguay.footerLegal3")}
             </div>
           </footer>
         </div>
