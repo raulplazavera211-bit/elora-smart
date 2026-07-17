@@ -74,7 +74,7 @@ export default function SpainDistributorsMap() {
 
   // Cargar SVG real de España
   useEffect(() => {
-    fetch("/manus-storage/spain-real_8967431c.svg")
+    fetch("/manus-storage/spain-with-portugal_501f4a48.svg")
       .then(r => r.text())
       .then(text => {
         const parser = new DOMParser();
