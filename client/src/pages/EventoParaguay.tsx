@@ -219,7 +219,7 @@ export default function EventoParaguay() {
             color: rgba(255,255,255,.85); max-width: 580px; margin: 0 auto;
           }
           @media(max-width:480px) {
-            .ep-hero { padding: 100px 20px 48px; }
+            .ep-hero { padding: 60px 20px 48px; }
             .ep-hero-logo img { height: 36px; }
             .ep-hero-eyebrow { font-size: 8px; letter-spacing: .18em; }
           }
