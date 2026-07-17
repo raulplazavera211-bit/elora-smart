@@ -2276,7 +2276,7 @@ export default function Home() {
                 <div className="marquee-dist-inner" style={{ display: "flex", whiteSpace: "nowrap", animation: "marquee-dist 30s linear infinite" }}>
                   {[...Array(2)].map((_, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "center" }}>
-                      {["ENCUENTRA TU DISTRIBUIDOR", "RED OFICIAL", "16 PUNTOS DE VENTA", "ATENCIÓN PERSONALIZADA", "INSTALACIÓN CERTIFICADA", "COBERTURA NACIONAL", "EXPERTOS ELORA", "CERCA DE TI"].map((txt, j) => (
+                      {["ENCUENTRA TU DISTRIBUIDOR", "RED OFICIAL", "17 PUNTOS DE VENTA", "ATENCIÓN PERSONALIZADA", "INSTALACIÓN CERTIFICADA", "COBERTURA NACIONAL", "EXPERTOS ELORA", "CERCA DE TI"].map((txt, j) => (
                         <span key={j} style={{ display: "inline-flex", alignItems: "center" }}>
                           <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: "13px", fontWeight: 600, letterSpacing: "0.3em", textTransform: "uppercase", color: "#ffffff", padding: "0 28px" }}>{txt}</span>
                           <span style={{ color: "#E87A3D", fontSize: "8px" }}>✦</span>

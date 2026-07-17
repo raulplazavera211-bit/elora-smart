@@ -46,6 +46,7 @@ const DISTRIBUTORS: Distributor[] = [
   { id: 14, name: "Puya",                               address: "C. Polonia, 10",                        city: "Marbella",               cp: "29670", province: "Málaga",          region: "Andalucía",            type: "Distribuidor",               phone: "+34 952 78 35 40",email: null,                                lat: 36.510, lon: -4.886 },
   { id: 15, name: "LOOXUR BY PUYA",                        address: "Pol. Ind. La Erminta, C/Zinc, N.7",     city: "Marbella",               cp: "29600", province: "Málaga",          region: "Andalucía",            type: "Distribuidor",               phone: null,              email: null,                                lat: 36.523, lon: -4.916 },
   { id: 16, name: "GRUPO PUYA 68 SL",                      address: "C/Polonia, N.10",                       city: "San Pedro Alcántara",    cp: "29670", province: "Málaga",          region: "Andalucía",            type: "Distribuidor",               phone: null,              email: null,                                lat: 36.490, lon: -4.993 },
+  { id: 17, name: "Okgrés",                               address: "Estr. de Manique 1512",                 city: "Alcabideche",            cp: "2645-550", province: "Lisboa",          region: "Portugal",             type: "Distribuidor",               phone: null,              email: null,                                lat: 38.726, lon: -9.421 },
 ];
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -223,7 +224,7 @@ export default function SpainDistributorsMap() {
             {[
               { val: DISTRIBUTORS.length, label: "Distribuidores", color: "#E87A3D", delay: "0.85s" },
               { val: 7, label: "Comunidades", color: "inherit", delay: "1s" },
-              { val: 1, label: "País", color: "inherit", delay: "1.15s" },
+              { val: 2, label: "Países", color: "inherit", delay: "1.15s" },
             ].map((item, i) => (
               <>
                 {i > 0 && <div key={`sep-${i}`} style={{ width: "1px", height: "44px", background: "rgba(255,255,255,0.1)", opacity: visible ? 1 : 0, transition: `opacity 0.4s ease ${item.delay}` }} />}
@@ -340,6 +341,16 @@ export default function SpainDistributorsMap() {
                   <feDropShadow dx="0" dy="4" stdDeviation="10" floodColor="#001F3F" floodOpacity="0.2"/>
                 </filter>
               </defs>
+
+              {/* Portugal */}
+              <path
+                d="M 397.2 83.4 L 424.8 83.4 L 475.8 98.5 L 510.2 121.0 L 484.2 164.2 L 460.9 178.9 L 475.8 231.2 L 456.2 274.8 L 458.8 293.4 L 433.3 295.1 L 391.2 293.4 L 390.8 285.2 L 399.3 267.9 L 399.3 242.0 L 373.0 219.5 L 373.8 188.0 L 395.0 156.4 L 405.7 136.1 L 407.4 114.5 L 397.2 83.4 Z"
+                fill="#001F3F"
+                stroke="#E87A3D"
+                strokeWidth="0.8"
+                strokeOpacity={0.25}
+                filter="url(#mapShadow2)"
+              />
 
               {/* Comunidades autónomas reales */}
               {svgPaths.map(({ region, d }) => {
