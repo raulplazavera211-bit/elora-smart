@@ -25,6 +25,7 @@ import PoliticaCookies from "./pages/PoliticaCookies";
 import PoliticaEnvios from "./pages/PoliticaEnvios";
 import Garantias from "./pages/Garantias";
 import TerminosCondiciones from "./pages/TerminosCondiciones";
+import EventoParaguay from "./pages/EventoParaguay";
 import { CookieBanner } from "./components/CookieBanner";
 import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
@@ -301,6 +302,7 @@ function AppRouter() {
         <Route path="/politica-envios" component={PoliticaEnvios} />
         <Route path="/garantias" component={Garantias} />
         <Route path="/terminos-condiciones" component={TerminosCondiciones} />
+        <Route path="/evento-paraguay" component={EventoParaguay} />
         <Route component={NotFound} />
       </Switch>
       <ChatBot />
