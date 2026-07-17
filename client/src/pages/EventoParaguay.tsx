@@ -308,9 +308,6 @@ export default function EventoParaguay() {
           @media(max-width:700px) {
             .ep-prog-steps { grid-template-columns: 1fr 1fr; }
           }
-          @media(max-width:400px) {
-            .ep-prog-steps { grid-template-columns: 1fr; }
-          }
 
           /* ── GENERIC SECTIONS ── */
           .ep-section { padding: 72px 24px; width: 100%; }
