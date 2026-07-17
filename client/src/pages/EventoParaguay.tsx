@@ -5,6 +5,7 @@ import { Menu, X, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { CartPanel } from "@/components/CartPanel";
 import { useTranslation } from "react-i18next";
+import { Footer } from "@/components/Footer";
 
 const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 const HERO_BG_URL = "/manus-storage/AURA-compact-p-800x800_597da236.jpg";
@@ -643,15 +644,14 @@ export default function EventoParaguay() {
               <img src={LOGO_URL} alt="Elora Smart" />
             </div>
             <div className="ep-footer-divider" />
-            <p className="ep-footer-tagline">Smart Toilets · Diseño Premium · Tecnología Japonesa</p>
+            <p className="ep-footer-tagline">Innovación que transforma la experiencia del baño</p>
             <p className="ep-footer-contact">
-              paraguay@elorasmart.com<br />
-              WhatsApp +34 614 451 901<br />
-              <a href="https://elorasmart.online" style={{ color: "rgba(255,255,255,.5)", textDecoration: "none" }}>elorasmart.online</a>
+              paraguay@elorasmart.com &nbsp;·&nbsp; +34 614 451 901
             </p>
             <div className="ep-footer-legal">
-              © 2026 Elora Smart · Todos los derechos reservados<br />
-              Avda. da Mahía, 17, bajo 2 — 15220 Bertamiráns (Ames), A Coruña, España
+              ELORA SMART EAS &nbsp;·&nbsp; RUC 801720842<br />
+              Av. Defensores del Chaco 613 c/ Saturio Ríos<br />
+              San Lorenzo 111423 · Departamento Central · Paraguay
             </div>
           </footer>
         </div>
