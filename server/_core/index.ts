@@ -10,6 +10,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { storageGetSignedUrl } from "../storage";
+import { registerLegacyRedirects } from "../legacyRedirects";
 
 // Mapeo de producto → clave de storage (sin prefijo /manus-storage/)
 const FICHA_MAP: Record<string, { key: string; fileName: string }> = {
@@ -49,6 +50,7 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   registerRedsysWebhook(app);
+  registerLegacyRedirects(app);
 
   // ── Descarga de ficha técnica (genera URL pre-firmada fresca en cada clic) ──
   app.get("/api/download-ficha/:productId", async (req, res) => {
