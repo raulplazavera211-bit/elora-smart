@@ -136,8 +136,7 @@ export function registerLegacyRedirects(app: Express) {
   // ── Comodines para rutas no listadas explícitamente ────────────────────
   // Cualquier artículo de blog no listado → home
   app.get("/blog/*", (_req, res) => res.redirect(301, "/"));
-  // Cualquier producto no listado → colección
-  app.get("/producto/*", (_req, res) => res.redirect(301, "/coleccion"));
+  // NOTA: /producto/* NO tiene comodín — las rutas /producto/:slug son páginas reales del frontend
   // Cualquier categoría no listada → colección
   app.get("/categorias/*", (_req, res) => res.redirect(301, "/coleccion"));
   app.get("/categoria/*", (_req, res) => res.redirect(301, "/coleccion"));
