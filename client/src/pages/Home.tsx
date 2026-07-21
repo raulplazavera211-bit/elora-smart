@@ -1491,6 +1491,14 @@ export default function Home() {
     }
   }, [productsQuery.data, i18n.language]);
   const [, navigate] = useLocation();
+  const PRODUCT_SLUGS: Record<string, string> = {
+    "ESENZA": "esenza",
+    "ESENZA-COMPACT": "esenza-compact",
+    "ESENZA-SUSPENDIDO": "esenza-suspendido",
+    "AURA": "aura",
+    "AURA-COMPACT": "aura-compact",
+    "AURA-SUSPENDIDO": "aura-suspendido",
+  };
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -2160,7 +2168,7 @@ export default function Home() {
                                 {t('coleccion.buy')}
                               </button>
                               <button
-                                onClick={() => openProduct(prod)}
+                                onClick={() => navigate(`/producto/${PRODUCT_SLUGS[prod.id] ?? prod.id.toLowerCase()}`)}
                                 className="px-4 border border-border font-body text-[10px] uppercase tracking-[0.2em] text-foreground hover:border-accent-deep hover:text-accent-deep transition-colors active:scale-[0.97]"
                               >
                                 {t('coleccion.info')}
