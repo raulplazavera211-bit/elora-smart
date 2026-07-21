@@ -1784,7 +1784,7 @@ export default function Home() {
             <div className="pt-20 md:pt-0">
               <ProductDetail
                 product={selectedProduct}
-                onBack={() => setSelectedProduct(null)}
+                onBack={() => navigate("/coleccion")}
                 onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); }}
               />
             </div>
