@@ -39,18 +39,19 @@ export default function PromoPopup() {
   const footerNote = dbPopup?.footerNote;
   const delayMs = dbPopup?.delayMs ?? 2000;
 
-  // Don't show on admin pages
+  // Don't show on admin pages or evento-paraguay
   const isAdmin = location.startsWith("/admin");
+  const isParaguay = location.startsWith("/evento-paraguay");
 
   useEffect(() => {
-    if (isAdmin) return;
+    if (isAdmin || isParaguay) return;
     if (isLoading) return; // Wait for DB response before deciding
     // If DB has a popup but it's not active (null returned), don't show
     // getActive returns null when no active popup → use fallback i18n popup
     if (sessionStorage.getItem(STORAGE_KEY)) return;
     const timer = setTimeout(() => setVisible(true), delayMs);
     return () => clearTimeout(timer);
-  }, [isLoading, delayMs, isAdmin]);
+  }, [isLoading, delayMs, isAdmin, isParaguay]);
 
   const handleClose = () => {
     setVisible(false);
@@ -62,7 +63,7 @@ export default function PromoPopup() {
     window.location.href = ctaUrl;
   };
 
-  if (isAdmin) return null;
+  if (isAdmin || isParaguay) return null;
 
   return (
     <AnimatePresence>
