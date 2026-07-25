@@ -383,24 +383,28 @@ const PRODUCTS: Product[] = [
 ];
 // ─── Galerías productos nuevos ───────────────────────────────────────────────
 const ESENZA_COMPACT_GALLERY = [
-  "/manus-storage/batch_5_020a2fdf.webp",
-  "/manus-storage/batch_1_0e0533bb.webp",
-  "/manus-storage/batch_2_364dfa7a.webp",
-  "/manus-storage/batch_10_ecce6b89.webp",
-  "/manus-storage/batch_9_6330faaa.webp",
-  "/manus-storage/batch_8_5f0a6667.webp",
-  "/manus-storage/batch_6_1b729e7e.webp",
-  "/manus-storage/batch_7_701041f6.webp",
-  "/manus-storage/batch_11_f3b3e8bd.webp",
+  "/manus-storage/1_5e1a74e7.jpg",
+  "/manus-storage/esenza-compact-2_6a5ecb63.jpg",
+  "/manus-storage/esenza-compact-3_af2323bc.jpg",
+  "/manus-storage/esenza-compact-4_f75e6287.jpg",
+  "/manus-storage/esenza-compact-5_4b470e16.jpg",
+  "/manus-storage/esenza-compact-6_b65076a8.jpg",
+  "/manus-storage/esenza-compact-7_3dea5eaf.jpg",
+  "/manus-storage/esenza-compact-8_208f6452.jpg",
+  "/manus-storage/esenza-compact-9_1026b0e1.jpg",
+  "/manus-storage/esenza-compact-10_8bdc6de5.jpg",
+  "/manus-storage/esenza-compact-11_c3f91d64.jpg",
 ];
 
 const ESENZA_SUSP_GALLERY = [
-  "/manus-storage/batch_4-1_1d9b09da.webp",
-  "/manus-storage/batch_2-1_6863c7cb.webp",
-  "/manus-storage/batch_6-1_a180ebd8.webp",
-  "/manus-storage/batch_7-1_b3e43ef1.webp",
-  "/manus-storage/batch_5-1_de800e82.webp",
-  "/manus-storage/batch_8-1_89bf414b.webp",
+  "/manus-storage/esenza-suspendido-1_472bd803.jpg",
+  "/manus-storage/esenza-suspendido-2_6528abc5.jpg",
+  "/manus-storage/esenza-suspendido-3_8de7a007.jpg",
+  "/manus-storage/esenza-suspendido-4_8a048cf4.jpg",
+  "/manus-storage/esenza-suspendido-5_299a6ccc.jpg",
+  "/manus-storage/esenza-suspendido-6_c0bd94b2.jpg",
+  "/manus-storage/esenza-suspendido-7_36df7098.jpg",
+  "/manus-storage/esenza-suspendido-8_79ae6792.jpg",
 ];
 
 const AURA_GALLERY = [
@@ -424,7 +428,7 @@ const EXTRA_PRODUCTS: Product[] = [
     tagline: "Todas las funciones en fondo reducido.",
     description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
     longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
-    img: "/manus-storage/batch_5_020a2fdf.webp",
+    img: "/manus-storage/1_5e1a74e7.jpg",
     gallery: ESENZA_COMPACT_GALLERY,
     badges: ["Compact", "Back-to-wall"],
     highlights: [
@@ -499,7 +503,7 @@ const EXTRA_PRODUCTS: Product[] = [
     tagline: "Diseño flotante con funciones esenciales.",
     description: "El inodoro inteligente japonés flotante de ELORA SMART. Libera el suelo y aporta una estética minimalista y contemporánea.",
     longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA con un diseño más ligero y contemporáneo.",
-    img: "/manus-storage/batch_4-1_1d9b09da.webp",
+    img: "/manus-storage/esenza-suspendido-1_472bd803.jpg",
     gallery: ESENZA_SUSP_GALLERY,
     badges: ["Suspendido", "Rimless"],
     highlights: [
