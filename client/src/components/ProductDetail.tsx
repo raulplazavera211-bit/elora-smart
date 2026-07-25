@@ -6,6 +6,7 @@ import {
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { FichaTecnicaModal } from "@/components/FichaTecnicaModal";
+import { useCurrency, convertPrice, formatCurrency } from "@/contexts/CurrencyContext";
 
 export type ProductSpec = { label: string; value: string };
 
@@ -29,6 +30,8 @@ export type Product = {
   faqs: { q: string; a: string }[];
   price: number;
   originalPrice?: number | null;
+  priceUsd?: number; // Precio fijo en USD para usuarios fuera de Europa
+  visibleRegions?: ("europe" | "world")[]; // undefined = visible everywhere
 };
 
 type Props = {
@@ -41,9 +44,13 @@ const PITCH_ICONS = [Sparkles, Droplets, Thermometer, Wind, Zap, Shield];
 
 export function ProductDetail({ product, onBack, onAdd }: Props) {
   const { t } = useTranslation();
+  const { currency, exchangeRate } = useCurrency();
   const allImages = [product.img, ...product.gallery].filter(Boolean);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [fichaModalOpen, setFichaModalOpen] = useState(false);
+  
+  const displayPrice = convertPrice(product.price, currency, exchangeRate, product.priceUsd);
+  const displayOriginalPrice = product.originalPrice ? convertPrice(product.originalPrice, currency, exchangeRate) : null;
 
   const openLightbox = useCallback((index: number) => setLightboxIndex(index), []);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -440,10 +447,10 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
               {product.name}<br />{t('product.waitingForYou')}
             </h2>
             <div className="flex items-baseline gap-3">
-              {product.originalPrice && (
-                <span className="font-body text-sm text-foreground/40 line-through">{product.originalPrice.toLocaleString()} €</span>
+              {displayOriginalPrice && (
+                <span className="font-body text-sm text-foreground/40 line-through">{formatCurrency(displayOriginalPrice, currency)}</span>
               )}
-              <p className="font-display text-xl sm:text-2xl tracking-wide">{product.price.toLocaleString()} €</p>
+              <p className="font-display text-xl sm:text-2xl tracking-wide">{formatCurrency(displayPrice, currency)}</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">

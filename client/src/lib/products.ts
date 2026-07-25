@@ -201,7 +201,9 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Hace ruido por la noche?", a: "No. El funcionamiento es silencioso, por debajo de 59 dB — hasta 21 dB más silencioso que muchos inodoros convencionales." },
     ],
     price: 1341,
-    originalPrice: 1490,
+    visibleRegions: ["europe"],
+  priceUsd: 2900,
+  originalPrice: 1490,
   },
   {
     id: "ESENZA-COMPACT",
@@ -276,7 +278,9 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Necesita obras?", a: "No. Solo un enchufe cerca y tu fontanero habitual." },
     ],
     price: 1431,
-    originalPrice: 1590,
+    visibleRegions: ["europe", "world"],
+  priceUsd: 2900,
+  originalPrice: 1590,
   },
   {
     id: "ESENZA-SUSPENDIDO",
@@ -353,7 +357,9 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Qué diferencia hay con ESENZA estándar?", a: "La instalación es suspendida (flotante), lo que libera el suelo y aporta una estética más limpia y moderna. Las funciones son idénticas." },
     ],
     price: 1521,
-    originalPrice: 1690,
+    visibleRegions: ["europe", "world"],
+  priceUsd: 2900,
+  originalPrice: 1690,
   },
   {
     id: "AURA-COMPACT",
@@ -450,7 +456,9 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Es apto para personas mayores?", a: "Sí. Es compatible con adultos mayores, embarazadas, personas con movilidad reducida y niños." },
     ],
     price: 1990,
-    originalPrice: 2500,
+    visibleRegions: ["europe", "world"],
+  priceUsd: 3800,
+  originalPrice: 2500,
   },
   {
     id: "AURA-SUSPENDIDO",
@@ -551,7 +559,9 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Funciona el control por voz en español?", a: "Actualmente el control por voz está disponible solo en inglés. El mando a distancia físico está completamente en español." },
     ],
     price: 2080,
-    originalPrice: 2600,
+    visibleRegions: ["europe", "world"],
+  priceUsd: 3800,
+  originalPrice: 2600,
   },
   {
     id: "AURA",
@@ -628,7 +638,9 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Puedo elegir el color del display?", a: "Sí. Disponible en Gris y Negro, Blanco y Gris. Se elige en el momento del pedido." },
     ],
     price: 1875,
-    originalPrice: 2500,
+    visibleRegions: ["europe"],
+  priceUsd: 3800,
+  originalPrice: 2500,
   },
 ];
 

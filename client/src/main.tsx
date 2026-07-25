@@ -10,6 +10,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
+import { CurrencyProvider } from "./contexts/CurrencyContext";
 
 const queryClient = new QueryClient();
 
@@ -60,18 +61,20 @@ const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID || "";
 createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
-      <PayPalScriptProvider
-        options={{
-          clientId: PAYPAL_CLIENT_ID,
-          currency: "EUR",
-          intent: "capture",
-          locale: "es_ES",
-        }}
-      >
-        <CartProvider>
-          <App />
-        </CartProvider>
-      </PayPalScriptProvider>
+      <CurrencyProvider>
+        <PayPalScriptProvider
+          options={{
+            clientId: PAYPAL_CLIENT_ID,
+            currency: "EUR",
+            intent: "capture",
+            locale: "es_ES",
+          }}
+        >
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </PayPalScriptProvider>
+      </CurrencyProvider>
     </QueryClientProvider>
   </trpc.Provider>
 );

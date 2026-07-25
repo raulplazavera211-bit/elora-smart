@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
+import { useCurrency, formatCurrency, convertPrice } from "@/contexts/CurrencyContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { motion } from "motion/react";
 import { ArrowLeft, ShoppingBag, X, Menu, MapPin, ShieldCheck, Wrench } from "lucide-react";
@@ -62,6 +63,8 @@ export default function Coleccion() {
 
   // Cargar productos desde la BD para que los cambios del admin se reflejen
   const productsQuery = trpc.products.getAll.useQuery();
+  const { region, currency, exchangeRate } = useCurrency();
+  
   useEffect(() => {
     if (productsQuery.data && productsQuery.data.length > 0) {
       const parseJsonField = (val: any, fallback: any) => {
@@ -83,9 +86,16 @@ export default function Coleccion() {
           originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : null,
         } as Product;
       });
-      setDisplayProducts(merged);
+      
+      // Filtrar por región: solo mostrar productos visibles en la región actual
+      const filtered = merged.filter(p => {
+        if (!p.visibleRegions) return true; // Sin restricción = visible en todas partes
+        return p.visibleRegions.includes(region);
+      });
+      
+      setDisplayProducts(filtered);
     }
-  }, [productsQuery.data, i18n.language]);
+  }, [productsQuery.data, i18n.language, region]);
 
   // Actualizar textos de productos cuando cambie el idioma (sin datos de BD)
   useEffect(() => {
@@ -312,14 +322,14 @@ export default function Coleccion() {
                       <div className="mt-auto pt-4 border-t border-border">
                         <div className="flex items-baseline justify-between mb-3">
                           <div className="flex flex-col gap-0.5">
-                            {prod.originalPrice && (
+                            {prod.originalPrice && currency === "EUR" && (
                               <span className="font-body text-xs text-foreground/40 line-through">
-                                {prod.originalPrice.toLocaleString()} €
+                                {formatCurrency(convertPrice(prod.originalPrice, currency, exchangeRate), currency)}
                               </span>
                             )}
                             <div className="flex items-baseline gap-2">
                               <span className="font-display text-2xl tracking-wide text-foreground">
-                                {prod.price.toLocaleString()} €
+                                {formatCurrency(convertPrice(prod.price, currency, exchangeRate, (prod as any).priceUsd), currency)}
                               </span>
                               {prod.originalPrice && (
                                 <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">

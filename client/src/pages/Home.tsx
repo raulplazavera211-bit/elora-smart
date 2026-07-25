@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
+import { useCurrency, formatCurrency, convertPrice } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -1458,6 +1459,7 @@ function EsenciaVideoCard() {
 // ─── Componente principal ──────────────────────────────────────────────────────────────────────────────
 export default function Home() {
   const { t, i18n } = useTranslation();
+  const { region, currency, exchangeRate } = useCurrency();
   const [homeProducts, setHomeProducts] = useState(() => getLocalizedFeatured('es'));
   const productsQuery = trpc.products.getAll.useQuery();
 
@@ -1485,11 +1487,20 @@ export default function Home() {
           originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : fallback.originalPrice ?? null,
         };
       });
-      setHomeProducts(merged as any);
+      // Filtrar por región
+      const filtered = (merged as any[]).filter(p => {
+        if (!p.visibleRegions) return true;
+        return p.visibleRegions.includes(region);
+      });
+      setHomeProducts(filtered as any);
     } else {
-      setHomeProducts(localizedBase);
+      const filtered = localizedBase.filter(p => {
+        if (!p.visibleRegions) return true;
+        return p.visibleRegions.includes(region);
+      });
+      setHomeProducts(filtered);
     }
-  }, [productsQuery.data, i18n.language]);
+  }, [productsQuery.data, i18n.language, region]);
   const [, navigate] = useLocation();
   const PRODUCT_SLUGS: Record<string, string> = {
     "ESENZA": "esenza",
@@ -2006,7 +2017,7 @@ export default function Home() {
                         <div className="flex items-center justify-between mb-2">
                           <div>
                             <p className="font-display text-base md:text-sm uppercase tracking-widest text-foreground/70 mb-0.5">AURA Suspendido</p>
-                            <p className="font-display text-2xl md:text-base leading-none text-foreground">2.600 <span className="text-sm md:text-xs text-foreground/60">€</span></p>
+                            <p className="font-display text-2xl md:text-base leading-none text-foreground">{formatCurrency(convertPrice(2080, currency, exchangeRate, 3800), currency)}</p>
                           </div>
                         </div>
                         <button
@@ -2138,14 +2149,14 @@ export default function Home() {
                           <div className="mt-auto pt-4 border-t border-border">
                             <div className="flex items-baseline justify-between mb-3">
                               <div className="flex flex-col gap-0.5">
-                                {prod.originalPrice && (
+                                {prod.originalPrice && currency === "EUR" && (
                                   <span className="font-body text-xs text-foreground/40 line-through">
-                                    {(typeof prod.originalPrice === 'number' ? prod.originalPrice : parseFloat(String(prod.originalPrice))).toLocaleString()} €
+                                    {formatCurrency(convertPrice(typeof prod.originalPrice === 'number' ? prod.originalPrice : parseFloat(String(prod.originalPrice)), currency, exchangeRate), currency)}
                                   </span>
                                 )}
                                 <div className="flex items-baseline gap-2">
                                   <span className="font-display text-2xl tracking-wide text-foreground">
-                                    {prod.price.toLocaleString()} €
+                                    {formatCurrency(convertPrice(prod.price, currency, exchangeRate, (prod as any).priceUsd), currency)}
                                   </span>
                                   {prod.originalPrice && (
                                     <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
