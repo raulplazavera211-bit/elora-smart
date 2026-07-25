@@ -331,7 +331,7 @@ export default function Coleccion() {
                               <span className="font-display text-2xl tracking-wide text-foreground">
                                 {formatCurrency(convertPrice(prod.price, currency, exchangeRate, (prod as any).priceUsd), currency)}
                               </span>
-                              {prod.originalPrice && (
+                              {prod.originalPrice && currency === "EUR" && (
                                 <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
                                   {t('coleccion.offer')}
                                 </span>

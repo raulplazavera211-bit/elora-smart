@@ -168,7 +168,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
               {/* Precio */}
               <div className="flex items-end justify-between mt-2">
                 <div className="flex flex-col gap-1">
-                  {product.originalPrice && (
+                  {product.originalPrice && currency === "EUR" && (
                     <div className="flex items-center gap-2">
                       <span className="font-body text-sm text-foreground/40 line-through">
                         {product.originalPrice.toLocaleString()} €
@@ -178,7 +178,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                       </span>
                     </div>
                   )}
-                  <p className="font-display text-3xl sm:text-4xl md:text-5xl tracking-wide">{product.price.toLocaleString()} €</p>
+                  <p className="font-display text-3xl sm:text-4xl md:text-5xl tracking-wide">{formatCurrency(displayPrice, currency)}</p>
                   <p className="font-body text-[10px] uppercase tracking-widest text-foreground/50 mt-1">{t('coleccion.vatIncl')}</p>
                 </div>
               </div>
