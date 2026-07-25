@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const STORAGE_KEY = "elora_promo_popup_dismissed";
 
@@ -39,19 +40,22 @@ export default function PromoPopup() {
   const footerNote = dbPopup?.footerNote;
   const delayMs = dbPopup?.delayMs ?? 2000;
 
-  // Don't show on admin pages or evento-paraguay
+  const { region } = useCurrency();
+
+  // Don't show on admin pages, evento-paraguay, or outside Europe
   const isAdmin = location.startsWith("/admin");
   const isParaguay = location.startsWith("/evento-paraguay");
+  const isOutsideEurope = region === "world";
 
   useEffect(() => {
-    if (isAdmin || isParaguay) return;
+    if (isAdmin || isParaguay || isOutsideEurope) return;
     if (isLoading) return; // Wait for DB response before deciding
     // If DB has a popup but it's not active (null returned), don't show
     // getActive returns null when no active popup → use fallback i18n popup
     if (sessionStorage.getItem(STORAGE_KEY)) return;
     const timer = setTimeout(() => setVisible(true), delayMs);
     return () => clearTimeout(timer);
-  }, [isLoading, delayMs, isAdmin, isParaguay]);
+  }, [isLoading, delayMs, isAdmin, isParaguay, isOutsideEurope]);
 
   const handleClose = () => {
     setVisible(false);
@@ -63,7 +67,7 @@ export default function PromoPopup() {
     window.location.href = ctaUrl;
   };
 
-  if (isAdmin || isParaguay) return null;
+  if (isAdmin || isParaguay || isOutsideEurope) return null;
 
   return (
     <AnimatePresence>
