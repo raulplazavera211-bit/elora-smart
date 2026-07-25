@@ -383,7 +383,7 @@ const PRODUCTS: Product[] = [
 ];
 // ─── Galerías productos nuevos ───────────────────────────────────────────────
 const ESENZA_COMPACT_GALLERY = [
-  "/manus-storage/1_5e1a74e7.jpg",
+  "/manus-storage/Clipboard_0_D4A653F1_4c49e12c.png",
   "/manus-storage/esenza-compact-2_6a5ecb63.jpg",
   "/manus-storage/esenza-compact-3_af2323bc.jpg",
   "/manus-storage/esenza-compact-4_f75e6287.jpg",
@@ -428,7 +428,7 @@ const EXTRA_PRODUCTS: Product[] = [
     tagline: "Todas las funciones en fondo reducido.",
     description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
     longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
-    img: "/manus-storage/1_5e1a74e7.jpg",
+    img: "/manus-storage/Clipboard_0_D4A653F1_4c49e12c.png",
     gallery: ESENZA_COMPACT_GALLERY,
     badges: ["Compact", "Back-to-wall"],
     highlights: [
