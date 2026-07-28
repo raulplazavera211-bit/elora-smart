@@ -1839,6 +1839,35 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
             {checkoutStep !== "redirecting" && (
               <div className="px-12 py-8 border-t border-border shrink-0">
+                {checkoutStep === "cart" && cart.length > 0 && (
+                  <div className="flex flex-col gap-2 mb-4">
+                    {!appliedCoupon ? (
+                      <div className="flex gap-2">
+                        <input
+                          value={couponInput}
+                          onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null); }}
+                          placeholder="Código de cupón"
+                          className="flex-1 border border-border bg-transparent px-3 py-2 font-body text-xs uppercase tracking-widest outline-none focus:border-foreground/60 transition-colors placeholder:normal-case placeholder:tracking-normal"
+                          onKeyDown={e => { if (e.key === 'Enter' && couponInput.trim()) validateCouponMutation.mutate({ code: couponInput.trim(), orderAmount: cartTotal, cartSlugs: cart.map(i => i.id).filter(Boolean) }); }}
+                        />
+                        <button
+                          type="button"
+                          disabled={!couponInput.trim() || validateCouponMutation.isPending}
+                          onClick={() => validateCouponMutation.mutate({ code: couponInput.trim(), orderAmount: cartTotal, cartSlugs: cart.map(i => i.id).filter(Boolean) })}
+                          className="px-4 py-2 border border-foreground/20 font-body text-xs uppercase tracking-widest hover:border-foreground/60 transition-colors disabled:opacity-40"
+                        >
+                          {validateCouponMutation.isPending ? '...' : 'Aplicar'}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between px-3 py-2 bg-green-50 border border-green-200">
+                        <span className="font-body text-xs text-green-700">✓ Cupón <strong>{appliedCoupon.code}</strong> — {appliedCoupon.discount.toLocaleString('es-ES')} € de descuento</span>
+                        <button type="button" onClick={() => setAppliedCoupon(null)} className="font-body text-[10px] text-green-600 hover:text-red-500 transition-colors">Quitar</button>
+                      </div>
+                    )}
+                    {couponError && <p className="font-body text-[10px] text-red-500">{couponError}</p>}
+                  </div>
+                )}
                 {checkoutStep === "cart" ? (
                   <motion.button onClick={() => setCheckoutStep("checkout")} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.01 } : {}} whileTap={cart.length > 0 ? { scale: 0.98 } : {}} className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 32px rgba(214,122,0,0.4)" : undefined }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -2044,9 +2073,36 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               )}
               <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
                 {checkoutStep === "cart" && cart.length > 0 && (
-                  <div className="flex justify-between items-baseline mb-1">
-                    <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">{t("cart.total")}</span>
-                    <span className="font-display text-2xl">{orderTotal.toLocaleString("es-ES")} €</span>
+                  <div className="flex flex-col gap-2 mb-1">
+                    {!appliedCoupon ? (
+                      <div className="flex gap-2">
+                        <input
+                          value={couponInput}
+                          onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null); }}
+                          placeholder="Código de cupón"
+                          className="flex-1 border border-border bg-transparent px-3 py-2 font-body text-[11px] uppercase tracking-widest outline-none focus:border-foreground/60 transition-colors placeholder:normal-case placeholder:tracking-normal"
+                          onKeyDown={e => { if (e.key === 'Enter' && couponInput.trim()) validateCouponMutation.mutate({ code: couponInput.trim(), orderAmount: cartTotal, cartSlugs: cart.map(i => i.id).filter(Boolean) }); }}
+                        />
+                        <button
+                          type="button"
+                          disabled={!couponInput.trim() || validateCouponMutation.isPending}
+                          onClick={() => validateCouponMutation.mutate({ code: couponInput.trim(), orderAmount: cartTotal, cartSlugs: cart.map(i => i.id).filter(Boolean) })}
+                          className="px-3 py-2 border border-foreground/20 font-body text-[11px] uppercase tracking-widest hover:border-foreground/60 transition-colors disabled:opacity-40"
+                        >
+                          {validateCouponMutation.isPending ? '...' : 'Aplicar'}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between px-3 py-2 bg-green-50 border border-green-200">
+                        <span className="font-body text-[11px] text-green-700">✓ Cupón <strong>{appliedCoupon.code}</strong> — -{appliedCoupon.discount.toLocaleString('es-ES')} €</span>
+                        <button type="button" onClick={() => setAppliedCoupon(null)} className="font-body text-[10px] text-green-600 hover:text-red-500 transition-colors">Quitar</button>
+                      </div>
+                    )}
+                    {couponError && <p className="font-body text-[10px] text-red-500">{couponError}</p>}
+                    <div className="flex justify-between items-baseline">
+                      <span className="font-body text-xs text-foreground/50 uppercase tracking-widest">{t("cart.total")}</span>
+                      <span className="font-display text-2xl">{orderTotal.toLocaleString("es-ES")} €</span>
+                    </div>
                   </div>
                 )}
                 {checkoutStep === "cart" ? (
