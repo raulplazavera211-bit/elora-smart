@@ -593,7 +593,6 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
     const cartTotal = cart.reduce((s, i) => s + i.price, 0);
   const shippingCost = getShippingCost(form.pais);
-  const orderTotal = cartTotal + shippingCost;
   const createOrder = trpc.orders.create.useMutation({
     onError: (err) => {
       toast.error(t("misc.error"));
@@ -621,6 +620,22 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   const [{ isPending: paypalLoading }] = usePayPalScriptReducer();
   // orderId pendiente para PayPal (se crea antes de abrir el popup PayPal)
   const [pendingOrderId, setPendingOrderId] = useState<number | null>(null);
+  // ─── Estado cupón de descuento ─────────────────────────────────────────────
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; description: string | null | undefined; productSlug: string | null } | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const couponDiscount = appliedCoupon?.discount ?? 0;
+  const orderTotal = Math.max(0, cartTotal - couponDiscount) + shippingCost;
+  const validateCouponMutation = trpc.orders.validateCoupon.useMutation({
+    onSuccess: (data: { code: string; discount: number; description?: string | null; productSlug?: string | null }) => {
+      setAppliedCoupon({ code: data.code, discount: data.discount, description: data.description, productSlug: data.productSlug ?? null });
+      setCouponError(null);
+      setCouponInput("");
+    },
+    onError: (err: { message: string }) => {
+      setCouponError(err.message);
+    },
+  });
 
   function setField<K extends keyof CheckoutFormState>(key: K, value: string) {
     setForm(f => ({ ...f, [key]: value }));
@@ -1140,10 +1155,44 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 {shippingCost === 0 ? t("checkout.freeShipping") : `${shippingCost.toLocaleString("es-ES")} €`}
               </span>
             </div>
+            {appliedCoupon && (
+              <div className="flex justify-between items-baseline">
+                <span className="font-body text-xs text-green-600 flex items-center gap-1">✓ Cupón {appliedCoupon.code}</span>
+                <span className="font-body text-sm text-green-600">-{appliedCoupon.discount.toLocaleString("es-ES")} €</span>
+              </div>
+            )}
             <div className="flex justify-between items-baseline border-t border-border pt-2 mt-1">
               <span className="font-body text-xs uppercase tracking-widest text-foreground/50">{t("cart.totalVat")}</span>
               <span className="font-display text-2xl">{orderTotal.toLocaleString("es-ES")} €</span>
             </div>
+          </div>
+          {/* Campo de cupón de descuento */}
+          <div className="flex flex-col gap-2 mt-1">
+            {!appliedCoupon ? (
+              <div className="flex gap-2">
+                <input
+                  value={couponInput}
+                  onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null); }}
+                  placeholder="Código de cupón"
+                  className="flex-1 border border-border bg-transparent px-3 py-2 font-body text-xs uppercase tracking-widest outline-none focus:border-foreground/60 transition-colors placeholder:normal-case placeholder:tracking-normal"
+                  onKeyDown={e => { if (e.key === 'Enter' && couponInput.trim()) validateCouponMutation.mutate({ code: couponInput.trim(), orderAmount: cartTotal, cartSlugs: cart.map(i => i.id).filter(Boolean) }); }}
+                />
+                <button
+                  type="button"
+                  disabled={!couponInput.trim() || validateCouponMutation.isPending}
+                  onClick={() => validateCouponMutation.mutate({ code: couponInput.trim(), orderAmount: cartTotal, cartSlugs: cart.map(i => i.id).filter(Boolean) })}
+                  className="px-4 py-2 border border-foreground/20 font-body text-xs uppercase tracking-widest hover:border-foreground/60 transition-colors disabled:opacity-40"
+                >
+                  {validateCouponMutation.isPending ? '...' : 'Aplicar'}
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between px-3 py-2 bg-green-50 border border-green-200">
+                <span className="font-body text-xs text-green-700">✓ Cupón <strong>{appliedCoupon.code}</strong> aplicado</span>
+                <button type="button" onClick={() => setAppliedCoupon(null)} className="font-body text-[10px] text-green-600 hover:text-red-500 transition-colors">Quitar</button>
+              </div>
+            )}
+            {couponError && <p className="font-body text-[10px] text-red-500">{couponError}</p>}
           </div>
         </div>
                 {/* Selector de método */}

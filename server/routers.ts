@@ -593,6 +593,40 @@ export const appRouter = router({
           formHtml,
         };
       }),
+
+    // ─── VALIDATE COUPON (public) ───────────────────────────────────────────────
+    validateCoupon: publicProcedure
+      .input(z.object({
+        code: z.string(),
+        orderAmount: z.number().positive(),
+        cartSlugs: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const coupon = await getCouponByCode(input.code);
+        if (!coupon) throw new TRPCError({ code: 'NOT_FOUND', message: 'Cupón no encontrado' });
+        if (!coupon.active) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón no está activo' });
+        if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón ha caducado' });
+        if (coupon.maxUses !== null && coupon.usedCount >= coupon.maxUses) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón ha alcanzado el límite de usos' });
+        const minAmount = coupon.minOrderAmount ? parseFloat(String(coupon.minOrderAmount)) : 0;
+        if (input.orderAmount < minAmount) throw new TRPCError({ code: 'BAD_REQUEST', message: `El pedido mínimo para este cupón es ${minAmount.toFixed(2)} €` });
+        if (coupon.productSlug) {
+          const slugs = input.cartSlugs ?? [];
+          if (!slugs.includes(coupon.productSlug)) {
+            throw new TRPCError({ code: 'BAD_REQUEST', message: `Este cupón solo es válido para el producto "${coupon.productSlug}"` });
+          }
+        }
+        const value = parseFloat(String(coupon.value));
+        const discount = coupon.type === 'percentage' ? (input.orderAmount * value) / 100 : Math.min(value, input.orderAmount);
+        return {
+          id: coupon.id,
+          code: coupon.code,
+          type: coupon.type,
+          value,
+          discount: parseFloat(discount.toFixed(2)),
+          description: coupon.description,
+          productSlug: coupon.productSlug ?? null,
+        };
+      }),
   }),
 
   // ─── PAYMENTS (public) ─────────────────────────────────────────────────
@@ -706,33 +740,6 @@ export const appRouter = router({
         await deleteCoupon(input.id);
         return { success: true };
       }),
-
-    // ─── VALIDATE COUPON (public) ────────────────────────────────────────────
-    validateCoupon: publicProcedure
-      .input(z.object({
-        code: z.string(),
-        orderAmount: z.number().positive(),
-      }))
-      .mutation(async ({ input }) => {
-        const coupon = await getCouponByCode(input.code);
-        if (!coupon) throw new TRPCError({ code: 'NOT_FOUND', message: 'Cupón no encontrado' });
-        if (!coupon.active) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón no está activo' });
-        if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón ha caducado' });
-        if (coupon.maxUses !== null && coupon.usedCount >= coupon.maxUses) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Este cupón ha alcanzado el límite de usos' });
-        const minAmount = coupon.minOrderAmount ? parseFloat(String(coupon.minOrderAmount)) : 0;
-        if (input.orderAmount < minAmount) throw new TRPCError({ code: 'BAD_REQUEST', message: `El pedido mínimo para este cupón es ${minAmount.toFixed(2)} €` });
-        const value = parseFloat(String(coupon.value));
-        const discount = coupon.type === 'percentage' ? (input.orderAmount * value) / 100 : Math.min(value, input.orderAmount);
-        return {
-          id: coupon.id,
-          code: coupon.code,
-          type: coupon.type,
-          value,
-          discount: parseFloat(discount.toFixed(2)),
-          description: coupon.description,
-        };
-      }),
-
     seedProducts: adminProcedure.mutation(async () => {
       // Seed the 6 Elora Smart products into the database
       const existing = await getAllProducts(true);

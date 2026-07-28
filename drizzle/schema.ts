@@ -229,6 +229,8 @@ export const coupons = mysqlTable("coupons", {
   maxUses: int("maxUses"),
   /** Current use count */
   usedCount: int("usedCount").default(0).notNull(),
+  /** Restrict coupon to a specific product slug (e.g. 'aura') — null means any product */
+  productSlug: varchar("productSlug", { length: 128 }),
   /** Expiry date — null means no expiry */
   expiresAt: timestamp("expiresAt"),
   active: boolean("active").default(true).notNull(),

@@ -1,0 +1,1 @@
+ALTER TABLE `coupons` ADD `productSlug` varchar(128);
