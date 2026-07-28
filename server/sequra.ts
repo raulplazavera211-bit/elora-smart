@@ -224,8 +224,9 @@ export async function startSequraSolicitation(
 // ─── Step 2: Fetch identification form ───────────────────────────────────────
 
 /**
- * GET {orderUrl}/form?product=<product>&ajax=1
- * Returns the HTML snippet to embed in checkout.
+ * GET {orderUrl}/form_v2?product=<product>&ajax=1
+ * Returns the HTML snippet (iframe + JS) to embed in checkout.
+ * product: 'i1' = pago aplazado, 'pp3' = pago fraccionado
  */
 export async function fetchSequraForm(
   orderUrl: string,

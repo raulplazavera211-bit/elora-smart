@@ -585,8 +585,8 @@ export const appRouter = router({
         // Save Sequra order URL to DB
         await linkSequraOrder(input.orderId, result.orderUrl);
 
-        // Fetch the embedded identification form HTML
-        const formHtml = await fetchSequraForm(result.orderUrl, 'i1');
+        // Fetch the embedded identification form HTML (pp3 = pago fraccionado)
+        const formHtml = await fetchSequraForm(result.orderUrl, 'pp3');
 
         return {
           orderUrl: result.orderUrl,
