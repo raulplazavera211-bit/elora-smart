@@ -47,6 +47,8 @@ import { insertContactSubmission,
   linkRedsysOrder,
   updatePaymentStatus,
   getOrderByRedsysId,
+  linkSequraOrder,
+  updateSequraPaymentStatus,
   getAllPaymentMethods,
   getEnabledPaymentMethods,
   upsertPaymentMethod,
@@ -78,6 +80,7 @@ import { insertContactSubmission,
   reorderExperienceSlides,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
+import { startSequraSolicitation, confirmSequraOrder, verifySequraSignature, getSequraConfig } from "./sequra";
 import { sendOrderConfirmationEmail, sendFichaTecnicaEmail } from "./email";
 import { storagePut, storageGetSignedUrl } from "./storage";
 
@@ -363,7 +366,7 @@ export const appRouter = router({
         /** Origen del frontend para construir las URLs de retorno */
         origin: z.string().url(),
         /** Método de pago elegido por el cliente */
-        payMethod: z.enum(["card", "bizum", "transfer", "cod", "paypal"]).default("card"),
+        payMethod: z.enum(["card", "bizum", "transfer", "cod", "paypal", "sequra"]).default("card"),
       }))
       .mutation(async ({ input }) => {
         // Verificar que Redsys está configurado
@@ -521,6 +524,63 @@ export const appRouter = router({
           return { success: true };
         }
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "El pago PayPal no se completó" });
+      }),
+
+    /**
+     * Inicia el pago Sequra para un pedido ya creado.
+     * Devuelve la URL del formulario de identificación de Sequra.
+     */
+    initSequraPayment: publicProcedure
+      .input(z.object({
+        orderId: z.number(),
+        origin: z.string().url(),
+        /** Datos del comprador para el formulario de Sequra */
+        customerFirstName: z.string().optional(),
+        customerLastName: z.string().optional(),
+        customerPhone: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          getSequraConfig();
+        } catch {
+          throw new TRPCError({
+            code: "PRECONDITION_FAILED",
+            message: "Sequra no está configurado. Contacta con el administrador.",
+          });
+        }
+        const order = await getOrderWithItems(input.orderId);
+        if (!order) throw new TRPCError({ code: "NOT_FOUND", message: "Pedido no encontrado" });
+
+        // Build Sequra cart items from order items
+        const cartItems = order.items.map(item => ({
+          reference: item.productSlug ?? String(item.productId ?? 'product'),
+          name: item.productName,
+          quantity: item.quantity,
+          price_with_tax: Math.round(Number(item.unitPrice) * 100),
+          total_with_tax: Math.round(Number(item.unitPrice) * item.quantity * 100),
+          type: 'product' as const,
+        }));
+
+        const result = await startSequraSolicitation({
+          merchantRef: String(input.orderId),
+          amountEur: Number(order.total),
+          customer: {
+            email: order.customerEmail,
+            phone: input.customerPhone ?? order.customerPhone ?? undefined,
+            firstName: input.customerFirstName ?? order.customerName.split(' ')[0],
+            lastName: input.customerLastName ?? order.customerName.split(' ').slice(1).join(' '),
+          },
+          items: cartItems,
+          origin: input.origin,
+        });
+
+        // Save Sequra order URL to DB
+        await linkSequraOrder(input.orderId, result.orderUrl);
+
+        return {
+          orderUrl: result.orderUrl,
+          formUrl: `${result.orderUrl}/form?product=i1&ajax=1`,
+        };
       }),
   }),
 

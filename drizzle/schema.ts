@@ -133,7 +133,9 @@ export const orders = mysqlTable("orders", {
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
   /** Redsys order ID (12 chars) — null until payment is initiated */
   redsysOrderId: varchar("redsysOrderId", { length: 32 }),
-  /** Payment status from Redsys */
+  /** Sequra order URL — null until Sequra solicitation is started */
+  sequraOrderUrl: varchar("sequraOrderUrl", { length: 512 }),
+  /** Payment status from Redsys / Sequra / PayPal */
   paymentStatus: mysqlEnum("paymentStatus", ["unpaid", "pending_payment", "paid", "failed"]).default("unpaid").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -178,7 +180,7 @@ export const paymentMethods = mysqlTable("payment_methods", {
   /** Short description shown to customers */
   description: text("description"),
   /** Method type for routing logic */
-  type: mysqlEnum("type", ["redsys_card", "redsys_bizum", "transfer", "paypal", "cash_on_delivery", "other"]).notNull(),
+  type: mysqlEnum("type", ["redsys_card", "redsys_bizum", "transfer", "paypal", "cash_on_delivery", "sequra", "other"]).notNull(),
   /** Whether this method is currently active */
   enabled: boolean("enabled").default(false).notNull(),
   /** JSON config (bank account, PayPal email, instructions, etc.) */

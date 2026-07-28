@@ -83,8 +83,8 @@ export interface CreateRedsysFormParams {
   frontendOrigin: string;
   merchantName?: string;
   productDescription?: string;
-  /** Método de pago: "card", "bizum", "transfer", "cod", "paypal". Por defecto ambos (tarjeta+Bizum). */
-  payMethod?: "card" | "bizum" | "transfer" | "cod" | "paypal";
+  /** Método de pago: "card", "bizum", "transfer", "cod", "paypal", "sequra". Por defecto ambos (tarjeta+Bizum). */
+  payMethod?: "card" | "bizum" | "transfer" | "cod" | "paypal" | "sequra";
 }
 
 export function createRedsysForm(params: CreateRedsysFormParams): RedsysFormData {

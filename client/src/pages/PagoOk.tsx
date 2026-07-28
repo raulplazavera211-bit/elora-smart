@@ -1,6 +1,6 @@
 // ─── Página de pago exitoso (/pago/ok) ───────────────────────────────────────
-// Redsys redirige aquí cuando el pago se completa con éxito.
-// La URL incluye ?order=REDSYS_ORDER_ID
+// Redsys redirige aquí cuando el pago se completa con éxito: ?order=REDSYS_ORDER_ID
+// Sequra redirige aquí cuando el pago se completa: ?ref=ORDER_ID&method=sequra
 
 import { motion } from "motion/react";
 import { CheckCircle, ArrowRight, Phone, Mail } from "lucide-react";
@@ -14,11 +14,17 @@ export default function PagoOk() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [redsysOrderId, setRedsysOrderId] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [orderRef, setOrderRef] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const order = params.get("order");
+    const method = params.get("method");
+    const ref = params.get("ref");
     if (order) setRedsysOrderId(order);
+    if (method) setPaymentMethod(method);
+    if (ref) setOrderRef(ref);
   }, []);
 
   return (
@@ -66,9 +72,14 @@ export default function PagoOk() {
             <h1 className="font-display text-4xl md:text-5xl uppercase tracking-wide mb-4">
               {t('pagoOk.title')}
             </h1>
-            {redsysOrderId && (
+            {paymentMethod === "sequra" && orderRef && (
               <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4">
-                Referencia Redsys: {redsysOrderId}
+                Referencia seQura: #{orderRef}
+              </p>
+            )}
+            {(!paymentMethod || paymentMethod !== "sequra") && redsysOrderId && (
+              <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4">
+                Referencia: {redsysOrderId}
               </p>
             )}
             <p className="font-body text-base text-foreground/60 leading-relaxed mb-10">

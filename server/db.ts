@@ -250,6 +250,36 @@ export async function updatePaymentStatus(
 }
 
 /**
+ * Vincula la URL de orden Sequra a un pedido.
+ */
+export async function linkSequraOrder(orderId: number, sequraOrderUrl: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(orders)
+    .set({ sequraOrderUrl, paymentStatus: "pending_payment" })
+    .where(eq(orders.id, orderId));
+}
+
+/**
+ * Actualiza el estado de pago de un pedido a partir de la URL de orden Sequra.
+ */
+export async function updateSequraPaymentStatus(
+  sequraOrderUrl: string,
+  paymentStatus: "paid" | "failed"
+): Promise<{ orderId: number | null }> {
+  const db = await getDb();
+  if (!db) return { orderId: null };
+  await db.update(orders)
+    .set({ paymentStatus, status: paymentStatus === "paid" ? "confirmed" : "pending" })
+    .where(eq(orders.sequraOrderUrl, sequraOrderUrl));
+  const result = await db.select({ id: orders.id })
+    .from(orders)
+    .where(eq(orders.sequraOrderUrl, sequraOrderUrl))
+    .limit(1);
+  return { orderId: result[0]?.id ?? null };
+}
+
+/**
  * Busca un pedido por su ID de orden Redsys.
  */
 export async function getOrderByRedsysId(redsysOrderId: string) {
@@ -365,6 +395,15 @@ export async function seedDefaultPaymentMethods(): Promise<void> {
       enabled: false,
       config: { surcharge: "5" },
       position: 4,
+    },
+    {
+      key: "sequra",
+      name: "Paga en 3 cuotas sin interés con seQura",
+      description: "Divide tu compra en 3 pagos mensuales sin interés. Solo necesitas tu DNI y móvil.",
+      type: "sequra",
+      enabled: true,
+      config: {},
+      position: 5,
     },
   ];
 

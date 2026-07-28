@@ -1,0 +1,2 @@
+ALTER TABLE `payment_methods` MODIFY COLUMN `type` enum('redsys_card','redsys_bizum','transfer','paypal','cash_on_delivery','sequra','other') NOT NULL;--> statement-breakpoint
+ALTER TABLE `orders` ADD `sequraOrderUrl` varchar(512);

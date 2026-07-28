@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { registerRedsysWebhook } from "../redsysWebhook";
+import { registerSequraWebhook } from "../sequraWebhook";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -50,6 +51,7 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   registerRedsysWebhook(app);
+  registerSequraWebhook(app);
   registerLegacyRedirects(app);
 
   // ── Descarga de ficha técnica (genera URL pre-firmada fresca en cada clic) ──

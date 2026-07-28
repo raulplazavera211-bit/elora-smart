@@ -97,3 +97,17 @@
 - [x] Página /admin/pagos con tarjetas de configuración por método (Redsys/Bizum, Transferencia, PayPal, Contrareembolso)
 - [x] Checkout muestra solo los métodos de pago activos según la configuración del admin
 - [x] Ruta /admin/pagos registrada en App.tsx y sidebar admin
+
+## Integración seQura
+
+- [x] Crear server/sequra.ts con helper de API (startSequraSolicitation, confirmSequraOrder, verifySequraSignature)
+- [x] Crear server/sequraWebhook.ts con handler IPN Express para confirmación de pagos
+- [x] Registrar webhook /api/sequra/notification en server/_core/index.ts
+- [x] Añadir campo sequraOrderUrl a tabla orders (db:push)
+- [x] Añadir helpers linkSequraOrder, updateSequraPaymentStatus en server/db.ts
+- [x] Añadir método de pago "sequra" al seed de payment_methods en server/db.ts
+- [x] Añadir procedimiento orders.initSequraPayment en server/routers.ts
+- [x] Actualizar CartPanel: tipo PayMethod incluye "sequra", botón de selección desktop y móvil, botón de pago naranja seQura
+- [x] Actualizar handleSubmitPayment para redirigir a seQura cuando payMethod === "sequra"
+- [x] Actualizar PagoOk.tsx para mostrar referencia seQura cuando method=sequra en URL
+- [x] Guardar credenciales seQura como variables de entorno (SEQURA_MERCHANT_CODE, SEQURA_API_KEY, SEQURA_SECRET_KEY)

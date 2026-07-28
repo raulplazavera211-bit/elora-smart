@@ -27,7 +27,7 @@ const PROVINCIAS_ESPANA = [
 
 export type CartItem = { id: string; name: string; price: number; img?: string; quantity?: number };
 type CheckoutStep = "cart" | "checkout" | "payment" | "redirecting";
-type PayMethod = "card" | "bizum" | "transfer" | "cod" | "paypal";
+type PayMethod = "card" | "bizum" | "transfer" | "cod" | "paypal" | "sequra";
 // ─── Países y tarifas de envío ────────────────────────────────────────────────
 export const SHIPPING_COUNTRIES = [
   { code: "ES",    label: "España Peninsular",    cost: 0,   flag: "🇪🇸" },
@@ -524,6 +524,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
   const transferEnabled = activeMethods ? activeMethods.some(m => m.type === "transfer") : false;
   const cashOnDeliveryEnabled = activeMethods ? activeMethods.some(m => m.type === "cash_on_delivery") : false;
   const paypalEnabled = activeMethods ? activeMethods.some(m => m.type === "paypal") : false;
+  const sequraEnabled = activeMethods ? activeMethods.some(m => m.type === "sequra") : false;
   // Datos de configuración de los métodos no-Redsys
   const transferConfig = activeMethods?.find(m => m.type === "transfer")?.config as Record<string, string> | undefined;
   const cashConfig = activeMethods?.find(m => m.type === "cash_on_delivery")?.config as Record<string, string> | undefined;
@@ -611,6 +612,12 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
   const createPaypalOrder = trpc.orders.createPaypalOrder.useMutation();
   const capturePaypalOrder = trpc.orders.capturePaypalOrder.useMutation();
+  const initSequraPayment = trpc.orders.initSequraPayment.useMutation({
+    onError: (err) => {
+      toast.error(err.message || "Error al iniciar el pago con seQura");
+      setCheckoutStep("payment");
+    },
+  });
   const [{ isPending: paypalLoading }] = usePayPalScriptReducer();
   // orderId pendiente para PayPal (se crea antes de abrir el popup PayPal)
   const [pendingOrderId, setPendingOrderId] = useState<number | null>(null);
@@ -739,7 +746,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     setTimeout(() => { redsysFormRef.current?.submit(); }, 150);
   }
 
-  const isSubmitting = createOrder.isPending || initPayment.isPending || checkoutStep === "redirecting";
+  const isSubmitting = createOrder.isPending || initPayment.isPending || initSequraPayment.isPending || checkoutStep === "redirecting";
 
   // ─── Clases reutilizables ─────────────────────────────────────────────────
   const inputBase = "bg-transparent border px-4 py-3 font-body text-sm text-foreground placeholder-foreground/30 focus:outline-none transition-colors w-full";
@@ -1172,6 +1179,31 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               </svg>
             </button>
           )}
+          {/* seQura */}
+          {sequraEnabled && (
+            <button
+              type="button"
+              onClick={() => setPayMethod("sequra")}
+              className={`flex items-center gap-4 border p-4 transition-all duration-200 text-left outline-none ${
+                payMethod === "sequra"
+                  ? "border-[#FF6B35] bg-[#FF6B35]/5"
+                  : "border-border hover:border-[#FF6B35]/40"
+              }`}
+            >
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                payMethod === "sequra" ? "border-[#FF6B35]" : "border-border"
+              }`}>
+                {payMethod === "sequra" && <div className="w-2.5 h-2.5 rounded-full bg-[#FF6B35]" />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-body text-sm font-medium text-foreground">Paga en 3 cuotas sin interés</span>
+                  <span className="bg-[#FF6B35] text-white text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">seQura</span>
+                </div>
+                <p className="font-body text-xs text-foreground/40">Solo necesitas tu DNI y móvil. Sin tarjeta.</p>
+              </div>
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 text-foreground/30 border border-border/50 p-3">
@@ -1448,6 +1480,21 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                 <path fill="#003087" d="M12.237 2.8H5.996C5.55 2.8 5.17 3.12 5.1 3.56L2.6 19.8c-.05.33.2.63.54.63h3.16c.45 0 .83-.32.9-.77l.67-4.26c.07-.44.45-.77.9-.77h2.04c4.24 0 6.69-2.05 7.33-6.12.29-1.78.01-3.17-.82-4.15-.91-1.07-2.52-1.56-4.1-1.56zm.74 6.03c-.35 2.3-2.11 2.3-3.81 2.3h-.97l.68-4.3c.04-.27.28-.47.55-.47h.44c1.16 0 2.25 0 2.82.66.34.39.44.97.29 1.81z"/>
                 <path fill="#009cde" d="M66.034 2.8h-6.24c-.45 0-.83.32-.9.77l-2.5 15.86c-.05.33.2.63.54.63h3.39c.31 0 .58-.23.63-.54l.71-4.49c.07-.44.45-.77.9-.77h2.04c4.24 0 6.69-2.05 7.33-6.12.29-1.78.01-3.17-.82-4.15-.91-1.07-2.52-1.56-4.08-1.56zm.74 6.03c-.35 2.3-2.11 2.3-3.81 2.3h-.96l.68-4.3c.04-.27.28-.47.55-.47h.44c1.16 0 2.25 0 2.82.66.34.39.44.97.28 1.81z"/>
               </svg>
+            </button>
+          )}
+          {/* seQura móvil */}
+          {sequraEnabled && (
+            <button type="button" onClick={() => setPayMethod("sequra")} className={`flex items-center gap-3 border p-3.5 transition-all duration-200 text-left outline-none ${payMethod === "sequra" ? "border-[#FF6B35] bg-[#FF6B35]/5" : "border-border"}`}>
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${payMethod === "sequra" ? "border-[#FF6B35]" : "border-border"}`}>
+                {payMethod === "sequra" && <div className="w-2 h-2 rounded-full bg-[#FF6B35]" />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="font-body text-sm font-medium text-foreground">3 cuotas sin interés</span>
+                  <span className="bg-[#FF6B35] text-white text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">seQura</span>
+                </div>
+                <p className="font-body text-[10px] text-foreground/40">Solo DNI y móvil. Sin tarjeta.</p>
+              </div>
             </button>
           )}
         </div>
@@ -1759,6 +1806,17 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                       />
                     )}
                   </div>
+                ) : payMethod === "sequra" ? (
+                  <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.01 } : {}} whileTap={!isSubmitting ? { scale: 0.98 } : {}} className="w-full text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ background: "#FF6B35", boxShadow: "0 4px 32px rgba(255,107,53,0.4)" }}>
+                    {isSubmitting ? (
+                      <><Loader2 className="w-5 h-5 animate-spin" /><span>Conectando con seQura...</span></>
+                    ) : (
+                      <>
+                        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                        <span className="relative z-10">Pagar en 3 cuotas con seQura · {orderTotal.toLocaleString("es-ES")} €</span>
+                      </>
+                    )}
+                  </motion.button>
                 ) : (
                   <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.01 } : {}} whileTap={!isSubmitting ? { scale: 0.98 } : {}} className="w-full bg-accent-deep text-white font-body text-sm uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-4 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: "0 4px 32px rgba(214,122,0,0.4)" }}>
                     {isSubmitting ? (
@@ -1953,6 +2011,17 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                       />
                     )}
                   </div>
+                ) : payMethod === "sequra" ? (
+                  <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.02 } : {}} whileTap={!isSubmitting ? { scale: 0.97 } : {}} className="w-full text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ background: "#FF6B35", boxShadow: "0 4px 24px rgba(255,107,53,0.35)" }}>
+                    {isSubmitting ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /><span>Conectando con seQura...</span></>
+                    ) : (
+                      <>
+                        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                        <span className="relative z-10">3 cuotas con seQura · {orderTotal.toLocaleString("es-ES")} €</span>
+                      </>
+                    )}
+                  </motion.button>
                 ) : (
                   <motion.button onClick={handleSubmitPayment} disabled={isSubmitting} whileHover={!isSubmitting ? { scale: 1.02 } : {}} whileTap={!isSubmitting ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: "0 4px 24px rgba(214,122,0,0.35)" }}>
                     {isSubmitting ? (
