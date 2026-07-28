@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { ProductDetail } from "@/components/ProductDetail";
+import { CartPanel } from "@/components/CartPanel";
 import { ALL_PRODUCTS } from "@/lib/products";
 import NotFound from "@/pages/NotFound";
 import { useCart } from "@/contexts/CartContext";
@@ -21,7 +22,7 @@ type Props = {
 
 export default function ProductPage({ params }: Props) {
   const [, navigate] = useLocation();
-  const { addToCart, openCart } = useCart();
+  const { cart, isCartOpen, addToCart, removeFromCart, openCart, closeCart } = useCart();
 
   const productId = SLUG_TO_ID[params.slug];
   const product = ALL_PRODUCTS.find((p) => p.id === productId);
@@ -67,6 +68,12 @@ export default function ProductPage({ params }: Props) {
           addToCart({ id: p.id, name: p.name, price: p.price, img: p.img });
           openCart();
         }}
+      />
+      <CartPanel
+        isOpen={isCartOpen}
+        onClose={closeCart}
+        cart={cart}
+        onRemove={removeFromCart}
       />
     </div>
   );
