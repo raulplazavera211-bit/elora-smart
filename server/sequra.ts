@@ -231,7 +231,7 @@ export async function fetchSequraForm(
   orderUrl: string,
   product: string = 'i1'
 ): Promise<string> {
-  const response = await fetch(`${orderUrl}/form?product=${product}&ajax=1`, {
+  const response = await fetch(`${orderUrl}/form_v2?product=${product}&ajax=1`, {
     headers: {
       Authorization: authHeader(),
       Accept: 'text/html',
@@ -239,7 +239,8 @@ export async function fetchSequraForm(
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch Sequra form: ${response.status}`);
+    const body = await response.text();
+    throw new Error(`Failed to fetch Sequra form_v2: ${response.status} ${body}`);
   }
 
   return response.text();

@@ -80,7 +80,7 @@ import { insertContactSubmission,
   reorderExperienceSlides,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
-import { startSequraSolicitation, confirmSequraOrder, verifySequraSignature, getSequraConfig } from "./sequra";
+import { startSequraSolicitation, confirmSequraOrder, verifySequraSignature, getSequraConfig, fetchSequraForm } from "./sequra";
 import { sendOrderConfirmationEmail, sendFichaTecnicaEmail } from "./email";
 import { storagePut, storageGetSignedUrl } from "./storage";
 
@@ -585,9 +585,12 @@ export const appRouter = router({
         // Save Sequra order URL to DB
         await linkSequraOrder(input.orderId, result.orderUrl);
 
+        // Fetch the embedded identification form HTML
+        const formHtml = await fetchSequraForm(result.orderUrl, 'i1');
+
         return {
           orderUrl: result.orderUrl,
-          formUrl: `${result.orderUrl}/form?product=i1&ajax=1`,
+          formHtml,
         };
       }),
   }),

@@ -725,7 +725,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
     if (!orderResult?.orderId) return;
 
-    // Paso 2a: seQura — redirect directo a la URL de seQura
+    // Paso 2a: seQura — formulario embebido
     if (payMethod === "sequra") {
       const sequraResult = await initSequraPayment.mutateAsync({
         orderId: orderResult.orderId,
@@ -736,9 +736,49 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         userAgent: navigator.userAgent,
         languageCode: navigator.language?.split('-')[0] ?? 'es',
       });
-      if (!sequraResult?.orderUrl) return;
+      if (!sequraResult?.formHtml) return;
+      // Inyectar el HTML del formulario de seQura en el body y activarlo
+      const container = document.getElementById('sequra-form-container') || (() => {
+        const div = document.createElement('div');
+        div.id = 'sequra-form-container';
+        document.body.appendChild(div);
+        return div;
+      })();
+      container.innerHTML = sequraResult.formHtml;
+      // Ejecutar los scripts del formulario
+      const scripts = container.querySelectorAll('script');
+      scripts.forEach(oldScript => {
+        const newScript = document.createElement('script');
+        if (oldScript.src) {
+          newScript.src = oldScript.src;
+          newScript.type = oldScript.type || 'text/javascript';
+          newScript.onload = () => {
+            // Mostrar el formulario cuando el script cargue
+            setTimeout(() => {
+              if ((window as any).SequraFormInstance) {
+                (window as any).SequraFormInstance.setCloseCallback(() => {
+                  container.innerHTML = '';
+                });
+                (window as any).SequraFormInstance.show();
+              }
+            }, 200);
+          };
+        } else {
+          newScript.textContent = oldScript.textContent;
+        }
+        document.body.appendChild(newScript);
+        oldScript.remove();
+      });
+      // Si el script ya estaba cargado, mostrar directamente
+      setTimeout(() => {
+        if ((window as any).SequraFormInstance) {
+          (window as any).SequraFormInstance.setCloseCallback(() => {
+            container.innerHTML = '';
+          });
+          (window as any).SequraFormInstance.show();
+        }
+      }, 500);
       onClearCart?.();
-      window.location.href = sequraResult.orderUrl;
       return;
     }
 
