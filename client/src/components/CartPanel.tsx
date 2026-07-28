@@ -1254,10 +1254,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-body text-sm font-medium text-foreground">Paga en 3 cuotas sin interés</span>
-                  <span className="bg-[#FF6B35] text-white text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">seQura</span>
+                  <span className="font-body text-sm font-medium text-foreground">seQura — Financia en 3, 6 o 12 meses</span>
                 </div>
-                <p className="font-body text-xs text-foreground/40">Solo necesitas tu DNI y móvil. Sin tarjeta.</p>
+                <p className="font-body text-xs text-foreground/40">Solo necesitas tu DNI y móvil. Sin tarjeta ni banco.</p>
               </div>
             </button>
           )}
@@ -1547,10 +1546,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="font-body text-sm font-medium text-foreground">3 cuotas sin interés</span>
-                  <span className="bg-[#FF6B35] text-white text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">seQura</span>
+                  <span className="font-body text-sm font-medium text-foreground">seQura — Financia en 3, 6 o 12 meses</span>
                 </div>
-                <p className="font-body text-[10px] text-foreground/40">Solo DNI y móvil. Sin tarjeta.</p>
+                <p className="font-body text-[10px] text-foreground/40">Solo DNI y móvil. Sin tarjeta ni banco.</p>
               </div>
             </button>
           )}
@@ -1720,9 +1718,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <CreditCard className="w-8 h-8 text-accent-deep" />
                   </motion.div>
                   <div>
-                    <h3 className="font-display text-2xl uppercase tracking-wide mb-3">{t("cart.redirecting")}</h3>
+                    <h3 className="font-display text-2xl uppercase tracking-wide mb-3">{payMethod === "sequra" ? "Redirigiendo a seQura" : t("cart.redirecting")}</h3>
                     <p className="font-body text-sm text-foreground/60 leading-relaxed max-w-sm">
-                      {t("cart.redirectingBody")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")}.
+                      {payMethod === "sequra" ? "Preparando tu formulario de financiación seQura." : `${t("cart.redirectingBody")} ${payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")}.`}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 text-foreground/30">
@@ -1924,9 +1922,9 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                   <CreditCard className="w-6 h-6 text-accent-deep" />
                 </motion.div>
                 <div>
-                  <h3 className="font-display text-xl uppercase tracking-wide mb-2">{t("cart.redirecting")}</h3>
+                  <h3 className="font-display text-xl uppercase tracking-wide mb-2">{payMethod === "sequra" ? "Redirigiendo a seQura" : t("cart.redirecting")}</h3>
                   <p className="font-body text-sm text-foreground/60 leading-relaxed">
-                    {t("cart.redirectingBody")} {payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")}.
+                    {payMethod === "sequra" ? "Preparando tu formulario de financiación seQura." : `${t("cart.redirectingBody")} ${payMethod === "bizum" ? t("checkout.bizum") : t("checkout.card")}.`}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 text-foreground/30">
