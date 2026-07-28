@@ -17,6 +17,8 @@ export interface SequraCartItem {
   /** Total for this line in cents */
   total_with_tax: number;
   type: 'product' | 'handling' | 'discount' | 'invoice';
+  /** false for physical products */
+  downloadable: boolean;
 }
 
 export interface SequraCreateOrderParams {
@@ -33,6 +35,14 @@ export interface SequraCreateOrderParams {
     dateOfBirth?: string;
     /** Spanish NIF/NIE */
     nin?: string;
+    /** Client IP address */
+    ipNumber?: string;
+    /** Client User-Agent */
+    userAgent?: string;
+    /** Whether the customer is logged in */
+    loggedIn?: boolean;
+    /** Language code e.g. "es" */
+    languageCode?: string;
   };
   items: SequraCartItem[];
   /** Frontend origin for return URLs, e.g. "https://elorasmart.online" */
@@ -118,6 +128,12 @@ export async function startSequraSolicitation(
         nin_control: '',
         company: '',
         vat_number: '',
+        logged_in: params.customer.loggedIn ?? false,
+        language_code: params.customer.languageCode ?? 'es',
+        ip_number: params.customer.ipNumber ?? '0.0.0.0',
+        user_agent: params.customer.userAgent ?? 'Mozilla/5.0',
+        title: '',
+        ref: params.merchantRef,
         address: {
           company: '',
           address_line_1: '',

@@ -538,6 +538,9 @@ export const appRouter = router({
         customerFirstName: z.string().optional(),
         customerLastName: z.string().optional(),
         customerPhone: z.string().optional(),
+        /** Client browser info for Sequra */
+        userAgent: z.string().optional(),
+        languageCode: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         try {
@@ -559,6 +562,7 @@ export const appRouter = router({
           price_with_tax: Math.round(Number(item.unitPrice) * 100),
           total_with_tax: Math.round(Number(item.unitPrice) * item.quantity * 100),
           type: 'product' as const,
+          downloadable: false,
         }));
 
         const result = await startSequraSolicitation({
@@ -569,6 +573,10 @@ export const appRouter = router({
             phone: input.customerPhone ?? order.customerPhone ?? undefined,
             firstName: input.customerFirstName ?? order.customerName.split(' ')[0],
             lastName: input.customerLastName ?? order.customerName.split(' ').slice(1).join(' '),
+            userAgent: input.userAgent ?? 'Mozilla/5.0',
+            languageCode: input.languageCode ?? 'es',
+            loggedIn: false,
+            ipNumber: '0.0.0.0',
           },
           items: cartItems,
           origin: input.origin,

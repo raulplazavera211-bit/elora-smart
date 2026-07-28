@@ -733,6 +733,8 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         customerFirstName: form.nombre.trim(),
         customerLastName: form.apellidos.trim(),
         customerPhone: form.telefono.trim() || undefined,
+        userAgent: navigator.userAgent,
+        languageCode: navigator.language?.split('-')[0] ?? 'es',
       });
       if (!sequraResult?.orderUrl) return;
       onClearCart?.();
