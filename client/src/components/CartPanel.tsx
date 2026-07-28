@@ -725,7 +725,22 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
 
     if (!orderResult?.orderId) return;
 
-    // Paso 2: obtener formulario firmado Redsys con el método de pago elegido
+    // Paso 2a: seQura — redirect directo a la URL de seQura
+    if (payMethod === "sequra") {
+      const sequraResult = await initSequraPayment.mutateAsync({
+        orderId: orderResult.orderId,
+        origin: window.location.origin,
+        customerFirstName: form.nombre.trim(),
+        customerLastName: form.apellidos.trim(),
+        customerPhone: form.telefono.trim() || undefined,
+      });
+      if (!sequraResult?.orderUrl) return;
+      onClearCart?.();
+      window.location.href = sequraResult.orderUrl;
+      return;
+    }
+
+    // Paso 2b: Redsys (tarjeta, Bizum, transferencia, contrareembolso)
     const paymentResult = await initPayment.mutateAsync({
       orderId: orderResult.orderId,
       origin: window.location.origin,
