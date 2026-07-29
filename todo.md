@@ -115,3 +115,7 @@
 ## Selector de cantidad en carrito
 - [x] Selector de cantidad (+/-) en el carrito para pedir más de una unidad del mismo producto
 
+
+## Navegación con URL en productos
+- [x] Home.tsx: clic en producto navega a /producto/:slug (URL propia, botón atrás funciona)
+- [x] Coleccion.tsx: clic en producto navega a /producto/:slug (URL propia, botón atrás funciona)

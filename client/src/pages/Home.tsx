@@ -1517,7 +1517,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   const [addedId, setAddedId] = useState<string | null>(null);
   const { cart, isCartOpen, addToCart: addToCartCtx, removeFromCart, updateQuantity, openCart, closeCart, totalItems } = useCart();
   const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
@@ -1592,10 +1592,8 @@ export default function Home() {
   };
 
   const openProduct = (product: Product) => {
-    setSelectedProduct(product);
-    setTimeout(() => {
-      scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
-    }, 0);
+    const slug = PRODUCT_SLUGS[product.id] ?? product.id.toLowerCase();
+    navigate(`/producto/${slug}`);
   };
 
   const contactMutation = trpc.contact.submit.useMutation({
@@ -1633,19 +1631,8 @@ export default function Home() {
     );
     sectionRefs.current.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
-  }, [selectedProduct]);
-
+    }, []);
   const SECTIONS = [t('nav.vision'), t('nav.esencia'), t('nav.manifiesto'), t('nav.coleccion'), t('nav.contacto')];
-
-  // Actualizar selectedProduct cuando cambia el idioma (para que el modal se traduzca)
-  useEffect(() => {
-    if (selectedProduct) {
-      const allLoc = getLocalizedProducts(i18n.language);
-      const updated = allLoc.find(p => p.id === selectedProduct.id);
-      if (updated) setSelectedProduct({ ...selectedProduct, ...updated, img: selectedProduct.img, gallery: selectedProduct.gallery });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.language]);
 
   const setSectionRef = (index: number) => (el: HTMLElement | null) => {
     sectionRefs.current[index] = el;
@@ -1669,7 +1656,7 @@ export default function Home() {
       >
         {/* ── MOBILE TOP NAVBAR ─────────────────────────────────────────────── */}
         <div className="md:hidden fixed top-0 left-0 w-full h-20 bg-background/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-6">
-          <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }}>
+          <button onClick={() => scrollToSection(0)}>
             <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
           </button>
           <div className="flex items-center gap-2">
@@ -1699,7 +1686,7 @@ export default function Home() {
         {/* ── DESKTOP LEFT SIDEBAR ──────────────────────────────────────────── */}
         <aside className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start z-50 shrink-0 relative py-7">
           <div className="px-10 text-left">
-            <button onClick={() => { setSelectedProduct(null); scrollToSection(0); }} className="outline-none text-left">
+            <button onClick={() => scrollToSection(0)} className="outline-none text-left">
               <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
               <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
             </button>
@@ -1711,7 +1698,7 @@ export default function Home() {
           <nav className="flex flex-col gap-5 w-full px-10">
             <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t('nav.index')}</p>
             {SECTIONS.map((item, idx) => {
-              const isActive = !selectedProduct && activeIndex === idx;
+              const isActive = activeIndex === idx;
               return (
                 <button
                   key={`desktop-${item}`}
@@ -1763,7 +1750,7 @@ export default function Home() {
           <nav className="flex flex-col gap-7 pb-16">
             <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">{t('nav.index')}</p>
             {SECTIONS.map((item, idx) => {
-              const isActive = !selectedProduct && activeIndex === idx;
+              const isActive = activeIndex === idx;
               return (
                 <button
                   key={`mobile-${item}`}
@@ -1804,17 +1791,7 @@ export default function Home() {
           ref={scrollContainerRef}
           className="flex-1 h-full overflow-y-auto hide-scrollbar relative bg-background scroll-smooth"
         >
-          {selectedProduct ? (
-            <div className="pt-20 md:pt-0">
-              <ProductDetail
-                product={selectedProduct}
-                onBack={() => navigate("/coleccion")}
-                onAdd={(p) => { addToCart({ id: p.id, name: p.name, price: p.price, img: p.img }); }}
-              />
-            </div>
-          ) : (
-            <>
-              {/* ── CAPÍTULO 1: VISIÓN ──────────────────────────────────────── */}
+          {/* ── CAPÍTULO 1: VISIÓN ──────────────────────────────────────── */}
               <section
                 ref={setSectionRef(0)}
                 data-index="0"
@@ -2591,8 +2568,6 @@ export default function Home() {
 
                 <Footer />
               </section>
-            </>
-          )}
         </main>
       </div>
     </>

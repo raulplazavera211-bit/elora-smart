@@ -20,7 +20,7 @@ const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 export default function Coleccion() {
   const { t, i18n } = useTranslation();
   const [, navigate] = useLocation();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [displayProducts, setDisplayProducts] = useState<Product[]>(() => getLocalizedProducts('es') as Product[]);
@@ -104,23 +104,25 @@ export default function Coleccion() {
     }
   }, [i18n.language]);
 
-  const openProduct = (product: Product) => {
-    setSelectedProduct(product);
-    if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0;
+    const PRODUCT_SLUGS: Record<string, string> = {
+    "ESENZA": "esenza",
+    "ESENZA-COMPACT": "esenza-compact",
+    "ESENZA-SUSPENDIDO": "esenza-suspendido",
+    "AURA": "aura",
+    "AURA-COMPACT": "aura-compact",
+    "AURA-SUSPENDIDO": "aura-suspendido",
   };
-
+  const openProduct = (product: Product) => {
+    const slug = PRODUCT_SLUGS[product.id] ?? product.id.toLowerCase();
+    navigate(`/producto/${slug}`);
+  };
   // Abrir producto directamente si viene con ?producto=slug desde el chatbot
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("producto");
     if (slug) {
-      const found = displayProducts.find(p => p.id.toLowerCase() === slug.toLowerCase());
-      if (found) {
-        setSelectedProduct(found);
-        if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0;
-      }
-      // Limpiar el query param de la URL sin recargar
-      window.history.replaceState({}, "", window.location.pathname);
+      // Navegar a la URL del producto directamente
+      navigate(`/producto/${slug}`);
     }
   }, []);
 
@@ -146,7 +148,7 @@ export default function Coleccion() {
         <nav className="flex flex-col gap-5 w-full px-10 flex-1">
           <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t('nav.index')}</p>
           <button
-            onClick={() => { setSelectedProduct(null); if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0; }}
+            onClick={() => { if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0; }}
             className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
           >
             <span className="h-[1px] w-8 bg-accent-deep transition-all duration-500" />
@@ -221,7 +223,7 @@ export default function Coleccion() {
         <nav className="flex flex-col gap-7 pb-16">
           <p className="font-body text-xs uppercase tracking-[0.3em] text-foreground/40 mb-4 border-b border-border pb-4">{t('nav.index')}</p>
           <button
-            onClick={() => { setSelectedProduct(null); setIsMenuOpen(false); }}
+            onClick={() => { setIsMenuOpen(false); }}
             className="text-left font-display text-4xl uppercase tracking-wide text-foreground outline-none flex items-center gap-4"
           >
             <span className="text-sm font-body text-accent-deep">01</span>{t('nav.coleccion')}
@@ -240,13 +242,6 @@ export default function Coleccion() {
         ref={scrollContainerRef}
         className="flex-1 h-full overflow-y-auto overflow-x-hidden pt-20 md:pt-0"
       >
-        {selectedProduct ? (
-          <ProductDetail
-            product={selectedProduct}
-            onBack={() => setSelectedProduct(null)}
-            onAdd={(item) => handleAddToCart({ id: item.id, name: item.name, price: item.price, img: item.img })}
-          />
-        ) : (
           <>
             {/* Hero */}
             <div className="px-6 md:px-14 py-14 md:py-20">
@@ -399,7 +394,6 @@ export default function Coleccion() {
             <ReviewsSection />
             <Footer />
           </>
-        )}
       </div>
 
       {/* ── CART PANEL COMPARTIDO (mismo diseño que Home) ─────────── */}
