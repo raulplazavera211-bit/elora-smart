@@ -34,6 +34,20 @@ export default function ProductPage({ params }: Props) {
   const productId = SLUG_TO_ID[params.slug];
   const product = ALL_PRODUCTS.find((p) => p.id === productId);
 
+  // Preload imagen principal para carga más rápida
+  useEffect(() => {
+    if (!product) return;
+    const existing = document.querySelector(`link[rel="preload"][data-product-img]`);
+    if (existing) existing.remove();
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = product.img;
+    link.setAttribute('data-product-img', 'true');
+    document.head.appendChild(link);
+    return () => { link.remove(); };
+  }, [product?.img]);
+
   // Actualizar meta tags para SEO
   useEffect(() => {
     if (!product) return;

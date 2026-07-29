@@ -128,10 +128,20 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
               className="bg-background border border-border overflow-hidden aspect-square relative cursor-zoom-in"
               onClick={() => openLightbox(0)}
             >
+              {/* Skeleton mientras carga la imagen principal */}
+              <div className="absolute inset-0 bg-muted animate-pulse" id="img-skeleton" />
               <img
                 src={product.img}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover relative z-10"
+                loading="eager"
+                // @ts-ignore
+                fetchpriority="high"
+                decoding="async"
+                onLoad={(e) => {
+                  const el = e.currentTarget.previousElementSibling as HTMLElement | null;
+                  if (el) el.style.display = 'none';
+                }}
               />
               <div className="absolute top-3 left-3 flex flex-col gap-1.5">
                 {product.badges.map((b) => (
@@ -266,7 +276,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                 className="aspect-square bg-muted border border-border overflow-hidden cursor-zoom-in hover:opacity-90 transition-opacity"
                 onClick={() => openLightbox(idx + 1)}
               >
-                <img src={g} alt={product.name} className="w-full h-full object-cover" />
+                <img src={g} alt={product.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
               </div>
             ))}
           </div>
