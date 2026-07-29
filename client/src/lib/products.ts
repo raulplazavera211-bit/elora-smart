@@ -31,6 +31,7 @@ const AURA_SUSP_GALLERY = [
 ];
 
 const ESENZA_COMPACT_GALLERY = [
+  "/manus-storage/Clipboard_0_D4A653F1_4c49e12c.png",
   "/manus-storage/esenza-compact-2_6a5ecb63.jpg",
   "/manus-storage/esenza-compact-3_af2323bc.jpg",
   "/manus-storage/esenza-compact-4_f75e6287.jpg",
@@ -44,6 +45,7 @@ const ESENZA_COMPACT_GALLERY = [
 ];
 
 const ESENZA_SUSP_GALLERY = [
+  "/manus-storage/esenza-suspendido-1_472bd803.jpg",
   "/manus-storage/esenza-suspendido-2_6528abc5.jpg",
   "/manus-storage/esenza-suspendido-3_8de7a007.jpg",
   "/manus-storage/esenza-suspendido-4_8a048cf4.jpg",
@@ -54,6 +56,7 @@ const ESENZA_SUSP_GALLERY = [
 ];
 
 const AURA_GALLERY = [
+  "/manus-storage/inodoro-aura_4c9492ae.jpg",
   "/manus-storage/aura-elorasmart7-scaled_9b6de14c.jpg",
   "/manus-storage/aura-elorasmart6_394ec9d0.jpg",
   "/manus-storage/aura-elorasmart5_4d4349ff.jpg",
@@ -67,6 +70,7 @@ const AURA_GALLERY = [
 
 // ─── Catálogo completo ────────────────────────────────────────────────────────
 export const ALL_PRODUCTS: Product[] = [
+  // ── ESENZA ────────────────────────────────────────────────────────────────
   {
     id: "ESENZA",
     name: "Inodoro inteligente ESENZA",
@@ -78,9 +82,9 @@ export const ALL_PRODUCTS: Product[] = [
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
-      { label: "Instalación", value: "Sin obra" },
-      { label: "Formato", value: "Confort" },
-      { label: "Diseño", value: "A suelo" },
+      { label: "Asiento", value: "CLIMADAPT" },
+      { label: "Secado", value: "< 30 segundos" },
+      { label: "Garantía", value: "10 años cerámica" },
     ],
     pitch: [
       { title: "Automatización inteligente", body: "Apertura, cierre y descarga automáticos. Sensor de pie integrado y detección de postura (pie/sentado). Todo sin tocar nada." },
@@ -178,166 +182,12 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Hace ruido por la noche?", a: "No. El funcionamiento es silencioso, por debajo de 59 dB — hasta 21 dB más silencioso que muchos inodoros convencionales." },
     ],
     price: 1341,
+    originalPrice: 1490,
     visibleRegions: ["europe"],
-  priceUsd: 2900,
-  originalPrice: 1490,
+    priceUsd: 2900,
   },
-  {
-    id: "ESENZA-COMPACT",
-    name: "Inodoro inteligente ESENZA compact",
-    tagline: "Todas las funciones en fondo reducido.",
-    description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
-    longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
-    img: "/manus-storage/Clipboard_0_D4A653F1_4c49e12c.png",
-    gallery: ESENZA_COMPACT_GALLERY,
-    badges: ["Compact", "Back-to-wall"],
-    highlights: [
-      { label: "Formato", value: "Fondo reducido" },
-      { label: "Instalación", value: "Back-to-wall" },
-      { label: "Garantía", value: "10 años" },
-    ],
-    pitch: [
-      { title: "Diseñado para baños pequeños", body: "Formato compacto de fondo reducido. Cabe donde otros no llegan sin sacrificar ninguna función esencial." },
-      { title: "Automatización total", body: "Apertura, cierre y descarga automáticos. Sensor de pie y detección de postura para un uso completamente sin contacto." },
-      { title: "Secado en 30 segundos", body: "Chorro de aire concentrado de alto rendimiento. Higiene completa sin papel, ajustable en 5 velocidades." },
-    ],
-    features: [
-      "Apertura, cierre y descarga automáticos",
-      "Sensor de pie integrado",
-      "Detección de postura (pie/sentado)",
-      "Lavado posterior, femenino y móvil",
-      "Agua caliente instantánea",
-      "Boquilla autolimpiable en acero inoxidable",
-      "Asiento calefactado CLIMADAPT",
-      "Secado en menos de 30 segundos (5 velocidades)",
-      "Mando a distancia en español (2 usuarios)",
-      "Rueda lateral multifunción",
-      "Luz nocturna LED",
-      "Cerámica rimless",
-      "Tanque integrado de 5 litros",
-      "Funcionamiento silencioso ≤59 dB",
-    ],
-    technical: [
-      {
-        group: "Dimensiones",
-        specs: [
-          { label: "Formato", value: "Compacto back-to-wall" },
-          { label: "Tanque", value: "5 litros integrado" },
-          { label: "Ruido", value: "≤59 dB" },
-        ],
-      },
-      {
-        group: "Funciones",
-        specs: [
-          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
-          { label: "Temperatura agua", value: "4 niveles" },
-          { label: "Secado", value: "5 velocidades" },
-        ],
-      },
-    ],
-    dimensions: [
-      { label: "Formato", value: "Compacto (fondo reducido)" },
-      { label: "Instalación", value: "Back-to-wall" },
-      { label: "Tanque", value: "5 litros integrado" },
-    ],
-    inTheBox: ["Inodoro ESENZA Compact", "Mando a distancia", "Manual en español", "Kit de instalación"],
-    installation: [
-      "Instalación back-to-wall (pegado a pared)",
-      "Solo necesitas un enchufe cerca",
-      "Tu fontanero de confianza en 60-90 min",
-    ],
-    warranty: {
-      years: 3,
-      details: "10 años cerámica · 3 años tecnología (ampliable a 5 con Premium Care +249€)",
-    },
-    faqs: [
-      { q: "¿En qué se diferencia del ESENZA estándar?", a: "Tiene fondo reducido y diseño back-to-wall (pegado a pared), ideal para baños pequeños. Las funciones son idénticas." },
-      { q: "¿Necesita obras?", a: "No. Solo un enchufe cerca y tu fontanero habitual." },
-    ],
-    price: 1431,
-    visibleRegions: ["europe", "world"],
-  priceUsd: 2900,
-  originalPrice: 1590,
-  },
-  {
-    id: "ESENZA-SUSPENDIDO",
-    name: "Inodoro inteligente ESENZA suspendido",
-    tagline: "Diseño flotante con funciones esenciales.",
-    description: "El inodoro inteligente japonés flotante de ELORA SMART. Libera el suelo y aporta una estética minimalista y contemporánea.",
-    longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA con un diseño más ligero y contemporáneo.",
-    img: "/manus-storage/esenza-suspendido-1_472bd803.jpg",
-    gallery: ESENZA_SUSP_GALLERY,
-    badges: ["Suspendido", "Rimless"],
-    highlights: [
-      { label: "Instalación", value: "Suspendida" },
-      { label: "Suelo", value: "Completamente libre" },
-      { label: "Garantía", value: "10 años" },
-    ],
-    pitch: [
-      { title: "Diseño flotante", body: "El suelo queda completamente libre. Limpieza total sin recovecos, amplitud visual y estética minimalista." },
-      { title: "Automatización completa", body: "Apertura, cierre y descarga automáticos. Sensor de pie y detección de postura para un uso sin contacto." },
-      { title: "Secado ultra-rápido", body: "Sistema de secado de alto rendimiento en menos de 30 segundos. Higiene completa sin papel." },
-    ],
-    features: [
-      "Apertura, cierre y descarga automáticos",
-      "Sensor de pie integrado",
-      "Detección de postura (pie/sentado)",
-      "Lavado posterior, femenino y móvil",
-      "Agua caliente instantánea",
-      "Boquilla autolimpiable en acero inoxidable",
-      "Asiento calefactado CLIMADAPT",
-      "Secado en menos de 30 segundos (5 velocidades)",
-      "Mando a distancia en español (2 usuarios)",
-      "Rueda lateral multifunción",
-      "Luz nocturna LED",
-      "Cerámica rimless",
-      "Tanque integrado en módulo suspendido",
-      "Funcionamiento silencioso ≤59 dB",
-      "Diseño flotante — suelo completamente libre",
-    ],
-    technical: [
-      {
-        group: "Instalación",
-        specs: [
-          { label: "Tipo", value: "Suspendida (mural)" },
-          { label: "Tanque", value: "Integrado en módulo" },
-          { label: "Ruido", value: "≤59 dB" },
-        ],
-      },
-      {
-        group: "Funciones",
-        specs: [
-          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
-          { label: "Temperatura agua", value: "4 niveles" },
-          { label: "Secado", value: "5 velocidades" },
-        ],
-      },
-    ],
-    dimensions: [
-      { label: "Instalación", value: "Suspendida (mural)" },
-      { label: "Suelo", value: "Completamente libre" },
-      { label: "Tanque", value: "Integrado en módulo" },
-    ],
-    inTheBox: ["Inodoro ESENZA Suspendido", "Módulo de instalación", "Mando a distancia", "Manual en español", "Kit de instalación suspendida"],
-    installation: [
-      "Instalación suspendida en pared",
-      "Requiere módulo de instalación incluido",
-      "Enchufe Schuko a menos de 1,2 m",
-      "Instalador en 90-120 minutos",
-    ],
-    warranty: {
-      years: 3,
-      details: "10 años cerámica · 3 años tecnología (ampliable a 5 con Premium Care +249€)",
-    },
-    faqs: [
-      { q: "¿Necesita obra?", a: "Sí, requiere instalación suspendida en pared. Es habitual en reformas de baño modernas." },
-      { q: "¿Qué diferencia hay con ESENZA estándar?", a: "La instalación es suspendida (flotante), lo que libera el suelo y aporta una estética más limpia y moderna. Las funciones son idénticas." },
-    ],
-    price: 1521,
-    visibleRegions: ["europe", "world"],
-  priceUsd: 2900,
-  originalPrice: 1690,
-  },
+
+  // ── AURA-COMPACT ──────────────────────────────────────────────────────────
   {
     id: "AURA-COMPACT",
     name: "Inodoro inteligente AURA compact",
@@ -433,10 +283,12 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Es apto para personas mayores?", a: "Sí. Es compatible con adultos mayores, embarazadas, personas con movilidad reducida y niños." },
     ],
     price: 1990,
+    originalPrice: 2500,
     visibleRegions: ["europe", "world"],
-  priceUsd: 3800,
-  originalPrice: 2500,
+    priceUsd: 3800,
   },
+
+  // ── AURA-SUSPENDIDO ───────────────────────────────────────────────────────
   {
     id: "AURA-SUSPENDIDO",
     name: "Inodoro inteligente AURA suspendido",
@@ -446,7 +298,7 @@ export const ALL_PRODUCTS: Product[] = [
       "El inodoro inteligente AURA suspendido ofrece todo el confort del Inodoro inteligente AURA en un diseño flotante, con una estética moderna y minimalista que deja el suelo totalmente libre para una imagen de orden y un efecto más despejado. Con el inodoro suspendido puedes ajustar la altura a tu gusto en el momento de la instalación.",
     img: "/manus-storage/aura-suspendido-v3_9a4f47aa.png",
     gallery: AURA_SUSP_GALLERY,
-    badges: ["Más vendido", "Suspendido", "Altura ajustable"],
+    badges: ["Suspendido", "Altura ajustable"],
     highlights: [
       { label: "Instalación", value: "Suspendida" },
       { label: "Suelo", value: "Totalmente libre" },
@@ -536,10 +388,172 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Funciona el control por voz en español?", a: "Actualmente el control por voz está disponible solo en inglés. El mando a distancia físico está completamente en español." },
     ],
     price: 2080,
+    originalPrice: 2600,
     visibleRegions: ["europe", "world"],
-  priceUsd: 3800,
-  originalPrice: 2600,
+    priceUsd: 3800,
   },
+
+  // ── ESENZA-COMPACT ────────────────────────────────────────────────────────
+  {
+    id: "ESENZA-COMPACT",
+    name: "Inodoro inteligente ESENZA compact",
+    tagline: "Todas las funciones en fondo reducido.",
+    description: "El inodoro inteligente japonés de fondo reducido. Optimiza cada centímetro sin renunciar a ninguna función.",
+    longDescription: "ESENZA COMPACT es el inodoro inteligente compacto de ELORA SMART, pensado para ganar espacio en baños pequeños, reformas y obra nueva. Su diseño más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo las funciones esenciales de ESENZA —lavado con agua, secado, asiento calefactado y automatización— en un formato más estilizado.",
+    img: "/manus-storage/Clipboard_0_D4A653F1_4c49e12c.png",
+    gallery: ESENZA_COMPACT_GALLERY,
+    badges: ["Compact", "Back-to-wall"],
+    highlights: [
+      { label: "Formato", value: "Fondo reducido" },
+      { label: "Instalación", value: "Back-to-wall" },
+      { label: "Garantía", value: "10 años" },
+    ],
+    pitch: [
+      { title: "Diseñado para baños pequeños", body: "Formato compacto de fondo reducido. Cabe donde otros no llegan sin sacrificar ninguna función esencial." },
+      { title: "Automatización total", body: "Apertura, cierre y descarga automáticos. Sensor de pie y detección de postura para un uso completamente sin contacto." },
+      { title: "Secado en 30 segundos", body: "Chorro de aire concentrado de alto rendimiento. Higiene completa sin papel, ajustable en 5 velocidades." },
+    ],
+    features: [
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Asiento calefactado CLIMADAPT",
+      "Secado en menos de 30 segundos (5 velocidades)",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral multifunción",
+      "Luz nocturna LED",
+      "Cerámica rimless",
+      "Tanque integrado de 5 litros",
+      "Funcionamiento silencioso ≤59 dB",
+    ],
+    technical: [
+      {
+        group: "Dimensiones",
+        specs: [
+          { label: "Formato", value: "Compacto back-to-wall" },
+          { label: "Tanque", value: "5 litros integrado" },
+          { label: "Ruido", value: "≤59 dB" },
+        ],
+      },
+      {
+        group: "Funciones",
+        specs: [
+          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
+          { label: "Temperatura agua", value: "4 niveles" },
+          { label: "Secado", value: "5 velocidades" },
+        ],
+      },
+    ],
+    dimensions: [
+      { label: "Formato", value: "Compacto (fondo reducido)" },
+      { label: "Instalación", value: "Back-to-wall" },
+      { label: "Tanque", value: "5 litros integrado" },
+    ],
+    inTheBox: ["Inodoro ESENZA Compact", "Mando a distancia", "Manual en español", "Kit de instalación"],
+    installation: [
+      "Instalación back-to-wall (pegado a pared)",
+      "Solo necesitas un enchufe cerca",
+      "Tu fontanero de confianza en 60-90 min",
+    ],
+    warranty: {
+      years: 3,
+      details: "10 años cerámica · 3 años tecnología (ampliable a 5 con Premium Care +249€)",
+    },
+    faqs: [
+      { q: "¿En qué se diferencia del ESENZA estándar?", a: "Tiene fondo reducido y diseño back-to-wall (pegado a pared), ideal para baños pequeños. Las funciones son idénticas." },
+      { q: "¿Necesita obras?", a: "No. Solo un enchufe cerca y tu fontanero habitual." },
+    ],
+    price: 1431,
+    originalPrice: 1590,
+    visibleRegions: ["europe", "world"],
+    priceUsd: 2900,
+  },
+
+  // ── ESENZA-SUSPENDIDO ─────────────────────────────────────────────────────
+  {
+    id: "ESENZA-SUSPENDIDO",
+    name: "Inodoro inteligente ESENZA suspendido",
+    tagline: "Diseño flotante con funciones esenciales.",
+    description: "El inodoro inteligente japonés flotante de ELORA SMART. Libera el suelo y aporta una estética minimalista y contemporánea.",
+    longDescription: "ESENZA Suspendido es el inodoro inteligente japonés flotante de ELORA SMART, diseñado para baños modernos que buscan un acabado más limpio, minimalista y elevado del suelo. Su instalación suspendida facilita la limpieza, libera espacio visual y mantiene todas las funciones esenciales de la gama ESENZA con un diseño más ligero y contemporáneo.",
+    img: "/manus-storage/esenza-suspendido-1_472bd803.jpg",
+    gallery: ESENZA_SUSP_GALLERY,
+    badges: ["Suspendido", "Rimless"],
+    highlights: [
+      { label: "Instalación", value: "Suspendida" },
+      { label: "Suelo", value: "Completamente libre" },
+      { label: "Garantía", value: "10 años" },
+    ],
+    pitch: [
+      { title: "Diseño flotante", body: "El suelo queda completamente libre. Limpieza total sin recovecos, amplitud visual y estética minimalista." },
+      { title: "Automatización completa", body: "Apertura, cierre y descarga automáticos. Sensor de pie y detección de postura para un uso sin contacto." },
+      { title: "Secado ultra-rápido", body: "Sistema de secado de alto rendimiento en menos de 30 segundos. Higiene completa sin papel." },
+    ],
+    features: [
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Asiento calefactado CLIMADAPT",
+      "Secado en menos de 30 segundos (5 velocidades)",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral multifunción",
+      "Luz nocturna LED",
+      "Cerámica rimless",
+      "Tanque integrado en módulo suspendido",
+      "Funcionamiento silencioso ≤59 dB",
+      "Diseño flotante — suelo completamente libre",
+    ],
+    technical: [
+      {
+        group: "Instalación",
+        specs: [
+          { label: "Tipo", value: "Suspendida (mural)" },
+          { label: "Tanque", value: "Integrado en módulo" },
+          { label: "Ruido", value: "≤59 dB" },
+        ],
+      },
+      {
+        group: "Funciones",
+        specs: [
+          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
+          { label: "Temperatura agua", value: "4 niveles" },
+          { label: "Secado", value: "5 velocidades" },
+        ],
+      },
+    ],
+    dimensions: [
+      { label: "Instalación", value: "Suspendida (mural)" },
+      { label: "Suelo", value: "Completamente libre" },
+      { label: "Tanque", value: "Integrado en módulo" },
+    ],
+    inTheBox: ["Inodoro ESENZA Suspendido", "Módulo de instalación", "Mando a distancia", "Manual en español", "Kit de instalación suspendida"],
+    installation: [
+      "Instalación suspendida en pared",
+      "Requiere módulo de instalación incluido",
+      "Enchufe Schuko a menos de 1,2 m",
+      "Instalador en 90-120 minutos",
+    ],
+    warranty: {
+      years: 3,
+      details: "10 años cerámica · 3 años tecnología (ampliable a 5 con Premium Care +249€)",
+    },
+    faqs: [
+      { q: "¿Necesita obra?", a: "Sí, requiere instalación suspendida en pared. Es habitual en reformas de baño modernas." },
+      { q: "¿Qué diferencia hay con ESENZA estándar?", a: "La instalación es suspendida (flotante), lo que libera el suelo y aporta una estética más limpia y moderna. Las funciones son idénticas." },
+    ],
+    price: 1521,
+    originalPrice: 1690,
+    visibleRegions: ["europe", "world"],
+    priceUsd: 2900,
+  },
+
+  // ── AURA ──────────────────────────────────────────────────────────────────
   {
     id: "AURA",
     name: "Inodoro inteligente AURA",
@@ -615,53 +629,26 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Puedo elegir el color del display?", a: "Sí. Disponible en Gris y Negro, Blanco y Gris. Se elige en el momento del pedido." },
     ],
     price: 1875,
-    visibleRegions: ["europe"],
-  priceUsd: 3800,
-  originalPrice: 2500,
+    originalPrice: 2500,
+    visibleRegions: ["europe", "world"],
+    priceUsd: 3800,
   },
 ];
 
-// Productos destacados en la home: los 3 modelos ESENZA
-export const FEATURED_PRODUCTS = ALL_PRODUCTS.filter(p =>
-  ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO"].includes(p.id)
-);
-
-// ─── Productos localizados ────────────────────────────────────────────────────
-import { getProductLocale } from "@/i18n/products";
+// ─── Helpers de localización ──────────────────────────────────────────────────
 
 /**
- * Devuelve ALL_PRODUCTS con los textos (name, tagline, description,
- * longDescription, badges, highlights, pitch, features, technical,
- * dimensions, inTheBox, installation, warranty.details, faqs) en el
- * idioma solicitado. Los datos no-textuales (img, gallery, price, etc.)
- * se mantienen del catálogo base.
+ * Devuelve todos los productos. El parámetro lang se reserva para
+ * futuras traducciones; por ahora todos los textos están en español.
  */
-export function getLocalizedProducts(lang: string): Product[] {
-  return ALL_PRODUCTS.map(p => {
-    const loc = getProductLocale(p.id, lang);
-    if (!loc) return p;
-    return {
-      ...p,
-      name: loc.name,
-      tagline: loc.tagline,
-      description: loc.description,
-      longDescription: loc.longDescription,
-      badges: loc.badges,
-      highlights: loc.highlights,
-      pitch: loc.pitch,
-      features: loc.features,
-      technical: loc.technical,
-      dimensions: loc.dimensions,
-      inTheBox: loc.inTheBox,
-      installation: loc.installation,
-      warranty: { ...p.warranty, details: loc.warrantyDetails },
-      faqs: loc.faqs,
-    };
-  });
+export function getLocalizedProducts(_lang?: string): Product[] {
+  return ALL_PRODUCTS;
 }
 
-export function getLocalizedFeatured(lang: string): Product[] {
-  return getLocalizedProducts(lang).filter(p =>
-    ["ESENZA", "ESENZA-COMPACT", "ESENZA-SUSPENDIDO"].includes(p.id)
-  );
+/**
+ * Devuelve los productos destacados para la Home (los 3 primeros:
+ * ESENZA, AURA-COMPACT, AURA-SUSPENDIDO).
+ */
+export function getLocalizedFeatured(_lang?: string): Product[] {
+  return ALL_PRODUCTS.slice(0, 3);
 }
