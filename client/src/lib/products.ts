@@ -2,6 +2,7 @@ import type { Product } from "@/components/ProductDetail";
 
 // ─── Galerías ─────────────────────────────────────────────────────────────────
 const ESENZA_GALLERY = [
+  "/manus-storage/esenza-main_7db64882.png",
   "/manus-storage/ESENZa-12_b3dd228d.webp",
   "/manus-storage/ESENZA-9_70e448e2.webp",
   "/manus-storage/ESENZA-10_b08075fa.webp",
@@ -22,6 +23,7 @@ const AURA_COMPACT_GALLERY = [
 ];
 
 const AURA_SUSP_GALLERY = [
+  "/manus-storage/aura-suspendido-v3_9a4f47aa.png",
   "/manus-storage/aura-suspendido1_e7c19dd4.jpg",
   "/manus-storage/aura-suspendido-2_0c11bedb.jpg",
   "/manus-storage/aura-suspendido-3_a85c6741.jpg",
