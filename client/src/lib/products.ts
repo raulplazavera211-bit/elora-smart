@@ -97,7 +97,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación.",
     longDescription:
       "ESENZA a suelo es el inodoro inteligente japonés de ELORA SMART, ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación. Mantiene todas las funciones esenciales de la gama ESENZA con instalación sencilla, máxima estabilidad y un diseño de líneas limpias para baños modernos. Incluye 10 años de garantía en la cerámica y 3 años en la tecnología, ampliables a 5 años con ELORA Premium Care.",
-    img: "/manus-storage/esenza2-800x800_af396766.jpg",
+    img: "/manus-storage/esenza-main_7db64882.png",
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [

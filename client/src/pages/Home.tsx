@@ -26,17 +26,17 @@ import { LanguageSwitcher, LanguageDetectionBanner } from "@/components/Language
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
-const HERO_IMAGE = "/manus-storage/esenza2-800x800_af396766.jpg";
+const HERO_IMAGE = "/manus-storage/esenza-main_7db64882.png";
 
 const PRODUCT_IMAGES: Record<string, string> = {
-  "ESENZA": "/manus-storage/esenza2-800x800_af396766.jpg",
+  "ESENZA": "/manus-storage/esenza-main_7db64882.png",
   "AURA-COMPACT": "/manus-storage/inodoro_lujo_v2_81e05275.webp",
   "AURA-SUSPENDIDO": "/manus-storage/aura-suspendido-v3_9a4f47aa.png",
 };
 // SECTIONS se genera dinámicamente con i18n dentro del componente
 
 const ESENZA_GALLERY = [
-  "/manus-storage/esenza2-800x800_af396766.jpg",
+  "/manus-storage/esenza-main_7db64882.png",
   "/manus-storage/ESENZa-12_b3dd228d.webp",
   "/manus-storage/ESENZA-9_70e448e2.webp",
   "/manus-storage/ESENZA-10_b08075fa.webp",
@@ -75,7 +75,7 @@ const PRODUCTS: Product[] = [
     description: "Ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación.",
     longDescription:
       "ESENZA a suelo es el inodoro inteligente japonés de ELORA SMART, ideal para reformas de baño y para sustituir un inodoro tradicional sin cambiar la instalación. Mantiene todas las funciones esenciales de la gama ESENZA con instalación sencilla, máxima estabilidad y un diseño de líneas limpias para baños modernos. Incluye 10 años de garantía en la cerámica y 3 años en la tecnología, ampliables a 5 años con ELORA Premium Care.",
-    img: "/manus-storage/esenza2-800x800_af396766.jpg",
+    img: "/manus-storage/esenza-main_7db64882.png",
     gallery: ESENZA_GALLERY,
     badges: ["Best seller", "Sin obra"],
     highlights: [
