@@ -1591,9 +1591,9 @@ export default function Home() {
     setIsMenuOpen(false);
   };
 
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const openProduct = (product: Product) => {
-    const slug = PRODUCT_SLUGS[product.id] ?? product.id.toLowerCase();
-    navigate(`/producto/${slug}`);
+    setSelectedProduct(product);
   };
 
   const contactMutation = trpc.contact.submit.useMutation({
@@ -2570,6 +2570,16 @@ export default function Home() {
               </section>
         </main>
       </div>
+      {/* Overlay de producto */}
+      {selectedProduct && (
+        <div className="fixed inset-0 bg-background z-[200] overflow-y-auto">
+          <ProductDetail
+            product={selectedProduct}
+            onBack={() => setSelectedProduct(null)}
+            onAdd={(p) => addToCart({ id: p.id, name: p.name, price: p.price, img: p.img })}
+          />
+        </div>
+      )}
     </>
   );
 }

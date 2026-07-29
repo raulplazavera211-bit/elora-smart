@@ -112,17 +112,19 @@ export default function Coleccion() {
     "AURA-COMPACT": "aura-compact",
     "AURA-SUSPENDIDO": "aura-suspendido",
   };
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const openProduct = (product: Product) => {
-    const slug = PRODUCT_SLUGS[product.id] ?? product.id.toLowerCase();
-    navigate(`/producto/${slug}`);
+    setSelectedProduct(product);
   };
   // Abrir producto directamente si viene con ?producto=slug desde el chatbot
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("producto");
     if (slug) {
-      // Navegar a la URL del producto directamente
-      navigate(`/producto/${slug}`);
+      const found = getLocalizedProducts(i18n.language).find(
+        (p) => (PRODUCT_SLUGS[p.id] ?? p.id.toLowerCase()) === slug
+      );
+      if (found) setSelectedProduct(found as Product);
     }
   }, []);
 
@@ -412,6 +414,16 @@ export default function Coleccion() {
         onAccept={handlePremiumAccept}
         onDecline={handlePremiumDecline}
       />
+      {/* Overlay de producto */}
+      {selectedProduct && (
+        <div className="fixed inset-0 bg-background z-[200] overflow-y-auto">
+          <ProductDetail
+            product={selectedProduct}
+            onBack={() => setSelectedProduct(null)}
+            onAdd={(p) => handleAddToCart({ id: p.id, name: p.name, price: p.price, img: p.img })}
+          />
+        </div>
+      )}
     </div>
   );
 }
