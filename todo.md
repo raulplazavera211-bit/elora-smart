@@ -111,3 +111,7 @@
 - [x] Actualizar handleSubmitPayment para redirigir a seQura cuando payMethod === "sequra"
 - [x] Actualizar PagoOk.tsx para mostrar referencia seQura cuando method=sequra en URL
 - [x] Guardar credenciales seQura como variables de entorno (SEQURA_MERCHANT_CODE, SEQURA_API_KEY, SEQURA_SECRET_KEY)
+
+## Selector de cantidad en carrito
+- [x] Selector de cantidad (+/-) en el carrito para pedir más de una unidad del mismo producto
+

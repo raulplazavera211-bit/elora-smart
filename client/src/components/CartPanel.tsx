@@ -319,6 +319,7 @@ interface CartPanelProps {
   onClose: () => void;
   cart: CartItem[];
   onRemove: (idx: number) => void;
+  onUpdateQuantity?: (idx: number, quantity: number) => void;
   onClearCart?: () => void;
   sections?: string[];
   onNavigate?: (idx: number) => void;
@@ -485,7 +486,7 @@ function ShippingWidget({
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sections, onNavigate }: CartPanelProps) {
+export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, onClearCart, sections, onNavigate }: CartPanelProps) {
   const { t } = useTranslation();
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>("cart");
   const [form, setForm] = useState<CheckoutFormState>(EMPTY_FORM);
@@ -591,7 +592,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
     Ds_Signature: string;
   } | null>(null);
 
-    const cartTotal = cart.reduce((s, i) => s + i.price, 0);
+    const cartTotal = cart.reduce((s, i) => s + i.price * (i.quantity ?? 1), 0);
   const shippingCost = getShippingCost(form.pais);
   const createOrder = trpc.orders.create.useMutation({
     onError: (err) => {
@@ -734,7 +735,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
         productName: item.name,
         productImg: item.img || undefined,
         unitPrice: item.price,
-        quantity: 1,
+        quantity: item.quantity ?? 1,
       })),
     });
 
@@ -1138,8 +1139,8 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40">{t("checkout.orderSummary")}</p>
           {cart.map((item, idx) => (
             <div key={idx} className="flex justify-between items-center">
-              <span className="font-body text-sm text-foreground/70">{item.name}</span>
-              <span className="font-display text-sm">{item.price.toLocaleString("es-ES")} €</span>
+              <span className="font-body text-sm text-foreground/70">{item.name}{(item.quantity ?? 1) > 1 ? <span className="text-foreground/40 ml-1">×{item.quantity}</span> : null}</span>
+              <span className="font-display text-sm">{(item.price * (item.quantity ?? 1)).toLocaleString("es-ES")} €</span>
             </div>
           ))}
                     <div className="border-t border-border pt-3 flex flex-col gap-2">
@@ -1525,8 +1526,8 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
           <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-1">Resumen</p>
           {cart.map((item, idx) => (
             <div key={idx} className="flex justify-between items-center">
-              <span className="font-body text-xs text-foreground/70 truncate pr-2">{item.name}</span>
-              <span className="font-display text-sm shrink-0">{item.price.toLocaleString("es-ES")} €</span>
+              <span className="font-body text-xs text-foreground/70 truncate pr-2">{item.name}{(item.quantity ?? 1) > 1 ? <span className="text-foreground/40 ml-1">×{item.quantity}</span> : null}</span>
+              <span className="font-display text-sm shrink-0">{(item.price * (item.quantity ?? 1)).toLocaleString("es-ES")} €</span>
             </div>
           ))}
           <div className="border-t border-border pt-2 flex justify-between items-baseline mt-1">
@@ -1810,7 +1811,13 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                               <div className="flex-1 min-w-0">
                                 <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-1">{item.id}</p>
                                 <p className="font-display text-lg uppercase tracking-wide leading-snug">{item.name}</p>
-                                <p className="font-display text-xl text-accent-deep mt-2">{item.price.toLocaleString("es-ES")} €</p>
+                                <p className="font-display text-xl text-accent-deep mt-2">{(item.price * (item.quantity ?? 1)).toLocaleString("es-ES")} €</p>
+                                {/* Selector de cantidad */}
+                                <div className="flex items-center gap-2 mt-3">
+                                  <button type="button" onClick={() => onUpdateQuantity ? onUpdateQuantity(idx, (item.quantity ?? 1) - 1) : onRemove(idx)} className="w-7 h-7 border border-border flex items-center justify-center text-foreground/50 hover:text-foreground hover:border-foreground transition-colors outline-none font-body text-base leading-none">−</button>
+                                  <span className="font-body text-sm w-6 text-center">{item.quantity ?? 1}</span>
+                                  <button type="button" onClick={() => onUpdateQuantity?.(idx, (item.quantity ?? 1) + 1)} className="w-7 h-7 border border-border flex items-center justify-center text-foreground/50 hover:text-foreground hover:border-foreground transition-colors outline-none font-body text-base leading-none">+</button>
+                                </div>
                               </div>
                               <button onClick={() => onRemove(idx)} className="shrink-0 w-8 h-8 border border-border flex items-center justify-center text-foreground/30 hover:text-foreground hover:border-foreground transition-colors outline-none">
                                 <X className="w-4 h-4" />
@@ -1910,7 +1917,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                             shippingCost,
                             paymentMethod: "paypal",
                             notes: form.notas.trim() || undefined,
-                            items: cart.map(item => ({ productName: item.name, productImg: item.img || undefined, unitPrice: item.price, quantity: 1 })),
+                            items: cart.map(item => ({ productName: item.name, productImg: item.img || undefined, unitPrice: item.price, quantity: item.quantity ?? 1 })),
                           });
                           if (!orderResult?.orderId) throw new Error("No se pudo crear el pedido");
                           setPendingOrderId(orderResult.orderId);
@@ -2026,14 +2033,20 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                     <AnimatePresence>
                       <ul className="flex flex-col gap-4">
                         {cart.map((item, idx) => (
-                          <motion.li key={`mob-${item.id}-${idx}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="flex items-center gap-4 border-b border-border pb-4">
+                          <motion.li key={`mob-${item.id}-${idx}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="flex items-start gap-4 border-b border-border pb-4">
                             <div className="w-16 h-16 shrink-0 overflow-hidden border border-border"><img src={item.img} alt={item.name} className="w-full h-full object-cover" /></div>
                             <div className="flex-1 min-w-0">
                               <p className="font-body text-[10px] uppercase tracking-widest text-foreground/40 mb-0.5">{item.id}</p>
                               <p className="font-display text-sm uppercase tracking-wide leading-snug">{item.name}</p>
-                              <p className="font-display text-base text-accent-deep mt-1">{item.price.toLocaleString("es-ES")} €</p>
+                              <p className="font-display text-base text-accent-deep mt-1">{(item.price * (item.quantity ?? 1)).toLocaleString("es-ES")} €</p>
+                              {/* Selector de cantidad móvil */}
+                              <div className="flex items-center gap-2 mt-2">
+                                <button type="button" onClick={() => onUpdateQuantity ? onUpdateQuantity(idx, (item.quantity ?? 1) - 1) : onRemove(idx)} className="w-6 h-6 border border-border flex items-center justify-center text-foreground/50 hover:text-foreground hover:border-foreground transition-colors outline-none font-body text-sm leading-none">−</button>
+                                <span className="font-body text-xs w-5 text-center">{item.quantity ?? 1}</span>
+                                <button type="button" onClick={() => onUpdateQuantity?.(idx, (item.quantity ?? 1) + 1)} className="w-6 h-6 border border-border flex items-center justify-center text-foreground/50 hover:text-foreground hover:border-foreground transition-colors outline-none font-body text-sm leading-none">+</button>
+                              </div>
                             </div>
-                            <button onClick={() => onRemove(idx)} className="shrink-0 text-foreground/30 hover:text-foreground transition-colors outline-none"><X className="w-4 h-4" /></button>
+                            <button onClick={() => onRemove(idx)} className="shrink-0 text-foreground/30 hover:text-foreground transition-colors outline-none mt-0.5"><X className="w-4 h-4" /></button>
                           </motion.li>
                         ))}
                       </ul>
@@ -2147,7 +2160,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onClearCart, sectio
                             shippingCost,
                             paymentMethod: "paypal",
                             notes: form.notas.trim() || undefined,
-                            items: cart.map(item => ({ productName: item.name, productImg: item.img || undefined, unitPrice: item.price, quantity: 1 })),
+                            items: cart.map(item => ({ productName: item.name, productImg: item.img || undefined, unitPrice: item.price, quantity: item.quantity ?? 1 })),
                           });
                           if (!orderResult?.orderId) throw new Error("No se pudo crear el pedido");
                           setPendingOrderId(orderResult.orderId);

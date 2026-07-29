@@ -1519,7 +1519,7 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addedId, setAddedId] = useState<string | null>(null);
-  const { cart, isCartOpen, addToCart: addToCartCtx, removeFromCart, openCart, closeCart, totalItems } = useCart();
+  const { cart, isCartOpen, addToCart: addToCartCtx, removeFromCart, updateQuantity, openCart, closeCart, totalItems } = useCart();
   const [contactForm, setContactForm] = useState({ nombre: "", telefono: "", email: "", mensaje: "" });
   const [catalogLang, setCatalogLang] = useState<"es" | "en" | "fr" | "pt">(() => {
     const l = i18n.language;
@@ -1794,6 +1794,7 @@ export default function Home() {
           onClose={() => closeCart()}
           cart={cart}
           onRemove={removeFromCart}
+          onUpdateQuantity={updateQuantity}
           sections={SECTIONS}
           onNavigate={scrollToSection}
         />

@@ -13,7 +13,7 @@ export default function EventoParaguay() {
   const [, navigate] = useLocation();
   const { t, i18n } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { cart, isCartOpen, openCart, closeCart, totalItems, removeFromCart } = useCart();
+  const { cart, isCartOpen, openCart, closeCart, totalItems, removeFromCart, updateQuantity } = useCart();
 
   // Forzar re-render al cambiar idioma
   const [, forceUpdate] = useState(0);
@@ -151,7 +151,7 @@ export default function EventoParaguay() {
       </div>
 
       {/* ── CART PANEL ── */}
-      <CartPanel isOpen={isCartOpen} onClose={closeCart} cart={cart} onRemove={removeFromCart} />
+      <CartPanel isOpen={isCartOpen} onClose={closeCart} cart={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} />
 
       {/* ── CONTENIDO PRINCIPAL ── */}
       <div className="flex-1 h-full overflow-y-auto overflow-x-hidden" id="ep-scroll">

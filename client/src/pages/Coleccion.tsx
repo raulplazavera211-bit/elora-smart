@@ -25,7 +25,7 @@ export default function Coleccion() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [displayProducts, setDisplayProducts] = useState<Product[]>(() => getLocalizedProducts('es') as Product[]);
 
-  const { cart, isCartOpen, addToCart, removeFromCart, openCart, closeCart, totalItems } = useCart();
+  const { cart, isCartOpen, addToCart, removeFromCart, updateQuantity, openCart, closeCart, totalItems } = useCart();
 
   // Estado para el modal de upsell ELORA PREMIUM CARE
   const [premiumModalOpen, setPremiumModalOpen] = useState(false);
@@ -408,6 +408,7 @@ export default function Coleccion() {
         onClose={closeCart}
         cart={cart}
         onRemove={removeFromCart}
+        onUpdateQuantity={updateQuantity}
       />
 
       {/* ── UPSELL PREMIUM CARE ─────────── */}

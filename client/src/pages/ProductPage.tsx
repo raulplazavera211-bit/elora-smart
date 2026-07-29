@@ -22,7 +22,7 @@ type Props = {
 
 export default function ProductPage({ params }: Props) {
   const [, navigate] = useLocation();
-  const { cart, isCartOpen, addToCart, removeFromCart, openCart, closeCart } = useCart();
+  const { cart, isCartOpen, addToCart, removeFromCart, updateQuantity, openCart, closeCart } = useCart();
 
   const productId = SLUG_TO_ID[params.slug];
   const product = ALL_PRODUCTS.find((p) => p.id === productId);
@@ -74,6 +74,7 @@ export default function ProductPage({ params }: Props) {
         onClose={closeCart}
         cart={cart}
         onRemove={removeFromCart}
+        onUpdateQuantity={updateQuantity}
       />
     </div>
   );
