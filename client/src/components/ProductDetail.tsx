@@ -276,7 +276,7 @@ export function ProductDetail({ product, onBack, onAdd }: Props) {
                 className="aspect-square bg-muted border border-border overflow-hidden cursor-zoom-in hover:opacity-90 transition-opacity"
                 onClick={() => openLightbox(idx + 1)}
               >
-                <img src={g} alt={product.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                <img src={g} alt={product.name} className="w-full h-full object-cover" loading="eager" decoding="async" />
               </div>
             ))}
           </div>
