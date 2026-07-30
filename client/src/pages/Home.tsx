@@ -2572,12 +2572,86 @@ export default function Home() {
       </div>
       {/* Overlay de producto */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-background z-[200] overflow-y-auto">
-          <ProductDetail
-            product={selectedProduct}
-            onBack={() => setSelectedProduct(null)}
-            onAdd={(p) => addToCart({ id: p.id, name: p.name, price: p.price, img: p.img })}
-          />
+        <div className="fixed inset-0 bg-background z-[200] flex flex-col md:flex-row overflow-hidden">
+          {/* ── SIDEBAR DESKTOP dentro del overlay ── */}
+          <aside className="hidden md:flex w-72 h-full border-r border-border bg-background flex-col justify-between items-start z-50 shrink-0 relative py-7">
+            <div className="px-10 text-left">
+              <button onClick={() => setSelectedProduct(null)} className="outline-none text-left">
+                <img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" />
+                <p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p>
+              </button>
+              <div className="mt-4">
+                <LanguageSwitcher />
+              </div>
+            </div>
+            <nav className="flex flex-col gap-5 w-full px-10">
+              <p className="font-body text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-2 border-b border-border pb-4">{t('nav.index')}</p>
+              {[t('nav.vision'), t('nav.esencia'), t('nav.manifiesto'), t('nav.coleccion'), t('nav.contacto')].map((item, idx) => (
+                <button
+                  key={item}
+                  onClick={() => setSelectedProduct(null)}
+                  className="group text-left outline-none flex items-center gap-4 transition-all duration-500"
+                >
+                  <span className="h-[1px] w-3 bg-foreground/20 group-hover:w-6 group-hover:bg-foreground/40 transition-all duration-500" />
+                  <span className="font-display text-xl lg:text-2xl uppercase tracking-wide text-foreground/30 group-hover:text-foreground/60 transition-colors duration-500">{item}</span>
+                  <span className="ml-auto font-body text-[10px] text-foreground/20">0{idx + 1}</span>
+                </button>
+              ))}
+            </nav>
+            <div className="px-10 w-full flex flex-col gap-5">
+              <button
+                onClick={() => openCart()}
+                className="group flex items-center justify-between w-full border border-border px-4 py-3 hover:border-accent-deep transition-colors outline-none"
+              >
+                <span className="flex items-center gap-3 font-body text-xs uppercase tracking-[0.25em] text-foreground">
+                  <ShoppingBag className="w-4 h-4" /> {t('coleccion.buy')}
+                </span>
+                <span className="font-display text-sm text-accent-deep">{totalItems}</span>
+              </button>
+              <div className="flex items-center justify-between">
+                <div className="font-body text-xs uppercase tracking-[0.2em] text-foreground/40 flex items-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-accent-deep" />
+                  EST. SPAIN - 2022
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* ── MOBILE HEADER dentro del overlay ── */}
+          <div className="md:hidden fixed top-0 left-0 w-full h-20 bg-background/95 backdrop-blur-md border-b border-border z-[210] flex items-center justify-between px-6">
+            <button onClick={() => setSelectedProduct(null)}>
+              <img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" />
+            </button>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+              <button
+                onClick={() => openCart()}
+                className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center outline-none"
+              >
+                <ShoppingBag className="w-4 h-4 text-foreground" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-accent-deep text-background font-body text-[10px] flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="w-10 h-10 rounded-full bg-foreground text-background flex items-center justify-center transition-transform duration-300 outline-none"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* ── CONTENIDO DEL PRODUCTO ── */}
+          <div className="flex-1 h-full overflow-y-auto overflow-x-hidden pt-20 md:pt-0">
+            <ProductDetail
+              product={selectedProduct}
+              onBack={() => setSelectedProduct(null)}
+              onAdd={(p) => addToCart({ id: p.id, name: p.name, price: p.price, img: p.img })}
+            />
+          </div>
         </div>
       )}
     </>
