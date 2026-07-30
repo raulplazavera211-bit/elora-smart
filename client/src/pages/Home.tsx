@@ -2124,7 +2124,7 @@ export default function Home() {
                         {/* Info */}
                         <div className="flex flex-col gap-2 flex-1 p-4">
                           <p className="font-body text-[10px] text-foreground/50 uppercase tracking-widest">{prod.id}</p>
-                          <h3 className="font-display text-lg uppercase tracking-wide leading-tight">{prod.name}</h3>
+                          <h3 className="font-display text-lg uppercase tracking-wide leading-tight cursor-pointer hover:text-accent-deep transition-colors" onClick={() => openProduct(prod)}>{prod.name}</h3>
                           <p className="font-display text-xs uppercase tracking-wide text-accent-deep leading-tight">{prod.tagline}</p>
 
                           {/* Precio + botones */}
