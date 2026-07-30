@@ -2161,7 +2161,7 @@ export default function Home() {
                                 {t('coleccion.buy')}
                               </button>
                               <button
-                                onClick={() => navigate(`/producto/${PRODUCT_SLUGS[prod.id] ?? prod.id.toLowerCase()}`)}
+                                onClick={() => openProduct(prod)}
                                 className="px-4 border border-border font-body text-[10px] uppercase tracking-[0.2em] text-foreground hover:border-accent-deep hover:text-accent-deep transition-colors active:scale-[0.97]"
                               >
                                 {t('coleccion.info')}
