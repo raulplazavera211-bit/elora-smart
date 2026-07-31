@@ -1999,7 +1999,7 @@ export default function Home() {
                         <div className="flex items-center justify-between mb-2">
                           <div>
                             <p className="font-display text-base md:text-sm uppercase tracking-widest text-foreground/70 mb-0.5">AURA Suspendido</p>
-                            <p className="font-display text-2xl md:text-base leading-none text-foreground">{formatCurrency(convertPrice(2080, currency, exchangeRate, 3800), currency)}</p>
+                            <p className="font-display text-2xl md:text-base leading-none text-foreground">{formatCurrency(convertPrice(2600, currency, exchangeRate, 3800), currency)}</p>
                           </div>
                         </div>
                         <button
