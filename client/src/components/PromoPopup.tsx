@@ -53,8 +53,10 @@ export default function PromoPopup() {
     // If DB has a popup but it's not active (null returned), don't show
     // getActive returns null when no active popup → use fallback i18n popup
     if (sessionStorage.getItem(STORAGE_KEY)) return;
-    const timer = setTimeout(() => setVisible(true), delayMs);
-    return () => clearTimeout(timer);
+    // DESACTIVADO: Popup de promoción deshabilitado
+    return;
+    // const timer = setTimeout(() => setVisible(true), delayMs);
+    // return () => clearTimeout(timer);
   }, [isLoading, delayMs, isAdmin, isParaguay, isOutsideEurope]);
 
   const handleClose = () => {
@@ -68,6 +70,8 @@ export default function PromoPopup() {
   };
 
   if (isAdmin || isParaguay || isOutsideEurope) return null;
+  // DESACTIVADO: Popup de promoción deshabilitado
+  return null;
 
   return (
     <AnimatePresence>
