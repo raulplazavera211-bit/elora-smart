@@ -319,20 +319,10 @@ export default function Coleccion() {
                       <div className="mt-auto pt-4 border-t border-border">
                         <div className="flex items-baseline justify-between mb-3">
                           <div className="flex flex-col gap-0.5">
-                            {prod.originalPrice && currency === "EUR" && (
-                              <span className="font-body text-xs text-foreground/40 line-through">
-                                {formatCurrency(convertPrice(prod.originalPrice, currency, exchangeRate), currency)}
-                              </span>
-                            )}
                             <div className="flex items-baseline gap-2">
                               <span className="font-display text-2xl tracking-wide text-foreground">
                                 {formatCurrency(convertPrice(prod.price, currency, exchangeRate, (prod as any).priceUsd), currency)}
                               </span>
-                              {prod.originalPrice && currency === "EUR" && (
-                                <span className="font-body text-[9px] uppercase tracking-widest bg-accent-deep/20 text-accent-deep px-1.5 py-0.5 rounded">
-                                  {t('coleccion.offer')}
-                                </span>
-                              )}
                             </div>
                           </div>
                           <span className="font-body text-[10px] text-foreground/40 uppercase tracking-widest">{t('coleccion.vatIncl')}</span>
