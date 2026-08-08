@@ -84,6 +84,28 @@ const THALOS_SUSP_GALLERY = [
   "/manus-storage/11_656c3cd4.jpeg",
 ];
 
+const THALOS_COMPACT_GALLERY = [
+  "/manus-storage/WhatsAppImage2026-07-16at12.45.28(2)_dda274fb.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.45.28_b6b72fa2.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.45.29(1)_2f078665.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.45.29(2)_a37aec06.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.45.29(3)_08819fcf.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.45.29_d20cbb8a.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.17(1)_dc03ad00.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.17_8440d82c.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.18(1)_a22f2956.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.18(2)_171d37ca.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.18(3)_5dff04ac.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.18_a42de8fe.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.19(1)_e83bee2a.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.19_6fb33fe4.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.20(1)_a2e700ae.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.19(2)_7e562b01.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.20(2)_6885c275.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.20(3)_d9cd3d06.jpeg",
+  "/manus-storage/WhatsAppImage2026-07-16at12.46.20_4dd05e42.jpeg",
+];
+
 // ─── Catálogo completo ────────────────────────────────────────────────────────
 export const ALL_PRODUCTS: Product[] = [
   // ── ESENZA ────────────────────────────────────────────────────────────────
@@ -748,6 +770,114 @@ export const ALL_PRODUCTS: Product[] = [
       { q: "¿Cuál es la diferencia entre THALOS y AURA?", a: "THALOS es la nueva generación de ELORA SMART. Incluye desinfección UV automática, mejor sistema de secado y diseño más minimalista. Ambos están disponibles en formato suspendido." },
       { q: "¿Puedo ajustar la altura?", a: "Sí. Puedes ajustar la altura del váter a tu gusto en el momento de la instalación." },
       { q: "¿Necesita obra?", a: "Sí, requiere instalación suspendida en pared. Es habitual en reformas de baño modernas." },
+      { q: "¿Funciona fuera de Europa?", a: "Sí. THALOS está disponible para mercados internacionales con adaptaciones de voltaje y certificaciones locales." },
+    ],
+    price: 2600,
+    visibleRegions: ["world"],
+    priceUsd: 2600,
+  },
+
+  // ── THALOS-COMPACT ────────────────────────────────────────────────────────
+  {
+    id: "THALOS-COMPACT",
+    name: "Inodoro inteligente THALOS compact",
+    tagline: "Todas las funciones en fondo reducido, nueva generación.",
+    description: "El inodoro inteligente THALOS compact: tecnología de próxima generación en formato compacto. Optimiza cada centímetro sin renunciar a ninguna función.",
+    longDescription: "THALOS COMPACT es la versión compacta de la nueva colección ELORA SMART. Diseñado para ganar espacio en baños pequeños, reformas y obra nueva. Su formato más corto y totalmente pegado a la pared optimiza cada centímetro, manteniendo todas las funciones avanzadas de THALOS —lavado con agua, secado, asiento calefactado, automatización y desinfección UV— en un formato más estilizado.",
+    img: "/manus-storage/WhatsAppImage2026-07-16at12.45.28(2)_dda274fb.jpeg",
+    gallery: THALOS_COMPACT_GALLERY,
+    badges: ["Compact", "Back-to-wall"],
+    highlights: [
+      { label: "Formato", value: "Fondo reducido" },
+      { label: "Instalación", value: "Back-to-wall" },
+      { label: "Garantía", value: "10 años" },
+    ],
+    pitch: [
+      { title: "Diseñado para baños pequeños", body: "Formato compacto de fondo reducido. Cabe donde otros no llegan sin sacrificar ninguna función esencial de la nueva generación." },
+      { title: "Automatización total", body: "Apertura, cierre y descarga automáticos. Sensor de pie y detección de postura para un uso completamente sin contacto." },
+      { title: "Secado en 30 segundos", body: "Chorro de aire concentrado de alto rendimiento. Higiene completa sin papel, ajustable en 5 velocidades." },
+      { title: "Desinfección UV automática", body: "Sistema de luz ultravioleta que desinfecta la cánula entre usos. Higiene silenciosa y programada." },
+    ],
+    features: [
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea (4 temperaturas)",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Masaje SPA con oscilación 15mm",
+      "Asiento calefactado CLIMADAPT",
+      "Secado en menos de 30 segundos (5 velocidades)",
+      "Desinfección UV automática",
+      "Escudo de espuma y desodorización",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral multifunción",
+      "Luz nocturna LED",
+      "Cerámica rimless",
+      "Tanque integrado de 5 litros",
+      "Funcionamiento silencioso ≤59 dB",
+    ],
+    technical: [
+      {
+        group: "Dimensiones",
+        specs: [
+          { label: "Formato", value: "Compacto back-to-wall" },
+          { label: "Tanque", value: "5 litros integrado" },
+          { label: "Ruido", value: "≤59 dB" },
+        ],
+      },
+      {
+        group: "Funciones de higiene",
+        specs: [
+          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
+          { label: "Temperatura agua", value: "Natural, 33°C, 37°C, 39°C" },
+          { label: "Presión agua", value: "3 niveles" },
+          { label: "Secado", value: "5 velocidades · 4 temperaturas" },
+        ],
+      },
+      {
+        group: "Automatización",
+        specs: [
+          { label: "Apertura/cierre", value: "Automático por proximidad" },
+          { label: "Descarga", value: "Automática + manual" },
+          { label: "Detección", value: "Postura (pie/sentado)" },
+        ],
+      },
+      {
+        group: "Control",
+        specs: [
+          { label: "Mando", value: "En español" },
+          { label: "Voz", value: "Sí (inglés)" },
+          { label: "Usuarios", value: "Hasta 2 perfiles" },
+        ],
+      },
+    ],
+    dimensions: [
+      { label: "Formato", value: "Compacto (fondo reducido)" },
+      { label: "Instalación", value: "Back-to-wall" },
+      { label: "Suelo", value: "Totalmente libre" },
+      { label: "Descarga", value: "Dual (completa / ecológica)" },
+    ],
+    inTheBox: [
+      "Inodoro inteligente THALOS compact",
+      "Mando a distancia en español",
+      "Manual de instalación y uso",
+      "Kit de instalación back-to-wall",
+    ],
+    installation: [
+      "Instalación back-to-wall pegado a la pared.",
+      "Requiere instalador especializado.",
+      "Ideal para baños pequeños y reformas.",
+      "Solo necesitas un enchufe cerca.",
+    ],
+    warranty: {
+      years: 5,
+      details: "5 años de garantía en tecnología. 10 años en cerámica. Servicio técnico en español.",
+    },
+    faqs: [
+      { q: "¿Cuál es la diferencia entre THALOS Compact y THALOS Suspendido?", a: "El THALOS Compact es back-to-wall (pegado a la pared) con fondo reducido. El THALOS Suspendido es flotante (sin tocar el suelo). Ambos tienen las mismas funciones avanzadas." },
+      { q: "¿Cabe en baños pequeños?", a: "Sí. El formato compacto está especialmente diseñado para baños pequeños, optimizando cada centímetro sin perder funcionalidad." },
+      { q: "¿Necesita obra?", a: "Sí, requiere instalación back-to-wall en pared. Es habitual en reformas de baño modernas." },
       { q: "¿Funciona fuera de Europa?", a: "Sí. THALOS está disponible para mercados internacionales con adaptaciones de voltaje y certificaciones locales." },
     ],
     price: 2600,
