@@ -70,6 +70,20 @@ const AURA_GALLERY = [
   "/manus-storage/AURA-BLANCO-6-scaled_85d2c447.jpg",
 ];
 
+const THALOS_SUSP_GALLERY = [
+  "/manus-storage/12_22ba2ae7.jpeg",
+  "/manus-storage/1_583ff2d7.jpeg",
+  "/manus-storage/2_5a5ce514.jpeg",
+  "/manus-storage/3_6d0f3b99.jpeg",
+  "/manus-storage/5_284bacd8.jpeg",
+  "/manus-storage/6_1b90070b.jpeg",
+  "/manus-storage/7_2216bf4a.jpeg",
+  "/manus-storage/8_4c521920.jpeg",
+  "/manus-storage/9_7549d2c7.jpeg",
+  "/manus-storage/10_87b707cd.jpeg",
+  "/manus-storage/11_656c3cd4.jpeg",
+];
+
 // ─── Catálogo completo ────────────────────────────────────────────────────────
 export const ALL_PRODUCTS: Product[] = [
   // ── ESENZA ────────────────────────────────────────────────────────────────
@@ -628,6 +642,117 @@ export const ALL_PRODUCTS: Product[] = [
     price: 2500,
     visibleRegions: ["europe", "world"],
     priceUsd: 3800,
+  },
+
+  // ── THALOS-SUSPENDIDO ─────────────────────────────────────────────────────
+  {
+    id: "THALOS-SUSPENDIDO",
+    name: "Inodoro inteligente THALOS suspendido",
+    tagline: "La nueva generación de inodoros inteligentes, suspendida.",
+    description: "El inodoro inteligente THALOS suspendido: tecnología de próxima generación en formato flotante. Diseño minimalista, funciones avanzadas y máxima higiene.",
+    longDescription: "THALOS SUSPENDIDO es la nueva colección de ELORA SMART, diseñada para usuarios que buscan lo mejor en tecnología, diseño y sostenibilidad. En formato suspendido (flotante), combina automatización inteligente, higiene superior con agua y aire, y un diseño minimalista que transforma cualquier baño. Incluye 10 años de garantía en cerámica y 3 años en tecnología, ampliables a 5 años con ELORA Premium Care.",
+    img: "/manus-storage/12_22ba2ae7.jpeg",
+    gallery: THALOS_SUSP_GALLERY,
+    badges: ["Nueva colección", "Suspendido"],
+    highlights: [
+      { label: "Formato", value: "Suspendido" },
+      { label: "Secado", value: "< 30 segundos" },
+      { label: "Garantía", value: "10 años cerámica" },
+    ],
+    pitch: [
+      { title: "Diseño minimalista flotante", body: "Formato suspendido que libera completamente el suelo. Líneas puras y elegantes que transforman el baño en un espacio de bienestar." },
+      { title: "Automatización inteligente", body: "Apertura, cierre y descarga automáticos. Sensor de pie integrado y detección de postura. Todo sin tocar nada." },
+      { title: "Higiene completa con agua", body: "Sistema de lavado triple: posterior, femenino y móvil. Agua caliente instantánea. Boquilla autolimpiable en acero inoxidable con autolimpieza antes y después de cada uso." },
+      { title: "Secado Súper-Tifón", body: "Secado completo en menos de 30 segundos. Ajustable en 5 velocidades y 4 temperaturas. Experiencia 100% sin papel." },
+      { title: "Asiento CLIMADAPT", body: "Regula la temperatura del asiento según el ambiente. Niveles: Natural, 33°C, 37°C, 39°C. Material antibacteriano y amable con la piel." },
+      { title: "Desinfección UV constante", body: "Sistema de luz ultravioleta interna que desinfecta automáticamente la cánula y zonas críticas entre usos. Higiene silenciosa y programada." },
+    ],
+    features: [
+      "Apertura, cierre y descarga automáticos",
+      "Sensor de pie integrado",
+      "Detección de postura (pie/sentado)",
+      "Lavado posterior, femenino y móvil",
+      "Agua caliente instantánea (4 temperaturas)",
+      "Boquilla autolimpiable en acero inoxidable",
+      "Masaje SPA con oscilación 15mm",
+      "Asiento calefactado CLIMADAPT",
+      "Secado en menos de 30 segundos (5 velocidades)",
+      "Desinfección UV automática",
+      "Escudo de espuma y desodorización",
+      "Mando a distancia en español (2 usuarios)",
+      "Rueda lateral multifunción",
+      "Luz nocturna LED",
+      "Cerámica rimless",
+      "Tanque integrado de 5 litros",
+      "Funcionamiento silencioso ≤59 dB",
+    ],
+    technical: [
+      {
+        group: "Dimensiones",
+        specs: [
+          { label: "Formato", value: "Suspendido (flotante)" },
+          { label: "Tanque", value: "5 litros integrado" },
+          { label: "Ruido", value: "≤59 dB" },
+        ],
+      },
+      {
+        group: "Funciones de higiene",
+        specs: [
+          { label: "Lavados", value: "Posterior · Femenino · Móvil" },
+          { label: "Temperatura agua", value: "Natural, 33°C, 37°C, 39°C" },
+          { label: "Presión agua", value: "3 niveles" },
+          { label: "Secado", value: "5 velocidades · 4 temperaturas" },
+        ],
+      },
+      {
+        group: "Automatización",
+        specs: [
+          { label: "Apertura/cierre", value: "Automático por proximidad" },
+          { label: "Descarga", value: "Automática + manual" },
+          { label: "Detección", value: "Postura (pie/sentado)" },
+        ],
+      },
+      {
+        group: "Control",
+        specs: [
+          { label: "Mando", value: "En español" },
+          { label: "Voz", value: "Sí (inglés)" },
+          { label: "Usuarios", value: "Hasta 2 perfiles" },
+        ],
+      },
+    ],
+    dimensions: [
+      { label: "Instalación", value: "Suspendida (flotante)" },
+      { label: "Altura", value: "Ajustable en instalación" },
+      { label: "Suelo", value: "Totalmente libre" },
+      { label: "Descarga", value: "Dual (completa / ecológica)" },
+    ],
+    inTheBox: [
+      "Inodoro inteligente THALOS suspendido",
+      "Módulo de instalación suspendida",
+      "Mando a distancia en español",
+      "Manual de instalación y uso",
+      "Kit de instalación suspendida",
+    ],
+    installation: [
+      "Instalación suspendida en pared.",
+      "Altura ajustable en el momento de la instalación.",
+      "Requiere instalador especializado.",
+      "Solo necesitas un enchufe cerca.",
+    ],
+    warranty: {
+      years: 5,
+      details: "5 años de garantía en tecnología. 10 años en cerámica. Servicio técnico en español.",
+    },
+    faqs: [
+      { q: "¿Cuál es la diferencia entre THALOS y AURA?", a: "THALOS es la nueva generación de ELORA SMART. Incluye desinfección UV automática, mejor sistema de secado y diseño más minimalista. Ambos están disponibles en formato suspendido." },
+      { q: "¿Puedo ajustar la altura?", a: "Sí. Puedes ajustar la altura del váter a tu gusto en el momento de la instalación." },
+      { q: "¿Necesita obra?", a: "Sí, requiere instalación suspendida en pared. Es habitual en reformas de baño modernas." },
+      { q: "¿Funciona fuera de Europa?", a: "Sí. THALOS está disponible para mercados internacionales con adaptaciones de voltaje y certificaciones locales." },
+    ],
+    price: 2600,
+    visibleRegions: ["world"],
+    priceUsd: 2600,
   },
 ];
 
