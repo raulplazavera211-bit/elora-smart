@@ -129,14 +129,16 @@
 - [ ] Configurar en Vercel las variables de entorno, almacenamiento, base de datos y pagos equivalentes.
 - [ ] Desplegar una versión de prueba y comprobar catálogo, imágenes, carrito, checkout, pagos, analítica y vistas móvil/escritorio.
 - [ ] Conectar el dominio de producción tras la validación completa de la copia en Vercel.
-- [ ] Corregir la expectativa duplicada de cookies en `server/auth.logout.test.ts` antes de validar la migración final.
+- [x] Corregir la expectativa duplicada de cookies en `server/auth.logout.test.ts` antes de validar la migración final.
 - [ ] Configurar Vercel como plataforma de producción principal tras validar una copia idéntica de la web.
-- [ ] Crear y conectar Neon PostgreSQL a Vercel, migrando la persistencia sin modificar la interfaz.
+- [x] Crear y conectar Neon PostgreSQL a Vercel, migrando la persistencia sin modificar la interfaz.
 - [x] Crear la base de datos Neon `elora-smart-production` en la región IAD1.
 - [x] Enlazar Neon al proyecto Vercel `elora-smart` y crear `DATABASE_URL` para Production y Preview.
-- [ ] Auditar el esquema y la capa de acceso actuales para una migración de MySQL a PostgreSQL compatible con Neon.
-- [ ] Generar y aplicar el esquema PostgreSQL de Elora Smart en Neon.
-- [ ] Migrar los datos persistentes existentes y verificar integridad sin exponer información sensible.
+- [x] Auditar el esquema y la capa de acceso actuales para una migración de MySQL a PostgreSQL compatible con Neon.
+- [x] Generar y aplicar el esquema PostgreSQL de Elora Smart en Neon.
+- [x] Migrar los datos persistentes existentes y verificar integridad sin exponer información sensible.
 - [ ] Transferir los activos recuperados a Vercel Blob y comprobar las rutas existentes `/manus-storage/*`.
+- [x] Añadir un importador reanudable de Blob que conserva las rutas actuales y se ejecuta únicamente en la compilación de Vercel.
+- [ ] Ejecutar y verificar en Vercel la importación de los 128 activos desde la fuente temporal autorizada.
 - [ ] Configurar las variables de entorno restantes en Vercel y realizar pruebas de integración.
 - [ ] Validar el despliegue de Vercel en móvil y escritorio antes de trasladar el dominio.

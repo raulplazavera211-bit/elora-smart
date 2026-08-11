@@ -1,38 +1,69 @@
 import { eq, desc, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
-import {
+import { drizzle as mysqlDrizzle } from "drizzle-orm/mysql2";
+import { drizzle as neonDrizzle } from "drizzle-orm/neon-http";
+import * as mysqlSchema from "../drizzle/schema";
+import * as postgresSchema from "../drizzle/schema.postgres";
+import type {
   InsertUser,
-  users,
-  contactSubmissions,
   InsertContactSubmission,
-  clubEloraSignups,
   InsertClubEloraSignup,
-  products,
   InsertProduct,
-  orders,
   InsertOrder,
-  orderItems,
   InsertOrderItem,
-  adminCredentials,
-  sitePopups,
   InsertSitePopup,
-  experienceSlides,
   InsertExperienceSlide,
+  PaymentMethod,
+  InsertPaymentMethod,
+  Coupon,
+  InsertCoupon,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
-let _db: ReturnType<typeof drizzle> | null = null;
+const databaseUrl = process.env.DATABASE_URL ?? "";
+const usesPostgres = databaseUrl.startsWith("postgres://") || databaseUrl.startsWith("postgresql://");
+// La aserción mantiene tipos homogéneos mientras la selección real ocurre por entorno.
+const activeSchema = (usesPostgres ? postgresSchema : mysqlSchema) as typeof mysqlSchema;
+const {
+  users,
+  contactSubmissions,
+  clubEloraSignups,
+  products,
+  orders,
+  orderItems,
+  paymentMethods,
+  adminCredentials,
+  coupons,
+  sitePopups,
+  experienceSlides,
+} = activeSchema;
+
+// Se tipa como MySQL para conservar el contrato TypeScript existente. En Vercel
+// se sustituye por el adaptador Neon en tiempo de ejecución y se mantiene el
+// mismo esquema lógico y la misma superficie de consultas de Drizzle.
+let _db: ReturnType<typeof mysqlDrizzle> | null = null;
 
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
+  if (!_db && databaseUrl) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      _db = (usesPostgres ? neonDrizzle(databaseUrl) : mysqlDrizzle(databaseUrl)) as unknown as ReturnType<typeof mysqlDrizzle>;
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
     }
   }
   return _db;
+}
+
+async function insertAndReturnId(table: any, data: any): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const query = db.insert(table).values(data);
+  if (usesPostgres) {
+    const rows = await (query as any).returning({ id: table.id });
+    return rows[0]?.id ?? null;
+  }
+  const result = await query;
+  return (result[0] as { insertId: number }).insertId ?? null;
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
@@ -57,7 +88,12 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     else if (user.openId === ENV.ownerOpenId) { values.role = 'admin'; updateSet.role = 'admin'; }
     if (!values.lastSignedIn) values.lastSignedIn = new Date();
     if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
-    await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
+    const query = db.insert(users).values(values);
+    if (usesPostgres) {
+      await (query as any).onConflictDoUpdate({ target: users.openId, set: updateSet });
+    } else {
+      await query.onDuplicateKeyUpdate({ set: updateSet });
+    }
   } catch (error) { console.error("[Database] Failed to upsert user:", error); throw error; }
 }
 
@@ -69,10 +105,7 @@ export async function getUserByOpenId(openId: string) {
 }
 
 export async function insertContactSubmission(data: InsertContactSubmission): Promise<number | null> {
-  const db = await getDb();
-  if (!db) return null;
-  const result = await db.insert(contactSubmissions).values(data);
-  return (result[0] as { insertId: number }).insertId ?? null;
+  return insertAndReturnId(contactSubmissions, data);
 }
 
 export async function getContactSubmissions() {
@@ -86,8 +119,7 @@ export async function insertClubEloraSignup(data: InsertClubEloraSignup): Promis
   if (!db) return { id: null, alreadyExists: false };
   const existing = await db.select().from(clubEloraSignups).where(eq(clubEloraSignups.email, data.email)).limit(1);
   if (existing.length > 0) return { id: existing[0].id, alreadyExists: true };
-  const result = await db.insert(clubEloraSignups).values(data);
-  return { id: (result[0] as { insertId: number }).insertId ?? null, alreadyExists: false };
+  return { id: await insertAndReturnId(clubEloraSignups, data), alreadyExists: false };
 }
 
 export async function getClubEloraSignups() {
@@ -120,10 +152,7 @@ export async function getProductById(id: number) {
 }
 
 export async function insertProduct(data: InsertProduct): Promise<number | null> {
-  const db = await getDb();
-  if (!db) return null;
-  const result = await db.insert(products).values(data);
-  return (result[0] as { insertId: number }).insertId ?? null;
+  return insertAndReturnId(products, data);
 }
 
 export async function updateProduct(id: number, data: Partial<InsertProduct>): Promise<void> {
@@ -144,8 +173,7 @@ export async function countProducts(): Promise<number> {
 export async function createOrder(orderData: InsertOrder, items: InsertOrderItem[]): Promise<number | null> {
   const db = await getDb();
   if (!db) return null;
-  const result = await db.insert(orders).values(orderData);
-  const orderId = (result[0] as { insertId: number }).insertId;
+  const orderId = await insertAndReturnId(orders, orderData);
   if (!orderId) return null;
   const itemsWithOrderId = items.map(item => ({ ...item, orderId }));
   await db.insert(orderItems).values(itemsWithOrderId);
@@ -292,8 +320,6 @@ export async function getOrderByRedsysId(redsysOrderId: string) {
 }
 
 // ─── PAYMENT METHODS HELPERS ──────────────────────────────────────────────────
-import { paymentMethods, PaymentMethod, InsertPaymentMethod } from "../drizzle/schema";
-
 /** Devuelve todos los métodos de pago ordenados por posición */
 export async function getAllPaymentMethods(): Promise<PaymentMethod[]> {
   const db = await getDb();
@@ -314,16 +340,19 @@ export async function getEnabledPaymentMethods(): Promise<PaymentMethod[]> {
 export async function upsertPaymentMethod(data: InsertPaymentMethod): Promise<void> {
   const db = await getDb();
   if (!db) return;
-  await db.insert(paymentMethods).values(data)
-    .onDuplicateKeyUpdate({
-      set: {
-        name: data.name,
-        description: data.description,
-        enabled: data.enabled,
-        config: data.config,
-        position: data.position,
-      },
-    });
+  const update = {
+    name: data.name,
+    description: data.description,
+    enabled: data.enabled,
+    config: data.config,
+    position: data.position,
+  };
+  const query = db.insert(paymentMethods).values(data);
+  if (usesPostgres) {
+    await (query as any).onConflictDoUpdate({ target: paymentMethods.key, set: update });
+  } else {
+    await query.onDuplicateKeyUpdate({ set: update });
+  }
 }
 
 /** Activa o desactiva un método de pago por su key */
@@ -440,8 +469,6 @@ export async function countAdminCredentials(): Promise<number> {
 }
 
 // ─── COUPONS ─────────────────────────────────────────────────────────────────
-import { coupons, Coupon, InsertCoupon } from "../drizzle/schema";
-
 export async function getAllCoupons(): Promise<Coupon[]> {
   const db = await getDb();
   if (!db) return [];
@@ -456,10 +483,7 @@ export async function getCouponByCode(code: string): Promise<Coupon | null> {
 }
 
 export async function insertCoupon(data: InsertCoupon): Promise<number | null> {
-  const db = await getDb();
-  if (!db) return null;
-  const result = await db.insert(coupons).values({ ...data, code: data.code.toUpperCase() });
-  return (result[0] as { insertId: number }).insertId ?? null;
+  return insertAndReturnId(coupons, { ...data, code: data.code.toUpperCase() });
 }
 
 export async function updateCoupon(id: number, data: Partial<InsertCoupon>): Promise<void> {
@@ -503,10 +527,7 @@ export async function getPopupById(id: number) {
 }
 
 export async function insertPopup(data: InsertSitePopup): Promise<number | null> {
-  const db = await getDb();
-  if (!db) return null;
-  const result = await db.insert(sitePopups).values(data);
-  return (result[0] as { insertId: number }).insertId ?? null;
+  return insertAndReturnId(sitePopups, data);
 }
 
 export async function updatePopup(id: number, data: Partial<InsertSitePopup>): Promise<void> {
@@ -558,10 +579,7 @@ export async function getExperienceSlideById(id: number) {
 }
 
 export async function insertExperienceSlide(data: InsertExperienceSlide): Promise<number | null> {
-  const db = await getDb();
-  if (!db) return null;
-  const result = await db.insert(experienceSlides).values(data);
-  return (result[0] as { insertId: number }).insertId ?? null;
+  return insertAndReturnId(experienceSlides, data);
 }
 
 export async function updateExperienceSlide(id: number, data: Partial<InsertExperienceSlide>): Promise<void> {
