@@ -5,11 +5,14 @@
   "functions": {
     "api/[...path].mjs": {
       "includeFiles": "dist/serverless/**"
+    },
+    "api/storage.mjs": {
+      "includeFiles": "dist/serverless/**"
     }
   },
   "routes": [
+    { "src": "/manus-storage/(.*)", "dest": "/api/storage.mjs" },
     { "src": "/api/(.*)", "dest": "/api/[...path].mjs" },
-    { "src": "/manus-storage/(.*)", "dest": "/api/[...path].mjs" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
