@@ -119,3 +119,24 @@
 ## Navegación con URL en productos
 - [x] Home.tsx: clic en producto navega a /producto/:slug (URL propia, botón atrás funciona)
 - [x] Coleccion.tsx: clic en producto navega a /producto/:slug (URL propia, botón atrás funciona)
+
+## Migración a Vercel con paridad total
+- [ ] Auditar la aplicación actual y documentar las dependencias que deben conservarse sin cambios visibles.
+- [ ] Preparar la configuración de compilación y rutas para Vercel sin modificar el diseño, contenido ni experiencia de usuario.
+- [x] Extraer la API Express en una aplicación reutilizable por la función de Vercel sin cambiar las rutas existentes.
+- [x] Añadir `vercel.json` y la función catch-all para conservar rutas API, imágenes y navegación SPA.
+- [x] Añadir una capa de compatibilidad para servir `/manus-storage/*` desde Vercel Blob conservando las URLs de la interfaz.
+- [ ] Configurar en Vercel las variables de entorno, almacenamiento, base de datos y pagos equivalentes.
+- [ ] Desplegar una versión de prueba y comprobar catálogo, imágenes, carrito, checkout, pagos, analítica y vistas móvil/escritorio.
+- [ ] Conectar el dominio de producción tras la validación completa de la copia en Vercel.
+- [ ] Corregir la expectativa duplicada de cookies en `server/auth.logout.test.ts` antes de validar la migración final.
+- [ ] Configurar Vercel como plataforma de producción principal tras validar una copia idéntica de la web.
+- [ ] Crear y conectar Neon PostgreSQL a Vercel, migrando la persistencia sin modificar la interfaz.
+- [x] Crear la base de datos Neon `elora-smart-production` en la región IAD1.
+- [x] Enlazar Neon al proyecto Vercel `elora-smart` y crear `DATABASE_URL` para Production y Preview.
+- [ ] Auditar el esquema y la capa de acceso actuales para una migración de MySQL a PostgreSQL compatible con Neon.
+- [ ] Generar y aplicar el esquema PostgreSQL de Elora Smart en Neon.
+- [ ] Migrar los datos persistentes existentes y verificar integridad sin exponer información sensible.
+- [ ] Transferir los activos recuperados a Vercel Blob y comprobar las rutas existentes `/manus-storage/*`.
+- [ ] Configurar las variables de entorno restantes en Vercel y realizar pruebas de integración.
+- [ ] Validar el despliegue de Vercel en móvil y escritorio antes de trasladar el dominio.
