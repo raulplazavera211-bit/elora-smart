@@ -10,6 +10,20 @@
       "includeFiles": "dist/serverless/**"
     }
   },
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "elorasmart.online" }],
+      "destination": "https://elorasmart.store/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.elorasmart.online" }],
+      "destination": "https://elorasmart.store/:path*",
+      "permanent": true
+    }
+  ],
   "routes": [
     { "handle": "filesystem" },
     { "src": "/manus-storage/(.*)", "dest": "/api/storage.mjs" },
