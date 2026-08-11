@@ -137,9 +137,15 @@
 - [x] Auditar el esquema y la capa de acceso actuales para una migración de MySQL a PostgreSQL compatible con Neon.
 - [x] Generar y aplicar el esquema PostgreSQL de Elora Smart en Neon.
 - [x] Migrar los datos persistentes existentes y verificar integridad sin exponer información sensible.
-- [ ] Transferir los activos recuperados a Vercel Blob y comprobar las rutas existentes `/manus-storage/*`.
+- [x] Transferir los activos recuperados a Vercel Blob y comprobar las rutas existentes `/manus-storage/*`.
 - [x] Añadir un importador reanudable de Blob que conserva las rutas actuales y se ejecuta únicamente en la compilación de Vercel.
-- [ ] Ejecutar y verificar en Vercel la importación de los 128 activos desde la fuente temporal autorizada.
-- [ ] Corregir el error de invocación de la función Vercel al resolver `/manus-storage/*` desde Vercel Blob.
+- [x] Ejecutar y verificar en Vercel la importación de los 128 activos desde la fuente temporal autorizada.
+- [x] Corregir el error de invocación de la función Vercel al resolver `/manus-storage/*` desde Vercel Blob.
+- [ ] Verificar en Vercel Blob el recuento final de objetos importados y confirmar que coincide con los 128 activos preparados.
+- [ ] Probar rutas `/manus-storage/*` representativas para imagen, PDF, vídeo y fuente antes de cerrar la validación de activos.
+- [ ] Registrar la evidencia completa de inventario e importación de activos en las notas de migración.
+- [x] Desactivar la fuente temporal del importador de Blob tras confirmar la migración para que futuros despliegues sean independientes.
+- [x] Verificar que `BLOB_IMPORT_ASSETS` no está definida en los entornos de Vercel.
+- [ ] Publicar y verificar un despliegue autónomo que no acceda a la fuente temporal de activos.
 - [ ] Configurar las variables de entorno restantes en Vercel y realizar pruebas de integración.
 - [ ] Validar el despliegue de Vercel en móvil y escritorio antes de trasladar el dominio.

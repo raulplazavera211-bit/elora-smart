@@ -46,8 +46,8 @@ async function listExistingBlobPaths() {
   return paths;
 }
 
-if (!token) {
-  console.log("[blob-import] Sin BLOB_READ_WRITE_TOKEN; se omite la importación fuera de Vercel.");
+if (!token || process.env.BLOB_IMPORT_ASSETS !== "1") {
+  console.log("[blob-import] Importación temporal omitida; los activos ya residen en Vercel Blob.");
   process.exit(0);
 }
 
