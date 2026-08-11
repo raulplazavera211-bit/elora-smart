@@ -140,5 +140,6 @@
 - [ ] Transferir los activos recuperados a Vercel Blob y comprobar las rutas existentes `/manus-storage/*`.
 - [x] Añadir un importador reanudable de Blob que conserva las rutas actuales y se ejecuta únicamente en la compilación de Vercel.
 - [ ] Ejecutar y verificar en Vercel la importación de los 128 activos desde la fuente temporal autorizada.
+- [ ] Corregir el error de invocación de la función Vercel al resolver `/manus-storage/*` desde Vercel Blob.
 - [ ] Configurar las variables de entorno restantes en Vercel y realizar pruebas de integración.
 - [ ] Validar el despliegue de Vercel en móvil y escritorio antes de trasladar el dominio.
