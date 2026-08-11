@@ -11,6 +11,7 @@
     }
   },
   "routes": [
+    { "handle": "filesystem" },
     { "src": "/manus-storage/(.*)", "dest": "/api/storage.mjs" },
     { "src": "/api/(.*)", "dest": "/api/[...path].mjs" },
     { "src": "/(.*)", "dest": "/index.html" }

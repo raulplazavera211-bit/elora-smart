@@ -149,3 +149,4 @@
 - [x] Publicar y verificar un despliegue autónomo que no acceda a la fuente temporal de activos.
 - [ ] Configurar las variables de entorno restantes en Vercel y realizar pruebas de integración.
 - [ ] Validar el despliegue de Vercel en móvil y escritorio antes de trasladar el dominio.
+- [ ] Corregir el fallback de Vercel para que no devuelva `index.html` en lugar de los bundles estáticos de la interfaz.
