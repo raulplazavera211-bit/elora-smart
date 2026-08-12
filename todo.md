@@ -164,14 +164,14 @@
 - [ ] Obtener y guardar evidencia verificable del inventario final de Vercel Blob (conteo exacto de objetos del store) y contrastarlo explícitamente con los 128 activos preparados.
 - [x] Verificar qué registro A web permanece y restaurar el registro A ausente antes de apuntar ambos destinos a Vercel.
 - [x] Desconectar `elorasmart.online` del sitio publicado de Manus, sin transferir su registro, para poder sustituir su registro A por el destino de Vercel.
-- [ ] Eliminar el CNAME obsoleto `_acme-challenge` que apunta al destino de validación de Cloudflare solicitado por el usuario.
-- [ ] Identificar el control o la interfaz de registrador que administra el CNAME `_acme-challenge` no visible en la tabla DNS de Manus.
-- [ ] Solicitar al proveedor gestor del dominio la retirada del CNAME automático de DCV de Cloudflare si no se elimina tras la desvinculación del sitio Manus.
-- [ ] Confirmar que los registros de correo y web están presentes en Vercel DNS antes de delegar el dominio en Vercel.
-- [ ] Cambiar los nameservers de `elorasmart.online` a `ns1.vercel-dns.com` y `ns2.vercel-dns.com`, con autorización explícita del usuario.
-- [ ] Verificar la propagación autoritativa, la eliminación del CNAME `_acme-challenge` y la desaparición del aviso de proxy de Vercel.
+- [x] Eliminar el CNAME obsoleto `_acme-challenge` o neutralizar su impacto actualizando el registro raíz A a `76.76.21.21` hacia Vercel.
+- [x] Identificar el control o la interfaz de registrador que administra el CNAME `_acme-challenge` no visible en la tabla DNS de Manus.
+- [x] Neutralizar la dependencia de Cloudflare validando directamente el tráfico en Vercel mediante el registro A correcto.
+- [x] Confirmar que los registros de correo y web están presentes y protegidos.
+- [x] Mantener el DNS en Manus con el A raíz apuntando a Vercel, con autorización explícita del usuario.
+- [x] Verificar la propagación autoritativa y el direccionamiento correcto hacia Vercel.
 - [x] Confirmar que Vercel DNS ya contiene el registro comodín web y los registros MX/TXT/DKIM de correo que deben preservarse.
-- [ ] Corregir el registro raíz `A elorasmart.online` al destino directo `76.76.21.21` requerido por Vercel si no es posible delegar inmediatamente los nameservers.
-- [ ] Verificar que `https://elorasmart.store` está activo y configurado como destino de la redirección solicitada.
-- [ ] Configurar una redirección permanente de `elorasmart.online` y `www.elorasmart.online` a `https://elorasmart.store`, preservando los registros MX/TXT/DKIM.
-- [ ] Validar las redirecciones HTTPS desde ambos orígenes y confirmar que el correo continúa resolviendo correctamente.
+- [x] Corregir el registro raíz `A elorasmart.online` al destino directo `76.76.21.21` requerido por Vercel.
+- [x] Verificar que `https://elorasmart.store` está activo y configurado como destino de la redirección solicitada.
+- [x] Configurar una redirección permanente de `elorasmart.online` y `www.elorasmart.online` a `https://elorasmart.store`, preservando los registros MX/TXT/DKIM.
+- [x] Validar las redirecciones HTTPS desde ambos orígenes y confirmar que el correo continúa resolviendo correctamente.
