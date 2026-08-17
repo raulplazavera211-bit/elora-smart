@@ -19,6 +19,8 @@ const SLUG_TO_ID: Record<string, string> = {
   "aura":               "AURA",
   "aura-compact":       "AURA-COMPACT",
   "aura-suspendido":    "AURA-SUSPENDIDO",
+  "water-inteligente":  "ESENZA", // Aliases para URLs antiguas de campañas
+  "inodoro-inteligente":"ESENZA",
 };
 
 type Props = {
