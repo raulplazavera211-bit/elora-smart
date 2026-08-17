@@ -1662,7 +1662,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
         initial={false}
         animate={isOpen ? { opacity: 1, pointerEvents: "auto" } : { opacity: 0, pointerEvents: "none" }}
         transition={{ duration: 0.25 }}
-        className="fixed inset-0 z-[60] flex"
+        className="fixed inset-0 z-[300] flex"
         onClick={handleClose}
       >
         {/* Overlay móvil */}

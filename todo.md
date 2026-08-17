@@ -175,3 +175,6 @@
 - [x] Verificar que `https://elorasmart.store` está activo y configurado como destino de la redirección solicitada.
 - [x] Configurar una redirección permanente de `elorasmart.online` y `www.elorasmart.online` a `https://elorasmart.store`, preservando los registros MX/TXT/DKIM.
 - [x] Validar las redirecciones HTTPS desde ambos orígenes y confirmar que el correo continúa resolviendo correctamente.
+- [x] Corregir el botón Comprar de las fichas de producto para añadir el artículo y abrir el carrito en móvil y escritorio.
+- [x] Añadir una prueba de regresión para comprobar que el handler de compra llama a `openCart`.
+- [ ] Validar el flujo de compra desde una ficha de producto en producción antes de publicar.
