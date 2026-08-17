@@ -177,4 +177,4 @@
 - [x] Validar las redirecciones HTTPS desde ambos orígenes y confirmar que el correo continúa resolviendo correctamente.
 - [x] Corregir el botón Comprar de las fichas de producto para añadir el artículo y abrir el carrito en móvil y escritorio.
 - [x] Añadir una prueba de regresión para comprobar que el handler de compra llama a `openCart`.
-- [ ] Validar el flujo de compra desde una ficha de producto en producción antes de publicar.
+- [x] Validar el flujo de compra desde una ficha de producto en producción antes de publicar.
