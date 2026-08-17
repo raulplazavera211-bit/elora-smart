@@ -141,7 +141,7 @@
 - [x] Añadir un importador reanudable de Blob que conserva las rutas actuales y se ejecuta únicamente en la compilación de Vercel.
 - [x] Ejecutar y verificar en Vercel la importación de los 128 activos desde la fuente temporal autorizada.
 - [x] Corregir el error de invocación de la función Vercel al resolver `/manus-storage/*` desde Vercel Blob.
-- [ ] Verificar en Vercel Blob el recuento final de objetos importados y confirmar que coincide con los 128 activos preparados.
+- [x] Verificar en Vercel Blob el recuento final de objetos importados y confirmar que coincide con los 128 activos preparados.
 - [x] Probar rutas `/manus-storage/*` representativas para imagen, PDF, vídeo y fuente antes de cerrar la validación de activos.
 - [x] Registrar la evidencia completa de inventario e importación de activos en las notas de migración.
 - [x] Desactivar la fuente temporal del importador de Blob tras confirmar la migración para que futuros despliegues sean independientes.
@@ -160,8 +160,8 @@
 - [x] Mantener los nameservers actuales de Manus: Vercel valida correctamente mediante registros A heredados y no se requiere trasladar la zona DNS.
 - [x] Validar el A raíz `216.150.1.1` y la configuración de Vercel con los nameservers actuales de Manus, sin trasladar la zona DNS a Vercel.
 - [x] Revalidar el aviso temporal de proxy: los servidores autoritativos, la CLI y las respuestas HTTPS confirman que el tráfico llega directamente a Vercel.
-- [ ] Completar la validación funcional final del dominio de producción (`elorasmart.online`/`www`) incluyendo catálogo, imágenes Blob, carrito, checkout no destructivo, pagos/webhooks sin cobro real y analítica antes de dar por conectado el dominio.
-- [ ] Obtener y guardar evidencia verificable del inventario final de Vercel Blob (conteo exacto de objetos del store) y contrastarlo explícitamente con los 128 activos preparados.
+- [x] Completar la validación funcional final del dominio de producción (`elorasmart.online`/`www`) incluyendo catálogo, imágenes Blob, carrito, checkout no destructivo, pagos/webhooks sin cobro real y analítica antes de dar por conectado el dominio.
+- [x] Obtener y guardar evidencia verificable del inventario final de Vercel Blob (conteo exacto de objetos del store) y contrastarlo explícitamente con los 128 activos preparados.
 - [x] Verificar qué registro A web permanece y restaurar el registro A ausente antes de apuntar ambos destinos a Vercel.
 - [x] Desconectar `elorasmart.online` del sitio publicado de Manus, sin transferir su registro, para poder sustituir su registro A por el destino de Vercel.
 - [x] Eliminar el CNAME obsoleto `_acme-challenge` o neutralizar su impacto actualizando el registro raíz A a `76.76.21.21` hacia Vercel.
