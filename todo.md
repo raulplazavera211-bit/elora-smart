@@ -197,10 +197,10 @@
 - [x] Validar visualmente en producción el nuevo blog y publicar.
 
 ## Reestructuración SEO y responsive del blog
-- [ ] Auditar y corregir el comportamiento de fijación del header durante el scroll.
+- [x] Auditar y corregir el comportamiento de fijación del header durante el scroll.
 - [x] Reorganizar el índice y las fichas con una jerarquía SEO clara de categorías, títulos y enlaces internos.
 - [x] Sustituir temporalmente las fotos de producto del contenido por placeholders uniformes con el logo de Elora.
-- [ ] Optimizar la disposición, navegación y legibilidad del blog en móvil y escritorio.
+- [x] Optimizar la disposición, navegación y legibilidad del blog en móvil y escritorio.
 - [x] Añadir pruebas de regresión de la estructura SEO, placeholders y header fijo.
-- [ ] Validar visualmente el nuevo diseño en producción y publicar.
-- [ ] Restablecer la posición de scroll al inicio de cada guía al cambiar de URL o pulsar Leer guía.
+- [x] Validar visualmente el nuevo diseño en producción y publicar.
+- [x] Restablecer la posición de scroll al inicio de cada guía al cambiar de URL o pulsar Leer guía.
