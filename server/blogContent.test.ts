@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { BLOG_POSTS } from "../client/src/lib/blog";
+import { BLOG_POSTS, getBlogCover } from "../client/src/lib/blog";
 
 describe("blog editorial de Elora Smart", () => {
   it("contiene exactamente treinta entradas con identificadores únicos", () => {
@@ -18,6 +18,9 @@ describe("blog editorial de Elora Smart", () => {
       expect(post.body.length).toBeGreaterThan(0);
       expect(post.body.every((paragraph) => paragraph.trim().length > 0)).toBe(true);
       expect((post.additionalSources ?? []).every((source) => source.href.startsWith("/") && source.label.trim().length > 0)).toBe(true);
+      expect(getBlogCover(post)).toMatch(/^\/manus-storage\//);
+      expect(post.category).not.toBe("Envíos");
+      expect(post.sourceHref).not.toBe("/politica-envios");
     });
   });
 

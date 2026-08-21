@@ -1,6 +1,6 @@
 export type BlogPost = {
   slug: string;
-  category: "Modelos" | "Funciones" | "Instalación" | "Garantía y soporte" | "Envíos";
+  category: "Modelos" | "Funciones" | "Instalación" | "Guías prácticas";
   title: string;
   excerpt: string;
   body: string[];
@@ -11,7 +11,7 @@ export type BlogPost = {
 
 /**
  * Entradas editoriales construidas exclusivamente a partir de contenido
- * publicado en fichas de producto, Garantías y Política de envíos.
+ * publicado en fichas de producto, preguntas frecuentes y Garantías.
  * No se usan datos de terceros ni afirmaciones que no existan en esas fuentes.
  */
 export const BLOG_POSTS: BlogPost[] = [
@@ -296,102 +296,184 @@ export const BLOG_POSTS: BlogPost[] = [
     sourceLabel: "Fichas de producto suspendido",
   },
   {
-    slug: "garantia-ceramica-diez-anos",
-    category: "Garantía y soporte",
-    title: "Garantía de cerámica de 10 años: condiciones publicadas",
-    excerpt: "La página de garantías define la cobertura de fabricación de la cerámica.",
+    slug: "que-incluye-esenza-en-la-caja",
+    category: "Guías prácticas",
+    title: "¿Qué incluye ESENZA en la caja?",
+    excerpt: "Los elementos que la ficha de producto enumera para el modelo a suelo.",
     body: [
-      "La página de Garantía y Soporte de ELORA SMART indica que todos sus modelos incluyen 10 años de garantía en cerámica, siempre que el producto se haya instalado correctamente y se utilice conforme a las indicaciones del fabricante.",
-      "La cobertura publicada se refiere a defectos de fabricación relacionados con la estructura cerámica. La misma página diferencia esta garantía de la cobertura de componentes tecnológicos y de la disponibilidad de recambios, que tienen condiciones propias.",
+      "La ficha de ESENZA publica que el contenido de la caja incluye el inodoro inteligente ESENZA, el mando a distancia en español, la rueda lateral multifunción, el manual de instalación y uso y el kit de instalación.",
+      "El mando a distancia se describe como un control en español con memoria para dos usuarios. La rueda lateral se publica como un control para lavado, descarga y secado, y el manual forma parte de los elementos incluidos por el modelo.",
+      "Estos elementos corresponden a ESENZA. Los modelos AURA, suspendidos, compactos y THALOS tienen sus propios listados de contenido incluido en sus respectivas fichas.",
     ],
-    sourceHref: "/garantias",
-    sourceLabel: "Página de Garantía y Soporte",
+    sourceHref: "/producto/esenza",
+    sourceLabel: "Ficha de producto ESENZA",
   },
   {
-    slug: "cobertura-tecnologica-esenza-y-aura",
-    category: "Garantía y soporte",
-    title: "Cobertura tecnológica de ESENZA y AURA según la página de garantías",
-    excerpt: "La web distingue los periodos de cobertura de componentes tecnológicos por gama.",
+    slug: "que-modelo-esta-pensado-para-banos-pequenos",
+    category: "Guías prácticas",
+    title: "¿Qué modelos están pensados para baños pequeños?",
+    excerpt: "Los formatos compactos y back-to-wall que se describen en las fichas publicadas.",
     body: [
-      "La página de Garantía y Soporte indica que ESENZA cuenta con cobertura de componentes tecnológicos durante los primeros tres años desde la compra cuando la incidencia se relaciona con un defecto de fabricación.",
-      "Para AURA, la misma página publica ELORA Premium Care con cobertura ampliada de componentes tecnológicos durante los primeros cinco años desde la compra. La garantía de cerámica de 10 años se presenta como común a todos los modelos bajo las condiciones publicadas.",
+      "ESENZA Compact se describe como un modelo de fondo reducido, pegado a la pared, pensado para ganar espacio en baños pequeños, reformas y obra nueva. AURA Compact también se presenta como un formato compacto para baños con poco espacio o para ganar amplitud.",
+      "THALOS Compact se publica con un formato corto y totalmente pegado a la pared. Su ficha indica que está especialmente diseñado para baños pequeños y que optimiza cada centímetro sin perder funcionalidad.",
+      "Cada formato compacto tiene funciones e instalación propias. Las fichas específicas de ESENZA Compact, AURA Compact y THALOS Compact permiten revisar esa información antes de elegir el modelo.",
     ],
-    sourceHref: "/garantias",
-    sourceLabel: "Página de Garantía y Soporte",
+    sourceHref: "/producto/esenza-compact",
+    sourceLabel: "Ficha de producto ESENZA Compact",
+    additionalSources: [
+      { href: "/producto/aura-compact", label: "Ficha de producto AURA Compact" },
+      { href: "/coleccion", label: "Catálogo THALOS Compact" },
+    ],
   },
   {
-    slug: "recambios-disponibles-diez-anos",
-    category: "Garantía y soporte",
-    title: "Recambios durante 10 años: el compromiso publicado por ELORA",
-    excerpt: "Disponibilidad de piezas y diferencia entre recambio disponible y recambio gratuito.",
+    slug: "que-significa-descarga-dual",
+    category: "Guías prácticas",
+    title: "¿Qué significa la descarga dual en AURA Compact?",
+    excerpt: "La ficha del modelo publica dos opciones: completa y ecológica.",
     body: [
-      "ELORA SMART publica disponibilidad de recambios durante 10 años desde la compra. La página de garantía explica que este compromiso permite ofrecer piezas para mantener el producto después de que termine el periodo de garantía.",
-      "La disponibilidad no significa que todas las piezas sean gratuitas durante diez años. Cuando la reparación está fuera de garantía, la web indica que se informará previamente de las opciones y de los posibles costes de piezas, envíos o intervenciones.",
+      "La ficha de AURA Compact publica una descarga dual con dos opciones: completa y ecológica. Esta característica aparece tanto entre las funciones del modelo como en el bloque de control de sus especificaciones técnicas.",
+      "En las preguntas frecuentes de AURA Compact, ELORA indica que la descarga inteligente optimiza el consumo mediante esas dos opciones. La misma ficha publica apertura automática, lavado con agua tibia, secado con aire caliente, desodorización y escudo de espuma como parte del modelo.",
+      "La descarga y el resto de funciones deben confirmarse siempre en la ficha del modelo elegido, ya que las especificaciones se muestran individualmente para cada producto de la colección.",
     ],
-    sourceHref: "/garantias",
-    sourceLabel: "Página de Garantía y Soporte",
+    sourceHref: "/producto/aura-compact",
+    sourceLabel: "Ficha de producto AURA Compact",
   },
   {
-    slug: "soporte-tecnico-incidencias-elora",
-    category: "Garantía y soporte",
-    title: "Soporte técnico ante una incidencia: las vías publicadas",
-    excerpt: "Asistencia remota, técnico local, pieza de repuesto o revisión en instalaciones.",
+    slug: "para-que-sirve-diseno-rimless",
+    category: "Guías prácticas",
+    title: "¿Qué es el diseño rimless que publica ESENZA?",
+    excerpt: "La ficha técnica lo identifica como un diseño sin reborde interior.",
     body: [
-      "La página de soporte indica que ELORA SMART puede estudiar una incidencia mediante asistencia remota paso a paso, intervención de un técnico local cuando sea posible, envío de una pieza a un técnico de confianza o revisión del componente en sus instalaciones.",
-      "El soporte publicado incluye orientación sobre compatibilidad, instalación, uso del mando, funciones inteligentes, mantenimiento básico, consumibles y recambios. Antes de una actuación con coste fuera de garantía, la web señala que comunica las opciones disponibles.",
+      "En la ficha de ESENZA, el diseño rimless se define como un diseño sin reborde interior. Esta característica aparece tanto en el listado de funciones como en el grupo técnico de agua y sistema.",
+      "La ficha también publica una boquilla autolimpiable de acero inoxidable, lavado posterior, femenino y móvil, y un tanque integrado de 5 litros. Todas estas especificaciones forman parte de la descripción técnica de ESENZA.",
+      "Para comprobar cómo se presenta esta característica en otros formatos de la colección, la referencia correcta es la ficha de producto correspondiente, ya que el catálogo no atribuye las mismas especificaciones de forma universal a todos los modelos.",
     ],
-    sourceHref: "/garantias",
-    sourceLabel: "Página de Garantía y Soporte",
+    sourceHref: "/producto/esenza",
+    sourceLabel: "Ficha de producto ESENZA",
   },
   {
-    slug: "zonas-y-tarifas-envio-publicadas",
-    category: "Envíos",
-    title: "Zonas y tarifas de envío: la información publicada por ELORA SMART",
-    excerpt: "España peninsular y Portugal continental sin coste, más tarifas para destinos concretos.",
+    slug: "que-necesito-para-instalar-esenza",
+    category: "Guías prácticas",
+    title: "¿Qué necesito para instalar un ESENZA?",
+    excerpt: "Conexiones existentes, un enchufe cercano y el proceso publicado para el modelo a suelo.",
     body: [
-      "La Política de Envíos publica envío gratuito para España peninsular y Portugal continental. Para Baleares, Francia continental, Italia continental, Alemania y Países Bajos se muestran tarifas específicas.",
-      "La misma página enumera zonas sin servicio por motivos logísticos, aduaneros o fiscales, entre ellas Canarias, Ceuta, Melilla, Azores, Madeira, Córcega, islas italianas y territorios franceses de ultramar. Para casos concretos, la web invita a contactar con ELORA SMART.",
+      "La ficha de ESENZA indica que el modelo a suelo sustituye al inodoro actual utilizando las mismas conexiones. Por ello, se presenta como una opción para reformas de baño y sustituciones de un inodoro tradicional sin cambiar la instalación.",
+      "El requisito que destaca la ficha es disponer de un enchufe cerca. ELORA también publica que un fontanero de confianza puede realizar la instalación en 60–90 minutos y que el producto incluye manual de instalación y uso, kit de instalación, mando en español y rueda lateral multifunción.",
+      "Una vez instalado, la propia ficha indica que las preferencias se pueden configurar desde el mando en español. Para confirmar la compatibilidad concreta de un baño, la página de Garantía y Soporte incluye orientación sobre compatibilidad e instalación.",
     ],
-    sourceHref: "/politica-envios",
-    sourceLabel: "Política de Envíos",
+    sourceHref: "/producto/esenza",
+    sourceLabel: "Ficha de producto ESENZA",
+    additionalSources: [{ href: "/garantias", label: "Página de Garantía y Soporte" }],
   },
   {
-    slug: "plazos-y-proceso-envio",
-    category: "Envíos",
-    title: "Plazos y proceso de envío según la Política de Envíos",
-    excerpt: "Preparación, seguimiento y plazos estimados por destino publicados en la web.",
+    slug: "que-ocurre-si-hay-baja-presion-de-agua",
+    category: "Guías prácticas",
+    title: "¿Qué ocurre si hay baja presión de agua?",
+    excerpt: "La respuesta publicada por la ficha de ESENZA sobre su tanque integrado y su bomba doble.",
     body: [
-      "La Política de Envíos publica plazos estimados de 3–7 días laborables para España peninsular, 5–10 días para Portugal continental y Baleares, y 7–15 días para Francia, Italia, Alemania y Países Bajos. Estos plazos se presentan como estimaciones sujetas a disponibilidad, transporte y circunstancias excepcionales.",
-      "Tras confirmarse el pago, la web indica una preparación de 1–2 días laborables en Bertamiráns (AMES). Una vez recogido el pedido, se comunica por correo el número de seguimiento para consultar el estado del envío.",
+      "La ficha de ESENZA publica un tanque integrado de 5 litros y una bomba doble de alta potencia. En sus preguntas frecuentes, indica que este sistema garantiza un funcionamiento fiable incluso en edificios antiguos o con baja presión de agua.",
+      "La sección técnica de la misma ficha especifica que el tanque es integrado, que la bomba es doble de alta potencia y que la descarga es dual direccional. Estas características se muestran como parte del sistema de agua del modelo ESENZA.",
+      "La información corresponde a ESENZA. Para conocer las especificaciones de agua y descarga de los demás modelos, la referencia es la ficha técnica individual del producto elegido.",
     ],
-    sourceHref: "/politica-envios",
-    sourceLabel: "Política de Envíos",
+    sourceHref: "/producto/esenza",
+    sourceLabel: "Ficha de producto ESENZA",
   },
   {
-    slug: "recepcion-y-danos-transporte",
-    category: "Envíos",
-    title: "Recepción del pedido y daños de transporte: pasos publicados",
-    excerpt: "Qué recomienda la Política de Envíos en el momento de la entrega.",
+    slug: "diferencia-esenza-y-aura",
+    category: "Guías prácticas",
+    title: "¿Qué diferencia hay entre ESENZA y AURA?",
+    excerpt: "Una respuesta basada en la pregunta frecuente publicada en la ficha de ESENZA.",
     body: [
-      "La Política de Envíos recomienda revisar el embalaje exterior antes de firmar el albarán. Si se detectan daños, indica anotarlos en el albarán y contactar con ELORA SMART de inmediato.",
-      "En caso de daños en embalaje o producto, la web pide reflejar los daños visibles antes de firmar, fotografiar embalaje y producto y contactar en un plazo máximo de 24 horas con las imágenes. La política indica que ELORA SMART gestionará la reclamación y procederá a reposición o reparación sin coste adicional para el cliente.",
+      "La pregunta frecuente de ESENZA explica que este modelo reúne las funciones esenciales de la gama: lavado, secado, asiento calefactado y automatización. La misma ficha lo presenta como un modelo a suelo que sustituye un inodoro tradicional usando las mismas conexiones.",
+      "Según esa respuesta publicada, AURA añade escudo de espuma anti-salpicaduras, luz UV, aromaterapia y control por voz. La ficha de AURA enumera además apertura automática, asiento climatizado, lavado ajustable, secado, mando en español, esterilización UV, aromaterapia integrada y descarga dual.",
+      "Las fichas de cada modelo permiten contrastar el formato de instalación y las funciones publicadas antes de tomar una decisión entre ambas gamas.",
     ],
-    sourceHref: "/politica-envios",
-    sourceLabel: "Política de Envíos",
+    sourceHref: "/producto/esenza",
+    sourceLabel: "Ficha de producto ESENZA",
+    additionalSources: [{ href: "/producto/aura", label: "Ficha de producto AURA" }],
   },
   {
-    slug: "derecho-desistimiento-devoluciones",
-    category: "Envíos",
-    title: "Devoluciones y derecho de desistimiento: información publicada",
-    excerpt: "El plazo, el estado del producto y el procedimiento descritos en la Política de Envíos.",
+    slug: "que-implica-elegir-inodoro-suspendido",
+    category: "Guías prácticas",
+    title: "¿Qué implica elegir un inodoro suspendido?",
+    excerpt: "Suelo libre, altura ajustable y requisitos publicados para los modelos flotantes.",
     body: [
-      "La Política de Envíos indica un derecho de desistimiento de 14 días naturales desde la recepción del producto. Para ejercerlo, la web solicita comunicarlo por escrito antes de que venza el plazo.",
-      "El producto debe devolverse sin usar, en perfecto estado y con su embalaje original. La política publicada señala que los gastos de devolución corresponden al cliente, salvo defecto de fabricación. Tras la recepción y verificación, se indica un reembolso íntegro en un máximo de 14 días mediante el mismo método de pago utilizado en la compra.",
+      "Las fichas de ESENZA Suspendido, AURA Suspendido y THALOS Suspendido describen modelos flotantes instalados en pared. En todos ellos, el formato suspendido deja el suelo libre; AURA Suspendido y THALOS Suspendido publican además altura ajustable durante la instalación.",
+      "ESENZA Suspendido indica que incluye módulo de instalación, requiere un enchufe Schuko a menos de 1,2 metros y necesita instalador. La ficha publica un tiempo de instalación de 90–120 minutos. AURA Suspendido y THALOS Suspendido también especifican la necesidad de instalador especializado y enchufe cercano.",
+      "Cada modelo combina el formato suspendido con sus propias funciones. Por eso, una vez decidido el tipo de instalación, la información más completa está en la ficha técnica del modelo flotante que interese.",
     ],
-    sourceHref: "/politica-envios",
-    sourceLabel: "Política de Envíos",
+    sourceHref: "/producto/esenza-suspendido",
+    sourceLabel: "Ficha de producto ESENZA Suspendido",
+    additionalSources: [
+      { href: "/producto/aura-suspendido", label: "Ficha de producto AURA Suspendido" },
+      { href: "/coleccion", label: "Catálogo THALOS Suspendido" },
+    ],
   },
 ];
+
+const BLOG_COVER_IMAGES = {
+  esenza: [
+    "/manus-storage/esenza-main_7db64882.png",
+    "/manus-storage/ESENZa-12_b3dd228d.webp",
+    "/manus-storage/ESENZA-9_70e448e2.webp",
+  ],
+  esenzaCompact: [
+    "/manus-storage/Clipboard_0_D4A653F1_4c49e12c.png",
+    "/manus-storage/esenza-compact-3_af2323bc.jpg",
+  ],
+  esenzaSuspendido: [
+    "/manus-storage/esenza-suspendido-1_472bd803.jpg",
+    "/manus-storage/esenza-suspendido-4_8a048cf4.jpg",
+  ],
+  aura: [
+    "/manus-storage/inodoro-aura_4c9492ae.jpg",
+    "/manus-storage/aura-elorasmart6_394ec9d0.jpg",
+  ],
+  auraCompact: [
+    "/manus-storage/AURA-compact-p-800x800_597da236.jpg",
+    "/manus-storage/aura-compact-6_2af3f2ac.jpg",
+  ],
+  auraSuspendido: [
+    "/manus-storage/aura-suspendido-v3_9a4f47aa.png",
+    "/manus-storage/aura-suspendido-3_a85c6741.jpg",
+  ],
+  thalosSuspendido: [
+    "/manus-storage/12_22ba2ae7.jpeg",
+    "/manus-storage/5_284bacd8.jpeg",
+  ],
+  thalosCompact: [
+    "/manus-storage/WhatsAppImage2026-07-16at12.45.28(2)_dda274fb.jpeg",
+    "/manus-storage/WhatsAppImage2026-07-16at12.46.17_8440d82c.jpeg",
+  ],
+} as const;
+
+/** Selecciona únicamente imágenes existentes que ya forman parte del catálogo publicado. */
+export function getBlogCover(post: BlogPost, variant = 0): string {
+  const slug = post.slug;
+  const choose = (images: readonly string[]) => images[variant % images.length];
+
+  if (slug.includes("thalos-compact")) return choose(BLOG_COVER_IMAGES.thalosCompact);
+  if (slug.includes("thalos")) return choose(BLOG_COVER_IMAGES.thalosSuspendido);
+  if (slug.includes("esenza-suspendido")) return choose(BLOG_COVER_IMAGES.esenzaSuspendido);
+  if (slug.includes("esenza-compact")) return choose(BLOG_COVER_IMAGES.esenzaCompact);
+  if (slug.includes("aura-compact")) return choose(BLOG_COVER_IMAGES.auraCompact);
+  if (slug.includes("aura-suspendido") || slug.includes("suspendido")) return choose(BLOG_COVER_IMAGES.auraSuspendido);
+  if (slug.includes("aura")) return choose(BLOG_COVER_IMAGES.aura);
+  return choose(BLOG_COVER_IMAGES.esenza);
+}
+
+/** Devuelve la ficha de catálogo que documenta el contenido de la guía cuando existe una relación directa. */
+export function getBlogProductId(post: BlogPost): string | null {
+  const slug = post.slug;
+  if (slug.includes("esenza-suspendido")) return "ESENZA-SUSPENDIDO";
+  if (slug.includes("esenza-compact")) return "ESENZA-COMPACT";
+  if (slug.includes("aura-compact")) return "AURA-COMPACT";
+  if (slug.includes("aura-suspendido")) return "AURA-SUSPENDIDO";
+  if (slug.includes("thalos-compact")) return "THALOS-COMPACT";
+  if (slug.includes("thalos")) return "THALOS-SUSPENDIDO";
+  if (slug.includes("aura") || slug.includes("espuma") || slug.includes("desinfeccion") || slug.includes("mando")) return "AURA-COMPACT";
+  return "ESENZA";
+}
 
 export function getBlogPost(slug: string) {
   return BLOG_POSTS.find((post) => post.slug === slug);

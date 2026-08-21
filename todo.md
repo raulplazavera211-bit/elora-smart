@@ -186,3 +186,12 @@
 - [x] Añadir las rutas públicas de índice y detalle del blog y enlazarlas desde la navegación existente.
 - [x] Añadir pruebas de regresión para catálogo de entradas y rutas del blog.
 - [x] Revisar la visualización de las 30 entradas y publicar el blog.
+
+## Rediseño editorial y visual del blog
+- [x] Seleccionar y asociar imágenes reales del catálogo publicado a las treinta guías.
+- [x] Sustituir las entradas de políticas, envíos y devoluciones por preguntas y guías prácticas basadas en productos, funciones, uso e instalación.
+- [x] Ampliar el contenido de las treinta guías únicamente con información ya verificada en las fichas y preguntas frecuentes de la web.
+- [x] Sustituir el encabezado actual por el mismo componente de header de la página de inicio.
+- [x] Rediseñar el índice y las fichas del blog para mostrar las imágenes reales de producto sin cambiar la identidad visual existente.
+- [x] Añadir y ejecutar pruebas de regresión para imágenes, contenido y rutas del blog rediseñado.
+- [ ] Validar visualmente en producción el nuevo blog y publicar.
