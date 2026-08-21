@@ -127,10 +127,10 @@
 - [x] Añadir `vercel.json` y la función catch-all para conservar rutas API, imágenes y navegación SPA.
 - [x] Añadir una capa de compatibilidad para servir `/manus-storage/*` desde Vercel Blob conservando las URLs de la interfaz.
 - [x] Configurar en Vercel las variables de entorno, almacenamiento, base de datos y pagos equivalentes.
-- [ ] Desplegar una versión de prueba y comprobar catálogo, imágenes, carrito, checkout, pagos, analítica y vistas móvil/escritorio.
-- [ ] Conectar el dominio de producción tras la validación completa de la copia en Vercel.
+- [x] Desplegar una versión de prueba y comprobar catálogo, imágenes, carrito, checkout, pagos, analítica y vistas móvil/escritorio.
+- [x] Conectar el dominio de producción tras la validación completa de la copia en Vercel.
 - [x] Corregir la expectativa duplicada de cookies en `server/auth.logout.test.ts` antes de validar la migración final.
-- [ ] Configurar Vercel como plataforma de producción principal tras validar una copia idéntica de la web.
+- [x] Configurar Vercel como plataforma de producción principal tras validar una copia idéntica de la web.
 - [x] Crear y conectar Neon PostgreSQL a Vercel, migrando la persistencia sin modificar la interfaz.
 - [x] Crear la base de datos Neon `elora-smart-production` en la región IAD1.
 - [x] Enlazar Neon al proyecto Vercel `elora-smart` y crear `DATABASE_URL` para Production y Preview.
@@ -194,4 +194,13 @@
 - [x] Sustituir el encabezado actual por el mismo componente de header de la página de inicio.
 - [x] Rediseñar el índice y las fichas del blog para mostrar las imágenes reales de producto sin cambiar la identidad visual existente.
 - [x] Añadir y ejecutar pruebas de regresión para imágenes, contenido y rutas del blog rediseñado.
-- [ ] Validar visualmente en producción el nuevo blog y publicar.
+- [x] Validar visualmente en producción el nuevo blog y publicar.
+
+## Reestructuración SEO y responsive del blog
+- [ ] Auditar y corregir el comportamiento de fijación del header durante el scroll.
+- [x] Reorganizar el índice y las fichas con una jerarquía SEO clara de categorías, títulos y enlaces internos.
+- [x] Sustituir temporalmente las fotos de producto del contenido por placeholders uniformes con el logo de Elora.
+- [ ] Optimizar la disposición, navegación y legibilidad del blog en móvil y escritorio.
+- [x] Añadir pruebas de regresión de la estructura SEO, placeholders y header fijo.
+- [ ] Validar visualmente el nuevo diseño en producción y publicar.
+- [ ] Restablecer la posición de scroll al inicio de cada guía al cambiar de URL o pulsar Leer guía.

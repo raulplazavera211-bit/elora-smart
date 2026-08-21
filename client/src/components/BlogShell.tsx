@@ -34,7 +34,7 @@ export function BlogShell({ children }: BlogShellProps) {
   };
 
   return (
-    <div className="min-h-[100dvh] flex flex-col md:flex-row bg-background text-foreground font-body">
+    <div className="min-h-[100dvh] bg-background text-foreground font-body">
       {/* Header móvil: misma estructura visual que Inicio */}
       <div className="md:hidden fixed top-0 left-0 w-full h-20 bg-background/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-6">
         <button onClick={() => goTo("/")} aria-label="Ir al inicio"><img src={LOGO_URL} alt="Elora Smart" className="h-10 w-auto select-none" /></button>
@@ -51,7 +51,7 @@ export function BlogShell({ children }: BlogShellProps) {
       </div>
 
       {/* Sidebar de escritorio: reproduce el header lateral de Inicio */}
-      <aside className="hidden md:flex w-72 min-h-[100dvh] sticky top-0 border-r border-border bg-background flex-col justify-between items-start z-40 shrink-0 py-7">
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-72 border-r border-border bg-background flex-col justify-between items-start z-50 py-7 overflow-y-auto">
         <div className="px-10 text-left">
           <button onClick={() => goTo("/")} className="outline-none text-left"><img src={LOGO_URL} alt="Elora Smart" className="h-14 w-auto select-none" /><p className="font-display text-xs uppercase tracking-[0.4em] text-foreground/50 mt-3">Smart</p></button>
           <div className="mt-4"><LanguageSwitcher /></div>
@@ -90,7 +90,7 @@ export function BlogShell({ children }: BlogShellProps) {
       </div>
 
       <CartPanel isOpen={isCartOpen} onClose={closeCart} cart={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} onClearCart={clearCart} />
-      <div className="flex-1 min-w-0 pt-20 md:pt-0">{children}</div>
+      <div className="min-w-0 pt-20 md:pt-0 md:ml-72">{children}</div>
     </div>
   );
 }
