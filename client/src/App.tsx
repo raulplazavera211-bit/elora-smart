@@ -27,6 +27,8 @@ import Garantias from "./pages/Garantias";
 import TerminosCondiciones from "./pages/TerminosCondiciones";
 import EventoParaguay from "./pages/EventoParaguay";
 import ProductPage from "./pages/ProductPage";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import { CookieBanner } from "./components/CookieBanner";
 import { ChatBot } from "./components/ChatBot";
 import PromoPopup from "./components/PromoPopup";
@@ -304,6 +306,8 @@ function AppRouter() {
         <Route path="/garantias" component={Garantias} />
         <Route path="/terminos-condiciones" component={TerminosCondiciones} />
         <Route path="/evento-paraguay" component={EventoParaguay} />
+        <Route path="/blog" component={Blog} />
+        <Route path="/blog/:slug" component={BlogPost} />
         <Route path="/producto/:slug" component={ProductPage} />
         <Route component={NotFound} />
       </Switch>

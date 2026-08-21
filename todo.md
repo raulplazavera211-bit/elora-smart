@@ -178,3 +178,11 @@
 - [x] Corregir el botón Comprar de las fichas de producto para añadir el artículo y abrir el carrito en móvil y escritorio.
 - [x] Añadir una prueba de regresión para comprobar que el handler de compra llama a `openCart`.
 - [x] Validar el flujo de compra desde una ficha de producto en producción antes de publicar.
+
+## Blog de Elora Smart
+- [x] Inventariar las afirmaciones, especificaciones, preguntas frecuentes y condiciones verificables ya publicadas en la web.
+- [x] Preparar el plan de 30 entradas con referencias internas y sin añadir datos no publicados.
+- [x] Redactar las 30 entradas a partir exclusivamente de las fuentes verificadas.
+- [x] Añadir las rutas públicas de índice y detalle del blog y enlazarlas desde la navegación existente.
+- [x] Añadir pruebas de regresión para catálogo de entradas y rutas del blog.
+- [ ] Revisar la visualización de las 30 entradas y publicar el blog.

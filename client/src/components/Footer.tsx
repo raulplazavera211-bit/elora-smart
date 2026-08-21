@@ -110,6 +110,7 @@ export function Footer() {
               <Link href="/politica-privacidad" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.privacy')}</Link>
               <Link href="/politica-cookies" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.cookies')}</Link>
               <Link href="/politica-envios" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">{t('footer.links.shipping')}</Link>
+              <Link href="/blog" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">Blog</Link>
               <Link href="/garantias" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">Garantías</Link>
               <Link href="/terminos-condiciones" className="font-body text-[10px] uppercase tracking-widest text-background/40 hover:text-white transition-colors">T&amp;C</Link>
             </div>
