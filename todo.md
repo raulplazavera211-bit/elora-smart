@@ -185,4 +185,4 @@
 - [x] Redactar las 30 entradas a partir exclusivamente de las fuentes verificadas.
 - [x] Añadir las rutas públicas de índice y detalle del blog y enlazarlas desde la navegación existente.
 - [x] Añadir pruebas de regresión para catálogo de entradas y rutas del blog.
-- [ ] Revisar la visualización de las 30 entradas y publicar el blog.
+- [x] Revisar la visualización de las 30 entradas y publicar el blog.
