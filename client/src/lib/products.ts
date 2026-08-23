@@ -2,14 +2,17 @@ import type { Product } from "@/components/ProductDetail";
 
 // ─── Galerías ─────────────────────────────────────────────────────────────────
 const ESENZA_GALLERY = [
-  "/manus-storage/esenza-main_7db64882.png",
-  "/manus-storage/ESENZa-12_b3dd228d.webp",
-  "/manus-storage/ESENZA-9_70e448e2.webp",
-  "/manus-storage/ESENZA-10_b08075fa.webp",
-  "/manus-storage/ESENZA-7_f5ab967b.webp",
-  "/manus-storage/ESENZA-8_5a6baa87.webp",
-  "/manus-storage/ESENZA-2_af433520.webp",
-  "/manus-storage/ESENZA-11_da6d1cbb.webp",
+  "/product-assets/1.jpeg",
+  "/product-assets/3.jpeg",
+  "/product-assets/4.jpeg",
+  "/product-assets/5.jpeg",
+  "/product-assets/6.jpeg",
+  "/product-assets/7.jpeg",
+  "/product-assets/8.jpeg",
+  "/product-assets/9.jpeg",
+  "/product-assets/10.jpeg",
+  "/product-assets/11.jpeg",
+  "/product-assets/12.jpeg",
 ];
 
 const AURA_COMPACT_GALLERY = [
@@ -232,7 +235,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Combina tecnología y diseño compacto: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización y control por voz.",
     longDescription:
       "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas como: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio. Ideal para baños con poco espacio o lugares donde quieres ganar amplitud.",
-    img: "/manus-storage/inodoro_lujo_v2_81e05275.webp",
+    img: "/product-assets/IMG_5483%20(1).png",
     gallery: AURA_COMPACT_GALLERY,
     badges: ["ClimAdapt", "UV · Voz"],
     highlights: [
@@ -593,7 +596,7 @@ export const ALL_PRODUCTS: Product[] = [
     tagline: "La experiencia AURA completa.",
     description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
     longDescription: "El inodoro inteligente AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
-    img: "/manus-storage/inodoro-aura_4c9492ae.jpg",
+    img: "/product-assets/IMG_5577.png",
     gallery: AURA_GALLERY,
     badges: ["3 colores", "UV + Aromaterapia"],
     highlights: [
