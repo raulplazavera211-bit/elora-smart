@@ -11,6 +11,28 @@ async function getVercelBlobUrl(key: string): Promise<string | null> {
 }
 
 export function registerStorageProxy(app: Express) {
+  // Ruta exclusiva del catálogo: solo busca en Vercel Blob, sin respaldo Manus.
+  app.get("/product-assets/*", async (req, res) => {
+    const key = (req.params as Record<string, string>)[0];
+    if (!key) {
+      res.status(400).send("Missing product asset key");
+      return;
+    }
+
+    try {
+      const blobUrl = await getVercelBlobUrl(key);
+      if (!blobUrl) {
+        res.status(404).send("Product asset not found in Blob");
+        return;
+      }
+      res.set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
+      res.redirect(307, blobUrl);
+    } catch (err) {
+      console.error("[ProductAssetProxy] Vercel Blob lookup failed:", err);
+      res.status(502).send("Blob storage error");
+    }
+  });
+
   app.get("/manus-storage/*", async (req, res) => {
     const key = (req.params as Record<string, string>)[0];
     if (!key) {
