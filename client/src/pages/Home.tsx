@@ -1483,10 +1483,18 @@ export default function Home() {
           p.slug?.toLowerCase() === fallback.id?.toLowerCase()
         );
         if (!fromDb) return fallback;
+        const dbGallery = parseJsonField(fromDb.gallery, fallback.gallery || []);
+        const usesLegacyProductStorage = (value: unknown) =>
+          typeof value === "string" && value.startsWith("/manus-storage/products/");
+        const hasLegacyProductStorage =
+          usesLegacyProductStorage(fromDb.img) ||
+          (Array.isArray(dbGallery) && dbGallery.some(usesLegacyProductStorage));
         return {
           ...fallback,
-          img: fromDb.img || fallback.img,
-          gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
+          // Las referencias antiguas `products/` no fueron migradas a Blob.
+          // Para esas filas se conservan las rutas del catálogo, ya alojadas en Blob.
+          img: hasLegacyProductStorage ? fallback.img : fromDb.img || fallback.img,
+          gallery: hasLegacyProductStorage ? fallback.gallery : dbGallery,
           price: fromDb.price ? (typeof fromDb.price === 'number' ? fromDb.price : parseFloat(fromDb.price)) : fallback.price,
           originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : fallback.originalPrice ?? null,
         };
