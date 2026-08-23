@@ -1483,10 +1483,26 @@ export default function Home() {
           p.slug?.toLowerCase() === fallback.id?.toLowerCase()
         );
         if (!fromDb) return fallback;
+        const dbGallery = parseJsonField(fromDb.gallery, fallback.gallery || []);
+        const usesUnmigratedProductPath = (value: unknown) =>
+          typeof value === "string" && value.startsWith("/manus-storage/products/");
+        const asProductAsset = (value: unknown): string =>
+          typeof value === "string"
+            ? value.replace(/^\/manus-storage\//, "/product-assets/")
+            : "";
+        const hasUnmigratedProductPath =
+          usesUnmigratedProductPath(fromDb.img) ||
+          (Array.isArray(dbGallery) && dbGallery.some(usesUnmigratedProductPath));
         return {
           ...fallback,
-          img: fromDb.img || fallback.img,
-          gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
+          // Las referencias heredadas de `products/` no se migraron a Blob.
+          // El catálogo usa sus activos Blob estáticos en esas filas.
+          img: hasUnmigratedProductPath
+            ? fallback.img
+            : asProductAsset(fromDb.img) || fallback.img,
+          gallery: hasUnmigratedProductPath
+            ? fallback.gallery
+            : (Array.isArray(dbGallery) ? dbGallery.map(asProductAsset) : fallback.gallery),
           price: fromDb.price ? (typeof fromDb.price === 'number' ? fromDb.price : parseFloat(fromDb.price)) : fallback.price,
           originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : fallback.originalPrice ?? null,
         };
