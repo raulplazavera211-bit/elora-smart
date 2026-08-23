@@ -30,30 +30,32 @@ const HERO_IMAGE = "/manus-storage/esenza-main_7db64882.png";
 
 const PRODUCT_IMAGES: Record<string, string> = {
   "ESENZA": "/manus-storage/esenza-main_7db64882.png",
-  "AURA-COMPACT": "/manus-storage/inodoro_lujo_v2_81e05275.webp",
+  "AURA-COMPACT": "/product-assets/IMG_5483%20(1).png",
   "AURA-SUSPENDIDO": "/manus-storage/aura-suspendido-v3_9a4f47aa.png",
 };
 // SECTIONS se genera dinámicamente con i18n dentro del componente
 
 const ESENZA_GALLERY = [
-  "/manus-storage/esenza-main_7db64882.png",
-  "/manus-storage/ESENZa-12_b3dd228d.webp",
-  "/manus-storage/ESENZA-9_70e448e2.webp",
-  "/manus-storage/ESENZA-10_b08075fa.webp",
-  "/manus-storage/ESENZA-7_f5ab967b.webp",
-  "/manus-storage/ESENZA-8_5a6baa87.webp",
-  "/manus-storage/ESENZA-2_af433520.webp",
-  "/manus-storage/ESENZA-11_da6d1cbb.webp",
+  "/product-assets/1.jpeg",
+  "/product-assets/3.jpeg",
+  "/product-assets/4.jpeg",
+  "/product-assets/5.jpeg",
+  "/product-assets/6.jpeg",
+  "/product-assets/7.jpeg",
+  "/product-assets/8.jpeg",
+  "/product-assets/9.jpeg",
+  "/product-assets/10.jpeg",
+  "/product-assets/11.jpeg",
+  "/product-assets/12.jpeg",
 ];
 
 const AURA_COMPACT_GALLERY = [
-  "/manus-storage/AURA-compact-p-800x800_597da236.jpg",
-  "/manus-storage/aura-compact-1_1b4aadd9.jpg",
-  "/manus-storage/aura-compact-11_0852f604.jpg",
-  "/manus-storage/aura-compact-6_2af3f2ac.jpg",
-  "/manus-storage/aura-compact-10_eff13988.jpg",
-  "/manus-storage/aura-compact-8_eceb1cbb.jpg",
-  "/manus-storage/aura-compact-3_bd7e50b6.jpg",
+  "/product-assets/IMG_7159.jpeg",
+  "/product-assets/IMG_7160.jpeg",
+  "/product-assets/IMG_7161.jpeg",
+  "/product-assets/IMG_7162.jpeg",
+  "/product-assets/IMG_7163.jpeg",
+  "/product-assets/IMG_7165.jpeg",
 ];
 
 const AURA_SUSP_GALLERY = [
@@ -188,7 +190,7 @@ const PRODUCTS: Product[] = [
     description: "Combina tecnología y diseño compacto: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización y control por voz.",
     longDescription:
       "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas como: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio. Ideal para baños con poco espacio o lugares donde quieres ganar amplitud.",
-    img: "/manus-storage/inodoro_lujo_v2_81e05275.webp",
+    img: "/product-assets/IMG_5483%20(1).png",
     gallery: AURA_COMPACT_GALLERY,
     badges: ["ClimAdapt", "UV · Voz"],
     highlights: [
@@ -580,7 +582,7 @@ const EXTRA_PRODUCTS: Product[] = [
     tagline: "La experiencia AURA completa.",
     description: "El inodoro inteligente más completo de ELORA SMART. Disponible en 3 colores de display: Gris y Negro, Blanco y Gris.",
     longDescription: "El inodoro inteligente AURA ofrece higiene y confort con funciones como apertura automática, asiento climatizado, lavado ajustable, secado, esterilización con rayos UV y aromaterapia. Con control remoto en español, memoria de usuarios y un diseño moderno. Transforma tu baño en un espacio inteligente y relajante, ideal para todas las edades.",
-    img: "/manus-storage/inodoro-aura_4c9492ae.jpg",
+    img: "/product-assets/IMG_5577.png",
     gallery: AURA_GALLERY,
     badges: ["3 colores", "UV + Aromaterapia"],
     highlights: [
@@ -1483,10 +1485,28 @@ export default function Home() {
           p.slug?.toLowerCase() === fallback.id?.toLowerCase()
         );
         if (!fromDb) return fallback;
+        const dbGallery = parseJsonField(fromDb.gallery, fallback.gallery || []);
+        const usesUnmigratedProductPath = (value: unknown) =>
+          typeof value === "string" && value.startsWith("/manus-storage/products/");
+        const asProductAsset = (value: unknown): string =>
+          typeof value === "string"
+            ? value.replace(/^\/manus-storage\//, "/product-assets/")
+            : "";
+        const hasUnmigratedProductPath =
+          usesUnmigratedProductPath(fromDb.img) ||
+          (Array.isArray(dbGallery) && dbGallery.some(usesUnmigratedProductPath));
         return {
           ...fallback,
-          img: fromDb.img || fallback.img,
-          gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
+          // Las referencias heredadas de `products/` no se migraron a Blob.
+          // El catálogo usa sus activos Blob estáticos en esas filas.
+          // AURA y AURA COMPACT usan sus fotos principales actuales de Blob,
+          // incluso si la base de datos conserva una referencia anterior.
+          img: fallback.id === "AURA" || fallback.id === "AURA-COMPACT" || hasUnmigratedProductPath
+            ? fallback.img
+            : asProductAsset(fromDb.img) || fallback.img,
+          gallery: fallback.id === "ESENZA" || fallback.id === "AURA-COMPACT" || hasUnmigratedProductPath
+            ? fallback.gallery
+            : (Array.isArray(dbGallery) ? dbGallery.map(asProductAsset) : fallback.gallery),
           price: fromDb.price ? (typeof fromDb.price === 'number' ? fromDb.price : parseFloat(fromDb.price)) : fallback.price,
           originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : fallback.originalPrice ?? null,
         };
