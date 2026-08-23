@@ -78,10 +78,28 @@ export default function Coleccion() {
       const merged = localizedBase.map((fallback) => {
         const fromDb = productsQuery.data.find((p: any) => p.slug?.toLowerCase() === fallback.id?.toLowerCase());
         if (!fromDb) return fallback;
+        const dbGallery = parseJsonField(fromDb.gallery, fallback.gallery || []);
+        const usesUnmigratedProductPath = (value: unknown) =>
+          typeof value === "string" && value.startsWith("/manus-storage/products/");
+        const asProductAsset = (value: unknown): string =>
+          typeof value === "string"
+            ? value.replace(/^\/manus-storage\//, "/product-assets/")
+            : "";
+        const hasUnmigratedProductPath =
+          usesUnmigratedProductPath(fromDb.img) ||
+          (Array.isArray(dbGallery) && dbGallery.some(usesUnmigratedProductPath));
         return {
           ...fallback,
-          img: fromDb.img || fallback.img,
-          gallery: parseJsonField(fromDb.gallery, fallback.gallery || []),
+          // Las referencias heredadas de `products/` no se migraron a Blob.
+          // El catálogo usa sus activos Blob estáticos en esas filas.
+          // AURA y AURA COMPACT usan sus fotos principales actuales de Blob,
+          // incluso si la base de datos conserva una referencia anterior.
+          img: fallback.id === "AURA" || fallback.id === "AURA-COMPACT" || hasUnmigratedProductPath
+            ? fallback.img
+            : asProductAsset(fromDb.img) || fallback.img,
+          gallery: fallback.id === "ESENZA" || fallback.id === "AURA-COMPACT" || fallback.id === "AURA-SUSPENDIDO" || hasUnmigratedProductPath
+            ? fallback.gallery
+            : (Array.isArray(dbGallery) ? dbGallery.map(asProductAsset) : fallback.gallery),
           price: fromDb.price ? (typeof fromDb.price === 'number' ? fromDb.price : parseFloat(fromDb.price)) : fallback.price,
           originalPrice: fromDb.originalPrice ? (typeof fromDb.originalPrice === 'number' ? fromDb.originalPrice : parseFloat(String(fromDb.originalPrice))) : null,
         } as Product;
