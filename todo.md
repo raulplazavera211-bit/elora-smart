@@ -210,3 +210,13 @@
 - [x] Consultar los pedidos y estados históricos que permitan identificar carritos recuperables no completados.
 - [x] Preparar un informe privado de carritos abandonados minimizando datos personales.
 - [x] Documentar la limitación histórica y proponer el registro futuro de carritos abandonados.
+
+## Listado privado de checkouts pendientes
+- [x] Extraer los campos necesarios de contacto, pedido, productos y pago para los registros pendientes.
+- [x] Generar un archivo privado con los 38 registros recuperables sin publicarlo en la web.
+- [x] Revisar el recuento y entregar el listado con la advertencia de que son checkouts pendientes, no abandonos confirmados.
+
+## Corrección del avance al checkout
+- [x] Reproducir el bloqueo del botón de compra desde el carrito y revisar el controlador del flujo.
+- [x] Corregir la transición del carrito al formulario de checkout sin alterar los métodos de pago.
+- [ ] Añadir una prueba de regresión del botón de avance y validar el flujo publicado.

@@ -2119,7 +2119,7 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
                   </div>
                 )}
                 {checkoutStep === "cart" ? (
-                  <motion.button onClick={() => { if (cart.length > 0) setShowShippingPopup(true); }} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.02 } : {}} whileTap={cart.length > 0 ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}>
+                  <motion.button onClick={() => { if (cart.length > 0) setCheckoutStep("checkout"); }} disabled={cart.length === 0} whileHover={cart.length > 0 ? { scale: 1.02 } : {}} whileTap={cart.length > 0 ? { scale: 0.97 } : {}} className="w-full bg-accent-deep text-white font-body text-xs uppercase tracking-[0.3em] py-5 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed relative overflow-hidden group" style={{ boxShadow: cart.length > 0 ? "0 4px 24px rgba(214,122,0,0.35)" : undefined }}>
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                     <ShoppingBag className="w-4 h-4 relative z-10" />
                     <span className="relative z-10">{cart.length > 0 ? `${t("cart.buy")} · ${orderTotal.toLocaleString("es-ES")} €` : t("cart.addProducts")}</span>
