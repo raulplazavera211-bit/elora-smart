@@ -204,3 +204,9 @@
 - [x] Añadir pruebas de regresión de la estructura SEO, placeholders y header fijo.
 - [x] Validar visualmente el nuevo diseño en producción y publicar.
 - [x] Restablecer la posición de scroll al inicio de cada guía al cambiar de URL o pulsar Leer guía.
+
+## Auditoría de carritos abandonados
+- [x] Revisar si el carrito se persiste en base de datos o únicamente en el navegador del visitante.
+- [x] Consultar los pedidos y estados históricos que permitan identificar carritos recuperables no completados.
+- [x] Preparar un informe privado de carritos abandonados minimizando datos personales.
+- [x] Documentar la limitación histórica y proponer el registro futuro de carritos abandonados.
