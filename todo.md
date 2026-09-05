@@ -219,4 +219,14 @@
 ## Corrección del avance al checkout
 - [x] Reproducir el bloqueo del botón de compra desde el carrito y revisar el controlador del flujo.
 - [x] Corregir la transición del carrito al formulario de checkout sin alterar los métodos de pago.
-- [ ] Añadir una prueba de regresión del botón de avance y validar el flujo publicado.
+- [x] Añadir una prueba de regresión del botón de avance y validar el flujo publicado.
+
+## Avisos de carritos y pagos no completados
+- [x] Enviar un correo de prueba de alerta a `info@elorasmart.com`.
+- [x] Enviar un correo de prueba de alerta a `vioccodigital@gmail.com`.
+- [x] Persistir el correo y teléfono validados del checkout con consentimiento y sin duplicar avisos.
+- [x] Enviar inmediatamente a ambos destinatarios un aviso inicial al capturar correo y teléfono.
+- [x] Sustituir la espera de cinco minutos por el aviso inmediato solicitado al completar los datos de contacto.
+- [x] Enviar un aviso inmediato a `info@elorasmart.com` y `vioccodigital@gmail.com` ante pago fallido o cancelado.
+- [x] Añadir pruebas de regresión y una ruta de comprobación sin enviar correos reales.
+- [ ] Publicar y activar la automatización después de validar y confirmar el envío real.

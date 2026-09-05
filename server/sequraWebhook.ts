@@ -15,7 +15,7 @@ import type { Express, Request, Response } from "express";
 import { confirmSequraOrder, verifySequraSignature } from "./sequra";
 import { updateSequraPaymentStatus, getOrderWithItems } from "./db";
 import { notifyOwner } from "./_core/notification";
-import { sendOrderConfirmationEmail } from "./email";
+import { sendOrderConfirmationEmail, sendPaymentOutcomeAlert } from "./email";
 
 export function registerSequraWebhook(app: Express): void {
   /**
@@ -68,7 +68,7 @@ export function registerSequraWebhook(app: Express): void {
       }
 
       // Update payment status in DB
-      const { orderId } = await updateSequraPaymentStatus(orderUrl, paymentStatus);
+      const { orderId, paymentStateChanged } = await updateSequraPaymentStatus(orderUrl, paymentStatus);
 
       if (approved && orderId) {
         const order = await getOrderWithItems(orderId);
@@ -106,6 +106,26 @@ export function registerSequraWebhook(app: Express): void {
             },
             paymentMethod: "sequra",
           }).catch(() => {});
+        }
+      }
+
+      if (!approved && orderId && paymentStateChanged) {
+        const order = await getOrderWithItems(orderId);
+        if (order) {
+          await sendPaymentOutcomeAlert({
+            orderId,
+            customerName: order.customerName,
+            customerEmail: order.customerEmail,
+            customerPhone: order.customerPhone ?? "No indicado",
+            paymentMethod: "sequra",
+            outcome: "failed",
+            items: order.items.map(item => ({
+              name: item.productName,
+              quantity: item.quantity,
+              unitPrice: Number(item.unitPrice),
+            })),
+            total: Number(order.total),
+          });
         }
       }
 

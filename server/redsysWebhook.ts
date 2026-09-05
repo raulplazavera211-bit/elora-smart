@@ -16,7 +16,7 @@ import type { Express, Request, Response } from "express";
 import { processRedsysNotification } from "./redsys";
 import { updatePaymentStatus, getOrderByRedsysId, getOrderWithItems } from "./db";
 import { notifyOwner } from "./_core/notification";
-import { sendOrderConfirmationEmail } from "./email";
+import { sendOrderConfirmationEmail, sendPaymentOutcomeAlert } from "./email";
 
 export function registerRedsysWebhook(app: Express): void {
   /**
@@ -51,7 +51,7 @@ export function registerRedsysWebhook(app: Express): void {
 
       // Actualizar estado de pago en la DB
       const paymentStatus = result.success ? "paid" : "failed";
-      const { orderId } = await updatePaymentStatus(result.redsysOrderId, paymentStatus);
+      const { orderId, paymentStateChanged } = await updatePaymentStatus(result.redsysOrderId, paymentStatus);
 
       // Notificar al propietario y enviar email de confirmación si el pago fue aprobado
       if (result.success && orderId) {
@@ -94,6 +94,26 @@ export function registerRedsysWebhook(app: Express): void {
               paymentMethod: order.paymentMethod ?? "card",
             }).catch(() => {});
           }
+        }
+      }
+
+      if (!result.success && orderId && paymentStateChanged) {
+        const order = await getOrderWithItems(orderId);
+        if (order) {
+          await sendPaymentOutcomeAlert({
+            orderId,
+            customerName: order.customerName,
+            customerEmail: order.customerEmail,
+            customerPhone: order.customerPhone ?? "No indicado",
+            paymentMethod: order.paymentMethod,
+            outcome: "failed",
+            items: order.items.map(item => ({
+              name: item.productName,
+              quantity: item.quantity,
+              unitPrice: Number(item.unitPrice),
+            })),
+            total: Number(order.total),
+          });
         }
       }
 

@@ -7,6 +7,131 @@ const LOGO_URL_DARK = "https://elorasmart-u6tutw84.manus.space/manus-storage/elo
 const WHATSAPP_NUMBER = "34614451901";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Hola%2C%20tengo%20una%20consulta%20sobre%20mi%20pedido`;
 const FROM_EMAIL = "Elora Smart <pedidos@elorasmart.online>";
+const CHECKOUT_ALERT_RECIPIENTS = ["info@elorasmart.com", "vioccodigital@gmail.com"];
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>'"]/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;",
+  })[char] ?? char);
+}
+
+export type CheckoutAlertItem = {
+  name: string;
+  quantity: number;
+  unitPrice: number;
+};
+
+export type CheckoutContactAlertData = {
+  customerName?: string;
+  customerEmail: string;
+  customerPhone: string;
+  items: CheckoutAlertItem[];
+  total: number;
+};
+
+export type PaymentOutcomeAlertData = CheckoutContactAlertData & {
+  orderId: number;
+  paymentMethod?: string | null;
+  outcome: "failed" | "cancelled";
+};
+
+function buildAlertShell(title: string, eyebrow: string, content: string) {
+  return `<!doctype html>
+<html lang="es"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>${escapeHtml(title)}</title></head>
+<body style="margin:0;background:#f5f0e8;font-family:Arial,sans-serif;color:#171717">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:32px 16px;background:#f5f0e8"><tr><td align="center">
+    <table role="presentation" width="620" cellspacing="0" cellpadding="0" style="max-width:620px;width:100%;background:#fff;border:1px solid #e8e0d4">
+      <tr><td style="padding:26px 34px;background:#0a0a0a;text-align:center"><img src="${LOGO_URL}" alt="Elora Smart" width="120" style="display:block;margin:auto;filter:brightness(0) invert(1)" /></td></tr>
+      <tr><td style="height:3px;background:#c9a96e"></td></tr>
+      <tr><td style="padding:34px">${content}</td></tr>
+      <tr><td style="padding:20px 34px;background:#0a0a0a;color:#858585;text-align:center;font-size:11px">Alerta interna de Elora Smart · No corresponde a una confirmación de pago.</td></tr>
+    </table>
+  </td></tr></table>
+</body></html>`;
+}
+
+function buildItemsHtml(items: CheckoutAlertItem[]) {
+  return items.map(item => `
+    <tr><td style="padding:10px 0;border-bottom:1px solid #ece7df">${escapeHtml(item.name)} ×${item.quantity}</td>
+    <td style="padding:10px 0;border-bottom:1px solid #ece7df;text-align:right;white-space:nowrap">${(item.unitPrice * item.quantity).toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</td></tr>`).join("");
+}
+
+export async function sendCheckoutContactAlert(data: CheckoutContactAlertData): Promise<boolean> {
+  const customerName = data.customerName?.trim() || "No indicado";
+  const html = buildAlertShell(
+    "Nuevo contacto de checkout — Elora Smart",
+    "Contacto recibido",
+    `<p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#b87515">Nuevo contacto de checkout</p>
+     <h1 style="margin:0 0 20px;font-family:Georgia,serif;font-size:26px;font-weight:400">Datos de contacto recibidos</h1>
+     <p style="margin:0 0 18px;line-height:1.7">El cliente ha completado correo y teléfono durante el checkout. Este aviso se envía inmediatamente, aunque continúe y complete el pago.</p>
+     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 20px">
+       <tr><td style="padding:9px 0;border-bottom:1px solid #ece7df;color:#777">Nombre</td><td style="padding:9px 0;border-bottom:1px solid #ece7df;text-align:right">${escapeHtml(customerName)}</td></tr>
+       <tr><td style="padding:9px 0;border-bottom:1px solid #ece7df;color:#777">Correo</td><td style="padding:9px 0;border-bottom:1px solid #ece7df;text-align:right"><a href="mailto:${escapeHtml(data.customerEmail)}" style="color:#a56814">${escapeHtml(data.customerEmail)}</a></td></tr>
+       <tr><td style="padding:9px 0;border-bottom:1px solid #ece7df;color:#777">Teléfono</td><td style="padding:9px 0;border-bottom:1px solid #ece7df;text-align:right"><a href="tel:${escapeHtml(data.customerPhone)}" style="color:#a56814">${escapeHtml(data.customerPhone)}</a></td></tr>
+     </table>
+     <p style="margin:0 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#777">Carrito en ese momento</p>
+     <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${buildItemsHtml(data.items)}
+       <tr><td style="padding-top:14px;font-weight:bold">Total estimado</td><td style="padding-top:14px;text-align:right;font-family:Georgia,serif;font-size:20px">${data.total.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</td></tr>
+     </table>`,
+  );
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: CHECKOUT_ALERT_RECIPIENTS,
+      replyTo: data.customerEmail,
+      subject: `🛒 Nuevo contacto de checkout — ${data.total.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €`,
+      html,
+    });
+    if (error) {
+      console.error("[Email] Error enviando alerta de contacto de checkout:", error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("[Email] Excepción enviando alerta de contacto de checkout:", error);
+    return false;
+  }
+}
+
+export async function sendPaymentOutcomeAlert(data: PaymentOutcomeAlertData): Promise<boolean> {
+  const outcomeLabel = data.outcome === "failed" ? "Pago fallido" : "Pago cancelado";
+  const html = buildAlertShell(
+    `${outcomeLabel} — Pedido #${data.orderId}`,
+    outcomeLabel,
+    `<p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#b87515">${outcomeLabel}</p>
+     <h1 style="margin:0 0 18px;font-family:Georgia,serif;font-size:26px;font-weight:400">Pedido #${data.orderId} sin pago confirmado</h1>
+     <p style="margin:0 0 18px;line-height:1.7">La pasarela o el checkout ha comunicado que el pago no se ha completado. No se debe tratar como pedido nuevo ni preparar envío.</p>
+     <p style="margin:0 0 5px"><strong>Contacto:</strong> ${escapeHtml(data.customerName?.trim() || "No indicado")} · <a href="mailto:${escapeHtml(data.customerEmail)}" style="color:#a56814">${escapeHtml(data.customerEmail)}</a> · ${escapeHtml(data.customerPhone)}</p>
+     <p style="margin:0 0 18px"><strong>Método:</strong> ${escapeHtml(data.paymentMethod || "No indicado")}</p>
+     <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${buildItemsHtml(data.items)}
+       <tr><td style="padding-top:14px;font-weight:bold">Total</td><td style="padding-top:14px;text-align:right;font-family:Georgia,serif;font-size:20px">${data.total.toLocaleString("es-ES", { minimumFractionDigits: 2 })} €</td></tr>
+     </table>`,
+  );
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: CHECKOUT_ALERT_RECIPIENTS,
+      replyTo: data.customerEmail,
+      subject: `⚠️ ${outcomeLabel} — Pedido #${data.orderId}`,
+      html,
+    });
+    if (error) {
+      console.error("[Email] Error enviando alerta de pago no completado:", error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("[Email] Excepción enviando alerta de pago no completado:", error);
+    return false;
+  }
+}
 
 export type OrderEmailData = {
   to: string;

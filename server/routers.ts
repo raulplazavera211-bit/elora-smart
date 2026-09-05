@@ -27,6 +27,8 @@ import { notifyOwner } from "./_core/notification";
 import bcrypt from "bcryptjs";
 import { sendCatalogRequestEmail, sendCatalogClientEmail } from "./email";
 import { insertContactSubmission,
+  captureCheckoutContact,
+  markCheckoutContactAlerted,
   insertClubEloraSignup,
   getContactSubmissions,
   getClubEloraSignups,
@@ -46,6 +48,7 @@ import { insertContactSubmission,
   countUsers,
   linkRedsysOrder,
   updatePaymentStatus,
+  updateOrderPaymentStatusById,
   getOrderByRedsysId,
   linkSequraOrder,
   updateSequraPaymentStatus,
@@ -81,7 +84,7 @@ import { insertContactSubmission,
 } from "./db";
 import { createRedsysForm, processRedsysNotification, getRedsysConfig } from "./redsys";
 import { startSequraSolicitation, confirmSequraOrder, verifySequraSignature, getSequraConfig, fetchSequraForm } from "./sequra";
-import { sendOrderConfirmationEmail, sendFichaTecnicaEmail } from "./email";
+import { sendCheckoutContactAlert, sendOrderConfirmationEmail, sendFichaTecnicaEmail, sendPaymentOutcomeAlert } from "./email";
 import { storagePut, storageGetSignedUrl } from "./storage";
 
 export const appRouter = router({
@@ -263,6 +266,80 @@ export const appRouter = router({
 
   // ─── ORDERS (public checkout) ─────────────────────────────────────────────
   orders: router({
+    /**
+     * Registra el contacto una sola vez por sesión cuando el visitante completa
+     * correo y teléfono. El aviso interno no espera a que se cree un pedido.
+     */
+    captureCheckoutContact: publicProcedure
+      .input(z.object({
+        sessionId: z.string().uuid(),
+        customerName: z.string().max(255).optional(),
+        customerEmail: z.string().email().max(320),
+        customerPhone: z.string().min(7).max(64),
+        items: z.array(z.object({
+          name: z.string().min(1).max(255),
+          quantity: z.number().int().positive().max(99),
+          unitPrice: z.number().positive(),
+        })).min(1),
+      }))
+      .mutation(async ({ input }) => {
+        const total = input.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+        const captured = await captureCheckoutContact({
+          sessionId: input.sessionId,
+          customerName: input.customerName,
+          email: input.customerEmail.trim().toLowerCase(),
+          phone: input.customerPhone.trim(),
+          items: input.items,
+          total,
+        });
+        if (!captured.id) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No se pudo guardar el contacto de checkout" });
+        }
+        if (!captured.shouldNotify) return { accepted: true, notified: false };
+
+        const notified = await sendCheckoutContactAlert({
+          customerName: input.customerName,
+          customerEmail: input.customerEmail.trim().toLowerCase(),
+          customerPhone: input.customerPhone.trim(),
+          items: input.items,
+          total,
+        });
+        if (notified) await markCheckoutContactAlerted(captured.id);
+        return { accepted: true, notified };
+      }),
+
+    /** Informa de una cancelación o fallo comunicado por el checkout de PayPal. */
+    reportPaymentIssue: publicProcedure
+      .input(z.object({
+        orderId: z.number().int().positive(),
+        customerEmail: z.string().email().max(320),
+        outcome: z.enum(["failed", "cancelled"]),
+      }))
+      .mutation(async ({ input }) => {
+        const order = await getOrderWithItems(input.orderId);
+        if (!order || order.customerEmail.trim().toLowerCase() !== input.customerEmail.trim().toLowerCase()) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Pedido no encontrado" });
+        }
+        const { paymentStateChanged } = await updateOrderPaymentStatusById(input.orderId, "failed");
+        if (!paymentStateChanged) return { accepted: true, notified: false };
+
+        const notified = await sendPaymentOutcomeAlert({
+          orderId: order.id,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          customerPhone: order.customerPhone ?? "No indicado",
+          paymentMethod: order.paymentMethod,
+          outcome: input.outcome,
+          items: order.items.map(item => ({
+            name: item.productName,
+            quantity: item.quantity,
+            unitPrice: Number(item.unitPrice),
+          })),
+          total: Number(order.total),
+        });
+        return { accepted: true, notified };
+      }),
+
     create: publicProcedure
       .input(z.object({
         customerName: z.string().min(1).max(255),
@@ -467,7 +544,7 @@ export const appRouter = router({
         const paypalSecret = process.env.PAYPAL_SECRET_KEY;
         if (!paypalClientId || !paypalSecret) {
           // Sin secret, confiamos en la aprobación del frontend (sandbox/demo)
-          await updateOrderStatus(input.orderId, "confirmed");
+          await updateOrderPaymentStatusById(input.orderId, "paid");
           return { success: true };
         }
 
@@ -494,7 +571,7 @@ export const appRouter = router({
         });
         const captureData = await captureRes.json() as { status?: string };
         if (captureData.status === "COMPLETED") {
-          await updateOrderStatus(input.orderId, "confirmed");
+          await updateOrderPaymentStatusById(input.orderId, "paid");
           // Enviar email de confirmación al cliente tras pago PayPal confirmado
           const confirmedOrder = await getOrderWithItems(input.orderId);
           if (confirmedOrder) {
@@ -522,6 +599,24 @@ export const appRouter = router({
             }).catch(() => {});
           }
           return { success: true };
+        }
+        const failedOrder = await getOrderWithItems(input.orderId);
+        const { paymentStateChanged } = await updateOrderPaymentStatusById(input.orderId, "failed");
+        if (failedOrder && paymentStateChanged) {
+          await sendPaymentOutcomeAlert({
+            orderId: failedOrder.id,
+            customerName: failedOrder.customerName,
+            customerEmail: failedOrder.customerEmail,
+            customerPhone: failedOrder.customerPhone ?? "No indicado",
+            paymentMethod: "paypal",
+            outcome: "failed",
+            items: failedOrder.items.map(item => ({
+              name: item.productName,
+              quantity: item.quantity,
+              unitPrice: Number(item.unitPrice),
+            })),
+            total: Number(failedOrder.total),
+          });
         }
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "El pago PayPal no se completó" });
       }),

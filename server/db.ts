@@ -1,4 +1,4 @@
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc, like, sql } from "drizzle-orm";
 import { drizzle as mysqlDrizzle } from "drizzle-orm/mysql2";
 import { drizzle as neonDrizzle } from "drizzle-orm/neon-http";
 import * as mysqlSchema from "../drizzle/schema";
@@ -126,6 +126,77 @@ export async function getClubEloraSignups() {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(clubEloraSignups).orderBy(desc(clubEloraSignups.createdAt));
+}
+
+// ─── CHECKOUT CONTACT ALERTS ─────────────────────────────────────────────────
+
+export type CheckoutContactCapture = {
+  sessionId: string;
+  customerName?: string;
+  email: string;
+  phone: string;
+  items: { name: string; quantity: number; unitPrice: number }[];
+  total: number;
+};
+
+const checkoutLeadMarker = (sessionId: string) => `[checkout-lead:${sessionId}]`;
+
+function checkoutLeadMessage(data: CheckoutContactCapture, alerted: boolean) {
+  const items = data.items
+    .map(item => `• ${item.name} ×${item.quantity} — ${(item.unitPrice * item.quantity).toFixed(2)} €`)
+    .join("\n");
+  return [
+    checkoutLeadMarker(data.sessionId),
+    `[checkout-alerted:${alerted ? "yes" : "no"}]`,
+    `Total estimado: ${data.total.toFixed(2)} €`,
+    "Productos:",
+    items,
+  ].join("\n");
+}
+
+/**
+ * Conserva un contacto de checkout y devuelve si aún debe emitirse el aviso.
+ * El identificador de sesión creado por el navegador evita avisos repetidos
+ * cuando el cliente continúa editando los mismos campos.
+ */
+export async function captureCheckoutContact(data: CheckoutContactCapture): Promise<{
+  id: number | null;
+  shouldNotify: boolean;
+}> {
+  const db = await getDb();
+  if (!db) return { id: null, shouldNotify: false };
+
+  const marker = checkoutLeadMarker(data.sessionId);
+  const existing = await db.select()
+    .from(contactSubmissions)
+    .where(like(contactSubmissions.mensaje, `%${marker}%`))
+    .limit(1);
+
+  if (existing[0]) {
+    return {
+      id: existing[0].id,
+      shouldNotify: !existing[0].mensaje?.includes("[checkout-alerted:yes]"),
+    };
+  }
+
+  const id = await insertAndReturnId(contactSubmissions, {
+    nombre: data.customerName?.trim() || "Contacto de checkout",
+    telefono: data.phone,
+    email: data.email,
+    mensaje: checkoutLeadMessage(data, false),
+    idiomaCatalogo: "checkout",
+  });
+  return { id, shouldNotify: Boolean(id) };
+}
+
+/** Marca el aviso inicial como entregado para evitar un segundo correo del mismo checkout. */
+export async function markCheckoutContactAlerted(contactId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const record = await db.select().from(contactSubmissions).where(eq(contactSubmissions.id, contactId)).limit(1);
+  if (!record[0] || record[0].mensaje?.includes("[checkout-alerted:yes]")) return;
+  const message = (record[0].mensaje ?? "").replace("[checkout-alerted:no]", "[checkout-alerted:yes]");
+  await db.update(contactSubmissions).set({ mensaje: message }).where(eq(contactSubmissions.id, contactId));
 }
 
 // ─── PRODUCTS ────────────────────────────────────────────────────────────────
@@ -264,17 +335,22 @@ export async function linkRedsysOrder(orderId: number, redsysOrderId: string): P
 export async function updatePaymentStatus(
   redsysOrderId: string,
   paymentStatus: "paid" | "failed"
-): Promise<{ orderId: number | null }> {
+): Promise<{ orderId: number | null; paymentStateChanged: boolean }> {
   const db = await getDb();
-  if (!db) return { orderId: null };
-  await db.update(orders)
-    .set({ paymentStatus, status: paymentStatus === "paid" ? "confirmed" : "pending" })
-    .where(eq(orders.redsysOrderId, redsysOrderId));
-  const result = await db.select({ id: orders.id })
+  if (!db) return { orderId: null, paymentStateChanged: false };
+  const result = await db.select({ id: orders.id, paymentStatus: orders.paymentStatus })
     .from(orders)
     .where(eq(orders.redsysOrderId, redsysOrderId))
     .limit(1);
-  return { orderId: result[0]?.id ?? null };
+  const order = result[0];
+  if (!order) return { orderId: null, paymentStateChanged: false };
+  const paymentStateChanged = order.paymentStatus !== paymentStatus;
+  if (paymentStateChanged) {
+    await db.update(orders)
+      .set({ paymentStatus, status: paymentStatus === "paid" ? "confirmed" : "pending" })
+      .where(eq(orders.id, order.id));
+  }
+  return { orderId: order.id, paymentStateChanged };
 }
 
 /**
@@ -294,17 +370,43 @@ export async function linkSequraOrder(orderId: number, sequraOrderUrl: string): 
 export async function updateSequraPaymentStatus(
   sequraOrderUrl: string,
   paymentStatus: "paid" | "failed"
-): Promise<{ orderId: number | null }> {
+): Promise<{ orderId: number | null; paymentStateChanged: boolean }> {
   const db = await getDb();
-  if (!db) return { orderId: null };
-  await db.update(orders)
-    .set({ paymentStatus, status: paymentStatus === "paid" ? "confirmed" : "pending" })
-    .where(eq(orders.sequraOrderUrl, sequraOrderUrl));
-  const result = await db.select({ id: orders.id })
+  if (!db) return { orderId: null, paymentStateChanged: false };
+  const result = await db.select({ id: orders.id, paymentStatus: orders.paymentStatus })
     .from(orders)
     .where(eq(orders.sequraOrderUrl, sequraOrderUrl))
     .limit(1);
-  return { orderId: result[0]?.id ?? null };
+  const order = result[0];
+  if (!order) return { orderId: null, paymentStateChanged: false };
+  const paymentStateChanged = order.paymentStatus !== paymentStatus;
+  if (paymentStateChanged) {
+    await db.update(orders)
+      .set({ paymentStatus, status: paymentStatus === "paid" ? "confirmed" : "pending" })
+      .where(eq(orders.id, order.id));
+  }
+  return { orderId: order.id, paymentStateChanged };
+}
+
+/** Registra un resultado de pago comunicado por PayPal desde un pedido ya creado. */
+export async function updateOrderPaymentStatusById(
+  orderId: number,
+  paymentStatus: "paid" | "failed",
+): Promise<{ paymentStateChanged: boolean }> {
+  const db = await getDb();
+  if (!db) return { paymentStateChanged: false };
+  const result = await db.select({ id: orders.id, paymentStatus: orders.paymentStatus })
+    .from(orders)
+    .where(eq(orders.id, orderId))
+    .limit(1);
+  const order = result[0];
+  if (!order || order.paymentStatus === "paid" || order.paymentStatus === paymentStatus) {
+    return { paymentStateChanged: false };
+  }
+  await db.update(orders)
+    .set({ paymentStatus, status: paymentStatus === "paid" ? "confirmed" : "pending" })
+    .where(eq(orders.id, orderId));
+  return { paymentStateChanged: true };
 }
 
 /**

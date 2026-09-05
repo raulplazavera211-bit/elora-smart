@@ -137,6 +137,16 @@ function validateEmail(email: string, t: (k: string) => string): string | null {
   return null;
 }
 
+function hasValidCheckoutEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
+function hasValidCheckoutPhone(phone: string) {
+  const clean = phone.trim().replace(/[\s-]/g, "");
+  const stripped = clean.replace(/^\+\d{1,3}/, "").replace(/^00\d{1,3}/, "");
+  return stripped.length >= 7 && /^\d+$/.test(stripped);
+}
+
 function validateNombre(val: string, label: string, t: (k: string) => string): string | null {
   if (!val.trim()) return `${label} ${t("checkout.fieldRequired")}`;
   if (val.trim().length < 2) return `${label} ${t("checkout.fieldMin")}`;
@@ -601,6 +611,8 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
       setCheckoutStep("checkout");
     },
   });
+  const captureCheckoutContact = trpc.orders.captureCheckoutContact.useMutation();
+  const reportPaymentIssue = trpc.orders.reportPaymentIssue.useMutation();
 
   const initPayment = trpc.orders.initPayment.useMutation({
     onError: (err) => {
@@ -621,12 +633,63 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
   const [{ isPending: paypalLoading }] = usePayPalScriptReducer();
   // orderId pendiente para PayPal (se crea antes de abrir el popup PayPal)
   const [pendingOrderId, setPendingOrderId] = useState<number | null>(null);
+  const checkoutContactSessionId = useRef<string | null>(null);
+  const checkoutContactSent = useRef(false);
   // ─── Estado cupón de descuento ─────────────────────────────────────────────
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; description: string | null | undefined; productSlug: string | null } | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
   const couponDiscount = appliedCoupon?.discount ?? 0;
   const orderTotal = Math.max(0, cartTotal - couponDiscount) + shippingCost;
+
+  function getCheckoutContactSessionId() {
+    if (checkoutContactSessionId.current) return checkoutContactSessionId.current;
+    const storageKey = "elora-checkout-contact-session";
+    const existing = window.sessionStorage.getItem(storageKey);
+    const sessionId = existing ?? window.crypto.randomUUID();
+    window.sessionStorage.setItem(storageKey, sessionId);
+    checkoutContactSessionId.current = sessionId;
+    return sessionId;
+  }
+
+  useEffect(() => {
+    if (checkoutStep !== "checkout" || checkoutContactSent.current || cart.length === 0) return;
+    if (!hasValidCheckoutEmail(form.email) || !hasValidCheckoutPhone(form.telefono)) return;
+
+    checkoutContactSent.current = true;
+    captureCheckoutContact.mutate({
+      sessionId: getCheckoutContactSessionId(),
+      customerName: `${form.nombre.trim()} ${form.apellidos.trim()}`.trim() || undefined,
+      customerEmail: form.email.trim(),
+      customerPhone: form.telefono.trim(),
+      items: cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity ?? 1,
+        unitPrice: item.price,
+      })),
+    }, {
+      onError: () => {
+        checkoutContactSent.current = false;
+      },
+    });
+  }, [captureCheckoutContact, cart, checkoutStep, form.apellidos, form.email, form.nombre, form.telefono]);
+
+  function reportPaypalOutcome(outcome: "failed" | "cancelled") {
+    if (!pendingOrderId || !hasValidCheckoutEmail(form.email)) return;
+    reportPaymentIssue.mutate({
+      orderId: pendingOrderId,
+      customerEmail: form.email.trim(),
+      outcome,
+    });
+  }
+
+  useEffect(() => {
+    if (cart.length > 0) return;
+    checkoutContactSent.current = false;
+    checkoutContactSessionId.current = null;
+    window.sessionStorage.removeItem("elora-checkout-contact-session");
+  }, [cart.length]);
+
   const validateCouponMutation = trpc.orders.validateCoupon.useMutation({
     onSuccess: (data: { code: string; discount: number; description?: string | null; productSlug?: string | null }) => {
       setAppliedCoupon({ code: data.code, discount: data.discount, description: data.description, productSlug: data.productSlug ?? null });
@@ -897,6 +960,10 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
             />
           </Field>
         </div>
+        <p className="font-body text-[10px] leading-relaxed text-foreground/45 -mt-2">
+          Al completar correo y teléfono, registramos tu solicitud para gestionar la compra. Consulta la{" "}
+          <a href="/politica-privacidad" className="underline underline-offset-2 hover:text-foreground">política de privacidad</a>.
+        </p>
 
         {/* Selector de país */}
         <Field label={t("checkout.country")} required error={null}>
@@ -1345,6 +1412,10 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
         <Field label={t("checkout.phone")} required error={touched.telefono ? errors.telefono : null}>
           <input type="tel" value={form.telefono} onChange={e => setField("telefono", e.target.value)} onBlur={() => markTouched("telefono")} className={inputClassSm("telefono")} placeholder="600 123 456" autoComplete="tel" inputMode="tel" />
         </Field>
+        <p className="font-body text-[10px] leading-relaxed text-foreground/45 -mt-1">
+          Al completar correo y teléfono, registramos tu solicitud para gestionar la compra. Consulta la{" "}
+          <a href="/politica-privacidad" className="underline underline-offset-2 hover:text-foreground">política de privacidad</a>.
+        </p>
 
         <Field label={t("checkout.street")} required error={touched.direccion ? errors.direccion : null}>
           <input value={form.direccion} onChange={e => setField("direccion", e.target.value)} onBlur={() => markTouched("direccion")} className={inputClassSm("direccion")} placeholder={t("checkout.streetPlaceholder")} autoComplete="address-line1" />
@@ -1930,17 +2001,24 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
                         }}
                         onApprove={async (data) => {
                           if (!pendingOrderId) return;
-                          await capturePaypalOrder.mutateAsync({ orderId: pendingOrderId, paypalOrderId: data.orderID });
-                          onClearCart?.();
-                          toast.success("¡Pago con PayPal completado! Recibirás un email de confirmación.");
-                          setCheckoutStep("cart");
-                          onClose?.();
+                          try {
+                            await capturePaypalOrder.mutateAsync({ orderId: pendingOrderId, paypalOrderId: data.orderID });
+                            onClearCart?.();
+                            toast.success("¡Pago con PayPal completado! Recibirás un email de confirmación.");
+                            setCheckoutStep("cart");
+                            onClose?.();
+                          } catch {
+                            reportPaypalOutcome("failed");
+                            toast.error("El pago con PayPal no se pudo completar.");
+                          }
                         }}
                         onError={(err) => {
                           console.error("[PayPal] Error:", err);
+                          reportPaypalOutcome("failed");
                           toast.error("Error al procesar el pago con PayPal. Inténtalo de nuevo.");
                         }}
                         onCancel={() => {
+                          reportPaypalOutcome("cancelled");
                           toast.info("Pago con PayPal cancelado.");
                         }}
                       />
@@ -2170,17 +2248,26 @@ export function CartPanel({ isOpen, onClose, cart, onRemove, onUpdateQuantity, o
                         }}
                         onApprove={async (data) => {
                           if (!pendingOrderId) return;
-                          await capturePaypalOrder.mutateAsync({ orderId: pendingOrderId, paypalOrderId: data.orderID });
-                          onClearCart?.();
-                          toast.success("¡Pago con PayPal completado! Recibirás un email de confirmación.");
-                          setCheckoutStep("cart");
-                          onClose?.();
+                          try {
+                            await capturePaypalOrder.mutateAsync({ orderId: pendingOrderId, paypalOrderId: data.orderID });
+                            onClearCart?.();
+                            toast.success("¡Pago con PayPal completado! Recibirás un email de confirmación.");
+                            setCheckoutStep("cart");
+                            onClose?.();
+                          } catch {
+                            reportPaypalOutcome("failed");
+                            toast.error("El pago con PayPal no se pudo completar.");
+                          }
                         }}
                         onError={(err) => {
                           console.error("[PayPal] Error:", err);
+                          reportPaypalOutcome("failed");
                           toast.error("Error al procesar el pago con PayPal. Inténtalo de nuevo.");
                         }}
-                        onCancel={() => { toast.info("Pago con PayPal cancelado."); }}
+                        onCancel={() => {
+                          reportPaypalOutcome("cancelled");
+                          toast.info("Pago con PayPal cancelado.");
+                        }}
                       />
                     )}
                   </div>
