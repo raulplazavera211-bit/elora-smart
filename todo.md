@@ -229,4 +229,4 @@
 - [x] Sustituir la espera de cinco minutos por el aviso inmediato solicitado al completar los datos de contacto.
 - [x] Enviar un aviso inmediato a `info@elorasmart.com` y `vioccodigital@gmail.com` ante pago fallido o cancelado.
 - [x] Añadir pruebas de regresión y una ruta de comprobación sin enviar correos reales.
-- [ ] Publicar y activar la automatización después de validar y confirmar el envío real.
+- [x] Publicar y activar la automatización después de validar y confirmar el envío real.
