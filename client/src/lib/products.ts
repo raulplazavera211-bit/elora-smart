@@ -232,7 +232,7 @@ export const ALL_PRODUCTS: Product[] = [
     description: "Combina tecnología y diseño compacto: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización y control por voz.",
     longDescription:
       "El inodoro inteligente AURA COMPACT combina tecnología y un diseño compacto, ofreciendo todas las ventajas como: apertura automática, lavado personalizable, secado rápido, asiento climatizado, esterilización UV, desodorización, control por voz y mando, todo con eficiencia energética y ahorro de espacio. Ideal para baños con poco espacio o lugares donde quieres ganar amplitud.",
-    img: "/manus-storage/inodoro_lujo_v2_81e05275.webp",
+    img: "/product-assets/IMG_5483%20(1).png",
     gallery: AURA_COMPACT_GALLERY,
     badges: ["ClimAdapt", "UV · Voz"],
     highlights: [
