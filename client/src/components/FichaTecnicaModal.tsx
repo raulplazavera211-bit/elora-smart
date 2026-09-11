@@ -21,18 +21,13 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   const mutation = trpc.fichaTecnica.request.useMutation({
-    onSuccess: (_data) => {
+    onSuccess: () => {
       setSubmitted(true);
-      // Usar la URL del servidor proxy - el servidor envía Content-Disposition: attachment
+      // El endpoint propio de la aplicación crea una URL de Blob nueva y envía
+      // Content-Disposition. Dejar la descarga en un clic explícito evita que
+      // los navegadores móviles bloqueen la apertura asíncrona automática.
       const proxyUrl = `${window.location.origin}/api/download-ficha/${productId}`;
       setPdfUrl(proxyUrl);
-      // Forzar descarga creando un enlace temporal
-      const a = document.createElement('a');
-      a.href = proxyUrl;
-      a.download = '';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
     },
   });
 
@@ -163,8 +158,10 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
             </div>
             {pdfUrl && (
               <a
-                href={`${window.location.origin}/api/download-ficha/${productId}`}
+                href={pdfUrl}
                 download
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center gap-2 bg-[#c9a96e] hover:bg-[#b8965d] text-[#0a0a0a] font-semibold tracking-widest uppercase text-xs py-3 px-6 transition-all duration-200 active:scale-[0.97]"
               >
                 <Download className="w-4 h-4" />

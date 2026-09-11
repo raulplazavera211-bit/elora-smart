@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowRight, Instagram, Linkedin } from "lucide-react";
+import { ArrowUp, ArrowRight, Instagram } from "lucide-react";
 import { Link } from "wouter";
 
 // Iconos SVG para TikTok y Facebook (no disponibles en lucide-react)
@@ -72,9 +72,9 @@ export function Footer() {
           <div className="md:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-8 justify-items-start md:justify-items-end text-left md:text-right" style={anim(200)}>
             <div className="flex flex-col gap-3">
               <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">{t('footer.products')}</h4>
-              <a href="#" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">ESENZA</a>
-              <a href="#" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">AURA Compact</a>
-              <a href="#" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">AURA Suspendido</a>
+              <Link href="/producto/esenza" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">ESENZA</Link>
+              <Link href="/producto/aura-compact" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">AURA Compact</Link>
+              <Link href="/producto/aura-suspendido" className="font-body text-[13px] text-background/80 hover:text-white transition-colors">AURA Suspendido</Link>
             </div>
             <div className="flex flex-col gap-3">
               <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">{t('footer.company')}</h4>
@@ -86,9 +86,8 @@ export function Footer() {
               <h4 className="font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-background/40 mb-1">Social</h4>
               <div className="flex gap-4 md:justify-end">
                 <a href="https://www.instagram.com/elora_smart/" target="_blank" rel="noreferrer" aria-label="Instagram" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Instagram className="w-4 h-4" /></a>
-                <a href="https://www.linkedin.com/company/elora-smart/" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><Linkedin className="w-4 h-4" /></a>
-                <a href="https://www.tiktok.com/@elora_smart" target="_blank" rel="noreferrer" aria-label="TikTok" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><TikTokIcon /></a>
-                <a href="https://www.facebook.com/elorasmart" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><FacebookIcon /></a>
+                <a href="https://www.tiktok.com/@elora.smart" target="_blank" rel="noreferrer" aria-label="TikTok" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><TikTokIcon /></a>
+                <a href="https://www.facebook.com/61576584694086/" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-background/60 hover:text-white hover:-translate-y-0.5 transition-all"><FacebookIcon /></a>
               </div>
               <p className="font-body text-[11px] text-background/50 mt-2">+34 614 45 19 01</p>
               <a href="https://maps.google.com/?q=Avenida+da+Mah%C3%ADa+17+Bertamir%C3%A1ns+Ames" target="_blank" rel="noreferrer" className="font-body text-[11px] text-background/50 hover:text-white transition-colors mt-1 leading-relaxed block">

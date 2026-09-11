@@ -1505,6 +1505,17 @@ export default function Home() {
       setHomeProducts(filtered);
     }
   }, [productsQuery.data, i18n.language, region]);
+
+  // La portada se desplaza dentro de su propio contenedor. Al llegar desde el
+  // CTA de distribuidores se debe resolver el ancla de forma explícita.
+  useEffect(() => {
+    if (window.location.hash !== "#contacto") return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
   const [, navigate] = useLocation();
   const PRODUCT_SLUGS: Record<string, string> = {
     "ESENZA": "esenza",
@@ -2283,6 +2294,7 @@ export default function Home() {
 
               {/* ── CAPÍTULO 5: CONTACTO ────────────────────────────────────── */}
               <section
+                id="contacto"
                 ref={setSectionRef(4)}
                 data-index="4"
                 className="w-full relative overflow-hidden bg-background flex flex-col justify-between min-h-[100dvh]"

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { MapView } from "@/components/Map";
 
 // Paths de la Península Ibérica incrustados directamente (sin fetch, sin caché)
 const IBERIA_SVG_PATHS: { region: string; d: string }[] = [
@@ -88,6 +89,7 @@ export default function SpainDistributorsMap() {
   const [hovered, setHovered] = useState<number | null>(null);
   const [cp, setCp] = useState("");
   const [searching, setSearching] = useState(false);
+  const [googleMapUnavailable, setGoogleMapUnavailable] = useState(false);
   const [searchResult, setSearchResult] = useState<{ nearest: Distributor; km: number; cpCity: string } | null>(null);
   const [searchError, setSearchError] = useState("");
   // Zoom animado: viewBox del SVG
@@ -338,8 +340,39 @@ export default function SpainDistributorsMap() {
         {/* Mapa + Panel */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
 
-          {/* SVG Mapa real de España */}
-          <div className="w-full lg:w-[65%]"
+          {/* Mapa de Google con los distribuidores publicados. Si el proveedor
+              del mapa no está disponible, se mantiene un mapa de Google embebido
+              para que la sección nunca quede vacía. */}
+          <div className="w-full lg:w-[65%] overflow-hidden border border-border bg-card">
+            {googleMapUnavailable ? (
+              <iframe
+                title="Mapa de distribuidores Elora Smart"
+                src="https://www.google.com/maps?q=España&z=5&output=embed"
+                className="h-[430px] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            ) : (
+              <MapView
+                initialCenter={{ lat: 40.2, lng: -3.7 }}
+                initialZoom={5}
+                className="h-[430px] w-full"
+                onMapError={() => setGoogleMapUnavailable(true)}
+                onMapReady={(map) => {
+                  DISTRIBUTORS.forEach((distributor) => {
+                    new google.maps.marker.AdvancedMarkerElement({
+                      map,
+                      position: { lat: distributor.lat, lng: distributor.lon },
+                      title: `${distributor.name} — ${distributor.city}`,
+                    });
+                  });
+                }}
+              />
+            )}
+          </div>
+
+          {/* SVG alternativo preservado para el buscador y los datos regionales. */}
+          <div className="hidden"
             style={{ opacity: visible ? 1 : 0, animation: visible ? "dist-fade-up 1s cubic-bezier(0.23,1,0.32,1) 0.3s both" : "none" }}>
             <svg viewBox={viewBox} className="w-full h-auto" style={{ maxHeight: "720px", transition: "none" }}>
               <defs>
@@ -553,7 +586,7 @@ export default function SpainDistributorsMap() {
 
             <div className="mt-5 pt-4 border-t border-border">
               <p className="font-body text-[10px] uppercase tracking-[0.25em] text-foreground/40 mb-2">¿Quieres ser distribuidor?</p>
-              <a href="#contacto" className="inline-flex items-center gap-2 font-display text-[11px] uppercase tracking-[0.25em] text-accent-deep hover:text-foreground transition-colors duration-200">
+              <a href="/#contacto" className="inline-flex items-center gap-2 font-display text-[11px] uppercase tracking-[0.25em] text-accent-deep hover:text-foreground transition-colors duration-200">
                 Contactar <span style={{ fontSize:10 }}>→</span>
               </a>
             </div>

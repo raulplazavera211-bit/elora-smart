@@ -45,7 +45,10 @@ const PITCH_ICONS = [Sparkles, Droplets, Thermometer, Wind, Zap, Shield];
 export function ProductDetail({ product, onBack, onAdd }: Props) {
   const { t } = useTranslation();
   const { currency, exchangeRate } = useCurrency();
-  const allImages = [product.img, ...product.gallery].filter(Boolean);
+  // La imagen de portada se muestra también como primera imagen en algunas
+  // galerías importadas. Mantener cada URL una sola vez evita miniaturas y
+  // navegación duplicadas sin descartar fotografías diferentes.
+  const allImages = Array.from(new Set([product.img, ...product.gallery].filter(Boolean)));
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [fichaModalOpen, setFichaModalOpen] = useState(false);
   

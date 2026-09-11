@@ -230,3 +230,18 @@
 - [x] Enviar un aviso inmediato a `info@elorasmart.com` y `vioccodigital@gmail.com` ante pago fallido o cancelado.
 - [x] Añadir pruebas de regresión y una ruta de comprobación sin enviar correos reales.
 - [x] Publicar y activar la automatización después de validar y confirmar el envío real.
+
+## Corrección de fichas técnicas y galerías
+- [x] Reproducir el fallo de descarga de ficha técnica y localizar la ruta o el evento que lo bloquea.
+- [x] Identificar el origen de las imágenes duplicadas en las galerías de producto.
+- [x] Corregir la descarga de fichas técnicas y deduplicar las galerías sin modificar contenido ni diseño adicional.
+- [ ] Añadir pruebas de regresión y validar el comportamiento en móvil y escritorio antes de publicar.
+
+## Recuperación de funcionalidades de producción
+- [x] Restaurar y fijar la versión aprobada de las descripciones de producto, sin cambiar precios ni especificaciones verificadas.
+- [x] Reparar la carga y visualización del mapa de distribuidores de Google Maps.
+- [x] Restaurar todos los enlaces configurados de redes sociales en el sitio.
+- [x] Reparar la descarga de fichas técnicas desde todos los modelos compatibles.
+- [x] Eliminar imágenes duplicadas de las galerías de producto y sus lightboxes.
+- [x] Reparar el contacto desde la sección de distribuidores.
+- [ ] Añadir pruebas de regresión y validar los seis flujos restaurados en móvil y escritorio antes de publicar.
