@@ -1509,11 +1509,25 @@ export default function Home() {
   // La portada se desplaza dentro de su propio contenedor. Al llegar desde el
   // CTA de distribuidores se debe resolver el ancla de forma explícita.
   useEffect(() => {
-    if (window.location.hash !== "#contacto") return;
-    const frame = window.requestAnimationFrame(() => {
-      document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-    return () => window.cancelAnimationFrame(frame);
+    const scrollToContact = () => {
+      if (window.location.hash !== "#contacto") return;
+      const target = document.getElementById("contacto");
+      const container = scrollContainerRef.current;
+      if (!target || !container) return;
+      container.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+    };
+
+    // La animación inicial de la portada puede terminar después de montar la
+    // ruta. Reintentar al siguiente ciclo y tras la entrada evita quedarse en
+    // el primer capítulo cuando se accede a /#contacto desde distribuidores.
+    const firstFrame = window.requestAnimationFrame(scrollToContact);
+    const readyTimer = window.setTimeout(scrollToContact, 700);
+    window.addEventListener("hashchange", scrollToContact);
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.clearTimeout(readyTimer);
+      window.removeEventListener("hashchange", scrollToContact);
+    };
   }, []);
 
   const [, navigate] = useLocation();
