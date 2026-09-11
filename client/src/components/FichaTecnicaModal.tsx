@@ -67,7 +67,7 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
             </div>
           </div>
           <DialogDescription className="text-[#888] text-sm leading-relaxed mt-2">
-            Introduce tus datos para recibir la ficha técnica por email y descargarla automáticamente.
+            Introduce tus datos para recibir la ficha técnica por email. Tras enviarlos podrás descargar el PDF directamente.
           </DialogDescription>
         </DialogHeader>
 
@@ -139,7 +139,7 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
             </Button>
 
             <p className="text-[#555] text-xs text-center">
-              Al enviar, recibirás la ficha en tu email y comenzará la descarga automáticamente.
+              Al enviar, recibirás la ficha en tu email y se habilitará el botón de descarga.
             </p>
           </form>
         ) : (
@@ -153,7 +153,7 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
               <h3 className="text-white font-light tracking-wider text-lg mb-1">¡Ficha enviada!</h3>
               <p className="text-[#888] text-sm leading-relaxed">
                 Hemos enviado la ficha técnica a <strong className="text-white">{email}</strong>.<br />
-                La descarga debería haber comenzado automáticamente.
+                Pulsa el botón para descargar el PDF.
               </p>
             </div>
             {pdfUrl && (

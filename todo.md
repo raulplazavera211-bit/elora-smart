@@ -235,7 +235,8 @@
 - [x] Reproducir el fallo de descarga de ficha técnica y localizar la ruta o el evento que lo bloquea.
 - [x] Identificar el origen de las imágenes duplicadas en las galerías de producto.
 - [x] Corregir la descarga de fichas técnicas y deduplicar las galerías sin modificar contenido ni diseño adicional.
-- [ ] Añadir pruebas de regresión y validar el comportamiento en móvil y escritorio antes de publicar.
+- [x] Añadir pruebas de regresión para descarga y deduplicación de galerías.
+- [ ] Validar la descarga y las galerías en móvil y escritorio antes de publicar.
 
 ## Recuperación de funcionalidades de producción
 - [x] Restaurar y fijar la versión aprobada de las descripciones de producto, sin cambiar precios ni especificaciones verificadas.
@@ -244,4 +245,5 @@
 - [x] Reparar la descarga de fichas técnicas desde todos los modelos compatibles.
 - [x] Eliminar imágenes duplicadas de las galerías de producto y sus lightboxes.
 - [x] Reparar el contacto desde la sección de distribuidores.
-- [ ] Añadir pruebas de regresión y validar los seis flujos restaurados en móvil y escritorio antes de publicar.
+- [x] Añadir pruebas de regresión para descripciones, mapa, redes, descarga, galerías y contacto.
+- [ ] Validar los seis flujos restaurados en móvil y escritorio antes de publicar.

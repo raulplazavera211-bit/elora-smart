@@ -1521,7 +1521,7 @@ export default function Home() {
     // ruta. Reintentar al siguiente ciclo y tras la entrada evita quedarse en
     // el primer capítulo cuando se accede a /#contacto desde distribuidores.
     const firstFrame = window.requestAnimationFrame(scrollToContact);
-    const readyTimer = window.setTimeout(scrollToContact, 700);
+    const readyTimer = window.setTimeout(scrollToContact, 2200);
     window.addEventListener("hashchange", scrollToContact);
     return () => {
       window.cancelAnimationFrame(firstFrame);

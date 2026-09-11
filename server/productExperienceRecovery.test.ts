@@ -24,6 +24,8 @@ describe("recuperación de la experiencia de producto", () => {
     expect(source).toContain("href={pdfUrl}");
     expect(source).toContain('target="_blank"');
     expect(source).not.toContain("document.createElement('a')");
+    expect(source).toContain("se habilitará el botón de descarga");
+    expect(source).not.toContain("descargarla automáticamente");
   });
 
   it("usa cuentas sociales verificadas y elimina el destino de LinkedIn no confirmado", () => {
