@@ -8,12 +8,17 @@
 
 ## Distribuidores y contacto
 
-- La ruta pública `https://www.elorasmart.store/#contacto` seguía mostrando la portada al validar el primer despliegue porque la Home usa un contenedor interno de scroll.
-- Se ha aplicado una corrección con desplazamiento explícito sobre ese contenedor y reintento después de la carga inicial. La validación pública de este ajuste se realizará tras el siguiente despliegue.
+La ruta pública `https://www.elorasmart.store/#contacto` se valida después de la carga inicial: la portada sitúa correctamente el contenedor interno de scroll en el formulario de contacto.
+
+La sección de distribuidores carga un mapa de Google visible junto al buscador por código postal y los distribuidores publicados. El contacto desde distribuidores apunta a `/#contacto` y ya alcanza el formulario.
 
 ## Enlaces sociales
 
 - Instagram confirmado: `https://www.instagram.com/elora_smart/`.
 - TikTok confirmado públicamente: `https://www.tiktok.com/@elora.smart`.
 - Facebook confirmado públicamente: `https://www.facebook.com/61576584694086/`.
-- No se encontró una página oficial verificable de LinkedIn, por lo que el enlace anterior no se mantiene para evitar enviar visitantes a una página inexistente.
+No se encontró una página oficial verificable de LinkedIn, por lo que el enlace anterior no se mantiene para evitar enviar visitantes a una página inexistente. La validación pública muestra únicamente Instagram, TikTok y Facebook en el footer.
+
+## Vista móvil
+
+La ficha ESENZA y la ruta de contacto se han comprobado a 375 × 812 píxeles. La cabecera móvil, la imagen de producto, el formulario de contacto y los controles de navegación permanecen dentro del viewport sin solapamientos de la interfaz de la aplicación.
