@@ -10,7 +10,7 @@
 
 La ruta pública `https://www.elorasmart.store/#contacto` se valida después de la carga inicial: la portada sitúa correctamente el contenedor interno de scroll en el formulario de contacto.
 
-La sección de distribuidores carga un mapa de Google visible junto al buscador por código postal y los distribuidores publicados. El contacto desde distribuidores apunta a `/#contacto` y ya alcanza el formulario.
+La sección de distribuidores muestra el mapa SVG interactivo de España junto al buscador por código postal y los distribuidores publicados. El contacto desde distribuidores apunta a `/#contacto` y ya alcanza el formulario.
 
 ## Enlaces sociales
 
@@ -28,3 +28,9 @@ La ficha ESENZA y la ruta de contacto se han comprobado a 375 × 812 píxeles. L
 - El despliegue de producción de Vercel asociado a `a4a931c` está en estado **Ready**.
 - El componente de distribuidores ya no depende de `IntersectionObserver` ni de un estado asíncrono de animación: su visibilidad queda fijada en el primer renderizado.
 - Las pruebas de regresión y el tipado se completaron correctamente con 34 pruebas superadas.
+
+## Ampliación móvil del mapa SVG
+
+- El contenedor del mapa emplea menos relleno en móvil para aprovechar la anchura disponible.
+- El SVG se muestra al 114% de anchura, centrado mediante un desplazamiento horizontal compensado; desde el breakpoint `sm` conserva su tamaño normal.
+- Las pruebas, el tipado y la compilación de producción se completaron correctamente antes de publicar el ajuste.

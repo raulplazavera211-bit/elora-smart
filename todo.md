@@ -268,3 +268,13 @@
 - [x] Localizar la implementación aprobada del mapa SVG interactivo de España y sus datos de ubicaciones.
 - [x] Restaurar el mapa SVG con selección de distribuidores, detalle de ubicación y acceso a contacto.
 - [x] Validar la interacción en móvil y escritorio sin sustituir el SVG por un mapa alternativo.
+
+## Sincronización pública del mapa SVG
+- [ ] Comparar el bundle del dominio público con el código que contiene el mapa SVG restaurado.
+- [ ] Sincronizar el despliegue correcto y eliminar cualquier recurso público que aún renderice Google Maps.
+- [ ] Verificar desde móvil y escritorio en `elorasmart.store` que solo se muestra el SVG interactivo.
+
+## Mapa SVG más grande en móvil
+- [x] Revisar las clases responsivas que limitan el tamaño del mapa SVG y de sus puntos táctiles.
+- [x] Ampliar el mapa SVG en móvil sin afectar la composición de escritorio ni los selectores.
+- [x] Validar mediante prueba de regresión la selección de distribuidores y la configuración responsiva del mapa ampliado antes de publicar.

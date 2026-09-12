@@ -334,9 +334,13 @@ export default function SpainDistributorsMap() {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
 
           {/* Mapa SVG interactivo original: permite seleccionar cada punto de distribución. */}
-          <div className="w-full lg:w-[65%] overflow-hidden border border-border bg-card p-3 md:p-5"
+          <div className="w-full lg:w-[65%] overflow-hidden border border-border bg-card p-1.5 sm:p-3 md:p-5"
             style={{ opacity: 1, animation: "dist-fade-up 0.7s cubic-bezier(0.23,1,0.32,1) both" }}>
-            <svg viewBox={viewBox} className="w-full h-auto" style={{ maxHeight: "720px", transition: "none" }}>
+            <svg
+              viewBox={viewBox}
+              className="w-[114%] max-w-none h-auto -ml-[7%] sm:w-full sm:max-w-full sm:ml-0"
+              style={{ maxHeight: "720px", transition: "none" }}
+            >
               <defs>
                 <filter id="dotGlow2">
                   <feGaussianBlur stdDeviation="3" result="b"/>

@@ -52,6 +52,8 @@ describe("recuperación de la experiencia de producto", () => {
     expect(source).toContain('className="dist-dot"');
     expect(source).not.toContain('import { MapView } from "@/components/Map"');
     expect(source).not.toContain("new IntersectionObserver");
+    expect(source).toContain('p-1.5 sm:p-3 md:p-5');
+    expect(source).toContain('w-[114%] max-w-none h-auto -ml-[7%] sm:w-full sm:max-w-full sm:ml-0');
   });
 
   it("resuelve el ancla de contacto dentro del contenedor de scroll de la portada", () => {
