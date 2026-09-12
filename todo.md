@@ -287,4 +287,5 @@
 ## Marcador personalizado del mapa de contacto
 - [x] Localizar la configuración anterior del marcador con logo de Elora y el recurso gráfico original.
 - [x] Restaurar el mapa de contacto interactivo con el logo de Elora como marcador.
+- [x] Sustituir la carga bloqueada por origen del mapa dinámico por un mapa embebido estable con el mismo marcador visual de logo.
 - [ ] Validar el marcador, la ubicación y el enlace Cómo llegar en móvil y escritorio antes de publicar.

@@ -62,13 +62,14 @@ describe("recuperación de la experiencia de producto", () => {
     expect(source).toContain('window.location.hash !== "#contacto"');
   });
 
-  it("restaura el mapa de contacto con el marcador personalizado del logo de Elora", () => {
+  it("mantiene el mapa de contacto estable con el marcador personalizado del logo de Elora", () => {
     const source = readProjectFile("client/src/pages/Home.tsx");
-    expect(source).toContain('import { MapView } from "@/components/Map"');
     expect(source).toContain("function EloraContactMap");
-    expect(source).toContain("border:3px solid #d97706");
-    expect(source).toContain("logo.src = LOGO_URL");
-    expect(source).toContain("new window.google!.maps.marker.AdvancedMarkerElement");
+    expect(source).toContain("CONTACT_MAP_EMBED_URL");
+    expect(source).toContain('title="Mapa para llegar a Elora Smart"');
+    expect(source).toContain("border-[3px] border-[#d97706]");
+    expect(source).toContain('<img src={LOGO_URL} alt="" className="h-9 w-9 object-contain" />');
+    expect(source).toContain('aria-hidden="true"');
     expect(source).toContain("<EloraContactMap className=\"h-full w-full\" />");
   });
 });
