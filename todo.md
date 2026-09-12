@@ -282,10 +282,10 @@
 ## Restauración del mapa Cómo llegar
 - [x] Localizar el mapa anterior de la sección de contacto y su configuración de ubicación: la estructura permanece, pero el cargador de Google Maps puede dejar un contenedor vacío si falla la API.
 - [x] Restaurar el mapa de Cómo llegar en la posición y estilo aprobados, con una inserción visible y el enlace de navegación existente.
-- [ ] Validar la carga y el enlace de navegación en móvil y escritorio antes de publicar.
+- [x] Validar la carga y el enlace de navegación en móvil y escritorio antes de publicar.
 
 ## Marcador personalizado del mapa de contacto
 - [x] Localizar la configuración anterior del marcador con logo de Elora y el recurso gráfico original.
 - [x] Restaurar el mapa de contacto interactivo con el logo de Elora como marcador.
 - [x] Sustituir la carga bloqueada por origen del mapa dinámico por un mapa embebido estable con el mismo marcador visual de logo.
-- [ ] Validar el marcador, la ubicación y el enlace Cómo llegar en móvil y escritorio antes de publicar.
+- [x] Validar el marcador, la ubicación y el enlace Cómo llegar en móvil y escritorio antes de publicar.
