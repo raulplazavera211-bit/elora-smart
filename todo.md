@@ -254,11 +254,12 @@
 - [x] Añadir una prueba de regresión y validar la apertura en móvil y escritorio antes de publicar.
 
 ## Verificación del popup de ficha técnica en móvil
-- [ ] Reproducir en un viewport táctil el popup que el usuario todavía no ve y localizar la capa o evento que lo impide.
-- [ ] Aplicar una corrección específica para que el formulario sea visible y operable en móvil.
+- [x] Reproducir en un viewport táctil el popup que el usuario todavía no ve y localizar la capa o evento que lo impide.
+- [x] Aplicar una corrección específica para que el formulario sea visible y operable en móvil.
 - [ ] Validar el toque y la visibilidad en producción antes de cerrar la incidencia.
+- [x] Evitar que el diálogo controlado interprete la apertura como una orden de cierre en móvil.
 
 ## Distribuidores no visibles
 - [x] Reproducir la sección de distribuidores que no aparece y localizar la condición de carga o visibilidad que la bloquea.
 - [x] Restaurar el listado de distribuidores y el mapa o fallback visible asociado.
-- [ ] Validar distribuidores, contacto y mapa en móvil y escritorio antes de publicar.
+- [x] Validar distribuidores, contacto y mapa en móvil y escritorio antes de publicar.

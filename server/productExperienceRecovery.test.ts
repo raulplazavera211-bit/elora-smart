@@ -28,6 +28,9 @@ describe("recuperación de la experiencia de producto", () => {
     expect(source).toContain("se habilitará el botón de descarga");
     expect(source).not.toContain("descargarla automáticamente");
     expect(source).toContain("max-h-[calc(100dvh-2rem)]");
+    expect(source).toContain("onOpenChange={(nextOpen) => {");
+    expect(source).toContain("if (!nextOpen) handleClose();");
+    expect(source).not.toContain("onOpenChange={handleClose}");
     expect(dialog).toContain("z-[10000] bg-black/50");
     expect(dialog).toContain("z-[10010] grid");
   });

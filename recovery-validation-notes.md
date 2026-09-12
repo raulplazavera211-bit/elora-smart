@@ -22,3 +22,9 @@ No se encontró una página oficial verificable de LinkedIn, por lo que el enlac
 ## Vista móvil
 
 La ficha ESENZA y la ruta de contacto se han comprobado a 375 × 812 píxeles. La cabecera móvil, la imagen de producto, el formulario de contacto y los controles de navegación permanecen dentro del viewport sin solapamientos de la interfaz de la aplicación.
+
+## Corrección final de visibilidad de distribuidores
+
+- El despliegue de producción de Vercel asociado a `a4a931c` está en estado **Ready**.
+- El componente de distribuidores ya no depende de `IntersectionObserver` ni de un estado asíncrono de animación: su visibilidad queda fijada en el primer renderizado.
+- Las pruebas de regresión y el tipado se completaron correctamente con 34 pruebas superadas.

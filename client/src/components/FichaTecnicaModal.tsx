@@ -52,7 +52,12 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) handleClose();
+      }}
+    >
       <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-md overflow-y-auto bg-[#0a0a0a] border border-[#2a2a2a] text-white">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-1">
