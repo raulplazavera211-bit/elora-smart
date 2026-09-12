@@ -9,7 +9,6 @@ import {
   ShieldCheck, Thermometer, ShoppingBag, MapPin, Wrench, Phone, Mail, Send, Check
 } from "lucide-react";
 import { ProductDetail, type Product } from "@/components/ProductDetail";
-import { MapView } from "@/components/Map";
 import { TypewriterText } from "@/components/TypewriterText";
 import { Footer } from "@/components/Footer";
 import { Loader } from "@/components/Loader";
@@ -27,6 +26,7 @@ import { LanguageSwitcher, LanguageDetectionBanner } from "@/components/Language
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const LOGO_URL = "/manus-storage/elora_logo_color_2329eaab.webp";
 const HERO_IMAGE = "/manus-storage/esenza-main_7db64882.png";
+const CONTACT_MAP_EMBED_URL = "https://maps.google.com/maps?q=Avenida+da+Mah%C3%ADa+17%2C+Bertamir%C3%A1ns%2C+Ames&z=16&output=embed";
 
 const PRODUCT_IMAGES: Record<string, string> = {
   "ESENZA": "/manus-storage/esenza-main_7db64882.png",
@@ -2362,21 +2362,13 @@ export default function Home() {
                       }}>
                         <div style={{ width: '100%', height: '100%', background: '#fff', borderRadius: '2px' }} />
                       </div>
-                      <div className="absolute overflow-hidden" style={{ inset: '2px', borderRadius: '2px', zIndex: 11 }}>
-                      <MapView
-                        className="w-full h-full"
-                        initialCenter={{ lat: 42.862, lng: -8.6474 }}
-                        initialZoom={16}
-                        onMapReady={(map) => {
-                          const markerEl = document.createElement("div");
-                          markerEl.style.cssText = `width:44px;height:44px;border-radius:50%;background:#fff;border:3px solid #d97706;box-shadow:0 4px 16px rgba(217,119,6,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;`;
-                          const img = document.createElement("img");
-                          img.src = "/manus-storage/elora_logo_color_2329eaab.webp";
-                          img.style.cssText = "width:32px;height:32px;object-fit:contain;";
-                          markerEl.appendChild(img);
-                          new window.google.maps.marker.AdvancedMarkerElement({ map, position: { lat: 42.862, lng: -8.6474 }, content: markerEl });
-                          map.setOptions({ styles: [{elementType:"geometry",stylers:[{color:"#f5f5f0"}]},{elementType:"labels.text.fill",stylers:[{color:"#616161"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#ffffff"}]},{featureType:"poi",stylers:[{visibility:"off"}]},{featureType:"transit",stylers:[{visibility:"off"}]}], mapTypeControl:false, streetViewControl:false, fullscreenControl:false, zoomControl:false });
-                        }}
+                      <div className="absolute overflow-hidden bg-[#f5f5f0]" style={{ inset: '2px', borderRadius: '2px', zIndex: 11 }}>
+                      <iframe
+                        title="Mapa para llegar a Elora Smart"
+                        src={CONTACT_MAP_EMBED_URL}
+                        className="h-full w-full border-0"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
                       />
                       <a
                         href="https://maps.google.com/?q=Avenida+da+Mahía+17+Bertamiráns+Ames"
@@ -2519,41 +2511,12 @@ export default function Home() {
                 {(() => {
                   const mapBlock = (extraClass = "") => (
                     <div className={`relative overflow-hidden ${extraClass}`}>
-                      <MapView
-                        className="w-full h-full"
-                        initialCenter={{ lat: 42.862, lng: -8.6474 }}
-                        initialZoom={16}
-                        onMapReady={(map) => {
-                          const markerEl = document.createElement("div");
-                          markerEl.style.cssText = `
-                            width: 48px; height: 48px; border-radius: 50%;
-                            background: #fff; border: 3px solid #d97706;
-                            box-shadow: 0 4px 20px rgba(217,119,6,0.4);
-                            display: flex; align-items: center; justify-content: center;
-                            overflow: hidden; cursor: pointer;
-                          `;
-                          const img = document.createElement("img");
-                          img.src = "/manus-storage/elora_logo_color_2329eaab.webp";
-                          img.style.cssText = "width: 36px; height: 36px; object-fit: contain;";
-                          markerEl.appendChild(img);
-                          new window.google.maps.marker.AdvancedMarkerElement({
-                            map, position: { lat: 42.862, lng: -8.6474 },
-                            content: markerEl, title: t('contacto.storeTitle'),
-                          });
-                          map.setOptions({
-                            styles: [
-                              { elementType: "geometry", stylers: [{ color: "#f5f5f0" }] },
-                              { elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
-                              { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
-                              { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
-                              { featureType: "water", elementType: "geometry", stylers: [{ color: "#c9d8e8" }] },
-                              { featureType: "poi", stylers: [{ visibility: "off" }] },
-                              { featureType: "transit", stylers: [{ visibility: "off" }] },
-                            ],
-                            mapTypeControl: false, streetViewControl: false,
-                            fullscreenControl: false, zoomControl: true,
-                          });
-                        }}
+                      <iframe
+                        title="Mapa para llegar a Elora Smart"
+                        src={CONTACT_MAP_EMBED_URL}
+                        className="h-full w-full border-0"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
                       />
                       {/* Overlay dirección */}
                       <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm border border-amber-200 px-3 py-2.5 shadow-lg pointer-events-none">

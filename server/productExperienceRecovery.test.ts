@@ -61,4 +61,12 @@ describe("recuperación de la experiencia de producto", () => {
     expect(source).toContain('id="contacto"');
     expect(source).toContain('window.location.hash !== "#contacto"');
   });
+
+  it("mantiene visible el mapa Cómo llegar del contacto aunque la API dinámica no cargue", () => {
+    const source = readProjectFile("client/src/pages/Home.tsx");
+    expect(source).toContain("CONTACT_MAP_EMBED_URL");
+    expect(source).toContain("maps.google.com/maps?q=Avenida+da+Mah");
+    expect(source).toContain('title="Mapa para llegar a Elora Smart"');
+    expect(source).toContain('referrerPolicy="no-referrer-when-downgrade"');
+  });
 });

@@ -278,3 +278,8 @@
 - [x] Revisar las clases responsivas que limitan el tamaño del mapa SVG y de sus puntos táctiles.
 - [x] Ampliar el mapa SVG en móvil sin afectar la composición de escritorio ni los selectores.
 - [x] Validar mediante prueba de regresión la selección de distribuidores y la configuración responsiva del mapa ampliado antes de publicar.
+
+## Restauración del mapa Cómo llegar
+- [x] Localizar el mapa anterior de la sección de contacto y su configuración de ubicación: la estructura permanece, pero el cargador de Google Maps puede dejar un contenedor vacío si falla la API.
+- [x] Restaurar el mapa de Cómo llegar en la posición y estilo aprobados, con una inserción visible y el enlace de navegación existente.
+- [ ] Validar la carga y el enlace de navegación en móvil y escritorio antes de publicar.

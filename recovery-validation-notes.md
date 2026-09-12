@@ -34,3 +34,9 @@ La ficha ESENZA y la ruta de contacto se han comprobado a 375 × 812 píxeles. L
 - El contenedor del mapa emplea menos relleno en móvil para aprovechar la anchura disponible.
 - El SVG se muestra al 114% de anchura, centrado mediante un desplazamiento horizontal compensado; desde el breakpoint `sm` conserva su tamaño normal.
 - Las pruebas, el tipado y la compilación de producción se completaron correctamente antes de publicar el ajuste.
+
+## Restauración del mapa Cómo llegar
+
+- La sección de contacto vuelve a incluir un mapa visible de la tienda de Elora Smart en Avenida da Mahía 17, Bertamiráns (Ames).
+- Se conserva el enlace exterior de navegación y el diseño de tarjeta de ubicación del bloque de contacto.
+- El mapa usa una inserción de Google Maps que evita que la sección quede vacía si falla la carga de la API dinámica utilizada anteriormente.
