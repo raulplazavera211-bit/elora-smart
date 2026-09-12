@@ -263,3 +263,8 @@
 - [x] Reproducir la sección de distribuidores que no aparece y localizar la condición de carga o visibilidad que la bloquea.
 - [x] Restaurar el listado de distribuidores y el mapa o fallback visible asociado.
 - [x] Validar distribuidores, contacto y mapa en móvil y escritorio antes de publicar.
+
+## Restauración del mapa SVG de distribuidores
+- [x] Localizar la implementación aprobada del mapa SVG interactivo de España y sus datos de ubicaciones.
+- [x] Restaurar el mapa SVG con selección de distribuidores, detalle de ubicación y acceso a contacto.
+- [x] Validar la interacción en móvil y escritorio sin sustituir el SVG por un mapa alternativo.
