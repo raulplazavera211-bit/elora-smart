@@ -252,3 +252,13 @@
 - [x] Reproducir el bloqueo del botón de ficha técnica en la vista móvil: el diálogo compartía o quedaba por debajo de capas fijas y del banner de cookies.
 - [x] Corregir la apertura táctil del formulario elevando el diálogo por encima de overlays móviles y habilitando scroll interno seguro.
 - [x] Añadir una prueba de regresión y validar la apertura en móvil y escritorio antes de publicar.
+
+## Verificación del popup de ficha técnica en móvil
+- [ ] Reproducir en un viewport táctil el popup que el usuario todavía no ve y localizar la capa o evento que lo impide.
+- [ ] Aplicar una corrección específica para que el formulario sea visible y operable en móvil.
+- [ ] Validar el toque y la visibilidad en producción antes de cerrar la incidencia.
+
+## Distribuidores no visibles
+- [x] Reproducir la sección de distribuidores que no aparece y localizar la condición de carga o visibilidad que la bloquea.
+- [x] Restaurar el listado de distribuidores y el mapa o fallback visible asociado.
+- [ ] Validar distribuidores, contacto y mapa en móvil y escritorio antes de publicar.

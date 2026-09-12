@@ -84,7 +84,10 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
 
 export default function SpainDistributorsMap() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  // El contenido no debe depender del observador de scroll: en móviles y en
+  // navegadores con contenedor de scroll propio podía quedarse en opacity: 0.
+  // Se muestra desde el primer render y las transiciones se conservan visibles.
+  const [visible] = useState(true);
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const [cp, setCp] = useState("");
@@ -99,12 +102,6 @@ export default function SpainDistributorsMap() {
 
   // Paths incrustados directamente (sin fetch, sin caché)
   const svgPaths = IBERIA_SVG_PATHS;
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.1 });
-    if (sectionRef.current) obs.observe(sectionRef.current);
-    return () => obs.disconnect();
-  }, []);
 
   // Auto-cycle
   useEffect(() => {

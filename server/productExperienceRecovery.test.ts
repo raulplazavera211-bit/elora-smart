@@ -39,11 +39,14 @@ describe("recuperación de la experiencia de producto", () => {
     expect(source).not.toContain("linkedin.com/company/elora-smart");
   });
 
-  it("mantiene un mapa de Google y un enlace de distribuidores hacia el contacto", () => {
+  it("mantiene visible el directorio de distribuidores, el mapa y su enlace hacia el contacto", () => {
     const source = readProjectFile("client/src/components/SpainDistributorsMap.tsx");
     expect(source).toContain('import { MapView } from "@/components/Map"');
     expect(source).toContain("onMapError={() => setGoogleMapUnavailable(true)}");
     expect(source).toContain('href="/#contacto"');
+    expect(source).toContain("const [visible] = useState(true)");
+    expect(source).toContain("Todos los distribuidores");
+    expect(source).not.toContain("new IntersectionObserver");
   });
 
   it("resuelve el ancla de contacto dentro del contenedor de scroll de la portada", () => {
