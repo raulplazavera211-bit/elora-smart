@@ -256,7 +256,7 @@
 ## Verificación del popup de ficha técnica en móvil
 - [x] Reproducir en un viewport táctil el popup que el usuario todavía no ve y localizar la capa o evento que lo impide.
 - [x] Aplicar una corrección específica para que el formulario sea visible y operable en móvil.
-- [ ] Validar el toque y la visibilidad en producción antes de cerrar la incidencia.
+- [x] Validar el toque y la visibilidad en producción antes de cerrar la incidencia.
 - [x] Evitar que el diálogo controlado interprete la apertura como una orden de cierre en móvil.
 
 ## Distribuidores no visibles
