@@ -84,10 +84,9 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
 
 export default function SpainDistributorsMap() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  // El contenido no debe depender del observador de scroll: en móviles y en
-  // navegadores con contenedor de scroll propio podía quedarse en opacity: 0.
-  // Se muestra desde el primer render y las transiciones se conservan visibles.
-  const [visible] = useState(true);
+  // El directorio nunca depende de un estado de animación: siempre debe estar
+  // disponible, incluso si el navegador restaura una posición de scroll móvil.
+  const visible = true;
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const [cp, setCp] = useState("");
@@ -105,11 +104,11 @@ export default function SpainDistributorsMap() {
 
   // Auto-cycle
   useEffect(() => {
-    if (!visible || searchResult) return;
+    if (searchResult) return;
     let i = 0;
     const iv = setInterval(() => { setSelected(DISTRIBUTORS[i].id); i = (i + 1) % DISTRIBUTORS.length; }, 2200);
     return () => clearInterval(iv);
-  }, [visible, searchResult]);
+  }, [searchResult]);
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();

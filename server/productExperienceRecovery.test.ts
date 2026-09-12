@@ -44,7 +44,7 @@ describe("recuperación de la experiencia de producto", () => {
     expect(source).toContain('import { MapView } from "@/components/Map"');
     expect(source).toContain("onMapError={() => setGoogleMapUnavailable(true)}");
     expect(source).toContain('href="/#contacto"');
-    expect(source).toContain("const [visible] = useState(true)");
+    expect(source).toContain("const visible = true;");
     expect(source).toContain("Todos los distribuidores");
     expect(source).not.toContain("new IntersectionObserver");
   });
