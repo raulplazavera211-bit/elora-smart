@@ -53,7 +53,7 @@ export function FichaTecnicaModal({ open, onClose, productId, productName }: Fic
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md bg-[#0a0a0a] border border-[#2a2a2a] text-white">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-md overflow-y-auto bg-[#0a0a0a] border border-[#2a2a2a] text-white">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-1">
             <div className="w-10 h-10 bg-[#c9a96e]/10 border border-[#c9a96e]/30 flex items-center justify-center">

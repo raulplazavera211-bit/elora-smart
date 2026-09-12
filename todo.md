@@ -247,3 +247,8 @@
 - [x] Reparar el contacto desde la sección de distribuidores.
 - [x] Añadir pruebas de regresión para descripciones, mapa, redes, descarga, galerías y contacto.
 - [x] Validar los seis flujos restaurados en móvil y escritorio antes de publicar.
+
+## Ficha técnica en móvil
+- [x] Reproducir el bloqueo del botón de ficha técnica en la vista móvil: el diálogo compartía o quedaba por debajo de capas fijas y del banner de cookies.
+- [x] Corregir la apertura táctil del formulario elevando el diálogo por encima de overlays móviles y habilitando scroll interno seguro.
+- [x] Añadir una prueba de regresión y validar la apertura en móvil y escritorio antes de publicar.

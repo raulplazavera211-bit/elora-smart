@@ -21,11 +21,15 @@ describe("recuperación de la experiencia de producto", () => {
 
   it("ofrece la descarga de ficha con un clic explícito después del formulario", () => {
     const source = readProjectFile("client/src/components/FichaTecnicaModal.tsx");
+    const dialog = readProjectFile("client/src/components/ui/dialog.tsx");
     expect(source).toContain("href={pdfUrl}");
     expect(source).toContain('target="_blank"');
     expect(source).not.toContain("document.createElement('a')");
     expect(source).toContain("se habilitará el botón de descarga");
     expect(source).not.toContain("descargarla automáticamente");
+    expect(source).toContain("max-h-[calc(100dvh-2rem)]");
+    expect(dialog).toContain("z-[10000] bg-black/50");
+    expect(dialog).toContain("z-[10010] grid");
   });
 
   it("usa cuentas sociales verificadas y elimina el destino de LinkedIn no confirmado", () => {
